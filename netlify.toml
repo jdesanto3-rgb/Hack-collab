@@ -1,3 +1,7 @@
+[build]
+  command = "npm install && npm run build-storybook"
+  publish = "storybook-static"
+
 [[headers]]
   for = "/*"
   [headers.values]

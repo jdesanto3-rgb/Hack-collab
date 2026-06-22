@@ -1,0 +1,91 @@
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 3px 8px;
+  border-radius: var(--radius-pill);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  border: 1px solid var(--border2);
+  background: var(--surface2);
+  color: var(--text2);
+  white-space: nowrap;
+  line-height: 1.5;
+  user-select: none;
+  transition: background var(--transition), color var(--transition), border-color var(--transition);
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.clickable:hover {
+  background: var(--border);
+  color: var(--text);
+}
+
+.clickable:focus-visible {
+  outline: 2px solid var(--purple);
+  outline-offset: 1px;
+}
+
+/* --- Active state --- */
+.active.default {
+  background: var(--surface2);
+  color: var(--text);
+  border-color: var(--border2);
+}
+
+/* --- Variants --- */
+.purple {
+  background: var(--purple-light);
+  color: var(--purple);
+  border-color: var(--purple-mid);
+}
+
+.purple.active,
+.purple:hover {
+  background: var(--purple);
+  color: #fff;
+}
+
+.teal {
+  background: var(--teal-light);
+  color: var(--teal);
+  border-color: var(--teal-mid);
+}
+
+.teal.active,
+.teal:hover {
+  background: var(--teal);
+  color: #fff;
+}
+
+/* --- Remove button --- */
+.remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  padding: 0;
+  margin-left: 2px;
+  border: none;
+  background: transparent;
+  color: currentColor;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  border-radius: var(--radius-full);
+  opacity: 0.6;
+  transition: opacity var(--transition), background var(--transition);
+}
+
+.remove:hover {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.label {
+  line-height: 1;
+}
