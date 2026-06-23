@@ -286,34 +286,17 @@ function sendChat() {
   if (!text) return;
   input.value = '';
   const msgs = [...state.chatMessages, { role: 'user', text }];
-  setState({ chatMessages: msgs, chatTyping: true });
+  // Route message to the active agent in the activity feed
+  const activeAgentKey = state.phase > 0 && state.phase < 8 ? PHASES[state.phase].agent : null;
+  const newEvents = activeAgentKey
+    ? [{ a: activeAgentKey, t: text, tag: 'directed' }, ...state.events]
+    : state.events;
+  setState({ chatMessages: msgs, chatTyping: true, events: newEvents });
   setTimeout(() => { const el = document.getElementById('chat-messages'); if (el) el.scrollTop = el.scrollHeight; }, 30);
   setTimeout(() => {
     setState({ chatMessages: [...state.chatMessages, { role: 'ai', text: getChatReply(text) }], chatTyping: false });
     setTimeout(() => { const el = document.getElementById('chat-messages'); if (el) el.scrollTop = el.scrollHeight; }, 30);
   }, 1400);
-}
-
-// ─── DIRECTOR PANEL ───────────────────────────────────────────────────────────
-
-function toggleDirPanel(key) {
-  const p = document.getElementById('dir-panel-' + key);
-  if (!p) return;
-  const open = p.style.display === 'none';
-  p.style.display = open ? 'block' : 'none';
-  if (open) { setTimeout(() => document.getElementById('dta-' + key)?.focus(), 30); }
-}
-
-function sendDirection(key) {
-  const ta = document.getElementById('dta-' + key);
-  if (!ta) return;
-  const txt = ta.value.trim();
-  if (!txt) return;
-  const ev = { a: key, t: txt, tag: 'directed' };
-  setState({ events: [ev, ...state.events] });
-  ta.value = '';
-  const p = document.getElementById('dir-panel-' + key);
-  if (p) p.style.display = 'none';
 }
 
 // ─── INLINE EDIT ─────────────────────────────────────────────────────────────
@@ -596,7 +579,7 @@ function renderPipelineRail() {
       <div>
         <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:${TOKENS.text3};letter-spacing:1px;margin-bottom:6px">SEQUENTIAL PIPELINE</div>
         <div style="font-size:15px;font-weight:700;margin-bottom:3px">Design workflow spine</div>
-        <div style="font-size:11.5px;color:${TOKENS.text3}">Click <strong>Direct</strong> to send instructions.</div>
+        <div style="font-size:11.5px;color:${TOKENS.text3}">Use the <strong>AI Chat</strong> tab to direct agents.</div>
       </div>
       <button onclick="togglePipeline()" title="Close panel"
         style="width:26px;height:26px;flex:none;border-radius:7px;background:transparent;border:1px solid ${TOKENS.border};color:${TOKENS.text3};font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1">‹</button>
@@ -629,39 +612,9 @@ function renderPipelineRail() {
           ${dotHtml}
           ${!isLast ? `<div style="width:2px;min-height:16px;background:${lineColor};margin:3px 0;flex:1"></div>` : ''}
         </div>
-        <div style="padding-top:3px;padding-bottom:${isLast?0:4}px;flex:1;min-width:0">
-          <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px">
-            <div style="font-size:13px;font-weight:600;line-height:1.2;flex:1">${agent.name}</div>
-            <button onclick="toggleDirPanel('${agent.key}')"
-              style="font-size:10px;padding:3px 8px;border-radius:5px;background:transparent;border:1px solid ${TOKENS.border};color:${TOKENS.text3};cursor:pointer;flex:none;font-family:'Hanken Grotesk',sans-serif;transition:all .12s"
-              onmouseover="this.style.borderColor='${agent.color}';this.style.color='${agent.color}'"
-              onmouseout="this.style.borderColor='${TOKENS.border}';this.style.color='${TOKENS.text3}'">Direct ↓</button>
-          </div>
-          <div style="font-size:11px;color:${statusColor};margin-bottom:8px">${statusText}</div>
-
-          <!-- Director panel -->
-          <div id="dir-panel-${agent.key}" class="dir-panel" style="display:none;margin-bottom:14px">
-            <div class="dir-panel-header">
-              <span style="width:7px;height:7px;border-radius:50%;background:${agent.color};flex:none"></span>
-              Direction for ${agent.name}
-            </div>
-            <textarea
-              id="dta-${agent.key}"
-              class="dir-textarea"
-              placeholder="What should ${agent.name} focus on or change? e.g. "Prioritise mobile-first layouts" or "Flag anything that conflicts with the brand guide.""
-              onkeydown="if((event.metaKey||event.ctrlKey)&&event.key==='Enter'){sendDirection('${agent.key}')}"
-            ></textarea>
-            <div class="dir-footer">
-              <span class="dir-hint">⌘ + Enter to send</span>
-              <div style="display:flex;gap:6px">
-                <button onclick="toggleDirPanel('${agent.key}')"
-                  style="font-size:11px;padding:4px 10px;border-radius:5px;border:1px solid ${TOKENS.border};background:transparent;color:${TOKENS.text2};cursor:pointer;font-family:'Hanken Grotesk',sans-serif">Cancel</button>
-                <button onclick="sendDirection('${agent.key}')"
-                  style="font-size:11px;padding:4px 12px;border-radius:5px;border:none;background:${agent.color};color:#fff;font-weight:600;cursor:pointer;font-family:'Hanken Grotesk',sans-serif">↑ Send</button>
-              </div>
-            </div>
-          </div>
-
+        <div style="padding-top:3px;padding-bottom:${isLast?0:18}px;flex:1;min-width:0">
+          <div style="font-size:13px;font-weight:600;line-height:1.2;margin-bottom:3px">${agent.name}</div>
+          <div style="font-size:11px;color:${statusColor}">${statusText}</div>
         </div>
       </div>
     `;
@@ -1130,6 +1083,16 @@ function renderFeed() {
 
     <!-- Chat tab -->
     <div style="display:${!isActivity ? 'flex' : 'none'};flex-direction:column;flex:1;min-height:0">
+      ${(() => {
+        const ak = state.phase > 0 && state.phase < 8 ? PHASES[state.phase].agent : null;
+        const ag = ak ? AGENT_MAP[ak] : null;
+        return ag
+          ? `<div style="display:flex;align-items:center;gap:7px;padding:7px 10px;background:${TOKENS.surface2};border:1px solid ${TOKENS.border};border-radius:8px;margin-bottom:10px;flex:none">
+               <div style="width:16px;height:16px;border-radius:4px;background:${ag.color};display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:8px;font-weight:700;color:#fff;flex:none">${ag.short}</div>
+               <span style="font-size:11.5px;color:${TOKENS.text2}">Directing <strong style="color:${TOKENS.text}">${ag.name}</strong> — messages also appear in the activity feed</span>
+             </div>`
+          : `<div style="padding:7px 10px;background:${TOKENS.surface2};border:1px solid ${TOKENS.border};border-radius:8px;margin-bottom:10px;font-size:11.5px;color:${TOKENS.text3};flex:none">No agent active — start the flow to direct agents</div>`;
+      })()}
       <div style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:0;min-height:0;padding-bottom:4px" id="chat-messages">
         ${chatMessages}
         ${typingBubble}
@@ -1137,14 +1100,14 @@ function renderFeed() {
       <div style="flex:none;padding-top:10px;border-top:1px solid ${TOKENS.border};margin-top:8px">
         <div style="display:flex;gap:7px;align-items:flex-end">
           <textarea id="chat-input"
-            placeholder="Ask about the brief, persona, or direction…"
+            placeholder="Direct the agent or ask a question…"
             style="flex:1;padding:8px 10px;border-radius:8px;border:1px solid ${TOKENS.border};background:${TOKENS.surface};color:${TOKENS.text};font-family:'Hanken Grotesk',sans-serif;font-size:12.5px;line-height:1.45;resize:none;height:58px;outline:none"
             onkeydown="if((event.metaKey||event.ctrlKey)&&event.key==='Enter'){sendChat()}"
           ></textarea>
           <button onclick="sendChat()"
-            style="padding:8px 13px;border-radius:8px;border:none;background:${TOKENS.brand};color:${TOKENS.bgCanvas};font-size:13px;font-weight:600;cursor:pointer;font-family:'Hanken Grotesk',sans-serif;white-space:nowrap;align-self:flex-end">↑ Ask</button>
+            style="padding:8px 13px;border-radius:8px;border:none;background:${TOKENS.brand};color:${TOKENS.bgCanvas};font-size:13px;font-weight:600;cursor:pointer;font-family:'Hanken Grotesk',sans-serif;white-space:nowrap;align-self:flex-end">↑ Send</button>
         </div>
-        <div style="font-size:10px;color:${TOKENS.text3};margin-top:5px">⌘ + Enter to send</div>
+        <div style="font-size:10px;color:${TOKENS.text3};margin-top:5px">⌘ + Enter · directions are logged to the active agent</div>
       </div>
     </div>
   `;
