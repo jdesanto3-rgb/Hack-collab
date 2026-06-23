@@ -13,11 +13,16 @@
   --text2: #6B6860;
   --text3: #9C9890;
 
-  /* Brand — terracotta / quiet luxury */
-  --brand: #8B3A1E;
-  --brand-light: #F5E8E2;
-  --brand-mid: #C67A60;
-  --brand-dark: #5C2518;
+  /* Brand — quiet luxury, warm near-black primary */
+  --brand: #1E1C18;        /* warm near-black — the primary ink color */
+  --brand-light: #EDEAE4;  /* very subtle warm tint for hover states */
+  --brand-mid: #9B8E83;    /* warm stone-gray for midtones */
+  --brand-dark: #0E0D0B;   /* very deep for pressed states */
+
+  /* Stone accent — warm neutral for tags, chips, secondary UI */
+  --stone: #7A6A5C;
+  --stone-light: #F2EDE7;
+  --stone-mid: #C4B5A8;
 
   /* Accents — kept for components & agent colors */
   --purple: #534AB7;
@@ -104,10 +109,14 @@
     --text2: #9C9890;
     --text3: #6B6860;
 
-    --brand: #C67A60;
-    --brand-light: #3A1A0E;
-    --brand-mid: #8B3A1E;
-    --brand-dark: #E8B4A0;
+    --brand: #EAE6DF;        /* inverted — near-white for dark bg */
+    --brand-light: #2A2720;
+    --brand-mid: #9B8E83;
+    --brand-dark: #F5F2EC;
+
+    --stone: #C4B5A8;
+    --stone-light: #2A2520;
+    --stone-mid: #7A6A5C;
 
     --purple: #7F77DD;
     --purple-light: #26215C;

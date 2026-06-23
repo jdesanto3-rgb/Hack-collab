@@ -2,36 +2,39 @@ import { addons } from '@storybook/manager-api';
 import { create } from '@storybook/theming/create';
 
 const theme = create({
-  base: 'light',
+  base: 'dark',
 
-  colorPrimary: '#8B3A1E',
-  colorSecondary: '#8B3A1E',
+  colorPrimary: '#C4B5A8',
+  colorSecondary: '#C4B5A8',
 
-  appBg: '#F0ECE5',
-  appContentBg: '#FDFAF6',
+  // Sidebar / chrome
+  appBg: '#1C1914',
+  appContentBg: '#F0ECE5',
   appPreviewBg: '#F0ECE5',
-  appBorderColor: '#D8D2C6',
-  appBorderRadius: 6,
+  appBorderColor: '#2E2B23',
+  appBorderRadius: 4,
 
-  fontBase: '"Hanken Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
-  fontCode: '"JetBrains Mono", "Fira Mono", monospace',
+  fontBase: '"Hanken Grotesk", -apple-system, BlinkMacSystemFont, sans-serif',
+  fontCode: '"JetBrains Mono", monospace',
 
-  textColor: '#1C1914',
-  textInverseColor: '#FDFAF6',
+  textColor: '#EAE7E0',
+  textInverseColor: '#1C1914',
   textMutedColor: '#6B6860',
 
-  barBg: '#FDFAF6',
-  barTextColor: '#6B6860',
-  barHoverColor: '#1C1914',
-  barSelectedColor: '#8B3A1E',
-  barBorderColor: '#D8D2C6',
+  // Toolbar (top bar)
+  barBg: '#141210',
+  barTextColor: '#9C9890',
+  barHoverColor: '#EAE7E0',
+  barSelectedColor: '#C4B5A8',
+  barBorderColor: '#2E2B23',
 
-  inputBg: '#FDFAF6',
-  inputBorder: '#D8D2C6',
-  inputTextColor: '#1C1914',
-  inputBorderRadius: 6,
+  // Inputs (controls panel)
+  inputBg: '#252219',
+  inputBorder: '#3C3830',
+  inputTextColor: '#EAE7E0',
+  inputBorderRadius: 4,
 
-  brandTitle: 'Hack-collab DS',
+  brandTitle: 'Hack-collab',
   brandUrl: '/',
   brandTarget: '_self',
 });

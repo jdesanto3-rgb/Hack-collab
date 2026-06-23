@@ -9,7 +9,7 @@
 :root{
   --bg:#F0ECE5;--surface:#FDFAF6;--surface2:#E8E3D9;--border:#D8D2C6;--border2:#C4BCAF;
   --text:#1C1914;--text2:#6B6860;--text3:#9C9890;
-  --brand:#8B3A1E;--brand-light:#F5E8E2;--brand-mid:#C67A60;--brand-dark:#5C2518;
+  --brand:#1E1C18;--brand-light:#EDEAE4;--brand-mid:#9B8E83;--brand-dark:#0E0D0B;
   --purple:#534AB7;--purple-light:#EEEDFE;--purple-mid:#AFA9EC;
   --teal:#0F6E56;--teal-light:#E1F5EE;--teal-mid:#5DCAA5;
   --amber:#854F0B;--amber-light:#FAEEDA;--amber-mid:#EF9F27;
@@ -21,7 +21,7 @@
   :root{
     --bg:#1C1914;--surface:#252119;--surface2:#2E2B23;--border:#3C3830;--border2:#4C4840;
     --text:#EAE7E0;--text2:#9C9890;--text3:#6B6860;
-    --brand:#C67A60;--brand-light:#3A1A0E;--brand-mid:#8B3A1E;--brand-dark:#E8B4A0;
+    --brand:#EAE6DF;--brand-light:#2A2720;--brand-mid:#9B8E83;--brand-dark:#F5F2EC;
     --purple:#7F77DD;--purple-light:#26215C;--purple-mid:#3C3489;
     --teal:#1D9E75;--teal-light:#04342C;--teal-mid:#0F6E56;
     --amber:#EF9F27;--amber-light:#412402;--amber-mid:#854F0B;
@@ -88,7 +88,7 @@ body{font-family:'Hanken Grotesk',-apple-system,BlinkMacSystemFont,'Segoe UI',sa
 .site-iframe{width:100%;height:100%;border:none;display:block;background:var(--surface)}
 .site-overlay{position:absolute;inset:0;z-index:5;pointer-events:none;transition:all .15s}
 .site-overlay.comment-mode{pointer-events:all;cursor:crosshair}
-.highlight-box{position:absolute;border:2px solid var(--brand);border-radius:4px;background:rgba(139,58,30,.08);pointer-events:none;transition:all .2s;z-index:6}
+.highlight-box{position:absolute;border:2px solid var(--brand);border-radius:4px;background:rgba(30,28,24,.08);pointer-events:none;transition:all .2s;z-index:6}
 .highlight-box .hl-label{position:absolute;top:-22px;left:0;font-size:10px;font-weight:600;background:var(--brand);color:#fff;padding:2px 8px;border-radius:4px;white-space:nowrap}
 
 /* SPLIT DIVIDER */
@@ -395,7 +395,7 @@ body{font-family:'Hanken Grotesk',-apple-system,BlinkMacSystemFont,'Segoe UI',sa
 // ─── DATA: NPT page sections ────────────────────────────────────────────────
 const SECTIONS = [
   {
-    id:'nav', label:'Global nav', group:'Navigation', color:'#8B3A1E',
+    id:'nav', label:'Global nav', group:'Navigation', color:'#1E1C18',
     anchor:'header', scrollY:0,
     desc:'Sticky header with mega-menu dropdowns for Services, Research, About, News, and a primary "Get Started" CTA.',
     tags:['NavBar','MegaMenu','Logo','CTAButton'],
@@ -405,7 +405,7 @@ const SECTIONS = [
     highlight:{top:0,left:0,width:'100%',height:72}
   },
   {
-    id:'hero', label:'Hero — Billboard', group:'Above the fold', color:'#8B3A1E',
+    id:'hero', label:'Hero — Billboard', group:'Above the fold', color:'#1E1C18',
     anchor:'hero', scrollY:0,
     desc:'"Strategic philanthropy, made personal." Full-bleed video background, headline, subhead, and four tab links. Returning-user welcome banner overlays.',
     tags:['Billboard','VideoBackground','HeadingBlock','TabNav','WelcomeBanner'],
@@ -415,7 +415,7 @@ const SECTIONS = [
     highlight:{top:72,left:0,width:'100%',height:480}
   },
   {
-    id:'empowering', label:'Empowering donors', group:'Above the fold', color:'#8B3A1E',
+    id:'empowering', label:'Empowering donors', group:'Above the fold', color:'#1E1C18',
     anchor:'empowering', scrollY:550,
     desc:'Split-layout section: left headline + body copy + CTA, right illustration/image. First conversion opportunity below the hero.',
     tags:['SplitSection','BodyCopy','CTAButton','MediaBlock'],
@@ -445,7 +445,7 @@ const SECTIONS = [
     highlight:{top:1052,left:0,width:'100%',height:140}
   },
   {
-    id:'services', label:'Services — tab section', group:'Services', color:'#8B3A1E',
+    id:'services', label:'Services — tab section', group:'Services', color:'#1E1C18',
     anchor:'services', scrollY:1190,
     desc:'Five-tab content switcher: Giving Vehicles, Advisory, Impact Grantmaking, Research, Custom Programs. Deep product detail behind each tab.',
     tags:['TabSwitcher','ServicePanel','BodyCopy','CTAButton'],

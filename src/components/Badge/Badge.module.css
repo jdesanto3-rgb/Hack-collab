@@ -19,9 +19,9 @@
 }
 
 .brand {
-  background: var(--brand-light);
-  color: var(--brand);
-  border: 1px solid var(--brand-mid);
+  background: var(--stone-light);
+  color: var(--stone);
+  border: 1px solid var(--stone-mid);
 }
 
 .purple {

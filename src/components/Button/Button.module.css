@@ -15,7 +15,7 @@
 }
 
 .button:focus-visible {
-  box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--brand);
+  box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--brand-mid);
 }
 
 /* --- Sizes --- */
@@ -42,8 +42,8 @@
 }
 
 .primary:hover:not(:disabled) {
-  background: var(--brand-dark);
-  border-color: var(--brand-dark);
+  background: #2E2B24;
+  border-color: #2E2B24;
 }
 
 .secondary {
