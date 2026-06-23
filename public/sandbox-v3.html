@@ -210,8 +210,13 @@ const state = {
   events: [],
   detail: null,
   identityIdx: 0,
-  editModes: {},       // cardId → boolean
-  dirPanels: {},       // agentKey → boolean (open/closed)
+  editModes: {},
+  dirPanels: {},
+  pipelineOpen: true,
+  feedOpen: true,
+  feedTab: 'activity',   // 'activity' | 'chat'
+  chatMessages: [],
+  chatTyping: false,
 };
 
 const BASE_CANVAS = {
@@ -246,11 +251,48 @@ function advance() {
   const newEvents = (PHASE_EVENTS[next] || []).map(e => ({ ...e }));
   setState({ phase: next, events: [...newEvents, ...state.events] });
 }
-function resetFlow() { setState({ phase: 0, selectedDir: null, events: [], editModes: {}, dirPanels: {} }); }
+function resetFlow() { setState({ phase: 0, selectedDir: null, events: [], editModes: {}, dirPanels: {}, chatMessages: [], chatTyping: false }); }
 function selectDir(id) { if (state.phase === 3) setState({ selectedDir: id }); }
 function cycleIdentity() { setState({ identityIdx: (state.identityIdx + 1) % IDENTITY_NAMES.length }); }
 function openDetail(cardId) { setState({ detail: cardId }); }
 function closeDetail() { setState({ detail: null }); }
+
+// ─── PANEL TOGGLE ─────────────────────────────────────────────────────────────
+
+function togglePipeline() { setState({ pipelineOpen: !state.pipelineOpen }); }
+function toggleFeed()     { setState({ feedOpen: !state.feedOpen }); }
+function switchFeedTab(tab) { setState({ feedTab: tab }); }
+
+// ─── AI CHAT ─────────────────────────────────────────────────────────────────
+
+const CHAT_REPLIES = [
+  "The research brief is clear: the abandon rate clusters at priority tagging. Whatever direction you choose, that field needs auto-suggest or a smart default — not a blank dropdown.",
+  "Devon Park's persona signals speed over comprehensiveness. Any field that's not essential for triage should be optional, with smart defaults pulled from issue tracker context.",
+  "Looking at the references — Linear's intake pattern is your strongest benchmark. Short, contextual, no mandatory fields on first submission.",
+  "The Axiom amber token is semantically aligned with 'suggested but skippable' — a strong fit for the priority auto-suggest highlight shown in the hi-fi.",
+  "Three directions are in play. My read: Direction B (guided steps) has the highest chance of solving Devon's time-pressure problem without overwhelming non-technical clients.",
+  "The Severity vs Priority label conflict flagged in the persona review is worth resolving next — Devon will read them as the same field and one will feel redundant.",
+];
+
+function getChatReply(text) {
+  const idx = (text.length * 3 + state.phase * 7 + state.chatMessages.length) % CHAT_REPLIES.length;
+  return CHAT_REPLIES[idx];
+}
+
+function sendChat() {
+  const input = document.getElementById('chat-input');
+  if (!input) return;
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  const msgs = [...state.chatMessages, { role: 'user', text }];
+  setState({ chatMessages: msgs, chatTyping: true });
+  setTimeout(() => { const el = document.getElementById('chat-messages'); if (el) el.scrollTop = el.scrollHeight; }, 30);
+  setTimeout(() => {
+    setState({ chatMessages: [...state.chatMessages, { role: 'ai', text: getChatReply(text) }], chatTyping: false });
+    setTimeout(() => { const el = document.getElementById('chat-messages'); if (el) el.scrollTop = el.scrollHeight; }, 30);
+  }, 1400);
+}
 
 // ─── DIRECTOR PANEL ───────────────────────────────────────────────────────────
 
@@ -550,10 +592,14 @@ function renderPipelineRail() {
   if (ph >= 7) doneAgents.add('ecd');
 
   let html = `
-    <div style="margin-bottom:20px">
-      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:${TOKENS.text3};letter-spacing:1px;margin-bottom:6px">SEQUENTIAL PIPELINE</div>
-      <div style="font-size:15px;font-weight:700;margin-bottom:3px">Design workflow spine</div>
-      <div style="font-size:11.5px;color:${TOKENS.text3}">Click <strong>Direct</strong> on any agent to send instructions.</div>
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;gap:8px">
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:${TOKENS.text3};letter-spacing:1px;margin-bottom:6px">SEQUENTIAL PIPELINE</div>
+        <div style="font-size:15px;font-weight:700;margin-bottom:3px">Design workflow spine</div>
+        <div style="font-size:11.5px;color:${TOKENS.text3}">Click <strong>Direct</strong> to send instructions.</div>
+      </div>
+      <button onclick="togglePipeline()" title="Close panel"
+        style="width:26px;height:26px;flex:none;border-radius:7px;background:transparent;border:1px solid ${TOKENS.border};color:${TOKENS.text3};font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1">‹</button>
     </div>
   `;
 
@@ -1008,16 +1054,20 @@ function tagChip(tag) {
 
 function renderFeed() {
   const feed = document.querySelector('.feed-rail');
+  if (!feed) return;
+  const isActivity = state.feedTab === 'activity';
   const events = state.events;
-  let eventsHtml = '';
+
+  // ── Activity content ──
+  let activityContent = '';
   if (events.length === 0) {
-    eventsHtml = `<div style="flex:1;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px"><div style="font-size:13px;color:${TOKENS.text3};line-height:1.55">Start the flow — or direct an agent — to see activity here.</div></div>`;
+    activityContent = `<div style="flex:1;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px"><div style="font-size:13px;color:${TOKENS.text3};line-height:1.55">Start the flow — or direct an agent — to see activity here.</div></div>`;
   } else {
-    eventsHtml = `<div style="flex:1;overflow-y:auto">${events.map(ev => {
+    activityContent = `<div style="flex:1;overflow-y:auto">${events.map(ev => {
       const agent = AGENT_MAP[ev.a];
       const isDirected = ev.tag === 'directed';
       return `
-        <div class="event-card" style="${isDirected?`border-color:${agent.color};border-left:3px solid ${agent.color};`:''}">
+        <div class="event-card" style="${isDirected ? `border-color:${agent.color};border-left:3px solid ${agent.color};` : ''}">
           <div style="display:flex;align-items:center;margin-bottom:6px">
             <div style="width:20px;height:20px;border-radius:5px;background:${agent.color};display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:#fff;flex:none">${agent.short}</div>
             <span style="font-size:12px;font-weight:700;margin-left:7px">${isDirected ? 'You → ' : ''}${agent.name}</span>
@@ -1025,18 +1075,78 @@ function renderFeed() {
           </div>
           <div style="font-size:12.5px;color:${TOKENS.text2};line-height:1.45">${ev.t}</div>
           ${tagChip(ev.tag)}
-        </div>
-      `;
+        </div>`;
     }).join('')}</div>`;
   }
 
+  // ── Chat content ──
+  const msgs = state.chatMessages;
+  const chatMessages = msgs.length === 0
+    ? `<div style="padding:12px 14px;background:${TOKENS.surfaceWarm};border:1px solid ${TOKENS.border};border-radius:10px;animation:ch-rise .3s ease">
+        <div style="font-size:11px;font-weight:700;color:${TOKENS.text3};font-family:'JetBrains Mono',monospace;letter-spacing:.5px;margin-bottom:6px">CHORUS AI</div>
+        <div style="font-size:13px;color:${TOKENS.text2};line-height:1.55">Ask me anything about the Axiom project — the brief, persona, design direction, or current phase. I have full context.</div>
+      </div>`
+    : msgs.map(m => {
+        const isUser = m.role === 'user';
+        return `<div style="display:flex;flex-direction:column;align-items:${isUser ? 'flex-end' : 'flex-start'};margin-bottom:10px">
+          ${!isUser ? `<div style="font-size:9.5px;font-weight:700;color:${TOKENS.text3};font-family:'JetBrains Mono',monospace;letter-spacing:.5px;margin-bottom:4px">CHORUS AI</div>` : ''}
+          <div style="background:${isUser ? TOKENS.brand : TOKENS.surfaceWarm};color:${isUser ? TOKENS.bgCanvas : TOKENS.text};border:1px solid ${isUser ? 'transparent' : TOKENS.border};border-radius:${isUser ? '10px 10px 3px 10px' : '3px 10px 10px 10px'};padding:9px 12px;max-width:92%;font-size:12.5px;line-height:1.55">
+            ${m.text}
+          </div>
+        </div>`;
+      }).join('');
+
+  const typingBubble = state.chatTyping ? `
+    <div style="display:flex;flex-direction:column;align-items:flex-start;margin-bottom:10px">
+      <div style="font-size:9.5px;font-weight:700;color:${TOKENS.text3};font-family:'JetBrains Mono',monospace;letter-spacing:.5px;margin-bottom:4px">CHORUS AI</div>
+      <div style="background:${TOKENS.surfaceWarm};border:1px solid ${TOKENS.border};border-radius:3px 10px 10px 10px;padding:10px 14px;display:flex;gap:4px;align-items:center">
+        <span style="width:5px;height:5px;border-radius:50%;background:${TOKENS.text3};display:inline-block;animation:ch-pulse 1s infinite"></span>
+        <span style="width:5px;height:5px;border-radius:50%;background:${TOKENS.text3};display:inline-block;animation:ch-pulse 1s .2s infinite"></span>
+        <span style="width:5px;height:5px;border-radius:50%;background:${TOKENS.text3};display:inline-block;animation:ch-pulse 1s .4s infinite"></span>
+      </div>
+    </div>` : '';
+
+  // ── Tab bar ──
+  const tabBar = `
+    <div style="display:flex;align-items:center;border-bottom:1px solid ${TOKENS.border};margin:0 -16px 14px;padding:0 16px 0;flex:none">
+      <button onclick="switchFeedTab('activity')"
+        style="padding:9px 12px 8px;font-size:12px;font-weight:600;border:none;background:transparent;cursor:pointer;font-family:'Hanken Grotesk',sans-serif;color:${isActivity ? TOKENS.text : TOKENS.text3};border-bottom:2px solid ${isActivity ? TOKENS.brand : 'transparent'};margin-bottom:-1px;transition:all .15s">Activity</button>
+      <button onclick="switchFeedTab('chat')"
+        style="padding:9px 12px 8px;font-size:12px;font-weight:600;border:none;background:transparent;cursor:pointer;font-family:'Hanken Grotesk',sans-serif;color:${!isActivity ? TOKENS.text : TOKENS.text3};border-bottom:2px solid ${!isActivity ? TOKENS.brand : 'transparent'};margin-bottom:-1px;transition:all .15s">AI Chat</button>
+      <button onclick="toggleFeed()" title="Close panel"
+        style="margin-left:auto;width:24px;height:24px;border-radius:6px;background:transparent;border:1px solid ${TOKENS.border};color:${TOKENS.text3};font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;margin-bottom:1px">›</button>
+    </div>`;
+
   feed.innerHTML = `
-    <div style="margin-bottom:16px;flex:none">
-      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:${TOKENS.text3};letter-spacing:1px;margin-bottom:6px">ACTIVITY FEED</div>
-      <div style="font-size:14px;font-weight:700">Every agent action, visible</div>
-      <div style="font-size:11.5px;color:${TOKENS.text3};margin-top:3px">Directions you send appear here too.</div>
+    <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:${TOKENS.text3};letter-spacing:1px;margin-bottom:10px;flex:none">DESIGN TEAM</div>
+    ${tabBar}
+
+    <!-- Activity tab -->
+    <div style="display:${isActivity ? 'flex' : 'none'};flex-direction:column;flex:1;min-height:0">
+      <div style="font-size:14px;font-weight:700;margin-bottom:3px;flex:none">Every agent action, visible</div>
+      <div style="font-size:11.5px;color:${TOKENS.text3};margin-bottom:12px;flex:none">Directions you send appear here too.</div>
+      ${activityContent}
     </div>
-    ${eventsHtml}
+
+    <!-- Chat tab -->
+    <div style="display:${!isActivity ? 'flex' : 'none'};flex-direction:column;flex:1;min-height:0">
+      <div style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:0;min-height:0;padding-bottom:4px" id="chat-messages">
+        ${chatMessages}
+        ${typingBubble}
+      </div>
+      <div style="flex:none;padding-top:10px;border-top:1px solid ${TOKENS.border};margin-top:8px">
+        <div style="display:flex;gap:7px;align-items:flex-end">
+          <textarea id="chat-input"
+            placeholder="Ask about the brief, persona, or direction…"
+            style="flex:1;padding:8px 10px;border-radius:8px;border:1px solid ${TOKENS.border};background:${TOKENS.surface};color:${TOKENS.text};font-family:'Hanken Grotesk',sans-serif;font-size:12.5px;line-height:1.45;resize:none;height:58px;outline:none"
+            onkeydown="if((event.metaKey||event.ctrlKey)&&event.key==='Enter'){sendChat()}"
+          ></textarea>
+          <button onclick="sendChat()"
+            style="padding:8px 13px;border-radius:8px;border:none;background:${TOKENS.brand};color:${TOKENS.bgCanvas};font-size:13px;font-weight:600;cursor:pointer;font-family:'Hanken Grotesk',sans-serif;white-space:nowrap;align-self:flex-end">↑ Ask</button>
+        </div>
+        <div style="font-size:10px;color:${TOKENS.text3};margin-top:5px">⌘ + Enter to send</div>
+      </div>
+    </div>
   `;
 }
 
@@ -1044,14 +1154,29 @@ function renderFeed() {
 
 function renderWorkspace() {
   const ws = document.getElementById('workspace-view');
-  ws.innerHTML = `
-    <aside class="pipeline-rail"></aside>
-    <main class="stage"></main>
-    <aside class="feed-rail"></aside>
-  `;
-  renderPipelineRail();
+
+  const pipelineHtml = state.pipelineOpen
+    ? '<aside class="pipeline-rail"></aside>'
+    : `<div onclick="togglePipeline()" title="Open pipeline"
+         style="width:30px;flex:none;background:${TOKENS.surface2};border-right:1px solid ${TOKENS.border};display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .15s"
+         onmouseover="this.style.background='${TOKENS.border}'"
+         onmouseout="this.style.background='${TOKENS.surface2}'">
+         <span style="writing-mode:vertical-rl;font-size:10px;font-weight:600;color:${TOKENS.text3};letter-spacing:.5px;text-transform:uppercase;transform:rotate(180deg);padding:10px 0">▷ Pipeline</span>
+       </div>`;
+
+  const feedHtml = state.feedOpen
+    ? '<aside class="feed-rail"></aside>'
+    : `<div onclick="toggleFeed()" title="Open feed"
+         style="width:30px;flex:none;background:${TOKENS.surface2};border-left:1px solid ${TOKENS.border};display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .15s"
+         onmouseover="this.style.background='${TOKENS.border}'"
+         onmouseout="this.style.background='${TOKENS.surface2}'">
+         <span style="writing-mode:vertical-rl;font-size:10px;font-weight:600;color:${TOKENS.text3};letter-spacing:.5px;text-transform:uppercase;padding:10px 0">Feed ◁</span>
+       </div>`;
+
+  ws.innerHTML = `${pipelineHtml}<main class="stage"></main>${feedHtml}`;
+  if (state.pipelineOpen) renderPipelineRail();
   renderStage();
-  renderFeed();
+  if (state.feedOpen) renderFeed();
 }
 
 // ─── DETAIL DRAWER ────────────────────────────────────────────────────────────
