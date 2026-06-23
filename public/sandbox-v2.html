@@ -10,14 +10,14 @@
 <link rel="stylesheet" href="/tokens.css">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;overflow:hidden;font-family:'Hanken Grotesk',sans-serif;font-size:14px;color:#18171a;background:var(--bg-canvas)}
+html,body{height:100%;overflow:hidden;font-family:'Hanken Grotesk',sans-serif;font-size:14px;color:var(--text);background:var(--bg-canvas)}
 button{font-family:'Hanken Grotesk',sans-serif;border:none;cursor:pointer}
 @keyframes ch-rise{from{transform:translateY(9px);opacity:0}to{transform:none;opacity:1}}
 @keyframes ch-pop{0%{transform:translateY(12px) scale(.975);opacity:0}60%{transform:translateY(-2px) scale(1.008)}100%{transform:none;opacity:1}}
 @keyframes ch-pulse{0%,100%{opacity:.35;transform:scale(1)}50%{opacity:1;transform:scale(1.25)}}
 @keyframes ch-flow{from{background-position:0 0}to{background-position:24px 0}}
 ::-webkit-scrollbar{width:9px;height:9px}
-::-webkit-scrollbar-thumb{background:#cfcabd;border-radius:9px;border:2px solid transparent;background-clip:padding-box}
+::-webkit-scrollbar-thumb{background:var(--border2,#cfcabd);border-radius:9px;border:2px solid transparent;background-clip:padding-box}
 ::-webkit-scrollbar-track{background:transparent}
 #app{height:100vh;display:flex;flex-direction:column;overflow:hidden}
 header{height:58px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 18px;gap:13px;flex:none;z-index:10}
@@ -28,16 +28,16 @@ header{height:58px;background:var(--surface);border-bottom:1px solid var(--borde
 .stage{flex:1;padding:30px 40px;overflow-y:auto;display:flex;flex-direction:column}
 .feed-rail{width:298px;flex:none;background:var(--surface2);border-left:1px solid var(--border);padding:20px 16px;display:flex;flex-direction:column;overflow-y:auto}
 .canvas-board{flex:1;overflow-x:auto;overflow-y:hidden;padding:16px 20px 20px;display:flex;gap:14px;align-items:flex-start}
-.canvas-col{flex:1;min-width:284px;background:#F7F5F0;border-radius:13px;border:1px solid #E4E0D7;display:flex;flex-direction:column;max-height:calc(100vh - 158px)}
+.canvas-col{flex:1;min-width:284px;background:var(--surface2);border-radius:13px;border:1px solid var(--border);display:flex;flex-direction:column;max-height:calc(100vh - 158px)}
 .canvas-col-header{padding:14px 16px 12px;display:flex;align-items:center;gap:8px;flex:none}
 .canvas-col-body{padding:10px 12px 12px;overflow-y:auto;display:flex;flex-direction:column;gap:10px}
-.canvas-card{background:#ffffff;border:1px solid #E8E3D8;border-radius:11px;padding:12px;cursor:pointer;box-shadow:0 1px 3px rgba(20,18,12,.06);animation:ch-rise .4s ease;transition:box-shadow .15s,transform .15s}
-.canvas-card:hover{box-shadow:0 3px 12px rgba(20,18,12,.10);transform:translateY(-1px)}
+.canvas-card{background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:12px;cursor:pointer;box-shadow:var(--shadow-sm);animation:ch-rise .4s ease;transition:box-shadow .15s,transform .15s}
+.canvas-card:hover{box-shadow:var(--shadow-md);transform:translateY(-1px)}
 .dir-card{background:var(--surface-warm);border:2px solid var(--border);border-radius:13px;padding:15px;cursor:pointer;transition:border-color .2s,opacity .2s;flex:1;min-width:210px}
 .dir-card:hover{box-shadow:0 3px 12px rgba(20,18,12,.09)}
 .event-card{background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:12px;animation:ch-rise .35s ease;margin-bottom:9px}
 .tag-chip{display:inline-flex;align-items:center;border-radius:5px;padding:3px 7px;font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:600;margin-top:7px}
-.prov-step{display:flex;align-items:flex-start;gap:9px;padding:8px 0;border-bottom:1px solid #f0ece4}
+.prov-step{display:flex;align-items:flex-start;gap:9px;padding:8px 0;border-bottom:1px solid var(--border)}
 .prov-step:last-child{border-bottom:none}
 </style>
 </head>
@@ -81,6 +81,15 @@ const TOKENS = (() => {
     radiusSm:     get('--radius-sm')     || '4px',
     radius:       get('--radius')        || '6px',
     radiusLg:     get('--radius-lg')     || '8px',
+    brand:        get('--brand')         || '#1E1C18',
+    brandLight:   get('--brand-light')   || '#EDEAE4',
+    brandMid:     get('--brand-mid')     || '#9B8E83',
+    stone:        get('--stone')         || '#7A6A5C',
+    stoneLight:   get('--stone-light')   || '#F2EDE7',
+    stoneMid:     get('--stone-mid')     || '#C4B5A8',
+    fontSans:     get('--font-sans')     || "'Hanken Grotesk', sans-serif",
+    fontSerif:    get('--font-serif')    || "'Instrument Serif', serif",
+    fontMono:     get('--font-mono')     || "'JetBrains Mono', monospace",
   };
 })();
 
@@ -213,7 +222,7 @@ function closeDetail() { setState({ detail: null }); }
 
 function wireThumbnail(h) {
   h = h || 96;
-  return `<div style="height:${h}px;border-radius:7px;background:#fbfaf6;border:1px solid #d8d3c8;padding:8px;display:flex;flex-direction:column;gap:5px;overflow:hidden">
+  return `<div style="height:${h}px;border-radius:7px;background:${TOKENS.surfaceWarm};border:1px solid #d8d3c8;padding:8px;display:flex;flex-direction:column;gap:5px;overflow:hidden">
     <div style="display:flex;gap:5px;align-items:center">
       <div style="width:11px;height:11px;border:1.5px solid #bdb6a7;border-radius:3px;flex:none"></div>
       <div style="height:6px;width:34%;background:#cbc5b7;border-radius:2px"></div>
@@ -229,7 +238,7 @@ function wireThumbnail(h) {
 
 function hifiThumbnail(tone, h) {
   h = h || 96;
-  return `<div style="height:${h}px;border-radius:7px;background:#fff;border:1px solid #e9e5db;overflow:hidden;display:flex;flex-direction:column">
+  return `<div style="height:${h}px;border-radius:7px;background:${TOKENS.surface};border:1px solid #e9e5db;overflow:hidden;display:flex;flex-direction:column">
     <div style="height:30px;background:${tone};display:flex;align-items:center;padding:0 9px;gap:5px;flex:none">
       <div style="width:30%;height:6px;background:rgba(255,255,255,.85);border-radius:3px"></div>
       <div style="width:14px;height:9px;background:rgba(255,255,255,.5);border-radius:3px;margin-left:auto"></div>
@@ -244,7 +253,7 @@ function hifiThumbnail(tone, h) {
 
 function briefThumbnail(h) {
   h = h || 96;
-  return `<div style="height:${h}px;border-radius:7px;background:#fff;border:1px solid #e9e5db;padding:10px;display:flex;flex-direction:column;gap:5px;overflow:hidden">
+  return `<div style="height:${h}px;border-radius:7px;background:${TOKENS.surface};border:1px solid #e9e5db;padding:10px;display:flex;flex-direction:column;gap:5px;overflow:hidden">
     <div style="height:7px;width:50%;background:#cfcabd;border-radius:3px"></div>
     <div style="height:4px;width:92%;background:#e7e3d8;border-radius:3px;margin-top:3px"></div>
     <div style="height:4px;width:84%;background:#e7e3d8;border-radius:3px"></div>
@@ -280,8 +289,8 @@ function renderHeader() {
     <div style="width:1px;height:24px;background:${TOKENS.border};flex:none"></div>
     <div style="font-size:13px;color:${TOKENS.text2}">Project / <span style="color:${TOKENS.text};font-weight:600">Helios — Onboarding Redesign</span></div>
     <div style="margin:0 auto;display:flex;background:${TOKENS.surface2};border:1px solid ${TOKENS.border};border-radius:10px;padding:3px;gap:2px">
-      <button id="btn-canvas" onclick="setView('canvas')" style="background:${isCanvas?TOKENS.text:'transparent'};color:${isCanvas?'#fff':'#76747e'};border-radius:8px;border:none;padding:7px 15px;font-weight:600;font-size:13px;font-family:'Hanken Grotesk',sans-serif;cursor:pointer;transition:all .15s">Shared Canvas</button>
-      <button id="btn-workspace" onclick="setView('workspace')" style="background:${isWork?TOKENS.text:'transparent'};color:${isWork?'#fff':'#76747e'};border-radius:8px;border:none;padding:7px 15px;font-weight:600;font-size:13px;font-family:'Hanken Grotesk',sans-serif;cursor:pointer;transition:all .15s">Design Team</button>
+      <button id="btn-canvas" onclick="setView('canvas')" style="background:${isCanvas?TOKENS.brand:'transparent'};color:${isCanvas?'#fff':'#76747e'};border-radius:8px;border:none;padding:7px 15px;font-weight:600;font-size:13px;font-family:'Hanken Grotesk',sans-serif;cursor:pointer;transition:all .15s">Shared Canvas</button>
+      <button id="btn-workspace" onclick="setView('workspace')" style="background:${isWork?TOKENS.brand:'transparent'};color:${isWork?'#fff':'#76747e'};border-radius:8px;border:none;padding:7px 15px;font-weight:600;font-size:13px;font-family:'Hanken Grotesk',sans-serif;cursor:pointer;transition:all .15s">Design Team</button>
     </div>
     <div style="display:flex;align-items:center;margin-left:auto">
       <div style="display:flex">
@@ -312,14 +321,14 @@ function renderCanvas() {
   ];
 
   el.innerHTML = `
-    <div style="padding:20px 28px 16px;display:flex;align-items:center;flex:none;border-bottom:1px solid #E4E0D7;background:rgba(255,255,255,.5)">
+    <div style="padding:20px 28px 16px;display:flex;align-items:center;flex:none;border-bottom:1px solid ${TOKENS.border};background:rgba(255,255,255,.5)">
       <div>
-        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.2px;color:#a3a09a;margin-bottom:5px">SHARED PROJECT CANVAS</div>
-        <div style="font-family:'Instrument Serif',serif;font-size:28px;line-height:1.1;color:#18171a">All work in motion, in one governed view</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.2px;color:${TOKENS.text3};margin-bottom:5px">SHARED PROJECT CANVAS</div>
+        <div style="font-family:'Instrument Serif',serif;font-size:28px;line-height:1.1;color:${TOKENS.text}">All work in motion, in one governed view</div>
       </div>
       <div style="margin-left:auto;display:flex;align-items:center;gap:7px">
         <span style="width:6px;height:6px;border-radius:50%;background:#2f5bea;flex:none"></span>
-        <span style="font-size:12.5px;color:#6c6a72">Promotions require a gate</span>
+        <span style="font-size:12.5px;color:${TOKENS.text2}">Promotions require a gate</span>
       </div>
     </div>
     <div style="flex:1;overflow:hidden">
@@ -329,10 +338,10 @@ function renderCanvas() {
             <div style="height:3px;background:${col.color};border-radius:13px 13px 0 0;flex:none"></div>
             <div class="canvas-col-header">
               <span style="width:8px;height:8px;border-radius:50%;background:${col.color};flex:none"></span>
-              <span style="font-size:14px;font-weight:600;flex:1;color:#18171a">${col.label}</span>
-              <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#a3a09a">${col.cards.length}</span>
+              <span style="font-size:14px;font-weight:600;flex:1;color:${TOKENS.text}">${col.label}</span>
+              <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:${TOKENS.text3}">${col.cards.length}</span>
             </div>
-            <div style="height:1px;background:#E8E3D9;margin:0 14px;flex:none"></div>
+            <div style="height:1px;background:${TOKENS.border};margin:0 14px;flex:none"></div>
             <div class="canvas-col-body">
               ${col.cards.length === 0
                 ? '<div style="padding:20px;text-align:center;font-size:12px;color:#b8b4aa;font-style:italic">No artifacts yet</div>'
@@ -359,8 +368,8 @@ function renderCanvasCard(card) {
         <span style="font-size:11px;color:#b8b4aa;margin-left:auto">${card.time}</span>
       </div>
       ${getThumbnail(card, 104)}
-      <div style="font-size:13px;font-weight:600;line-height:1.35;margin-top:9px;margin-bottom:6px;color:#18171a">${card.title}</div>
-      <div style="height:1px;background:#EDE9E2;margin-bottom:8px"></div>
+      <div style="font-size:13px;font-weight:600;line-height:1.35;margin-top:9px;margin-bottom:6px;color:${TOKENS.text}">${card.title}</div>
+      <div style="height:1px;background:${TOKENS.border};margin-bottom:8px"></div>
       <div style="display:flex;align-items:center;gap:6px">
         <div style="width:18px;height:18px;border-radius:5px;background:${card.agentColor};display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;font-family:'JetBrains Mono',monospace;flex:none">${card.agentShort}</div>
         <span style="font-size:11.5px;color:#86838b">${card.agent}</span>
@@ -427,7 +436,7 @@ function renderPipelineRail() {
 
   html += `
     <div style="margin-top:auto;padding-top:20px">
-      <button onclick="resetFlow()" style="width:100%;border:1px solid #ddd8cc;background:#fff;color:#76747e;border-radius:9px;padding:9px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Hanken Grotesk',sans-serif">↺ Reset flow</button>
+      <button onclick="resetFlow()" style="width:100%;border:1px solid ${TOKENS.border};background:${TOKENS.surface};color:${TOKENS.text2};border-radius:9px;padding:9px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Hanken Grotesk',sans-serif">↺ Reset flow</button>
     </div>
   `;
 
@@ -451,7 +460,7 @@ function stageContent(ph) {
     return `
       <div style="max-width:560px;background:${TOKENS.surfaceWarm};border:1px solid ${TOKENS.border};border-radius:14px;padding:22px;box-shadow:${TOKENS.shadowSm}">
         <div style="display:flex;align-items:center;gap:9px;margin-bottom:14px">
-          <span style="width:22px;height:22px;border-radius:6px;background:${TOKENS.text};color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;font-family:'JetBrains Mono',monospace">BR</span>
+          <span style="width:22px;height:22px;border-radius:6px;background:${TOKENS.brand};color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;font-family:'JetBrains Mono',monospace">BR</span>
           <span style="font-size:12px;font-weight:700;letter-spacing:.3px">DESIGN CHALLENGE</span>
         </div>
         <div style="font-size:16px;font-weight:600;line-height:1.4;margin-bottom:8px">Redesign the Helios onboarding so new users reach their first "aha" moment in under two minutes.</div>
@@ -500,7 +509,7 @@ function stageContent(ph) {
               <div style="font-size:11.5px;color:#86838b">Persona · primary</div>
             </div>
           </div>
-          <div style="font-size:13px;line-height:1.5;color:#54525a">Small-business owner. Time-poor, not technical. Will abandon anything that feels like work before it feels like value.</div>
+          <div style="font-size:13px;line-height:1.5;color:${TOKENS.text2}">Small-business owner. Time-poor, not technical. Will abandon anything that feels like work before it feels like value.</div>
         </div>
       </div>
     `;
@@ -531,7 +540,7 @@ function stageContent(ph) {
               <div style="height:10px;width:28px;background:#bdb6a7;border-radius:3px"></div>
             </div>
           </div>
-          <div style="font-size:13px;color:#54525a;line-height:1.45;margin-bottom:8px">${dir.desc}</div>
+          <div style="font-size:13px;color:${TOKENS.text2};line-height:1.45;margin-bottom:8px">${dir.desc}</div>
           ${isSelected ? `<div style="font-size:12px;font-weight:700;color:${dir.tone}">✓ Selected by you</div>` : ''}
         </div>
       `;
@@ -563,7 +572,7 @@ function stageContent(ph) {
   const selTone = selDir.tone;
 
   const hifiMockup = `
-    <div style="flex:none;width:268px;background:#fff;border:1px solid ${TOKENS.border};border-radius:16px;overflow:hidden;box-shadow:${TOKENS.shadowLg};animation:ch-pop .5s ease backwards">
+    <div style="flex:none;width:268px;background:${TOKENS.surface};border:1px solid ${TOKENS.border};border-radius:16px;overflow:hidden;box-shadow:${TOKENS.shadowLg};animation:ch-pop .5s ease backwards">
       <div style="height:48px;background:${selTone};display:flex;align-items:center;padding:0 16px;gap:8px;flex:none">
         <div style="width:18px;height:18px;border-radius:5px;background:rgba(255,255,255,.9);flex:none"></div>
         <div style="width:38%;height:8px;background:rgba(255,255,255,.85);border-radius:3px"></div>
@@ -589,7 +598,7 @@ function stageContent(ph) {
     sidePanel = `
       <div style="flex:1;min-width:230px;background:${TOKENS.surfaceWarm};border:1px solid ${TOKENS.border};border-radius:14px;padding:22px;animation:ch-pop .5s ease .08s backwards">
         <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:#d4456b;font-weight:600;margin-bottom:14px">DESIGN SYSTEM APPLIED</div>
-        <div style="font-size:14px;line-height:1.5;color:#43414a;margin-bottom:16px">The Visual Design Agent translated the wireframe into a high-fidelity concept using Helios Design System tokens, components, and spacing rules.</div>
+        <div style="font-size:14px;line-height:1.5;color:${TOKENS.text2};margin-bottom:16px">The Visual Design Agent translated the wireframe into a high-fidelity concept using Helios Design System tokens, components, and spacing rules.</div>
         <div style="display:flex;flex-direction:column;gap:8px">
           <div style="display:flex;align-items:center;gap:8px;background:#f4f2ea;border-radius:8px;padding:9px 11px">
             <span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:${TOKENS.text2}">color.primary</span>
@@ -667,8 +676,8 @@ function renderStage() {
   const isGate = ph === 3 && !state.selectedDir;
   const btnDisabled = isGate || ph >= 7;
   const btnStyle = btnDisabled
-    ? 'background:#dcd8cd;color:#a3a09a;cursor:not-allowed;border-radius:10px;padding:11px 20px;font-size:14px;font-weight:700;display:flex;align-items:center;gap:9px;border:none;font-family:\'Hanken Grotesk\',sans-serif'
-    : `background:${TOKENS.text};color:#fff;border-radius:10px;padding:11px 20px;font-size:14px;font-weight:700;display:flex;align-items:center;gap:9px;border:none;cursor:pointer;font-family:'Hanken Grotesk',sans-serif;transition:opacity .15s`;
+    ? `background:#dcd8cd;color:${TOKENS.text3};cursor:not-allowed;border-radius:10px;padding:11px 20px;font-size:14px;font-weight:700;display:flex;align-items:center;gap:9px;border:none;font-family:'Hanken Grotesk',sans-serif`
+    : `background:${TOKENS.brand};color:#fff;border-radius:10px;padding:11px 20px;font-size:14px;font-weight:700;display:flex;align-items:center;gap:9px;border:none;cursor:pointer;font-family:'Hanken Grotesk',sans-serif;transition:opacity .15s`;
 
   stage.innerHTML = `
     ${stageEyebrow(ph)}
@@ -710,7 +719,7 @@ function renderFeed() {
             <span style="font-size:12px;font-weight:700;margin-left:7px">${agent.name}</span>
             <span style="font-size:11px;color:#b8b4aa;margin-left:auto">just now</span>
           </div>
-          <div style="font-size:12.5px;color:#43414a;line-height:1.45">${ev.t}</div>
+          <div style="font-size:12.5px;color:${TOKENS.text2};line-height:1.45">${ev.t}</div>
           ${tagChip(ev.tag)}
         </div>
       `;
@@ -789,7 +798,7 @@ function renderDrawer() {
     : 'Exploring';
 
   const personaMini = isHifi ? `
-    <div style="border-top:1px solid #ece7db;padding-top:14px;margin-top:14px">
+    <div style="border-top:1px solid ${TOKENS.border};padding-top:14px;margin-top:14px">
       <div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.8px;color:${TOKENS.text3};font-weight:600;margin-bottom:10px">PERSONA REVIEW</div>
       <div style="display:flex;flex-direction:column;gap:8px">
         <div style="display:flex;align-items:flex-start;gap:7px;font-size:12.5px">
@@ -809,7 +818,7 @@ function renderDrawer() {
   ` : '';
 
   const ecdMini = isApproved ? `
-    <div style="border-top:1px solid #ece7db;padding-top:14px;margin-top:14px;background:${TOKENS.blueLight};border-radius:10px;padding:12px;border:1px solid #cfdcfb">
+    <div style="background:${TOKENS.blueLight};border-radius:10px;padding:12px;margin-top:14px;border:1px solid #cfdcfb">
       <div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.8px;color:${TOKENS.blue};font-weight:600;margin-bottom:8px">ECD GATE PASSED</div>
       <div style="font-size:12.5px;line-height:1.45;color:#1e3a8a">Concept meets the brief. Design system applied consistently. Promoted to shared canvas.</div>
     </div>
@@ -818,7 +827,7 @@ function renderDrawer() {
   root.innerHTML = `
     <div style="position:absolute;inset:0;z-index:50;display:flex;justify-content:flex-end">
       <div style="position:absolute;inset:0;background:rgba(24,23,26,.32);animation:ch-rise .2s ease" onclick="closeDetail()"></div>
-      <div style="width:420px;max-width:90vw;height:100%;background:${TOKENS.surface2};border-left:1px solid ${TOKENS.border};box-shadow:-12px 0 40px rgba(20,18,12,.14);animation:ch-rise .25s ease;overflow-y:auto;position:relative;z-index:1;display:flex;flex-direction:column">
+      <div style="width:420px;max-width:90vw;height:100%;background:${TOKENS.surface};border-left:1px solid ${TOKENS.border};box-shadow:-12px 0 40px rgba(20,18,12,.14);animation:ch-rise .25s ease;overflow-y:auto;position:relative;z-index:1;display:flex;flex-direction:column">
         <div style="padding:20px 20px 16px;border-bottom:1px solid ${TOKENS.border};flex:none">
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
             <span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:${kindColor};letter-spacing:.5px">${card.kindLabel}</span>
@@ -838,7 +847,7 @@ function renderDrawer() {
           ${isHifi ? `<div style="margin-bottom:18px">${hifiThumbnail(tone, 130)}</div>` : ''}
           ${card.kind === 'wire' ? `<div style="margin-bottom:18px">${wireThumbnail(100)}</div>` : ''}
           ${card.kind === 'brief' ? `<div style="margin-bottom:18px">${briefThumbnail(100)}</div>` : ''}
-          <div style="border-top:1px solid #ece7db;padding-top:14px">
+          <div style="border-top:1px solid ${TOKENS.border};padding-top:14px">
             <div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.8px;color:${TOKENS.text3};font-weight:600;margin-bottom:4px">PROVENANCE · how this got here</div>
             ${prov.map(provStep).join('')}
           </div>
