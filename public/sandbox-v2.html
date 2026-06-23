@@ -52,46 +52,63 @@ header{height:58px;background:var(--surface);border-bottom:1px solid var(--borde
 <div id="drawer-root"></div>
 
 <script>
-// Read design system tokens once at boot
-const TOKENS = (() => {
+// Read design system tokens — called at boot and after each theme toggle
+function readTokens() {
   const s = getComputedStyle(document.documentElement);
   const get = v => s.getPropertyValue(v).trim();
   return {
-    bgCanvas:     get('--bg-canvas')     || '#ecebe5',
-    surface:      get('--surface')       || '#ffffff',
-    surfaceWarm:  get('--surface-warm')  || '#fffdf8',
-    surface2:     get('--surface2')      || '#f1efe8',
-    border:       get('--border')        || '#e4e0d7',
-    text:         get('--text')          || '#18171a',
-    text2:        get('--text2')         || '#6c6a72',
-    text3:        get('--text3')         || '#a3a09a',
-    blue:         get('--blue')          || '#2f5bea',
-    blueLight:    get('--blue-light')    || '#e7eefe',
-    green:        get('--green')         || '#2e8157',
-    greenLight:   get('--green-light')   || '#e6f3ec',
-    purple:       get('--purple')        || '#6f57d4',
-    purpleLight:  get('--purple-light')  || '#efebfb',
-    teal:         get('--teal')          || '#1f9d8f',
-    amber:        get('--amber')         || '#c2700f',
-    amberLight:   get('--amber-light')   || '#faeeda',
-    red:          get('--red')           || '#d4456b',
-    shadowSm:     get('--shadow-sm')     || '0 1px 2px rgba(0,0,0,.06)',
-    shadowMd:     get('--shadow-md')     || '0 2px 8px rgba(0,0,0,.08)',
-    shadowLg:     get('--shadow-lg')     || '0 4px 16px rgba(0,0,0,.10)',
-    radiusSm:     get('--radius-sm')     || '4px',
-    radius:       get('--radius')        || '6px',
-    radiusLg:     get('--radius-lg')     || '8px',
-    brand:        get('--brand')         || '#1E1C18',
-    brandLight:   get('--brand-light')   || '#EDEAE4',
-    brandMid:     get('--brand-mid')     || '#9B8E83',
-    stone:        get('--stone')         || '#7A6A5C',
-    stoneLight:   get('--stone-light')   || '#F2EDE7',
-    stoneMid:     get('--stone-mid')     || '#C4B5A8',
-    fontSans:     get('--font-sans')     || "'Hanken Grotesk', sans-serif",
-    fontSerif:    get('--font-serif')    || "'Instrument Serif', serif",
-    fontMono:     get('--font-mono')     || "'JetBrains Mono', monospace",
+    bgCanvas:    get('--bg-canvas')    || '#ecebe5',
+    surface:     get('--surface')      || '#FDFAF6',
+    surfaceWarm: get('--surface-warm') || '#fffdf8',
+    surface2:    get('--surface2')     || '#E8E3D9',
+    border:      get('--border')       || '#D8D2C6',
+    border2:     get('--border2')      || '#C4BCAF',
+    text:        get('--text')         || '#1C1914',
+    text2:       get('--text2')        || '#6B6860',
+    text3:       get('--text3')        || '#9C9890',
+    brand:       get('--brand')        || '#1E1C18',
+    brandLight:  get('--brand-light')  || '#EDEAE4',
+    brandMid:    get('--brand-mid')    || '#9B8E83',
+    stone:       get('--stone')        || '#7A6A5C',
+    stoneLight:  get('--stone-light')  || '#F2EDE7',
+    stoneMid:    get('--stone-mid')    || '#C4B5A8',
+    blue:        get('--blue')         || '#2f5bea',
+    blueLight:   get('--blue-light')   || '#e7eefe',
+    green:       get('--green')        || '#2e8157',
+    greenLight:  get('--green-light')  || '#e6f3ec',
+    purple:      get('--purple')       || '#6f57d4',
+    purpleLight: get('--purple-light') || '#efebfb',
+    teal:        get('--teal')         || '#1f9d8f',
+    amber:       get('--amber')        || '#c2700f',
+    amberLight:  get('--amber-light')  || '#faeeda',
+    red:         get('--red')          || '#d4456b',
+    shadowSm:    get('--shadow-sm')    || '0 1px 2px rgba(28,25,20,.06)',
+    shadowMd:    get('--shadow-md')    || '0 2px 8px rgba(28,25,20,.08)',
+    shadowLg:    get('--shadow-lg')    || '0 4px 16px rgba(28,25,20,.10)',
+    radiusSm:    get('--radius-sm')    || '4px',
+    radius:      get('--radius')       || '6px',
+    radiusLg:    get('--radius-lg')    || '8px',
+    fontSans:    get('--font-sans')    || "'Hanken Grotesk', sans-serif",
+    fontSerif:   get('--font-serif')   || "'Instrument Serif', serif",
+    fontMono:    get('--font-mono')    || "'JetBrains Mono', monospace",
   };
-})();
+}
+
+let TOKENS = readTokens();
+
+function isDark() {
+  const attr = document.documentElement.getAttribute('data-theme');
+  if (attr === 'dark') return true;
+  if (attr === 'light') return false;
+  return window.matchMedia('(prefers-color-scheme: dark)').matches;
+}
+
+function toggleTheme() {
+  const dark = isDark();
+  document.documentElement.setAttribute('data-theme', dark ? 'light' : 'dark');
+  TOKENS = readTokens();
+  render();
+}
 
 const AGENTS = [
   { key:'research',  name:'Research Agent',       short:'RE', color:'#1f9d8f' },
@@ -222,30 +239,30 @@ function closeDetail() { setState({ detail: null }); }
 
 function wireThumbnail(h) {
   h = h || 96;
-  return `<div style="height:${h}px;border-radius:7px;background:${TOKENS.surfaceWarm};border:1px solid #d8d3c8;padding:8px;display:flex;flex-direction:column;gap:5px;overflow:hidden">
+  return `<div style="height:${h}px;border-radius:7px;background:${TOKENS.surfaceWarm};border:1px solid ${TOKENS.border};padding:8px;display:flex;flex-direction:column;gap:5px;overflow:hidden">
     <div style="display:flex;gap:5px;align-items:center">
-      <div style="width:11px;height:11px;border:1.5px solid #bdb6a7;border-radius:3px;flex:none"></div>
-      <div style="height:6px;width:34%;background:#cbc5b7;border-radius:2px"></div>
-      <div style="height:9px;width:18px;border:1.5px solid #bdb6a7;border-radius:3px;margin-left:auto"></div>
+      <div style="width:11px;height:11px;border:1.5px solid ${TOKENS.border2};border-radius:3px;flex:none"></div>
+      <div style="height:6px;width:34%;background:${TOKENS.border2};border-radius:2px"></div>
+      <div style="height:9px;width:18px;border:1.5px solid ${TOKENS.border2};border-radius:3px;margin-left:auto"></div>
     </div>
-    <div style="flex:1;border:1.5px dashed #cdc7b8;border-radius:4px;background:linear-gradient(to top right,transparent calc(50% - .8px),#e6e1d4,transparent calc(50% + .8px)),linear-gradient(to top left,transparent calc(50% - .8px),#e6e1d4,transparent calc(50% + .8px))"></div>
+    <div style="flex:1;border:1.5px dashed ${TOKENS.border};border-radius:4px;background:linear-gradient(to top right,transparent calc(50% - .8px),${TOKENS.surface2},transparent calc(50% + .8px)),linear-gradient(to top left,transparent calc(50% - .8px),${TOKENS.surface2},transparent calc(50% + .8px))"></div>
     <div style="display:flex;gap:5px;align-items:center">
-      <div style="height:9px;flex:1;border:1.5px solid #bdb6a7;border-radius:3px"></div>
-      <div style="height:9px;width:26px;background:#bdb6a7;border-radius:3px"></div>
+      <div style="height:9px;flex:1;border:1.5px solid ${TOKENS.border2};border-radius:3px"></div>
+      <div style="height:9px;width:26px;background:${TOKENS.border2};border-radius:3px"></div>
     </div>
   </div>`;
 }
 
 function hifiThumbnail(tone, h) {
   h = h || 96;
-  return `<div style="height:${h}px;border-radius:7px;background:${TOKENS.surface};border:1px solid #e9e5db;overflow:hidden;display:flex;flex-direction:column">
+  return `<div style="height:${h}px;border-radius:7px;background:${TOKENS.surface};border:1px solid ${TOKENS.border};overflow:hidden;display:flex;flex-direction:column">
     <div style="height:30px;background:${tone};display:flex;align-items:center;padding:0 9px;gap:5px;flex:none">
       <div style="width:30%;height:6px;background:rgba(255,255,255,.85);border-radius:3px"></div>
       <div style="width:14px;height:9px;background:rgba(255,255,255,.5);border-radius:3px;margin-left:auto"></div>
     </div>
     <div style="flex:1;padding:9px;display:flex;flex-direction:column;gap:5px">
-      <div style="height:6px;width:66%;background:#e3dfd4;border-radius:3px"></div>
-      <div style="height:5px;width:88%;background:#ece8de;border-radius:3px"></div>
+      <div style="height:6px;width:66%;background:${TOKENS.surface2};border-radius:3px"></div>
+      <div style="height:5px;width:88%;background:${TOKENS.border};border-radius:3px"></div>
       <div style="height:14px;width:44px;background:${tone};border-radius:5px;margin-top:auto"></div>
     </div>
   </div>`;
@@ -253,12 +270,12 @@ function hifiThumbnail(tone, h) {
 
 function briefThumbnail(h) {
   h = h || 96;
-  return `<div style="height:${h}px;border-radius:7px;background:${TOKENS.surface};border:1px solid #e9e5db;padding:10px;display:flex;flex-direction:column;gap:5px;overflow:hidden">
-    <div style="height:7px;width:50%;background:#cfcabd;border-radius:3px"></div>
-    <div style="height:4px;width:92%;background:#e7e3d8;border-radius:3px;margin-top:3px"></div>
-    <div style="height:4px;width:84%;background:#e7e3d8;border-radius:3px"></div>
-    <div style="height:4px;width:88%;background:#e7e3d8;border-radius:3px"></div>
-    <div style="height:4px;width:60%;background:#e7e3d8;border-radius:3px"></div>
+  return `<div style="height:${h}px;border-radius:7px;background:${TOKENS.surface};border:1px solid ${TOKENS.border};padding:10px;display:flex;flex-direction:column;gap:5px;overflow:hidden">
+    <div style="height:7px;width:50%;background:${TOKENS.border2};border-radius:3px"></div>
+    <div style="height:4px;width:92%;background:${TOKENS.border};border-radius:3px;margin-top:3px"></div>
+    <div style="height:4px;width:84%;background:${TOKENS.border};border-radius:3px"></div>
+    <div style="height:4px;width:88%;background:${TOKENS.border};border-radius:3px"></div>
+    <div style="height:4px;width:60%;background:${TOKENS.border};border-radius:3px"></div>
   </div>`;
 }
 
@@ -292,7 +309,8 @@ function renderHeader() {
       <button id="btn-canvas" onclick="setView('canvas')" style="background:${isCanvas?TOKENS.brand:'transparent'};color:${isCanvas?'#fff':'#76747e'};border-radius:8px;border:none;padding:7px 15px;font-weight:600;font-size:13px;font-family:'Hanken Grotesk',sans-serif;cursor:pointer;transition:all .15s">Shared Canvas</button>
       <button id="btn-workspace" onclick="setView('workspace')" style="background:${isWork?TOKENS.brand:'transparent'};color:${isWork?'#fff':'#76747e'};border-radius:8px;border:none;padding:7px 15px;font-weight:600;font-size:13px;font-family:'Hanken Grotesk',sans-serif;cursor:pointer;transition:all .15s">Design Team</button>
     </div>
-    <div style="display:flex;align-items:center;margin-left:auto">
+    <button onclick="toggleTheme()" title="Toggle light/dark" style="width:32px;height:32px;border-radius:8px;background:${TOKENS.surface2};border:1px solid ${TOKENS.border};display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;color:${TOKENS.text2};transition:all .15s;margin-left:auto;flex:none" onmouseover="this.style.background='${TOKENS.border}'" onmouseout="this.style.background='${TOKENS.surface2}'">${isDark() ? '☀︎' : '◑'}</button>
+    <div style="display:flex;align-items:center">
       <div style="display:flex">
         <div style="width:30px;height:30px;border-radius:50%;background:#d4456b;border:2px solid #fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;z-index:3">MK</div>
         <div style="width:30px;height:30px;border-radius:50%;background:#2e8157;border:2px solid #fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;margin-left:-8px;z-index:2">JL</div>
@@ -321,7 +339,7 @@ function renderCanvas() {
   ];
 
   el.innerHTML = `
-    <div style="padding:20px 28px 16px;display:flex;align-items:center;flex:none;border-bottom:1px solid ${TOKENS.border};background:rgba(255,255,255,.5)">
+    <div style="padding:20px 28px 16px;display:flex;align-items:center;flex:none;border-bottom:1px solid ${TOKENS.border};background:${TOKENS.surface}">
       <div>
         <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.2px;color:${TOKENS.text3};margin-bottom:5px">SHARED PROJECT CANVAS</div>
         <div style="font-family:'Instrument Serif',serif;font-size:28px;line-height:1.1;color:${TOKENS.text}">All work in motion, in one governed view</div>
@@ -344,7 +362,7 @@ function renderCanvas() {
             <div style="height:1px;background:${TOKENS.border};margin:0 14px;flex:none"></div>
             <div class="canvas-col-body">
               ${col.cards.length === 0
-                ? '<div style="padding:20px;text-align:center;font-size:12px;color:#b8b4aa;font-style:italic">No artifacts yet</div>'
+                ? `<div style="padding:20px;text-align:center;font-size:12px;color:${TOKENS.text3};font-style:italic">No artifacts yet</div>`
                 : col.cards.map(card => renderCanvasCard(card)).join('')
               }
             </div>
@@ -365,14 +383,14 @@ function renderCanvasCard(card) {
     <div class="canvas-card" style="${freshStyle}" onclick="openDetail('${card.id}')">
       <div style="display:flex;align-items:center;margin-bottom:8px">
         <span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:600;color:${kindColor};letter-spacing:.5px">${card.kindLabel}</span>
-        <span style="font-size:11px;color:#b8b4aa;margin-left:auto">${card.time}</span>
+        <span style="font-size:11px;color:${TOKENS.text3};margin-left:auto">${card.time}</span>
       </div>
       ${getThumbnail(card, 104)}
       <div style="font-size:13px;font-weight:600;line-height:1.35;margin-top:9px;margin-bottom:6px;color:${TOKENS.text}">${card.title}</div>
       <div style="height:1px;background:${TOKENS.border};margin-bottom:8px"></div>
       <div style="display:flex;align-items:center;gap:6px">
         <div style="width:18px;height:18px;border-radius:5px;background:${card.agentColor};display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;font-family:'JetBrains Mono',monospace;flex:none">${card.agentShort}</div>
-        <span style="font-size:11.5px;color:#86838b">${card.agent}</span>
+        <span style="font-size:11.5px;color:${TOKENS.text2}">${card.agent}</span>
       </div>
     </div>
   `;
@@ -413,12 +431,12 @@ function renderPipelineRail() {
     } else if (isDone) {
       dotHtml = `<div style="width:28px;height:28px;border-radius:9px;background:${agent.color};display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;flex:none">✓</div>`;
     } else {
-      dotHtml = `<div style="width:28px;height:28px;border-radius:9px;background:transparent;border:1.5px solid #cdc7ba;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:#a8a499;flex:none">${agent.short}</div>`;
+      dotHtml = `<div style="width:28px;height:28px;border-radius:9px;background:transparent;border:1.5px solid ${TOKENS.border2};display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:${TOKENS.text3};flex:none">${agent.short}</div>`;
     }
 
     const statusText = isActive ? 'Working…' : isDone ? 'Done' : 'Queued';
     const statusColor = isActive ? agent.color : isDone ? TOKENS.green : TOKENS.text3;
-    const lineColor = isDone ? agent.color : '#dcd7ca';
+    const lineColor = isDone ? agent.color : TOKENS.border;
 
     html += `
       <div style="display:flex;gap:12px;align-items:flex-start">
@@ -506,7 +524,7 @@ function stageContent(ph) {
             <div style="width:40px;height:40px;border-radius:50%;background:#d4456b;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;flex:none">MR</div>
             <div>
               <div style="font-size:14px;font-weight:700">Maya Reyes</div>
-              <div style="font-size:11.5px;color:#86838b">Persona · primary</div>
+              <div style="font-size:11.5px;color:${TOKENS.text2}">Persona · primary</div>
             </div>
           </div>
           <div style="font-size:13px;line-height:1.5;color:${TOKENS.text2}">Small-business owner. Time-poor, not technical. Will abandon anything that feels like work before it feels like value.</div>
@@ -526,20 +544,9 @@ function stageContent(ph) {
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
             <span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:${dir.tone}">DIR ${dir.id}</span>
             <span style="font-size:12px;font-weight:700">${dir.name}</span>
-            <span style="font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:#a9762a;background:#fdf6e3;border:1px solid #ecd9a8;border-radius:4px;padding:2px 5px;margin-left:auto">EXPLORING</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:${TOKENS.amber};background:${TOKENS.amberLight};border:1px solid ${isDark()?'#5a4010':'#ecd9a8'};border-radius:4px;padding:2px 5px;margin-left:auto">EXPLORING</span>
           </div>
-          <div style="height:128px;border-radius:7px;background:#f6f4ec;border:1px solid #d8d3c8;padding:10px;display:flex;flex-direction:column;gap:6px;overflow:hidden;margin-bottom:10px">
-            <div style="display:flex;gap:6px;align-items:center">
-              <div style="width:13px;height:13px;border:1.5px solid #bdb6a7;border-radius:3px;flex:none"></div>
-              <div style="height:7px;width:36%;background:#cbc5b7;border-radius:2px"></div>
-              <div style="height:10px;width:20px;border:1.5px solid #bdb6a7;border-radius:3px;margin-left:auto"></div>
-            </div>
-            <div style="flex:1;border:1.5px dashed #cdc7b8;border-radius:4px;background:linear-gradient(to top right,transparent calc(50% - .8px),#e6e1d4,transparent calc(50% + .8px)),linear-gradient(to top left,transparent calc(50% - .8px),#e6e1d4,transparent calc(50% + .8px))"></div>
-            <div style="display:flex;gap:6px;align-items:center">
-              <div style="height:10px;flex:1;border:1.5px solid #bdb6a7;border-radius:3px"></div>
-              <div style="height:10px;width:28px;background:#bdb6a7;border-radius:3px"></div>
-            </div>
-          </div>
+          <div style="margin-bottom:10px">${wireThumbnail(128)}</div>
           <div style="font-size:13px;color:${TOKENS.text2};line-height:1.45;margin-bottom:8px">${dir.desc}</div>
           ${isSelected ? `<div style="font-size:12px;font-weight:700;color:${dir.tone}">✓ Selected by you</div>` : ''}
         </div>
@@ -547,8 +554,8 @@ function stageContent(ph) {
     }).join('');
 
     const gateNotice = !sel ? `
-      <div style="margin-top:18px;display:inline-flex;align-items:center;gap:9px;background:#fdf6e3;border:1px solid #ecd9a8;border-radius:10px;padding:10px 15px;font-size:13px;color:#8a6d1f">
-        <span style="width:7px;height:7px;border-radius:50%;background:#c2700f;flex:none"></span>
+      <div style="margin-top:18px;display:inline-flex;align-items:center;gap:9px;background:${TOKENS.amberLight};border:1px solid ${isDark()?'#5a4010':'#ecd9a8'};border-radius:10px;padding:10px 15px;font-size:13px;color:${TOKENS.amber}">
+        <span style="width:7px;height:7px;border-radius:50%;background:${TOKENS.amber};flex:none"></span>
         Human in the loop — select a direction to continue the pipeline.
       </div>
     ` : '';
@@ -578,12 +585,12 @@ function stageContent(ph) {
         <div style="width:38%;height:8px;background:rgba(255,255,255,.85);border-radius:3px"></div>
       </div>
       <div style="padding:18px 16px">
-        <div style="height:11px;width:74%;background:#1f1d22;border-radius:3px;margin-bottom:9px"></div>
-        <div style="height:7px;width:94%;background:#e4dfd4;border-radius:3px;margin-bottom:5px"></div>
-        <div style="height:7px;width:88%;background:#e4dfd4;border-radius:3px;margin-bottom:18px"></div>
+        <div style="height:11px;width:74%;background:${TOKENS.text};border-radius:3px;margin-bottom:9px"></div>
+        <div style="height:7px;width:94%;background:${TOKENS.surface2};border-radius:3px;margin-bottom:5px"></div>
+        <div style="height:7px;width:88%;background:${TOKENS.surface2};border-radius:3px;margin-bottom:18px"></div>
         <div style="display:flex;gap:9px;margin-bottom:18px">
-          <div style="flex:1;height:60px;background:#f4f2ea;border:1px solid #ece8de;border-radius:9px"></div>
-          <div style="flex:1;height:60px;background:#f4f2ea;border:1px solid #ece8de;border-radius:9px"></div>
+          <div style="flex:1;height:60px;background:${TOKENS.surface2};border:1px solid ${TOKENS.border};border-radius:9px"></div>
+          <div style="flex:1;height:60px;background:${TOKENS.surface2};border:1px solid ${TOKENS.border};border-radius:9px"></div>
         </div>
         <div style="height:38px;background:${selTone};border-radius:10px;display:flex;align-items:center;justify-content:center">
           <div style="width:40%;height:8px;background:rgba(255,255,255,.92);border-radius:3px"></div>
@@ -600,15 +607,15 @@ function stageContent(ph) {
         <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:#d4456b;font-weight:600;margin-bottom:14px">DESIGN SYSTEM APPLIED</div>
         <div style="font-size:14px;line-height:1.5;color:${TOKENS.text2};margin-bottom:16px">The Visual Design Agent translated the wireframe into a high-fidelity concept using Helios Design System tokens, components, and spacing rules.</div>
         <div style="display:flex;flex-direction:column;gap:8px">
-          <div style="display:flex;align-items:center;gap:8px;background:#f4f2ea;border-radius:8px;padding:9px 11px">
+          <div style="display:flex;align-items:center;gap:8px;background:${TOKENS.surface2};border-radius:8px;padding:9px 11px">
             <span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:${TOKENS.text2}">color.primary</span>
             <span style="width:14px;height:14px;border-radius:4px;background:${selTone};flex:none;margin-left:auto"></span>
           </div>
-          <div style="display:flex;align-items:center;gap:8px;background:#f4f2ea;border-radius:8px;padding:9px 11px">
+          <div style="display:flex;align-items:center;gap:8px;background:${TOKENS.surface2};border-radius:8px;padding:9px 11px">
             <span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:${TOKENS.text2}">spacing.md</span>
             <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:${TOKENS.text3};margin-left:auto">16px</span>
           </div>
-          <div style="display:flex;align-items:center;gap:8px;background:#f4f2ea;border-radius:8px;padding:9px 11px">
+          <div style="display:flex;align-items:center;gap:8px;background:${TOKENS.surface2};border-radius:8px;padding:9px 11px">
             <span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:${TOKENS.text2}">radius.card</span>
             <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:${TOKENS.text3};margin-left:auto">12px</span>
           </div>
@@ -622,7 +629,7 @@ function stageContent(ph) {
           <div style="width:34px;height:34px;border-radius:50%;background:#d4456b;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex:none">MR</div>
           <div>
             <div style="font-size:13px;font-weight:700">Persona review — Maya</div>
-            <div style="font-size:11px;color:#86838b">Persona Review Agent</div>
+            <div style="font-size:11px;color:${TOKENS.text2}">Persona Review Agent</div>
           </div>
         </div>
         <div style="display:flex;flex-direction:column;gap:9px">
@@ -634,8 +641,8 @@ function stageContent(ph) {
             <span style="color:${TOKENS.green};font-weight:700;flex:none;margin-top:1px">✓</span>
             <span>Single primary action per screen — easy to follow.</span>
           </div>
-          <div style="display:flex;align-items:flex-start;gap:8px;font-size:13px;line-height:1.45;background:#fdf6e3;border-radius:8px;padding:9px;border:1px solid #ecd9a8">
-            <span style="color:#c2700f;font-weight:700;flex:none;margin-top:1px">!</span>
+          <div style="display:flex;align-items:flex-start;gap:8px;font-size:13px;line-height:1.45;background:${TOKENS.amberLight};border-radius:8px;padding:9px;border:1px solid ${isDark()?'#5a4010':'#ecd9a8'}">
+            <span style="color:${TOKENS.amber};font-weight:700;flex:none;margin-top:1px">!</span>
             <span>Step 2 copy still uses the word "configure" — too technical for Maya.</span>
           </div>
         </div>
@@ -643,23 +650,23 @@ function stageContent(ph) {
     `;
   } else if (ph === 6) {
     sidePanel = `
-      <div style="flex:1;min-width:230px;background:${TOKENS.blueLight};border:1px solid #cfdcfb;border-radius:14px;padding:22px;animation:ch-pop .5s ease .08s backwards">
+      <div style="flex:1;min-width:230px;background:${TOKENS.blueLight};border:1px solid ${isDark()?'#1a3070':'#cfdcfb'};border-radius:14px;padding:22px;animation:ch-pop .5s ease .08s backwards">
         <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:${TOKENS.blue};font-weight:600;margin-bottom:12px">ECD GATE</div>
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
           <div style="width:30px;height:30px;border-radius:8px;background:${TOKENS.blue};color:#fff;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;flex:none">EC</div>
           <div style="font-size:13px;font-weight:600">ECD Agent</div>
         </div>
-        <div style="font-size:14px;line-height:1.5;color:#1e3a8a">
+        <div style="font-size:14px;line-height:1.5;color:${isDark()?'#7a9ef5':'#1e3a8a'}">
           Concept is grounded in the brief, design system is consistent, persona feedback addressed. <strong>Promotion needs your sign-off.</strong>
         </div>
       </div>
     `;
   } else if (ph === 7) {
     sidePanel = `
-      <div style="flex:1;min-width:230px;background:${TOKENS.greenLight};border:1px solid #c4e3d3;border-radius:14px;padding:22px;animation:ch-pop .5s ease .08s backwards">
+      <div style="flex:1;min-width:230px;background:${TOKENS.greenLight};border:1px solid ${isDark()?'#1a4731':'#c4e3d3'};border-radius:14px;padding:22px;animation:ch-pop .5s ease .08s backwards">
         <div style="font-size:22px;margin-bottom:8px">🎉</div>
-        <div style="font-size:16px;font-weight:700;margin-bottom:8px;color:#1a4731">Promoted to the Shared Canvas</div>
-        <div style="font-size:13.5px;line-height:1.55;color:#2e6847;margin-bottom:16px">Fully traceable from brief to approved concept — now visible to the whole team on the Shared Canvas.</div>
+        <div style="font-size:16px;font-weight:700;margin-bottom:8px;color:${isDark()?'#4aad7a':'#1a4731'}">Promoted to the Shared Canvas</div>
+        <div style="font-size:13.5px;line-height:1.55;color:${isDark()?'#4aad7a':'#2e6847'};margin-bottom:16px">Fully traceable from brief to approved concept — now visible to the whole team on the Shared Canvas.</div>
         <button onclick="setView('canvas')" style="background:${TOKENS.green};color:#fff;border:none;border-radius:9px;padding:10px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Hanken Grotesk',sans-serif">View it on the canvas →</button>
       </div>
     `;
@@ -676,7 +683,7 @@ function renderStage() {
   const isGate = ph === 3 && !state.selectedDir;
   const btnDisabled = isGate || ph >= 7;
   const btnStyle = btnDisabled
-    ? `background:#dcd8cd;color:${TOKENS.text3};cursor:not-allowed;border-radius:10px;padding:11px 20px;font-size:14px;font-weight:700;display:flex;align-items:center;gap:9px;border:none;font-family:'Hanken Grotesk',sans-serif`
+    ? `background:${TOKENS.border};color:${TOKENS.text3};cursor:not-allowed;border-radius:10px;padding:11px 20px;font-size:14px;font-weight:700;display:flex;align-items:center;gap:9px;border:none;font-family:'Hanken Grotesk',sans-serif`
     : `background:${TOKENS.brand};color:#fff;border-radius:10px;padding:11px 20px;font-size:14px;font-weight:700;display:flex;align-items:center;gap:9px;border:none;cursor:pointer;font-family:'Hanken Grotesk',sans-serif;transition:opacity .15s`;
 
   stage.innerHTML = `
@@ -695,10 +702,10 @@ function renderStage() {
 
 function tagChip(tag) {
   if (!tag) return '';
-  if (tag === 'parallel') return `<span class="tag-chip" style="color:#6f57d4;background:#efebfb">PARALLEL · 3 AGENTS</span>`;
+  if (tag === 'parallel') return `<span class="tag-chip" style="color:${TOKENS.purple};background:${TOKENS.purpleLight}">PARALLEL · 3 AGENTS</span>`;
   if (tag === 'promote') return `<span class="tag-chip" style="color:${TOKENS.green};background:${TOKENS.greenLight}">GATE PASSED → PROMOTED</span>`;
   if (tag === 'gate') return `<span class="tag-chip" style="color:${TOKENS.blue};background:${TOKENS.blueLight}">GOVERNANCE</span>`;
-  if (tag === 'human') return `<span class="tag-chip" style="color:#c2700f;background:#fdf6e3">HUMAN IN THE LOOP</span>`;
+  if (tag === 'human') return `<span class="tag-chip" style="color:${TOKENS.amber};background:${TOKENS.amberLight}">HUMAN IN THE LOOP</span>`;
   return '';
 }
 
@@ -717,7 +724,7 @@ function renderFeed() {
           <div style="display:flex;align-items:center;margin-bottom:6px">
             <div style="width:20px;height:20px;border-radius:5px;background:${agent.color};display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:#fff;flex:none">${agent.short}</div>
             <span style="font-size:12px;font-weight:700;margin-left:7px">${agent.name}</span>
-            <span style="font-size:11px;color:#b8b4aa;margin-left:auto">just now</span>
+            <span style="font-size:11px;color:${TOKENS.text3};margin-left:auto">just now</span>
           </div>
           <div style="font-size:12.5px;color:${TOKENS.text2};line-height:1.45">${ev.t}</div>
           ${tagChip(ev.tag)}
@@ -809,8 +816,8 @@ function renderDrawer() {
           <span style="color:${TOKENS.green};font-weight:700;flex:none">✓</span>
           <span>Single primary action — easy to follow.</span>
         </div>
-        <div style="display:flex;align-items:flex-start;gap:7px;font-size:12.5px;background:#fdf6e3;border-radius:7px;padding:8px;border:1px solid #ecd9a8">
-          <span style="color:#c2700f;font-weight:700;flex:none">!</span>
+        <div style="display:flex;align-items:flex-start;gap:7px;font-size:12.5px;background:${TOKENS.amberLight};border-radius:7px;padding:8px;border:1px solid ${isDark()?'#5a4010':'#ecd9a8'}">
+          <span style="color:${TOKENS.amber};font-weight:700;flex:none">!</span>
           <span>Step 2 uses "configure" — too technical for Maya.</span>
         </div>
       </div>
@@ -818,9 +825,9 @@ function renderDrawer() {
   ` : '';
 
   const ecdMini = isApproved ? `
-    <div style="background:${TOKENS.blueLight};border-radius:10px;padding:12px;margin-top:14px;border:1px solid #cfdcfb">
+    <div style="background:${TOKENS.blueLight};border-radius:10px;padding:12px;margin-top:14px;border:1px solid ${isDark()?'#1a3070':'#cfdcfb'}">
       <div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.8px;color:${TOKENS.blue};font-weight:600;margin-bottom:8px">ECD GATE PASSED</div>
-      <div style="font-size:12.5px;line-height:1.45;color:#1e3a8a">Concept meets the brief. Design system applied consistently. Promoted to shared canvas.</div>
+      <div style="font-size:12.5px;line-height:1.45;color:${isDark()?'#7a9ef5':'#1e3a8a'}">Concept meets the brief. Design system applied consistently. Promoted to shared canvas.</div>
     </div>
   ` : '';
 

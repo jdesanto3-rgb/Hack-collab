@@ -159,6 +159,98 @@
   }
 }
 
+/* --- Explicit dark theme (JS toggle) --- */
+html[data-theme="dark"] {
+  --bg: #1C1914;
+  --surface: #252119;
+  --surface2: #2E2B23;
+  --border: #3C3830;
+  --border2: #4C4840;
+  --text: #EAE7E0;
+  --text2: #9C9890;
+  --text3: #6B6860;
+
+  --brand: #EAE6DF;
+  --brand-light: #2A2720;
+  --brand-mid: #9B8E83;
+  --brand-dark: #F5F2EC;
+
+  --stone: #C4B5A8;
+  --stone-light: #2A2520;
+  --stone-mid: #7A6A5C;
+
+  --purple: #7F77DD;
+  --purple-light: #26215C;
+  --purple-mid: #3C3489;
+
+  --teal: #1D9E75;
+  --teal-light: #04342C;
+  --teal-mid: #0F6E56;
+
+  --amber: #EF9F27;
+  --amber-light: #412402;
+  --amber-mid: #854F0B;
+
+  --red: #d94f4f;
+  --red-light: #3d1212;
+
+  --npt: #4d9ed4;
+  --npt-light: #0e2535;
+
+  --bg-canvas: #1a1916;
+  --surface-warm: #1e1d1a;
+
+  --blue: #6b8ef5;
+  --blue-light: #121c3a;
+  --green: #4aad7a;
+  --green-light: #0a2318;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.20);
+  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.28);
+  --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.36);
+}
+
+/* Force light when explicitly set */
+html[data-theme="light"] {
+  --bg: #F0ECE5;
+  --surface: #FDFAF6;
+  --surface2: #E8E3D9;
+  --border: #D8D2C6;
+  --border2: #C4BCAF;
+  --text: #1C1914;
+  --text2: #6B6860;
+  --text3: #9C9890;
+  --brand: #1E1C18;
+  --brand-light: #EDEAE4;
+  --brand-mid: #9B8E83;
+  --brand-dark: #0E0D0B;
+  --stone: #7A6A5C;
+  --stone-light: #F2EDE7;
+  --stone-mid: #C4B5A8;
+  --purple: #534AB7;
+  --purple-light: #EEEDFE;
+  --purple-mid: #AFA9EC;
+  --teal: #0F6E56;
+  --teal-light: #E1F5EE;
+  --teal-mid: #5DCAA5;
+  --amber: #854F0B;
+  --amber-light: #FAEEDA;
+  --amber-mid: #EF9F27;
+  --red: #a32d2d;
+  --red-light: #fcebeb;
+  --npt: #1B4B6B;
+  --npt-light: #e8f0f6;
+  --bg-canvas: #ecebe5;
+  --surface-warm: #fffdf8;
+  --blue: #2f5bea;
+  --blue-light: #e7eefe;
+  --green: #2e8157;
+  --green-light: #e6f3ec;
+  --shadow-sm: 0 1px 2px rgba(28, 25, 20, 0.06);
+  --shadow-md: 0 2px 8px rgba(28, 25, 20, 0.08);
+  --shadow-lg: 0 4px 16px rgba(28, 25, 20, 0.10);
+}
+
 /* --- Global base styles --- */
 *, *::before, *::after {
   box-sizing: border-box;
