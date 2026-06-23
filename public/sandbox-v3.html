@@ -149,7 +149,7 @@ const PHASES = [
   { agent:'strategy',  kind:'strategy', eyebrow:'STRATEGY AGENT',              title:'Design Brief',                                          sub:'Goals, persona, and constraints — with the Axiom Design System wired in.' },
   { agent:'wireframe', kind:'concepts', eyebrow:'WIREFRAME AGENT · PARALLEL',  title:'Three directions, generated at once',                    sub:'The Wireframe Agent ran three explorations in parallel. A human picks the direction.' },
   { agent:'visual',    kind:'visual',   eyebrow:'VISUAL DESIGN AGENT',         title:'Hi-fi concept',                                         sub:'The Visual Design Agent applied the Axiom Design System to the chosen direction.' },
-  { agent:'persona',   kind:'persona',  eyebrow:'PERSONA REVIEW AGENT',        title:'Persona review — Devon',                                sub:'Validated against the defined persona. This is the AI governance moment.' },
+  { agent:'persona',   kind:'persona',  eyebrow:'PERSONA REVIEW AGENT',        title:'Hi-fi concept — in review',                             sub:'Compare design versions, respond to persona feedback from Devon, and create revisions.' },
   { agent:'ecd',       kind:'ecd',      eyebrow:'ECD AGENT · GATE',            title:'Executive Creative Director gate',                      sub:'The ECD reviews feedback and concept, then a human confirms the promotion.' },
   { agent:'ecd',       kind:'promoted', eyebrow:'PROMOTED',                    title:'Promoted to the Shared Canvas',                         sub:'Traceable from brief to approved — now visible to the whole team.' },
 ];
@@ -217,6 +217,10 @@ const state = {
   feedTab: 'activity',   // 'activity' | 'chat'
   chatMessages: [],
   chatTyping: false,
+  designVersion: 2,
+  v3Created: false,
+  creatingVersion: false,
+  designNotes: {},
 };
 
 const BASE_CANVAS = {
@@ -251,7 +255,7 @@ function advance() {
   const newEvents = (PHASE_EVENTS[next] || []).map(e => ({ ...e }));
   setState({ phase: next, events: [...newEvents, ...state.events] });
 }
-function resetFlow() { setState({ phase: 0, selectedDir: null, events: [], editModes: {}, dirPanels: {}, chatMessages: [], chatTyping: false }); }
+function resetFlow() { setState({ phase: 0, selectedDir: null, events: [], editModes: {}, dirPanels: {}, chatMessages: [], chatTyping: false, designVersion: 2, v3Created: false, creatingVersion: false, designNotes: {} }); }
 function selectDir(id) { if (state.phase === 3) setState({ selectedDir: id }); }
 function cycleIdentity() { setState({ identityIdx: (state.identityIdx + 1) % IDENTITY_NAMES.length }); }
 function openDetail(cardId) { setState({ detail: cardId }); }
@@ -297,6 +301,16 @@ function goToDesignView(e, cardId) {
 function togglePipeline() { setState({ pipelineOpen: !state.pipelineOpen }); }
 function toggleFeed()     { setState({ feedOpen: !state.feedOpen }); }
 function switchFeedTab(tab) { setState({ feedTab: tab }); }
+function selectDesignVersion(v) { setState({ designVersion: v }); }
+function createDesignV3() {
+  if (state.v3Created) { setState({ designVersion: 3 }); return; }
+  if (state.creatingVersion) return;
+  setState({ creatingVersion: true });
+  setTimeout(() => {
+    const newEvent = { a: 'visual', t: 'v3 created — Severity merged into Priority auto-suggest, Attach file marked optional', tag: '' };
+    setState({ v3Created: true, designVersion: 3, creatingVersion: false, events: [newEvent, ...state.events] });
+  }, 1800);
+}
 
 // ─── AI CHAT ─────────────────────────────────────────────────────────────────
 
@@ -489,6 +503,371 @@ function referenceCard(label, source, thumbFn, color) {
       <div class="ref-label" style="color:${TOKENS.text}">${label}</div>
     </div>
   </div>`;
+}
+
+// ─── DESIGN REVIEW — PHASE 5 ─────────────────────────────────────────────────
+
+function designVersionThumb(v, tone) {
+  const T = TOKENS;
+  if (v === 1) return `
+    <div style="width:100%;height:100%;background:${T.surface};display:flex;flex-direction:column;overflow:hidden">
+      <div style="height:14px;background:${tone};flex:none;display:flex;align-items:center;padding:0 6px">
+        <div style="height:5px;width:36%;background:rgba(255,255,255,.85);border-radius:2px"></div>
+      </div>
+      <div style="flex:1;padding:5px 6px;display:flex;flex-direction:column;gap:3px">
+        <div style="display:flex;align-items:center;justify-content:center;gap:2px;margin-bottom:3px">
+          <div style="width:13px;height:13px;border-radius:50%;background:${tone};border:1.5px solid ${tone}"></div>
+          <div style="width:10px;height:1.5px;background:${T.border}"></div>
+          <div style="width:13px;height:13px;border-radius:50%;background:${T.surface2};border:1.5px solid ${T.border}"></div>
+          <div style="width:10px;height:1.5px;background:${T.border}"></div>
+          <div style="width:13px;height:13px;border-radius:50%;background:${T.surface2};border:1.5px solid ${T.border}"></div>
+        </div>
+        <div style="height:9px;border:1px solid ${T.border2};border-radius:3px;background:${T.surface}"></div>
+        <div style="height:9px;border:1px solid ${T.border2};border-radius:3px;background:${T.surface}"></div>
+        <div style="height:9px;border:1px solid ${T.border2};border-radius:3px;background:${T.surface}"></div>
+        <div style="height:9px;width:62%;background:${tone};border-radius:3px;margin-top:auto"></div>
+      </div>
+    </div>`;
+  if (v === 2) return `
+    <div style="width:100%;height:100%;background:${T.surface};display:flex;flex-direction:column;overflow:hidden">
+      <div style="height:14px;background:${tone};flex:none;display:flex;align-items:center;padding:0 6px">
+        <div style="height:5px;width:42%;background:rgba(255,255,255,.85);border-radius:2px"></div>
+      </div>
+      <div style="height:2.5px;background:${T.surface2}"><div style="height:100%;width:33%;background:${tone}"></div></div>
+      <div style="flex:1;padding:5px 6px;display:flex;flex-direction:column;gap:3px">
+        <div style="height:9px;border:1.5px solid ${tone};border-radius:3px;background:${T.surface}"></div>
+        <div style="height:9px;background:${T.amberLight};border-radius:3px"></div>
+        <div style="height:9px;border:1px solid ${T.amber}55;border-radius:3px;background:${T.surfaceWarm}"></div>
+        <div style="height:9px;border:1px solid ${T.amber}55;border-radius:3px;background:${T.surfaceWarm}"></div>
+        <div style="height:9px;width:62%;background:${tone};border-radius:3px;margin-top:auto"></div>
+      </div>
+    </div>`;
+  if (v === 3) return `
+    <div style="width:100%;height:100%;background:${T.surface};display:flex;flex-direction:column;overflow:hidden">
+      <div style="height:14px;background:${tone};flex:none;display:flex;align-items:center;padding:0 6px">
+        <div style="height:5px;width:42%;background:rgba(255,255,255,.85);border-radius:2px"></div>
+        <div style="margin-left:auto;height:6px;width:11px;background:${T.green};border-radius:2px;opacity:.75"></div>
+      </div>
+      <div style="height:2.5px;background:${T.surface2}"><div style="height:100%;width:33%;background:${tone}"></div></div>
+      <div style="flex:1;padding:5px 6px;display:flex;flex-direction:column;gap:3px">
+        <div style="height:9px;border:1px solid ${T.border2};border-radius:3px;background:${T.surface}"></div>
+        <div style="height:9px;background:${T.greenLight};border-radius:3px;border:1px solid ${T.green}44"></div>
+        <div style="height:9px;border:1.5px dashed ${T.border};border-radius:3px;background:${T.surface2}"></div>
+        <div style="height:9px;width:62%;background:${T.green};border-radius:3px;margin-top:auto"></div>
+      </div>
+    </div>`;
+  return '';
+}
+
+function designMockupV1(tone) {
+  const T = TOKENS;
+  return `
+    <div id="design-v1" style="width:316px;background:${T.surface};border:1.5px solid ${T.border};border-radius:16px;overflow:hidden;box-shadow:${T.shadowLg};animation:ch-pop .5s ease backwards">
+      <div style="height:46px;background:${tone};display:flex;align-items:center;padding:0 15px;gap:10px;flex:none">
+        <div style="width:22px;height:22px;border-radius:6px;background:rgba(255,255,255,.9);flex:none;display:flex;align-items:center;justify-content:center"><span style="font-size:8.5px;font-weight:800;color:${tone}">AX</span></div>
+        <span style="font-size:12px;font-weight:600;color:rgba(255,255,255,.9)">Axiom QA</span>
+        <div style="margin-left:auto;font-size:9px;font-family:'JetBrains Mono',monospace;color:rgba(255,255,255,.45);letter-spacing:.5px">v1</div>
+      </div>
+      <div style="padding:14px 16px 12px;background:${T.surfaceWarm};border-bottom:1px solid ${T.border};flex:none">
+        <div style="display:flex;align-items:flex-start;justify-content:center;gap:0">
+          ${['Test Details','Severity & Priority','Attach'].map((s,i) => `
+            <div style="display:flex;align-items:center">
+              <div style="display:flex;flex-direction:column;align-items:center;gap:3px;width:80px">
+                <div style="width:24px;height:24px;border-radius:50%;background:${i===0?tone:T.surface2};border:2px solid ${i===0?tone:T.border};display:flex;align-items:center;justify-content:center;font-size:9.5px;font-weight:700;color:${i===0?'#fff':T.text3}">${i+1}</div>
+                <div style="font-size:8.5px;color:${i===0?tone:T.text3};font-weight:${i===0?700:400};text-align:center;line-height:1.25;max-width:70px">${s}</div>
+              </div>
+              ${i<2?`<div style="width:12px;height:1.5px;background:${T.border};margin-bottom:16px;flex:none"></div>`:''}
+            </div>
+          `).join('')}
+        </div>
+      </div>
+      <div style="padding:16px;display:flex;flex-direction:column;gap:11px">
+        <div>
+          <div style="font-size:10.5px;font-weight:600;color:${T.text2};margin-bottom:5px">Test Name</div>
+          <div style="height:34px;border:1.5px solid ${T.border2};border-radius:7px;background:${T.surface};display:flex;align-items:center;padding:0 11px">
+            <div data-ed style="font-size:11.5px;color:${T.text3}">e.g. Login flow regression</div>
+          </div>
+        </div>
+        <div>
+          <div data-ed style="font-size:10.5px;font-weight:600;color:${T.text2};margin-bottom:5px">Severity</div>
+          <div style="height:34px;border:1.5px solid ${T.border2};border-radius:7px;background:${T.surface};display:flex;align-items:center;padding:0 11px;justify-content:space-between">
+            <div style="font-size:11.5px;color:${T.text3}">Select severity…</div><div style="color:${T.text3};font-size:10px">▾</div>
+          </div>
+        </div>
+        <div>
+          <div data-ed style="font-size:10.5px;font-weight:600;color:${T.text2};margin-bottom:5px">Priority</div>
+          <div style="height:34px;border:1.5px solid ${T.border2};border-radius:7px;background:${T.surface};display:flex;align-items:center;padding:0 11px;justify-content:space-between">
+            <div style="font-size:11.5px;color:${T.text3}">Select priority…</div><div style="color:${T.text3};font-size:10px">▾</div>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:10.5px;font-weight:600;color:${T.text2};margin-bottom:5px">Attach files</div>
+          <div style="height:44px;border:1.5px dashed ${T.border2};border-radius:7px;background:${T.surface2};display:flex;align-items:center;justify-content:center">
+            <div style="font-size:11px;color:${T.text3}">↑ Drop or click to attach</div>
+          </div>
+        </div>
+        <div style="height:40px;background:${tone};border-radius:9px;display:flex;align-items:center;justify-content:center;margin-top:2px">
+          <div data-ed style="font-size:13.5px;font-weight:700;color:#fff">Next →</div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:center;gap:4px">
+          <div style="width:18px;height:4px;border-radius:2px;background:${tone}"></div>
+          <div style="width:9px;height:4px;border-radius:2px;background:${T.border2}"></div>
+          <div style="width:9px;height:4px;border-radius:2px;background:${T.border2}"></div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function designMockupV2(tone) {
+  const T = TOKENS;
+  return `
+    <div id="design-v2" style="width:316px;background:${T.surface};border:2px solid ${tone}44;border-radius:16px;overflow:hidden;box-shadow:${T.shadowLg};animation:ch-pop .5s ease backwards">
+      <div style="height:46px;background:${tone};display:flex;align-items:center;padding:0 15px;gap:10px;flex:none">
+        <div style="width:22px;height:22px;border-radius:6px;background:rgba(255,255,255,.9);flex:none;display:flex;align-items:center;justify-content:center"><span style="font-size:8.5px;font-weight:800;color:${tone}">AX</span></div>
+        <span style="font-size:12px;font-weight:600;color:rgba(255,255,255,.9)">Axiom QA — New Request</span>
+        <div style="margin-left:auto;font-size:9px;font-family:'JetBrains Mono',monospace;color:rgba(255,255,255,.45);letter-spacing:.5px">v2</div>
+      </div>
+      <div style="height:4px;background:${T.surface2}"><div style="height:100%;width:33%;background:${tone}"></div></div>
+      <div style="padding:10px 16px 0;display:flex;align-items:center;gap:8px;flex:none">
+        <div style="font-size:11px;font-weight:700;color:${tone}">Step 1 of 3</div>
+        <div style="font-size:11px;color:${T.text3}">· Request details</div>
+      </div>
+      <div style="padding:10px 16px 16px;display:flex;flex-direction:column;gap:10px">
+        <div>
+          <div style="display:flex;align-items:center;gap:5px;margin-bottom:5px">
+            <div data-ed style="font-size:10.5px;font-weight:600;color:${T.text}">Test Name</div>
+            <div style="font-size:9.5px;color:${T.red};font-weight:700">*</div>
+          </div>
+          <div style="height:34px;border:2px solid ${tone};border-radius:7px;background:${T.surface};display:flex;align-items:center;padding:0 11px;box-shadow:0 0 0 3px ${tone}14">
+            <div data-ed style="font-size:11.5px;color:${T.text}">Login flow regression test</div>
+            <div style="width:1.5px;height:16px;background:${tone};margin-left:auto;animation:ch-pulse 1s infinite"></div>
+          </div>
+        </div>
+        <div style="background:${T.amberLight};border:1px solid ${isDark()?'#5a4010':'#ecd9a8'};border-radius:9px;padding:9px 11px">
+          <div style="font-size:9.5px;font-weight:700;color:${T.amber};letter-spacing:.3px;margin-bottom:5px">⚡ SUGGESTED PRIORITY</div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div style="display:flex;align-items:center;gap:5px;flex:1">
+              <div style="width:10px;height:10px;border-radius:50%;background:${T.amber}"></div>
+              <div data-ed style="font-size:12px;font-weight:700;color:${T.amber}">High</div>
+              <div style="font-size:10.5px;color:${isDark()?T.amber:T.stone}">· based on "Login" + similar</div>
+            </div>
+            <div style="font-size:10px;font-weight:600;color:${T.amber};border-bottom:1px dashed ${T.amber}66;cursor:pointer">Change</div>
+          </div>
+        </div>
+        <div>
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:5px">
+            <div data-ed style="font-size:10.5px;font-weight:600;color:${T.text}">Severity</div>
+            <div style="font-size:8.5px;font-weight:700;color:${T.amber};background:${T.amberLight};border-radius:3px;padding:2px 5px;border:1px solid ${isDark()?'#5a4010':'#ecd9a8'}">⚑ Persona feedback</div>
+          </div>
+          <div style="height:34px;border:1.5px solid ${T.amber}55;border-radius:7px;background:${T.surfaceWarm};display:flex;align-items:center;padding:0 11px;justify-content:space-between">
+            <div style="font-size:11.5px;color:${T.text3}">Select severity…</div><div style="color:${T.text3};font-size:10px">▾</div>
+          </div>
+        </div>
+        <div>
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:5px">
+            <div style="font-size:10.5px;font-weight:600;color:${T.text}">Attach files</div>
+            <div style="font-size:8.5px;font-weight:700;color:${T.amber};background:${T.amberLight};border-radius:3px;padding:2px 5px;border:1px solid ${isDark()?'#5a4010':'#ecd9a8'}">⚑ Persona feedback</div>
+          </div>
+          <div style="height:40px;border:1.5px dashed ${T.amber}55;border-radius:7px;background:${T.surfaceWarm};display:flex;align-items:center;justify-content:center">
+            <div style="font-size:10.5px;color:${T.text3}">↑ Drop or click to attach</div>
+          </div>
+        </div>
+        <div style="height:40px;background:${tone};border-radius:9px;display:flex;align-items:center;justify-content:center">
+          <div data-ed style="font-size:13.5px;font-weight:700;color:#fff">Continue →</div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:center;gap:5px">
+          <div style="width:10px;height:10px;border-radius:2px;background:${tone};opacity:.4"></div>
+          <div style="font-size:9px;color:${T.text3};font-family:'JetBrains Mono',monospace">Axiom DS v2.1 applied</div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function designMockupV3(tone) {
+  const T = TOKENS;
+  return `
+    <div id="design-v3" style="width:316px;background:${T.surface};border:2px solid ${T.green}44;border-radius:16px;overflow:hidden;box-shadow:${T.shadowLg};animation:ch-pop .5s ease backwards">
+      <div style="height:46px;background:${tone};display:flex;align-items:center;padding:0 15px;gap:10px;flex:none">
+        <div style="width:22px;height:22px;border-radius:6px;background:rgba(255,255,255,.9);flex:none;display:flex;align-items:center;justify-content:center"><span style="font-size:8.5px;font-weight:800;color:${tone}">AX</span></div>
+        <span style="font-size:12px;font-weight:600;color:rgba(255,255,255,.9)">Axiom QA — New Request</span>
+        <div style="margin-left:auto;font-size:9px;font-family:'JetBrains Mono',monospace;color:rgba(255,255,255,.45);letter-spacing:.5px">v3</div>
+      </div>
+      <div style="height:4px;background:${T.surface2}"><div style="height:100%;width:33%;background:${tone}"></div></div>
+      <div style="padding:10px 16px 0;display:flex;align-items:center;gap:8px;flex:none">
+        <div style="font-size:11px;font-weight:700;color:${tone}">Step 1 of 2</div>
+        <div style="font-size:11px;color:${T.text3}">· Request details</div>
+        <div style="margin-left:auto;font-size:9px;font-weight:700;color:${T.green};background:${T.greenLight};border-radius:4px;padding:2px 7px;border:1px solid ${isDark()?'#1a4731':'#c4e3d3'}">✓ Revised</div>
+      </div>
+      <div style="padding:10px 16px 16px;display:flex;flex-direction:column;gap:10px">
+        <div>
+          <div style="display:flex;align-items:center;gap:5px;margin-bottom:5px">
+            <div data-ed style="font-size:10.5px;font-weight:600;color:${T.text}">Test Name</div>
+            <div style="font-size:9.5px;color:${T.red};font-weight:700">*</div>
+          </div>
+          <div style="height:34px;border:1.5px solid ${T.border2};border-radius:7px;background:${T.surface};display:flex;align-items:center;padding:0 11px">
+            <div data-ed style="font-size:11.5px;color:${T.text3}">e.g. Login flow regression</div>
+          </div>
+        </div>
+        <div>
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:5px">
+            <div data-ed style="font-size:10.5px;font-weight:600;color:${T.text}">Priority</div>
+            <div style="font-size:8.5px;font-weight:700;color:${T.green};background:${T.greenLight};border-radius:3px;padding:2px 5px;border:1px solid ${isDark()?'#1a4731':'#c4e3d3'}">⚡ auto-suggested</div>
+          </div>
+          <div style="height:38px;border:1.5px solid ${T.green}66;border-radius:7px;background:${T.greenLight};display:flex;align-items:center;padding:0 12px;justify-content:space-between">
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="width:10px;height:10px;border-radius:50%;background:${T.green};flex:none"></div>
+              <div data-ed style="font-size:12px;font-weight:700;color:${isDark()?'#6dcc9a':'#1a4731'}">High</div>
+            </div>
+            <div style="font-size:10px;color:${T.green};border-bottom:1px dashed ${T.green}66;cursor:pointer">Change</div>
+          </div>
+          <div style="font-size:9.5px;color:${T.text3};margin-top:4px;padding-left:2px">From linked issue severity · confirm or adjust</div>
+        </div>
+        <div>
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:5px">
+            <div style="font-size:10.5px;font-weight:600;color:${T.text}">Attach files</div>
+            <div style="font-size:9px;font-weight:600;color:${T.text3};background:${T.surface2};border-radius:4px;padding:2px 6px">optional</div>
+          </div>
+          <div style="height:40px;border:1.5px dashed ${T.border};border-radius:7px;background:${T.surface2};display:flex;align-items:center;justify-content:center">
+            <div style="font-size:10.5px;color:${T.text3}">↑ Drop or click · or skip</div>
+          </div>
+        </div>
+        <div style="height:42px;background:${T.green};border-radius:9px;display:flex;align-items:center;justify-content:center;gap:6px;margin-top:2px">
+          <div data-ed style="font-size:13.5px;font-weight:700;color:#fff">Submit Test Request →</div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:center;gap:5px">
+          <div style="width:10px;height:10px;border-radius:2px;background:${T.green};opacity:.4"></div>
+          <div style="font-size:9px;color:${T.text3};font-family:'JetBrains Mono',monospace">Axiom DS · persona-reviewed · v3</div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function designMockupLg(version, tone) {
+  if (version === 1) return designMockupV1(tone);
+  if (version === 3) return designMockupV3(tone);
+  return designMockupV2(tone);
+}
+
+function renderPhase5DesignReview() {
+  const T = TOKENS;
+  const selDir = DIRECTIONS.find(d => d.id === state.selectedDir) || DIRECTIONS[1];
+  const tone = selDir.tone;
+  const v = state.designVersion;
+  const v3Exists = state.v3Created;
+  const creating = state.creatingVersion;
+
+  const vMeta = [
+    { v: 1, label: 'v1 — Initial', note: 'From wireframe · Severity + Priority separate', tag: 'Initial', tagColor: T.text3, tagBg: T.surface2 },
+    { v: 2, label: 'v2 — DS applied', note: 'Axiom DS + auto-suggest · in review', tag: 'In Review', tagColor: T.amber, tagBg: T.amberLight },
+    ...(v3Exists ? [{ v: 3, label: 'v3 — Revised', note: 'Persona feedback addressed', tag: 'Revised', tagColor: T.green, tagBg: T.greenLight }] : []),
+  ];
+
+  const versionStrip = `
+    <div style="display:flex;gap:10px;margin-bottom:18px;flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px;align-items:stretch">
+      ${vMeta.map(vm => {
+        const isSel = v === vm.v;
+        return `
+          <div onclick="selectDesignVersion(${vm.v})" style="cursor:pointer;border:${isSel?`2px solid ${tone}`:`1px solid ${T.border}`};border-radius:11px;overflow:hidden;background:${isSel?T.surface:T.surface2};transition:all .15s;flex:none;width:132px;${isSel?`box-shadow:0 2px 10px ${tone}28;`:''}"
+            onmouseover="this.style.background='${isSel?T.surface:T.border}'" onmouseout="this.style.background='${isSel?T.surface:T.surface2}'">
+            <div style="height:66px;overflow:hidden;border-bottom:1px solid ${T.border}">${designVersionThumb(vm.v, tone)}</div>
+            <div style="padding:7px 9px">
+              <div style="font-size:10px;font-weight:700;color:${isSel?tone:T.text2};margin-bottom:2px">${vm.label}</div>
+              <div style="font-size:9px;color:${T.text3};line-height:1.3;margin-bottom:4px">${vm.note}</div>
+              <span style="font-size:8.5px;font-weight:700;color:${vm.tagColor};background:${vm.tagBg};border-radius:3px;padding:1.5px 5px">${vm.tag}</span>
+            </div>
+          </div>
+        `;
+      }).join('')}
+      ${!v3Exists ? `
+        <div onclick="${creating?'':'createDesignV3()'}" style="cursor:${creating?'default':'pointer'};border:1.5px dashed ${T.border2};border-radius:11px;width:132px;flex:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;padding:14px 10px;transition:background .15s;background:transparent;text-align:center"
+          onmouseover="if(!${creating})this.style.background='${T.surface2}'" onmouseout="if(!${creating})this.style.background='transparent'">
+          ${creating
+            ? `<div style="font-size:24px;animation:spin 1s linear infinite;color:${T.text3};line-height:1">⟳</div><div style="font-size:10px;font-weight:600;color:${T.text3};line-height:1.4">Generating<br>v3…</div>`
+            : `<div style="font-size:26px;color:${T.border2};line-height:1">+</div><div style="font-size:10px;font-weight:600;color:${T.text3};line-height:1.4">Create v3<br>from feedback</div><div style="font-size:8.5px;color:${T.text3};line-height:1.3;margin-top:2px">Addresses persona<br>review flags</div>`
+          }
+        </div>
+      ` : ''}
+    </div>`;
+
+  const editId = 'design-v' + v;
+  const isEditMode = !!state.editModes[editId];
+
+  const designNote = `
+    <div style="margin-top:10px;display:flex;flex-direction:column;gap:7px">
+      <div style="display:flex;align-items:center;gap:9px">
+        <button id="edit-btn-${editId}" class="edit-btn${isEditMode?' saving':''}" onclick="toggleEdit('${editId}')">
+          ${isEditMode ? 'Save ✓' : '✎ Edit'}
+        </button>
+        <span style="font-size:10px;color:${T.text3}">v${v} of ${v3Exists?3:2} · Direction ${selDir.id} — ${selDir.name}</span>
+      </div>
+      <textarea
+        placeholder="Version notes — what changed, what to watch…"
+        oninput="state.designNotes[${v}]=this.value"
+        style="width:316px;height:54px;padding:8px 11px;border:1.5px solid ${T.border};border-radius:8px;background:${T.surface};color:${T.text};font-family:'Hanken Grotesk',sans-serif;font-size:12px;line-height:1.5;resize:none;outline:none;transition:border .15s"
+        onfocus="this.style.borderColor='${tone}'" onblur="this.style.borderColor='${T.border}'"
+      >${state.designNotes[v] || ''}</textarea>
+    </div>`;
+
+  const personaPanel = `
+    <div style="flex:1;min-width:230px;max-width:280px">
+      <div style="background:${T.surfaceWarm};border:1px solid ${T.border};border-radius:14px;padding:20px;animation:ch-pop .5s ease .1s backwards">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+          <div style="width:36px;height:36px;border-radius:50%;background:#d4456b;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex:none">DP</div>
+          <div>
+            <div style="font-size:13px;font-weight:700">Devon Park</div>
+            <div style="font-size:11px;color:${T.text2}">Persona Review Agent · Senior QA Lead</div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:9px;margin-bottom:16px">
+          <div style="display:flex;align-items:flex-start;gap:8px;font-size:12.5px;line-height:1.45">
+            <span style="color:${T.green};font-weight:700;flex:none;margin-top:1px">✓</span>
+            <span>Priority auto-suggest removes the biggest drop-off step.</span>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:8px;font-size:12.5px;line-height:1.45">
+            <span style="color:${T.green};font-weight:700;flex:none;margin-top:1px">✓</span>
+            <span>Single primary action per screen — Devon won't stall.</span>
+          </div>
+          ${v3Exists
+            ? `<div style="display:flex;align-items:flex-start;gap:8px;font-size:12.5px;line-height:1.45;background:${T.greenLight};border-radius:8px;padding:9px;border:1px solid ${isDark()?'#1a4731':'#c4e3d3'}">
+                <span style="color:${T.green};font-weight:700;flex:none;margin-top:1px">✓</span>
+                <span>"Severity" removed — Priority auto-suggests in one step.</span>
+               </div>
+               <div style="display:flex;align-items:flex-start;gap:8px;font-size:12.5px;line-height:1.45;background:${T.greenLight};border-radius:8px;padding:9px;border:1px solid ${isDark()?'#1a4731':'#c4e3d3'}">
+                <span style="color:${T.green};font-weight:700;flex:none;margin-top:1px">✓</span>
+                <span>Attach file clearly marked optional — Devon can skip without friction.</span>
+               </div>`
+            : `<div style="display:flex;align-items:flex-start;gap:8px;font-size:12.5px;line-height:1.45;background:${T.amberLight};border-radius:8px;padding:9px;border:1px solid ${isDark()?'#5a4010':'#ecd9a8'}">
+                <span style="color:${T.amber};font-weight:700;flex:none;margin-top:1px">!</span>
+                <span>"Severity" vs "Priority" — Devon reads them as the same field. Consolidate.</span>
+               </div>
+               <div style="display:flex;align-items:flex-start;gap:8px;font-size:12.5px;line-height:1.45;background:${T.amberLight};border-radius:8px;padding:9px;border:1px solid ${isDark()?'#5a4010':'#ecd9a8'}">
+                <span style="color:${T.amber};font-weight:700;flex:none;margin-top:1px">!</span>
+                <span>"Attach file" is prominent but de-scoped. Remove or mark clearly optional.</span>
+               </div>`
+          }
+        </div>
+        ${!v3Exists
+          ? `<button onclick="createDesignV3()" ${creating?'disabled':''} style="width:100%;padding:10px 14px;border-radius:9px;border:none;background:${tone};color:#fff;font-size:13px;font-weight:700;cursor:${creating?'default':'pointer'};font-family:'Hanken Grotesk',sans-serif;transition:opacity .15s;${creating?'opacity:.65':''}">
+              ${creating?'⟳ Generating v3…':'Create v3 — address feedback →'}
+             </button>`
+          : `<div style="background:${T.greenLight};border:1px solid ${isDark()?'#1a4731':'#c4e3d3'};border-radius:9px;padding:10px 14px;text-align:center;font-size:13px;font-weight:700;color:${isDark()?'#4aad7a':'#1a4731'}">
+              ✓ v3 addresses all persona feedback
+             </div>`
+        }
+      </div>
+    </div>`;
+
+  return `
+    <div style="max-width:700px">
+      ${versionStrip}
+      <div style="display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap">
+        <div style="flex:none">
+          ${designMockupLg(v, tone)}
+          ${designNote}
+        </div>
+        ${personaPanel}
+      </div>
+    </div>`;
 }
 
 // ─── HEADER ──────────────────────────────────────────────────────────────────
@@ -870,7 +1249,10 @@ function stageContent(ph) {
     `;
   }
 
-  // ── Phases 4–7: hi-fi mockup ──────────────────────────────────────────────
+  // ── Phase 5: rich design review with version history ──────────────────────
+  if (ph === 5) return renderPhase5DesignReview();
+
+  // ── Phases 4, 6, 7: hi-fi mockup ─────────────────────────────────────────
   const selDir = DIRECTIONS.find(d => d.id === state.selectedDir) || DIRECTIONS[0];
   const selTone = selDir.tone;
 
