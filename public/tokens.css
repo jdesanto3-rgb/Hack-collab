@@ -1,0 +1,174 @@
+/* ============================================================
+   Design Tokens — CSS Custom Properties
+   ============================================================ */
+
+:root {
+  /* --- Colors: Light mode --- */
+  --bg: #F0ECE5;
+  --surface: #FDFAF6;
+  --surface2: #E8E3D9;
+  --border: #D8D2C6;
+  --border2: #C4BCAF;
+  --text: #1C1914;
+  --text2: #6B6860;
+  --text3: #9C9890;
+
+  /* Brand — quiet luxury, warm near-black primary */
+  --brand: #1E1C18;        /* warm near-black — the primary ink color */
+  --brand-light: #EDEAE4;  /* very subtle warm tint for hover states */
+  --brand-mid: #9B8E83;    /* warm stone-gray for midtones */
+  --brand-dark: #0E0D0B;   /* very deep for pressed states */
+
+  /* Stone accent — warm neutral for tags, chips, secondary UI */
+  --stone: #7A6A5C;
+  --stone-light: #F2EDE7;
+  --stone-mid: #C4B5A8;
+
+  /* Accents — kept for components & agent colors */
+  --purple: #534AB7;
+  --purple-light: #EEEDFE;
+  --purple-mid: #AFA9EC;
+
+  --teal: #0F6E56;
+  --teal-light: #E1F5EE;
+  --teal-mid: #5DCAA5;
+
+  --amber: #854F0B;
+  --amber-light: #FAEEDA;
+  --amber-mid: #EF9F27;
+
+  --red: #a32d2d;
+  --red-light: #fcebeb;
+
+  --npt: #1B4B6B;
+  --npt-light: #e8f0f6;
+
+  /* Canvas & workflow */
+  --bg-canvas: #ecebe5;
+  --surface-warm: #fffdf8;
+
+  /* Extended accents */
+  --blue: #2f5bea;
+  --blue-light: #e7eefe;
+  --green: #2e8157;
+  --green-light: #e6f3ec;
+
+  /* --- Spacing --- */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-lg: 16px;
+  --space-xl: 24px;
+  --space-2xl: 32px;
+  --space-3xl: 48px;
+
+  /* --- Border Radius --- */
+  --radius-sm: 4px;
+  --radius: 6px;
+  --radius-lg: 8px;
+  --radius-pill: 20px;
+  --radius-full: 9999px;
+
+  /* --- Font Size --- */
+  --text-xs: 10px;
+  --text-sm: 11px;
+  --text-md: 12px;
+  --text-base: 13px;
+  --text-lg: 14px;
+  --text-xl: 16px;
+  --text-2xl: 20px;
+  --text-3xl: 24px;
+  --text-4xl: 30px;
+
+  /* --- Font Weight --- */
+  --weight-normal: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
+  /* --- Font Families --- */
+  --font-sans: 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-serif: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+  --font-mono: 'JetBrains Mono', 'Fira Mono', 'Courier New', monospace;
+
+  /* --- Letter Spacing --- */
+  --tracking-tight: -0.02em;
+  --tracking-snug: -0.01em;
+  --tracking-normal: 0em;
+  --tracking-wide: 0.04em;
+  --tracking-wider: 0.08em;
+  --tracking-widest: 0.12em;
+
+  /* --- Shadows --- */
+  --shadow-sm: 0 1px 2px rgba(28, 25, 20, 0.06);
+  --shadow-md: 0 2px 8px rgba(28, 25, 20, 0.08);
+  --shadow-lg: 0 4px 16px rgba(28, 25, 20, 0.10);
+
+  /* --- Transitions --- */
+  --transition-fast: 100ms ease;
+  --transition: 150ms ease;
+  --transition-slow: 250ms ease;
+}
+
+/* --- Dark mode overrides --- */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1C1914;
+    --surface: #252119;
+    --surface2: #2E2B23;
+    --border: #3C3830;
+    --border2: #4C4840;
+    --text: #EAE7E0;
+    --text2: #9C9890;
+    --text3: #6B6860;
+
+    --brand: #EAE6DF;        /* inverted — near-white for dark bg */
+    --brand-light: #2A2720;
+    --brand-mid: #9B8E83;
+    --brand-dark: #F5F2EC;
+
+    --stone: #C4B5A8;
+    --stone-light: #2A2520;
+    --stone-mid: #7A6A5C;
+
+    --purple: #7F77DD;
+    --purple-light: #26215C;
+    --purple-mid: #3C3489;
+
+    --teal: #1D9E75;
+    --teal-light: #04342C;
+    --teal-mid: #0F6E56;
+
+    --amber: #EF9F27;
+    --amber-light: #412402;
+    --amber-mid: #854F0B;
+
+    --red: #d94f4f;
+    --red-light: #3d1212;
+
+    --npt: #4d9ed4;
+    --npt-light: #0e2535;
+
+    --bg-canvas: #1a1916;
+    --surface-warm: #1e1d1a;
+
+    --blue: #6b8ef5;
+    --blue-light: #121c3a;
+    --green: #4aad7a;
+    --green-light: #0a2318;
+  }
+}
+
+/* --- Global base styles --- */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}

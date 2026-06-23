@@ -3,6 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,300;0,400;0,500;0,600;0,700&family=Instrument+Serif:ital,wght@0,400;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/tokens.css">
 <title>Design Sandbox — NPT Home</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -32,8 +36,8 @@ html,body{height:100%;overflow:hidden}
 body{font-family:'Hanken Grotesk',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:13px;display:flex;flex-direction:column}
 
 /* TOP BAR */
-.topbar{height:44px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 12px;gap:8px;flex-shrink:0}
-.topbar-logo{font-size:13px;font-weight:600;color:var(--brand);letter-spacing:-.3px}
+.topbar{height:52px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 16px;gap:10px;flex-shrink:0}
+.topbar-logo{font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-size:19px;font-weight:400;color:var(--text);letter-spacing:.2px;line-height:1}
 .topbar-sep{width:1px;height:20px;background:var(--border);margin:0 6px}
 .sandbox-name{font-size:13px;font-weight:500;color:var(--text)}
 .badge{font-size:10px;padding:2px 7px;border-radius:20px;font-weight:500;margin-left:3px}
@@ -45,7 +49,7 @@ body{font-family:'Hanken Grotesk',-apple-system,BlinkMacSystemFont,'Segoe UI',sa
 .btn{font-size:12px;padding:5px 11px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text2);cursor:pointer;font-weight:500;transition:all .12s;white-space:nowrap}
 .btn:hover{border-color:var(--border2);color:var(--text)}
 .btn-primary{background:var(--brand);color:#fff;border-color:var(--brand)}
-.btn-primary:hover{opacity:.88;color:#fff}
+.btn-primary:hover{background:#2E2B24;color:#fff;border-color:#2E2B24;opacity:1}
 .btn-teal{background:var(--teal-light);color:var(--teal);border-color:var(--teal-mid)}
 .btn-teal:hover{opacity:.85}
 .avatar{width:26px;height:26px;border-radius:50%;color:#fff;font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0}
@@ -58,7 +62,7 @@ body{font-family:'Hanken Grotesk',-apple-system,BlinkMacSystemFont,'Segoe UI',sa
 .panel-hd{padding:9px 12px;border-bottom:1px solid var(--border);font-size:10px;font-weight:600;color:var(--text3);letter-spacing:.05em;text-transform:uppercase;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
 .search{padding:7px 10px;border-bottom:1px solid var(--border);flex-shrink:0}
 .search input{width:100%;padding:5px 8px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:12px;outline:none}
-.search input:focus{border-color:var(--brand)}
+.search input:focus{border-color:var(--brand-mid);box-shadow:0 0 0 2px rgba(155,142,131,.15);outline:none}
 .comp-scroll{overflow-y:auto;flex:1;padding:6px 0}
 .grp-label{font-size:10px;font-weight:600;color:var(--text3);padding:8px 12px 3px;letter-spacing:.05em;text-transform:uppercase}
 .comp-row{display:flex;align-items:center;gap:8px;padding:6px 12px;cursor:grab;border-left:2px solid transparent;transition:all .1s}
@@ -98,7 +102,7 @@ body{font-family:'Hanken Grotesk',-apple-system,BlinkMacSystemFont,'Segoe UI',sa
 
 /* SANDBOX PANE */
 .sandbox-pane-wrap{flex:1;overflow:auto;background:var(--bg);padding:20px}
-.sandbox-canvas{min-height:100%;position:relative;border-radius:10px;border:2px dashed var(--border);min-height:400px;transition:border-color .15s}
+.sandbox-canvas{min-height:100%;position:relative;border-radius:10px;border:2px dashed var(--border);min-height:400px;transition:border-color .15s;background:var(--bg)}
 .sandbox-canvas.drag-over{border-color:var(--brand);background:var(--brand-light)}
 .drop-hint{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;color:var(--text3);font-size:13px;pointer-events:none}
 .drop-icon{font-size:28px;opacity:.3}
