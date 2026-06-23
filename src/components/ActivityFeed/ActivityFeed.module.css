@@ -1,0 +1,117 @@
+/* ActivityFeed */
+
+.feed {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.header {
+  flex: none;
+  margin-bottom: 16px;
+}
+
+.headerLabel {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: var(--text-xs);
+  color: var(--text3);
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+
+.headerTitle {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
+  color: var(--text);
+}
+
+.list {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.empty {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  text-align: center;
+}
+
+.emptyText {
+  font-size: var(--text-base);
+  color: var(--text3);
+  line-height: 1.55;
+}
+
+/* --- Activity Item --- */
+
+.item {
+  background: var(--surface);
+  border: 1px solid #ece7db;
+  border-radius: 11px;
+  padding: 12px;
+  margin-bottom: 9px;
+}
+
+.itemHeader {
+  display: flex;
+  align-items: center;
+  margin-bottom: 6px;
+  gap: 7px;
+}
+
+.itemName {
+  font-size: var(--text-md);
+  font-weight: var(--weight-bold);
+  color: var(--text);
+  flex: 1;
+}
+
+.itemTime {
+  font-size: var(--text-sm);
+  color: #b8b4aa;
+}
+
+.itemText {
+  font-size: 12.5px;
+  color: #43414a;
+  line-height: 1.45;
+}
+
+/* --- Tag Chips --- */
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  border-radius: var(--radius-sm);
+  padding: 3px 7px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9.5px;
+  font-weight: var(--weight-semibold);
+  margin-top: 7px;
+}
+
+.chipParallel {
+  background: var(--purple-light);
+  color: var(--purple);
+}
+
+.chipPromote {
+  background: var(--green-light);
+  color: var(--green);
+}
+
+.chipGate {
+  background: var(--blue-light);
+  color: var(--blue);
+}
+
+.chipHuman {
+  background: var(--amber-light);
+  color: var(--amber);
+}

@@ -1,5 +1,11 @@
 import '../src/tokens/tokens.css';
 
+// Load JetBrains Mono for monospace usage in components
+const fontLink = document.createElement('link');
+fontLink.rel = 'stylesheet';
+fontLink.href = 'https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap';
+document.head.appendChild(fontLink);
+
 /** @type { import('@storybook/react').Preview } */
 const preview = {
   parameters: {

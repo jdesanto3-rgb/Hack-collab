@@ -32,6 +32,16 @@
   --npt: #1B4B6B;
   --npt-light: #e8f0f6;
 
+  /* --- Canvas & workflow --- */
+  --bg-canvas: #ecebe5;
+  --surface-warm: #fffdf8;
+
+  /* --- Extended accents --- */
+  --blue: #2f5bea;
+  --blue-light: #e7eefe;
+  --green: #2e8157;
+  --green-light: #e6f3ec;
+
   /* --- Spacing --- */
   --space-xs: 4px;
   --space-sm: 8px;
@@ -105,6 +115,12 @@
 
     --npt: #4d9ed4;
     --npt-light: #0e2535;
+    --bg-canvas: #1a1916;
+    --surface-warm: #1e1d1a;
+    --blue: #6b8ef5;
+    --blue-light: #121c3a;
+    --green: #4aad7a;
+    --green-light: #0a2318;
   }
 }
 

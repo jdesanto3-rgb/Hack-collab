@@ -1,0 +1,136 @@
+/* PipelineRail */
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.35; transform: scale(1); }
+  50%       { opacity: 1;    transform: scale(1.25); }
+}
+
+.rail {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: auto;
+  padding: 22px 18px;
+  background: var(--surface2);
+}
+
+.railHeader {
+  margin-bottom: 20px;
+}
+
+.railLabel {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: var(--text-xs);
+  color: var(--text3);
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+
+.railTitle {
+  font-size: 15px;
+  font-weight: var(--weight-bold);
+  color: var(--text);
+}
+
+/* --- Agent Item --- */
+
+.item {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.dotCol {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: var(--weight-semibold);
+  flex: none;
+  position: relative;
+}
+
+.dotPending {
+  background: transparent;
+  border: 1.5px solid #cdc7ba;
+  color: #a8a499;
+}
+
+.dotDone {
+  color: #fff;
+}
+
+.dotActive {
+  color: #fff;
+}
+
+.pulseRing {
+  position: absolute;
+  inset: -5px;
+  border-radius: 13px;
+  border: 2px solid;
+  opacity: 0.5;
+  animation: pulse 1.4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.connector {
+  width: 2px;
+  min-height: 18px;
+  margin: 3px 0;
+  flex: 1;
+}
+
+/* --- Info area --- */
+
+.info {
+  padding-top: 4px;
+  padding-bottom: 18px;
+  flex: 1;
+}
+
+.agentName {
+  font-size: var(--text-base);
+  font-weight: var(--weight-semibold);
+  line-height: 1.2;
+  color: var(--text);
+}
+
+.status {
+  font-size: var(--text-sm);
+  margin-top: 2px;
+}
+
+/* --- Reset button --- */
+
+.resetBtn {
+  width: 100%;
+  border: 1px solid #ddd8cc;
+  background: var(--surface);
+  color: var(--text2);
+  border-radius: 9px;
+  padding: 9px;
+  font-size: var(--text-md);
+  font-weight: var(--weight-semibold);
+  cursor: pointer;
+  font-family: inherit;
+  margin-top: auto;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  transition: background var(--transition), color var(--transition);
+}
+
+.resetBtn:hover {
+  background: var(--bg);
+  color: var(--text);
+}

@@ -1,0 +1,48 @@
+/* AgentBadge */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600;
+  color: #fff;
+  flex: none;
+  line-height: 1;
+  user-select: none;
+}
+
+/* --- Sizes --- */
+
+.sizeSm {
+  width: 16px;
+  height: 16px;
+  font-size: 9px;
+}
+
+.sizeMd {
+  width: 20px;
+  height: 20px;
+  font-size: 10px;
+}
+
+.sizeLg {
+  width: 28px;
+  height: 28px;
+  font-size: 11px;
+}
+
+.sizeXl {
+  width: 40px;
+  height: 40px;
+  font-size: 15px;
+}
+
+/* --- Shapes --- */
+
+.square.sizeSm { border-radius: 4px; }
+.square.sizeMd { border-radius: 5px; }
+.square.sizeLg { border-radius: 8px; }
+.square.sizeXl { border-radius: 12px; }
+
+.circle { border-radius: 50%; }

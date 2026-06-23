@@ -28,3 +28,9 @@ export { Toast, ToastProvider, useToast } from './components/Toast/Toast';
 
 // Navigation
 export { Tabs, Tab } from './components/Tabs/Tabs';
+
+// Workflow & canvas
+export { AgentBadge } from './components/AgentBadge/AgentBadge';
+export { KanbanBoard, KanbanColumn, KanbanCard } from './components/KanbanBoard/KanbanBoard';
+export { ActivityFeed, ActivityItem } from './components/ActivityFeed/ActivityFeed';
+export { PipelineRail } from './components/PipelineRail/PipelineRail';

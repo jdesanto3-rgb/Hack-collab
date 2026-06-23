@@ -3,1205 +3,874 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Chorus — Shared Agentic Canvas</title>
+<title>Chorus — Design Team</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Instrument+Serif:ital,wght@0,400;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/tokens.css">
 <style>
-:root {
-  --bg: #f7f6f3;
-  --surface: #ffffff;
-  --surface2: #f0efe9;
-  --border: #e2e0d8;
-  --border2: #ccc9be;
-  --text: #1a1916;
-  --text2: #6b6960;
-  --text3: #9c9a90;
-  --purple: #534AB7;
-  --purple-light: #EEEDFE;
-  --purple-mid: #AFA9EC;
-  --teal: #0F6E56;
-  --teal-light: #E1F5EE;
-  --teal-mid: #5DCAA5;
-  --amber: #854F0B;
-  --amber-light: #FAEEDA;
-  --amber-mid: #EF9F27;
-  --red: #a32d2d;
-  --red-light: #fcebeb;
-  --npt: #1B4B6B;
-  --radius: 8px;
-}
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #111110;
-    --surface: #1c1b19;
-    --surface2: #242320;
-    --border: #2d2c28;
-    --border2: #3d3c37;
-    --text: #e8e6df;
-    --text2: #9b9889;
-    --text3: #6b6960;
-    --purple-light: #1e1a3a;
-    --teal-light: #0d2820;
-    --amber-light: #2a1a04;
-  }
-}
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  height: 100vh;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  font-size: 13px;
-  line-height: 1.5;
-}
-
-/* TOP BAR */
-#topbar {
-  height: 48px;
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  padding: 0 16px;
-  gap: 0;
-  flex-shrink: 0;
-  z-index: 100;
-}
-#topbar .wordmark {
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--purple);
-  letter-spacing: -0.3px;
-}
-#topbar .sep {
-  width: 1px;
-  height: 20px;
-  background: var(--border2);
-  margin: 0 12px;
-}
-#topbar .project-name {
-  font-size: 12px;
-  color: var(--text2);
-  font-weight: 500;
-}
-#topbar .center {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-}
-.view-tab {
-  padding: 5px 14px;
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 500;
-  cursor: pointer;
-  color: var(--text2);
-  border: none;
-  background: transparent;
-  transition: all 0.15s;
-}
-.view-tab:hover { background: var(--surface2); color: var(--text); }
-.view-tab.active { background: var(--purple-light); color: var(--purple); }
-#topbar .right {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.avatars { display: flex; gap: -4px; }
-.avatar {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  border: 2px solid var(--surface);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 10px;
-  font-weight: 700;
-  color: #fff;
-  margin-left: -6px;
-}
-.avatar:first-child { margin-left: 0; }
-.avatar-a { background: var(--purple); }
-.avatar-b { background: var(--teal); }
-.avatar-c { background: var(--amber-mid); }
-.bell {
-  width: 28px;
-  height: 28px;
-  border-radius: 6px;
-  background: transparent;
-  border: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  color: var(--text2);
-  font-size: 13px;
-}
-.step-counter {
-  font-size: 11px;
-  color: var(--text3);
-  font-weight: 500;
-  padding: 4px 8px;
-  background: var(--surface2);
-  border-radius: 6px;
-  border: 1px solid var(--border);
-  white-space: nowrap;
-}
-#run-btn {
-  padding: 6px 14px;
-  background: var(--purple);
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.15s;
-  white-space: nowrap;
-}
-#run-btn:hover:not(:disabled) { background: #4440a8; }
-#run-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-
-/* VIEWS */
-#workspace-view, #canvas-view {
-  flex: 1;
-  display: none;
-  overflow: hidden;
-  min-height: 0;
-}
-#workspace-view.active, #canvas-view.active { display: flex; }
-
-/* WORKSPACE */
-#sidebar {
-  width: 220px;
-  flex-shrink: 0;
-  background: var(--surface);
-  border-right: 1px solid var(--border);
-  overflow-y: auto;
-  padding: 12px 0;
-}
-.sidebar-section-label {
-  font-size: 10px;
-  font-weight: 600;
-  color: var(--text3);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  padding: 0 14px 6px;
-}
-.agent-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 7px 14px;
-  border-radius: 0;
-  transition: background 0.15s;
-  cursor: default;
-}
-.agent-row:hover { background: var(--surface2); }
-.agent-icon {
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 11px;
-  flex-shrink: 0;
-  position: relative;
-}
-.agent-icon.waiting { background: var(--surface2); color: var(--text3); border: 1.5px solid var(--border2); }
-.agent-icon.active { background: var(--purple-light); color: var(--purple); border: 1.5px solid var(--purple-mid); animation: pulse-ring 1.4s ease-in-out infinite; }
-.agent-icon.complete { background: var(--teal-light); color: var(--teal); border: 1.5px solid var(--teal-mid); }
-.agent-icon.gate { background: var(--amber-light); color: var(--amber); border: 1.5px solid var(--amber-mid); }
-@keyframes pulse-ring {
-  0% { box-shadow: 0 0 0 0 rgba(83,74,183,0.35); }
-  60% { box-shadow: 0 0 0 5px rgba(83,74,183,0); }
-  100% { box-shadow: 0 0 0 0 rgba(83,74,183,0); }
-}
-.agent-info { flex: 1; min-width: 0; }
-.agent-name { font-size: 12px; font-weight: 500; color: var(--text); line-height: 1.2; }
-.agent-status { font-size: 10px; color: var(--text3); margin-top: 1px; }
-.agent-badge {
-  font-size: 9px;
-  font-weight: 700;
-  padding: 2px 5px;
-  border-radius: 4px;
-}
-.badge-active { background: var(--purple-light); color: var(--purple); }
-.badge-complete { background: var(--teal-light); color: var(--teal); }
-.badge-gate { background: var(--amber-light); color: var(--amber); }
-.parallel-indicator {
-  font-size: 9px;
-  font-weight: 700;
-  color: var(--purple);
-  background: var(--purple-light);
-  padding: 1px 5px;
-  border-radius: 4px;
-}
-
-/* MAIN FEED */
-#feed-wrapper {
-  flex: 1;
-  overflow-y: auto;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-#feed {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  min-height: 100%;
-  justify-content: flex-end;
-}
-
-.feed-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 14px 16px;
-  border-left-width: 3px;
-  opacity: 0;
-  transform: translateY(12px);
-  transition: opacity 0.3s ease, transform 0.3s ease;
-  position: relative;
-}
-.feed-card.visible { opacity: 1; transform: translateY(0); }
-.feed-card.card-input { border-left-color: var(--border2); }
-.feed-card.card-router { border-left-color: var(--npt); }
-.feed-card.card-agent { border-left-color: var(--teal); }
-.feed-card.card-gate-amber { border-left-color: var(--amber-mid); background: var(--amber-light); border-color: var(--amber-mid); }
-.feed-card.card-gate-purple { border-left-color: var(--purple); background: var(--purple-light); border-color: var(--purple-mid); }
-.feed-card.card-sub { border-left-color: var(--text3); background: var(--surface2); }
-.feed-card.card-promo { border-left-color: var(--teal); background: var(--teal-light); border-color: var(--teal-mid); }
-
-.card-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 10px;
-}
-.card-label {
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--text2);
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
-}
-.status-badge {
-  font-size: 10px;
-  font-weight: 700;
-  padding: 2px 7px;
-  border-radius: 10px;
-  margin-left: auto;
-}
-.status-exploring { background: var(--amber-light); color: var(--amber); }
-.status-inreview { background: var(--purple-light); color: var(--purple); }
-.status-approved { background: var(--teal-light); color: var(--teal); }
-.status-promoted { background: var(--purple); color: #fff; }
-
-.card-title {
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--text);
-  margin-bottom: 8px;
-}
-.card-body {
-  font-size: 12px;
-  color: var(--text2);
-  line-height: 1.6;
-  white-space: pre-wrap;
-}
-.card-body strong { color: var(--text); font-weight: 600; }
-
-.thinking-spinner {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 12px;
-  color: var(--text3);
-  padding: 6px 0;
-}
-.spinner {
-  width: 14px;
-  height: 14px;
-  border: 2px solid var(--border2);
-  border-top-color: var(--purple);
-  border-radius: 50%;
-  animation: spin 0.7s linear infinite;
-  flex-shrink: 0;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-
-.gate-message {
-  font-size: 13px;
-  color: var(--amber);
-  margin-bottom: 12px;
-  font-weight: 500;
-}
-.gate-message-purple { color: var(--purple); }
-.gate-buttons {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-top: 12px;
-}
-.btn {
-  padding: 7px 14px;
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  border: 1px solid transparent;
-  transition: all 0.15s;
-}
-.btn-ghost {
-  background: transparent;
-  border-color: var(--border2);
-  color: var(--text2);
-}
-.btn-ghost:hover { border-color: var(--text3); color: var(--text); }
-.btn-amber {
-  background: var(--amber-mid);
-  color: #fff;
-  border-color: var(--amber-mid);
-}
-.btn-amber:hover { background: #d68a14; }
-.btn-purple {
-  background: var(--purple);
-  color: #fff;
-  border-color: var(--purple);
-  font-size: 13px;
-  padding: 8px 18px;
-}
-.btn-purple:hover { background: #4440a8; }
-.btn:disabled { opacity: 0.5; cursor: not-allowed; }
-.btn-selected {
-  background: var(--teal-light);
-  border-color: var(--teal-mid);
-  color: var(--teal);
-}
-
-/* PARALLEL GRID */
-.parallel-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 0 2px;
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--purple);
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
-}
-.parallel-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  margin-top: 4px;
-}
-.direction-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  border-left: 3px solid var(--teal);
-  padding: 12px 14px;
-  opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 0.3s ease, transform 0.3s ease;
-}
-.direction-card.visible { opacity: 1; transform: translateY(0); }
-.direction-card.not-selected { opacity: 0.4; }
-.direction-card.selected-dir { border-color: var(--teal); background: var(--teal-light); }
-.direction-label { font-size: 10px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 4px; }
-.direction-name { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
-.direction-body { font-size: 11px; color: var(--text2); line-height: 1.5; }
-.selected-badge {
-  display: inline-block;
-  background: var(--teal);
-  color: #fff;
-  font-size: 9px;
-  font-weight: 700;
-  padding: 2px 6px;
-  border-radius: 4px;
-  margin-top: 8px;
-}
-.not-selected-badge {
-  display: inline-block;
-  background: var(--surface2);
-  color: var(--text3);
-  font-size: 9px;
-  font-weight: 700;
-  padding: 2px 6px;
-  border-radius: 4px;
-  margin-top: 8px;
-}
-
-.sub-agent-card {
-  margin-top: 8px;
-  padding: 10px 12px;
-  background: var(--surface2);
-  border-radius: 6px;
-  border-left: 2px solid var(--text3);
-  font-size: 11px;
-  color: var(--text2);
-  opacity: 0;
-  transform: translateY(6px);
-  transition: opacity 0.3s ease, transform 0.3s ease;
-}
-.sub-agent-card.visible { opacity: 1; transform: translateY(0); }
-
-.link-stub {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  color: var(--purple);
-  font-weight: 600;
-  font-size: 12px;
-  cursor: default;
-  text-decoration: underline;
-  text-underline-offset: 2px;
-}
-
-/* PROMOTION STRIP */
-.promo-strip {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 16px;
-  background: var(--teal);
-  border-radius: var(--radius);
-  color: #fff;
-  font-weight: 700;
-  font-size: 13px;
-  margin-top: 4px;
-  opacity: 0;
-  transform: scale(0.97);
-  transition: opacity 0.4s ease, transform 0.4s ease;
-}
-.promo-strip.visible { opacity: 1; transform: scale(1); }
-
-/* CANVAS VIEW */
-#canvas-view {
-  flex-direction: column;
-  padding: 20px;
-  gap: 16px;
-  overflow-y: auto;
-}
-.canvas-columns {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-}
-.canvas-col {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  min-height: 240px;
-}
-.canvas-col-header {
-  padding: 10px 14px;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.canvas-col-title { font-size: 12px; font-weight: 700; color: var(--text); }
-.col-count {
-  font-size: 10px;
-  font-weight: 700;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.col-exploring .canvas-col-title { color: var(--amber); }
-.col-exploring .col-count { background: var(--amber-light); color: var(--amber); }
-.col-inreview .canvas-col-title { color: var(--purple); }
-.col-inreview .col-count { background: var(--purple-light); color: var(--purple); }
-.col-approved .canvas-col-title { color: var(--teal); }
-.col-approved .col-count { background: var(--teal-light); color: var(--teal); }
-.col-promoted .canvas-col-title { color: var(--surface); }
-.col-promoted { background: var(--purple); border-color: var(--purple); }
-.col-promoted .canvas-col-header { border-bottom-color: rgba(255,255,255,0.2); }
-.col-promoted .col-count { background: rgba(255,255,255,0.2); color: #fff; }
-.col-promoted .canvas-col-title { color: #fff; }
-.canvas-col-body { padding: 10px; display: flex; flex-direction: column; gap: 8px; }
-.canvas-item {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 10px 12px;
-  font-size: 11px;
-  opacity: 0;
-  transform: translateY(8px);
-  transition: opacity 0.3s ease, transform 0.3s ease;
-}
-.canvas-item.visible { opacity: 1; transform: translateY(0); }
-.col-promoted .canvas-item { background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.2); color: #fff; }
-.canvas-item-label { font-size: 9px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 3px; }
-.col-promoted .canvas-item-label { color: rgba(255,255,255,0.6); }
-.canvas-item-name { font-size: 12px; font-weight: 600; color: var(--text); }
-.col-promoted .canvas-item-name { color: #fff; }
-
-.workspace-shells {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-}
-.ws-shell {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 14px 16px;
-}
-.ws-shell.active-shell { border-color: var(--purple-mid); }
-.ws-shell-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 6px;
-}
-.ws-shell-name { font-size: 13px; font-weight: 700; color: var(--text); }
-.ws-shell-badge {
-  font-size: 10px;
-  font-weight: 600;
-  padding: 2px 7px;
-  border-radius: 10px;
-  background: var(--purple-light);
-  color: var(--purple);
-}
-.ws-shell-sub { font-size: 11px; color: var(--text3); }
-.ws-empty { font-size: 12px; color: var(--text3); font-style: italic; }
-
-/* MISC */
-.divider { height: 1px; background: var(--border); margin: 4px 0; }
-
-hr.card-hr { border: none; border-top: 1px solid var(--border); margin: 10px 0; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;font-family:'Hanken Grotesk',sans-serif;font-size:14px;color:#18171a;background:var(--bg-canvas)}
+button{font-family:'Hanken Grotesk',sans-serif;border:none;cursor:pointer}
+@keyframes ch-rise{from{transform:translateY(9px);opacity:0}to{transform:none;opacity:1}}
+@keyframes ch-pop{0%{transform:translateY(12px) scale(.975);opacity:0}60%{transform:translateY(-2px) scale(1.008)}100%{transform:none;opacity:1}}
+@keyframes ch-pulse{0%,100%{opacity:.35;transform:scale(1)}50%{opacity:1;transform:scale(1.25)}}
+@keyframes ch-flow{from{background-position:0 0}to{background-position:24px 0}}
+::-webkit-scrollbar{width:9px;height:9px}
+::-webkit-scrollbar-thumb{background:#cfcabd;border-radius:9px;border:2px solid transparent;background-clip:padding-box}
+::-webkit-scrollbar-track{background:transparent}
+#app{height:100vh;display:flex;flex-direction:column;overflow:hidden}
+header{height:58px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 18px;gap:13px;flex:none;z-index:10}
+#body{flex:1;min-height:0;position:relative;display:flex}
+#canvas-view{flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column}
+#workspace-view{flex:1;min-height:0;overflow:hidden;display:flex}
+.pipeline-rail{width:248px;flex:none;background:var(--surface2);border-right:1px solid var(--border);padding:22px 18px;display:flex;flex-direction:column;overflow-y:auto}
+.stage{flex:1;padding:30px 40px;overflow-y:auto;display:flex;flex-direction:column}
+.feed-rail{width:298px;flex:none;background:var(--surface2);border-left:1px solid var(--border);padding:20px 16px;display:flex;flex-direction:column;overflow-y:auto}
+.canvas-board{flex:1;overflow-x:auto;overflow-y:hidden;padding:20px 24px;display:flex;gap:14px;align-items:flex-start}
+.canvas-col{flex:1;min-width:264px;background:var(--surface2);border-radius:14px;border:1px solid var(--border);display:flex;flex-direction:column;max-height:calc(100vh - 100px)}
+.canvas-col-header{padding:14px 14px 10px;display:flex;align-items:center;gap:8px;flex:none}
+.canvas-col-body{padding:0 10px 14px;overflow-y:auto;display:flex;flex-direction:column;gap:10px}
+.canvas-card{background:var(--surface-warm);border:1px solid var(--border);border-radius:11px;padding:11px;cursor:pointer;box-shadow:var(--shadow-sm);animation:ch-rise .4s ease;transition:box-shadow .15s,transform .15s}
+.canvas-card:hover{box-shadow:var(--shadow-md);transform:translateY(-1px)}
+.dir-card{background:var(--surface-warm);border:2px solid var(--border);border-radius:13px;padding:15px;cursor:pointer;transition:border-color .2s,opacity .2s;flex:1;min-width:210px}
+.dir-card:hover{box-shadow:0 3px 12px rgba(20,18,12,.09)}
+.event-card{background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:12px;animation:ch-rise .35s ease;margin-bottom:9px}
+.tag-chip{display:inline-flex;align-items:center;border-radius:5px;padding:3px 7px;font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:600;margin-top:7px}
+.prov-step{display:flex;align-items:flex-start;gap:9px;padding:8px 0;border-bottom:1px solid #f0ece4}
+.prov-step:last-child{border-bottom:none}
 </style>
 </head>
 <body>
-
-<!-- TOP BAR -->
-<div id="topbar">
-  <span class="wordmark">Chorus</span>
-  <div class="sep"></div>
-  <span class="project-name">NPT Onboarding — Exact Sciences</span>
-  <div class="center">
-    <button class="view-tab active" onclick="switchView('workspace')" id="tab-workspace">Workspace</button>
-    <button class="view-tab" onclick="switchView('canvas')" id="tab-canvas">Canvas</button>
-  </div>
-  <div class="right">
-    <div class="avatars">
-      <div class="avatar avatar-a">JD</div>
-      <div class="avatar avatar-b">MR</div>
-      <div class="avatar avatar-c">KL</div>
-    </div>
-    <div class="bell">🔔</div>
-    <div class="step-counter" id="step-counter">Step 0 / 10</div>
-    <button id="run-btn" onclick="advance()">Run next step →</button>
+<div id="app">
+  <header id="header"></header>
+  <div id="body">
+    <div id="canvas-view"></div>
+    <div id="workspace-view" style="display:none"></div>
   </div>
 </div>
-
-<!-- WORKSPACE VIEW -->
-<div id="workspace-view" class="active">
-  <div id="sidebar">
-    <div class="sidebar-section-label">Agent Pipeline</div>
-    <div class="agent-row" id="ag-ecd">
-      <div class="agent-icon waiting" id="ag-ecd-icon">⇄</div>
-      <div class="agent-info">
-        <div class="agent-name">ECD Router</div>
-        <div class="agent-status" id="ag-ecd-status">Waiting</div>
-      </div>
-    </div>
-    <div class="agent-row" id="ag-research">
-      <div class="agent-icon waiting" id="ag-research-icon">🔬</div>
-      <div class="agent-info">
-        <div class="agent-name">Research Agent</div>
-        <div class="agent-status" id="ag-research-status">Waiting</div>
-      </div>
-    </div>
-    <div class="agent-row" id="ag-strategy">
-      <div class="agent-icon waiting" id="ag-strategy-icon">📐</div>
-      <div class="agent-info">
-        <div class="agent-name">Strategy Agent</div>
-        <div class="agent-status" id="ag-strategy-status">Waiting</div>
-      </div>
-    </div>
-    <div class="agent-row" id="ag-wire">
-      <div class="agent-icon waiting" id="ag-wire-icon">✏️</div>
-      <div class="agent-info">
-        <div class="agent-name">Wireframe Agent</div>
-        <div class="agent-status" id="ag-wire-status">Waiting</div>
-      </div>
-      <div class="parallel-indicator" id="ag-wire-parallel" style="display:none">×3</div>
-    </div>
-    <div class="agent-row" id="ag-visual">
-      <div class="agent-icon waiting" id="ag-visual-icon">🎨</div>
-      <div class="agent-info">
-        <div class="agent-name">Visual Design Agent</div>
-        <div class="agent-status" id="ag-visual-status">Waiting</div>
-      </div>
-    </div>
-    <div class="agent-row" id="ag-persona">
-      <div class="agent-icon waiting" id="ag-persona-icon">👤</div>
-      <div class="agent-info">
-        <div class="agent-name">Persona Review Agent</div>
-        <div class="agent-status" id="ag-persona-status">Waiting</div>
-      </div>
-    </div>
-    <div class="divider" style="margin: 8px 14px;"></div>
-    <div class="agent-row" id="ag-gate">
-      <div class="agent-icon gate" id="ag-gate-icon">🔒</div>
-      <div class="agent-info">
-        <div class="agent-name">ECD Approval Gate</div>
-        <div class="agent-status" id="ag-gate-status">Governance gate</div>
-      </div>
-    </div>
-  </div>
-
-  <div id="feed-wrapper">
-    <div id="feed"></div>
-  </div>
-</div>
-
-<!-- CANVAS VIEW -->
-<div id="canvas-view">
-  <div class="canvas-columns">
-    <div class="canvas-col col-exploring">
-      <div class="canvas-col-header">
-        <div class="canvas-col-title">Exploring</div>
-        <div class="col-count" id="cnt-exploring">0</div>
-      </div>
-      <div class="canvas-col-body" id="col-exploring"></div>
-    </div>
-    <div class="canvas-col col-inreview">
-      <div class="canvas-col-header">
-        <div class="canvas-col-title">In Review</div>
-        <div class="col-count" id="cnt-inreview">0</div>
-      </div>
-      <div class="canvas-col-body" id="col-inreview"></div>
-    </div>
-    <div class="canvas-col col-approved">
-      <div class="canvas-col-header">
-        <div class="canvas-col-title">Approved</div>
-        <div class="col-count" id="cnt-approved">0</div>
-      </div>
-      <div class="canvas-col-body" id="col-approved"></div>
-    </div>
-    <div class="canvas-col col-promoted">
-      <div class="canvas-col-header">
-        <div class="canvas-col-title">Promoted</div>
-        <div class="col-count" id="cnt-promoted">0</div>
-      </div>
-      <div class="canvas-col-body" id="col-promoted"></div>
-    </div>
-  </div>
-  <div class="workspace-shells">
-    <div class="ws-shell active-shell">
-      <div class="ws-shell-header">
-        <div class="ws-shell-name">Design</div>
-        <div class="ws-shell-badge" id="design-badge">Active</div>
-      </div>
-      <div class="ws-shell-sub" id="design-sub">0 items in progress</div>
-    </div>
-    <div class="ws-shell">
-      <div class="ws-shell-header">
-        <div class="ws-shell-name">Product</div>
-      </div>
-      <div class="ws-empty">Workspace coming soon</div>
-    </div>
-    <div class="ws-shell">
-      <div class="ws-shell-header">
-        <div class="ws-shell-name">Dev</div>
-      </div>
-      <div class="ws-empty">Workspace coming soon</div>
-    </div>
-  </div>
-</div>
+<div id="drawer-root"></div>
 
 <script>
-const feed = document.getElementById('feed');
-const runBtn = document.getElementById('run-btn');
-const stepCounter = document.getElementById('step-counter');
+// Read design system tokens once at boot
+const TOKENS = (() => {
+  const s = getComputedStyle(document.documentElement);
+  const get = v => s.getPropertyValue(v).trim();
+  return {
+    bgCanvas:     get('--bg-canvas')     || '#ecebe5',
+    surface:      get('--surface')       || '#ffffff',
+    surfaceWarm:  get('--surface-warm')  || '#fffdf8',
+    surface2:     get('--surface2')      || '#f1efe8',
+    border:       get('--border')        || '#e4e0d7',
+    text:         get('--text')          || '#18171a',
+    text2:        get('--text2')         || '#6c6a72',
+    text3:        get('--text3')         || '#a3a09a',
+    blue:         get('--blue')          || '#2f5bea',
+    blueLight:    get('--blue-light')    || '#e7eefe',
+    green:        get('--green')         || '#2e8157',
+    greenLight:   get('--green-light')   || '#e6f3ec',
+    purple:       get('--purple')        || '#6f57d4',
+    purpleLight:  get('--purple-light')  || '#efebfb',
+    teal:         get('--teal')          || '#1f9d8f',
+    amber:        get('--amber')         || '#c2700f',
+    amberLight:   get('--amber-light')   || '#faeeda',
+    red:          get('--red')           || '#d4456b',
+    shadowSm:     get('--shadow-sm')     || '0 1px 2px rgba(0,0,0,.06)',
+    shadowMd:     get('--shadow-md')     || '0 2px 8px rgba(0,0,0,.08)',
+    shadowLg:     get('--shadow-lg')     || '0 4px 16px rgba(0,0,0,.10)',
+    radiusSm:     get('--radius-sm')     || '4px',
+    radius:       get('--radius')        || '6px',
+    radiusLg:     get('--radius-lg')     || '8px',
+  };
+})();
 
-let currentStep = 0;
-let isGate = false;
-let isProcessing = false;
+const AGENTS = [
+  { key:'research',  name:'Research Agent',       short:'RE', color:'#1f9d8f' },
+  { key:'strategy',  name:'Strategy Agent',        short:'ST', color:'#c2700f' },
+  { key:'wireframe', name:'Wireframe Agent',       short:'WF', color:'#6f57d4' },
+  { key:'visual',    name:'Visual Design Agent',   short:'VD', color:'#d4456b' },
+  { key:'persona',   name:'Persona Review Agent',  short:'PR', color:'#2e8157' },
+  { key:'ecd',       name:'ECD Agent',             short:'EC', color:'#2f5bea' },
+];
+const AGENT_MAP = Object.fromEntries(AGENTS.map(a => [a.key, a]));
 
-const canvasState = { exploring: [], inReview: [], approved: [], promoted: [] };
+const PHASES = [
+  { agent:null,        kind:'idle',     eyebrow:'INTAKE',                      title:'A new brief just landed',                             sub:'The Research Agent picks it up and synthesizes context from the project sources.' },
+  { agent:'research',  kind:'research', eyebrow:'RESEARCH AGENT',              title:'Research Brief',                                      sub:'Six inputs synthesized into the signal that matters.' },
+  { agent:'strategy',  kind:'strategy', eyebrow:'STRATEGY AGENT',              title:'Design Brief',                                        sub:'Goals, persona and constraints — with the design system wired in.' },
+  { agent:'wireframe', kind:'concepts', eyebrow:'WIREFRAME AGENT · PARALLEL',  title:'Three directions, generated at once',                  sub:'The Wireframe Agent ran three explorations in parallel, all grounded in the same brief. A human picks the direction.' },
+  { agent:'visual',    kind:'visual',   eyebrow:'VISUAL DESIGN AGENT',         title:'Hi-fi concept',                                       sub:'The Visual Design Agent applied the Helios Design System to the chosen direction.' },
+  { agent:'persona',   kind:'persona',  eyebrow:'PERSONA REVIEW AGENT',        title:'Persona review',                                      sub:'Validated against the defined persona. This is the AI governance moment.' },
+  { agent:'ecd',       kind:'ecd',      eyebrow:'ECD AGENT · GATE',            title:'Executive Creative Director gate',                    sub:'The ECD reviews the feedback and the concept, then a human confirms the promotion.' },
+  { agent:'ecd',       kind:'promoted', eyebrow:'PROMOTED',                    title:'Promoted to the Shared Canvas',                       sub:'Traceable from brief to approved — now visible to the whole team.' },
+];
 
-function switchView(v) {
-  document.getElementById('workspace-view').classList.toggle('active', v === 'workspace');
-  document.getElementById('canvas-view').classList.toggle('active', v === 'canvas');
-  document.getElementById('tab-workspace').classList.toggle('active', v === 'workspace');
-  document.getElementById('tab-canvas').classList.toggle('active', v === 'canvas');
+const DIRECTIONS = [
+  { id:'A', name:'Single screen',     desc:'Everything on one focused screen — minimal steps.',      tone:'#6f57d4' },
+  { id:'B', name:'Progressive steps', desc:'Guided multi-step flow with a visible progress rail.',   tone:'#2f5bea' },
+  { id:'C', name:'Conversational',    desc:'Chat-led setup that adapts to each answer.',             tone:'#1f9d8f' },
+];
+
+const PHASE_BTN_LABELS = [
+  'Start the flow',
+  'Continue',
+  'Continue',
+  'Select a direction to continue',
+  'Run persona review',
+  'Send to ECD review',
+  'Approve & promote to canvas',
+  'Flow complete',
+];
+
+const PHASE_EVENTS = {
+  1: [{ a:'research',  t:'Synthesized 6 inputs into a Research Brief', tag:'' }],
+  2: [
+    { a:'strategy', t:'Converted brief → Design Brief (goals · persona · constraints)', tag:'' },
+    { a:'ecd',      t:'Flagged Design Brief ready for concepting', tag:'gate' },
+  ],
+  3: [{ a:'wireframe', t:'Spawned 3 directions in parallel · all Exploring', tag:'parallel' }],
+  4: [{ a:'visual',    t:'Applied Helios Design System to selected direction', tag:'' }],
+  5: [{ a:'persona',   t:'Returned structured feedback vs. persona "Maya"', tag:'' }],
+  6: [{ a:'ecd',       t:'Reviewed persona feedback — concept meets the bar', tag:'' }],
+  7: [{ a:'ecd',       t:'Approved & promoted to Shared Canvas', tag:'promote' }],
+};
+
+const PROV_BY_KIND = {
+  wire: [
+    { a:'strategy',  t:'Design Brief handed off', tag:'' },
+    { a:'wireframe', t:'Generated as one of 3 parallel directions', tag:'parallel' },
+  ],
+  hifi: [
+    { a:'wireframe', t:'Wireframe direction selected by human', tag:'human' },
+    { a:'visual',    t:'Helios Design System applied', tag:'' },
+    { a:'persona',   t:'Persona review returned', tag:'' },
+    { a:'ecd',       t:'ECD approved · promoted', tag:'promote' },
+  ],
+  brief: [
+    { a:'research', t:'Synthesized 6 project inputs', tag:'' },
+    { a:'ecd',      t:'Promoted to shared canvas', tag:'promote' },
+  ],
+};
+
+const IDENTITY_NAMES = ['Chorus', 'Quorum', 'Atelier'];
+
+const state = {
+  view: 'canvas',
+  phase: 0,
+  selectedDir: null,
+  events: [],
+  detail: null,
+  identityIdx: 0,
+};
+
+const BASE_CANVAS = {
+  exploring: [
+    { id:'ex-a', kind:'wire', kindLabel:'WIREFRAME', title:'Direction A — Single screen',      agent:'Wireframe Agent', agentShort:'WF', agentColor:'#6f57d4', time:'4m' },
+    { id:'ex-b', kind:'wire', kindLabel:'WIREFRAME', title:'Direction B — Progressive steps',  agent:'Wireframe Agent', agentShort:'WF', agentColor:'#6f57d4', time:'4m' },
+    { id:'ex-c', kind:'wire', kindLabel:'WIREFRAME', title:'Direction C — Conversational',     agent:'Wireframe Agent', agentShort:'WF', agentColor:'#6f57d4', time:'4m' },
+  ],
+  review: [
+    { id:'rv-b', kind:'hifi', kindLabel:'HI-FI CONCEPT', title:'Direction B — design system applied', agent:'Visual Design Agent', agentShort:'VD', agentColor:'#d4456b', time:'1m', tone:'#6f57d4' },
+  ],
+  approved: [
+    { id:'ap-1', kind:'hifi', kindLabel:'HI-FI CONCEPT', title:'Welcome + value proposition', agent:'ECD Agent', agentShort:'EC', agentColor:'#2f5bea', time:'just now', tone:'#2e8157' },
+  ],
+  promoted: [
+    { id:'pr-1', kind:'hifi',  kindLabel:'PROMOTED',        title:'Onboarding hero — v1',                        agent:'ECD Agent',      agentShort:'EC', agentColor:'#2f5bea', time:'2h',  tone:'#2f5bea' },
+    { id:'pr-2', kind:'brief', kindLabel:'RESEARCH BRIEF',  title:'Helios onboarding — context synthesis',       agent:'Research Agent', agentShort:'RE', agentColor:'#1f9d8f', time:'3h' },
+  ],
+};
+
+function setState(updates) {
+  Object.assign(state, updates);
+  render();
 }
 
-function updateStepCounter() {
-  stepCounter.textContent = `Step ${currentStep} / 10`;
+function setView(v) { setState({ view: v }); }
+
+function advance() {
+  if (state.phase === 3 && !state.selectedDir) return;
+  if (state.phase >= 7) return;
+  const next = state.phase + 1;
+  const newEvents = (PHASE_EVENTS[next] || []).map(e => ({ ...e }));
+  setState({ phase: next, events: [...newEvents, ...state.events] });
 }
 
-function setRunBtn(state) {
-  if (state === 'disabled') { runBtn.disabled = true; runBtn.textContent = 'Run next step →'; }
-  else if (state === 'gate') { runBtn.disabled = true; runBtn.textContent = 'Awaiting decision…'; }
-  else if (state === 'done') { runBtn.disabled = true; runBtn.textContent = 'Demo complete ✓'; }
-  else if (state === 'processing') { runBtn.disabled = true; runBtn.textContent = 'Agent running…'; }
-  else { runBtn.disabled = false; runBtn.textContent = 'Run next step →'; }
+function resetFlow() { setState({ phase: 0, selectedDir: null, events: [] }); }
+
+function selectDir(id) {
+  if (state.phase === 3) setState({ selectedDir: id });
 }
 
-function addCard(html, type, opts = {}) {
-  const wrap = document.createElement('div');
-  wrap.className = `feed-card card-${type}`;
-  if (opts.id) wrap.id = opts.id;
-  wrap.innerHTML = html;
-  feed.appendChild(wrap);
-  feed.scrollTop = feed.scrollHeight;
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      wrap.classList.add('visible');
-      const fw = document.getElementById('feed-wrapper');
-      fw.scrollTop = fw.scrollHeight;
-    });
-  });
-  return wrap;
+function cycleIdentity() {
+  setState({ identityIdx: (state.identityIdx + 1) % IDENTITY_NAMES.length });
 }
 
-function agentState(id, state, label) {
-  const icon = document.getElementById(`ag-${id}-icon`);
-  const status = document.getElementById(`ag-${id}-status`);
-  if (!icon) return;
-  icon.className = `agent-icon ${state}`;
-  if (status && label) status.textContent = label;
-}
+function openDetail(cardId) { setState({ detail: cardId }); }
+function closeDetail() { setState({ detail: null }); }
 
-function addCanvasItem(col, label, name) {
-  const colEl = document.getElementById(`col-${col}`);
-  const cntEl = document.getElementById(`cnt-${col}`);
-  const item = document.createElement('div');
-  item.className = 'canvas-item';
-  item.innerHTML = `<div class="canvas-item-label">${label}</div><div class="canvas-item-name">${name}</div>`;
-  colEl.appendChild(item);
-  requestAnimationFrame(() => requestAnimationFrame(() => item.classList.add('visible')));
-  const keys = { exploring: 'exploring', inReview: 'inReview', approved: 'approved', promoted: 'promoted' };
-  canvasState[keys[col]] = (canvasState[keys[col]] || []).concat(name);
-  cntEl.textContent = colEl.children.length;
-  updateDesignBadge();
-  return item;
-}
+// ─── THUMBNAIL BUILDERS ───────────────────────────────────────────────────────
 
-function updateDesignBadge() {
-  const total = Object.values(canvasState).flat().length;
-  document.getElementById('design-sub').textContent = `${total} item${total !== 1 ? 's' : ''} in progress`;
-}
-
-function spinnerCard(label, type) {
-  return addCard(`
-    <div class="card-header">
-      <span class="card-label">${label}</span>
+function wireThumbnail(h) {
+  h = h || 96;
+  return `<div style="height:${h}px;border-radius:7px;background:#fbfaf6;border:1px solid #d8d3c8;padding:8px;display:flex;flex-direction:column;gap:5px;overflow:hidden">
+    <div style="display:flex;gap:5px;align-items:center">
+      <div style="width:11px;height:11px;border:1.5px solid #bdb6a7;border-radius:3px;flex:none"></div>
+      <div style="height:6px;width:34%;background:#cbc5b7;border-radius:2px"></div>
+      <div style="height:9px;width:18px;border:1.5px solid #bdb6a7;border-radius:3px;margin-left:auto"></div>
     </div>
-    <div class="thinking-spinner"><div class="spinner"></div> Agent running…</div>
-  `, type);
-}
-
-function resolveCard(card, html, type) {
-  card.className = `feed-card card-${type} visible`;
-  card.innerHTML = html;
-  const fw = document.getElementById('feed-wrapper');
-  fw.scrollTop = fw.scrollHeight;
-}
-
-// ---- STEPS ----
-
-function step1() {
-  currentStep = 1;
-  updateStepCounter();
-  setRunBtn('processing');
-  agentState('ecd', 'active', 'Analyzing input…');
-
-  addCard(`
-    <div class="card-header">
-      <span class="card-label">Project Brief</span>
+    <div style="flex:1;border:1.5px dashed #cdc7b8;border-radius:4px;background:linear-gradient(to top right,transparent calc(50% - .8px),#e6e1d4,transparent calc(50% + .8px)),linear-gradient(to top left,transparent calc(50% - .8px),#e6e1d4,transparent calc(50% + .8px))"></div>
+    <div style="display:flex;gap:5px;align-items:center">
+      <div style="height:9px;flex:1;border:1.5px solid #bdb6a7;border-radius:3px"></div>
+      <div style="height:9px;width:26px;background:#bdb6a7;border-radius:3px"></div>
     </div>
-    <div class="card-title">Design Challenge</div>
-    <div class="card-body">Redesign the NPT home test request onboarding for mobile-first.\nCurrent completion rate: 33% (target: 70%+).\nConstraint: HIPAA compliant, plain language for medical content.</div>
-  `, 'input');
-
-  setTimeout(() => {
-    addCard(`
-      <div class="card-header">
-        <span class="card-label">ECD Router</span>
-        <span class="status-badge status-exploring">Exploring</span>
-      </div>
-      <div class="card-body" style="color:var(--text3);font-style:italic;font-size:12px;">Analyzing input… routing to Research Agent.</div>
-    `, 'router');
-    setRunBtn('enabled');
-  }, 600);
+  </div>`;
 }
 
-function step2() {
-  currentStep = 2;
-  updateStepCounter();
-  setRunBtn('processing');
-  agentState('ecd', 'complete', 'Routed');
-  agentState('research', 'active', 'Running…');
-
-  const card = spinnerCard('Research Agent', 'agent');
-
-  setTimeout(() => {
-    resolveCard(card, `
-      <div class="card-header">
-        <span class="card-label">Research Agent</span>
-        <span class="status-badge status-exploring">Exploring</span>
-      </div>
-      <div class="card-title">Research Brief</div>
-      <div class="card-body"><strong>KEY FINDINGS</strong>
-• 73% of users cite "medical jargon" as primary drop-off trigger
-• Competitor benchmark: 4.2 avg screens to complete (industry best)
-• Trust signal absence before PII collection = 41% abandonment spike
-• Mobile completion rates 28% lower than desktop due to form density
-
-<strong>RECOMMENDED PERSONAS</strong>
-Primary: Sarah, 32 — first pregnancy, moderate health literacy
-Secondary: Marcus, 41 — ordered by physician, time-constrained</div>
-    `, 'agent');
-    addCanvasItem('exploring', 'Research', 'Research Brief');
-    setRunBtn('gate');
-    isGate = true;
-
-    addCard(`
-      <div class="card-header" style="margin-bottom:0">
-        <span style="font-size:16px">⏸</span>
-        <span class="card-label" style="color:var(--amber)">Your Review Required</span>
-      </div>
-      <div style="margin-top:10px" class="gate-message">Research Brief is ready. Review and approve to continue to Design Brief.</div>
-      <div class="gate-buttons">
-        <button class="btn btn-ghost" onclick="requestRevision(this)">Request Revision</button>
-        <button class="btn btn-amber" onclick="approveStep3(this)">Approve &amp; Continue →</button>
-      </div>
-    `, 'gate-amber');
-  }, 1500);
+function hifiThumbnail(tone, h) {
+  h = h || 96;
+  return `<div style="height:${h}px;border-radius:7px;background:#fff;border:1px solid #e9e5db;overflow:hidden;display:flex;flex-direction:column">
+    <div style="height:30px;background:${tone};display:flex;align-items:center;padding:0 9px;gap:5px;flex:none">
+      <div style="width:30%;height:6px;background:rgba(255,255,255,.85);border-radius:3px"></div>
+      <div style="width:14px;height:9px;background:rgba(255,255,255,.5);border-radius:3px;margin-left:auto"></div>
+    </div>
+    <div style="flex:1;padding:9px;display:flex;flex-direction:column;gap:5px">
+      <div style="height:6px;width:66%;background:#e3dfd4;border-radius:3px"></div>
+      <div style="height:5px;width:88%;background:#ece8de;border-radius:3px"></div>
+      <div style="height:14px;width:44px;background:${tone};border-radius:5px;margin-top:auto"></div>
+    </div>
+  </div>`;
 }
 
-function requestRevision(btn) {
-  btn.closest('.feed-card').querySelector('.gate-message').textContent = 'Revision requested. (Demo: click Approve to continue.)';
+function briefThumbnail(h) {
+  h = h || 96;
+  return `<div style="height:${h}px;border-radius:7px;background:#fff;border:1px solid #e9e5db;padding:10px;display:flex;flex-direction:column;gap:5px;overflow:hidden">
+    <div style="height:7px;width:50%;background:#cfcabd;border-radius:3px"></div>
+    <div style="height:4px;width:92%;background:#e7e3d8;border-radius:3px;margin-top:3px"></div>
+    <div style="height:4px;width:84%;background:#e7e3d8;border-radius:3px"></div>
+    <div style="height:4px;width:88%;background:#e7e3d8;border-radius:3px"></div>
+    <div style="height:4px;width:60%;background:#e7e3d8;border-radius:3px"></div>
+  </div>`;
 }
 
-function approveStep3(btn) {
-  btn.closest('.feed-card').remove();
-  agentState('research', 'complete', 'Complete');
-  currentStep = 3;
-  isGate = false;
-  setRunBtn('enabled');
+function getThumbnail(card, h) {
+  if (card.kind === 'wire') return wireThumbnail(h);
+  if (card.kind === 'brief') return briefThumbnail(h);
+  return hifiThumbnail(card.tone || '#6f57d4', h);
 }
 
-function step4() {
-  currentStep = 4;
-  updateStepCounter();
-  setRunBtn('processing');
-  agentState('strategy', 'active', 'Running…');
+// ─── HEADER ──────────────────────────────────────────────────────────────────
 
-  const card = spinnerCard('Strategy Agent', 'agent');
-
-  setTimeout(() => {
-    resolveCard(card, `
-      <div class="card-header">
-        <span class="card-label">Strategy Agent</span>
-        <span class="status-badge status-exploring">Exploring</span>
+function renderHeader() {
+  const name = IDENTITY_NAMES[state.identityIdx];
+  const isCanvas = state.view === 'canvas';
+  const isWork = state.view === 'workspace';
+  document.getElementById('header').innerHTML = `
+    <div style="display:flex;align-items:center;gap:9px;cursor:pointer" onclick="cycleIdentity()">
+      <div style="width:26px;height:26px;border-radius:7px;background:${TOKENS.text};display:flex;align-items:center;justify-content:center;flex:none">
+        <div style="display:flex;align-items:flex-end;gap:2px;height:13px">
+          <span style="width:2.5px;height:6px;background:#ffd166;border-radius:2px"></span>
+          <span style="width:2.5px;height:13px;background:#fff;border-radius:2px"></span>
+          <span style="width:2.5px;height:9px;background:#7aa2ff;border-radius:2px"></span>
+        </div>
       </div>
-      <div class="card-title">Design Brief</div>
-      <div class="card-body"><strong>CHALLENGE REFRAME</strong>
-Reduce cognitive load and surface trust signals early.
-Transform a form into a guided conversation.
-
-<strong>PRIMARY PERSONA</strong>  Sarah, 32 — First pregnancy, moderate health literacy
-<strong>GOAL</strong>  Complete test request in under 8 minutes with confidence
-<strong>CONSTRAINTS</strong>  HIPAA compliant · Plain language (8th grade reading level) · Mobile-first
-
-<strong>DESIGN DIRECTION</strong>
-- One primary question per screen (conversational flow)
-- Progress indicator always visible
-- Trust signals before PII collection
-- Plain-language medical term tooltips
-
-<strong>DESIGN SYSTEM REF</strong>  Exact Sciences DS v2.1 · Color: Teal primary, warm neutrals</div>
-    `, 'agent');
-    addCanvasItem('exploring', 'Strategy', 'Design Brief');
-    setRunBtn('gate');
-    isGate = true;
-
-    addCard(`
-      <div class="card-header" style="margin-bottom:0">
-        <span style="font-size:16px">⏸</span>
-        <span class="card-label" style="color:var(--amber)">Your Review Required</span>
-      </div>
-      <div style="margin-top:10px" class="gate-message">Design Brief confirmed. Approve to begin parallel wireframe concepting.</div>
-      <div class="gate-buttons">
-        <button class="btn btn-ghost" onclick="requestRevision(this)">Request Revision</button>
-        <button class="btn btn-amber" onclick="approveStep5(this)">Approve &amp; Start Concepting →</button>
-      </div>
-    `, 'gate-amber');
-  }, 1500);
-}
-
-function approveStep5(btn) {
-  btn.closest('.feed-card').remove();
-  agentState('strategy', 'complete', 'Complete');
-  currentStep = 5;
-  isGate = false;
-  setRunBtn('enabled');
-}
-
-function step6() {
-  currentStep = 6;
-  updateStepCounter();
-  setRunBtn('processing');
-  agentState('wire', 'active', 'Running ×3…');
-  document.getElementById('ag-wire-parallel').style.display = '';
-
-  const parallelWrap = document.createElement('div');
-  parallelWrap.innerHTML = `
-    <div class="parallel-header">⟳ Parallel Execution <span style="color:var(--text3);font-weight:400;text-transform:none;letter-spacing:0">— 3 directions generating simultaneously →</span></div>
-    <div class="parallel-grid" id="parallel-grid">
-      <div class="direction-card" id="dir-a">
-        <div class="direction-label">Direction A</div>
-        <div class="direction-name">Conversational Flow</div>
-        <div class="direction-body">One question per screen. Progress bar at top. Back/forward navigation. Estimated 9 screens.<br><br><span style="color:var(--text3)">Best for: first-time users, low health literacy</span></div>
-      </div>
-      <div class="direction-card" id="dir-b">
-        <div class="direction-label">Direction B</div>
-        <div class="direction-name">Progressive Disclosure</div>
-        <div class="direction-body">Grouped sections that expand. 4 main steps. Inline validation. Estimated 4 screens.<br><br><span style="color:var(--text3)">Best for: returning users, time-constrained</span></div>
-      </div>
-      <div class="direction-card" id="dir-c">
-        <div class="direction-label">Direction C</div>
-        <div class="direction-name">Visual Journey Map</div>
-        <div class="direction-body">Illustrated steps with contextual explanation. Visual metaphor: "Your kit's journey." 7 screens.<br><br><span style="color:var(--text3)">Best for: anxious users needing reassurance</span></div>
+      <span id="wordmark" style="font-family:'Instrument Serif',serif;font-size:23px;letter-spacing:.3px;line-height:1">${name}</span>
+      <span style="font-size:9px;font-family:'JetBrains Mono',monospace;color:${TOKENS.text3};border:1px solid ${TOKENS.border};border-radius:4px;padding:2px 5px;letter-spacing:.5px">BETA</span>
+    </div>
+    <div style="width:1px;height:24px;background:${TOKENS.border};flex:none"></div>
+    <div style="font-size:13px;color:${TOKENS.text2}">Project / <span style="color:${TOKENS.text};font-weight:600">Helios — Onboarding Redesign</span></div>
+    <div style="margin:0 auto;display:flex;background:${TOKENS.surface2};border:1px solid ${TOKENS.border};border-radius:10px;padding:3px;gap:2px">
+      <button id="btn-canvas" onclick="setView('canvas')" style="background:${isCanvas?TOKENS.text:'transparent'};color:${isCanvas?'#fff':'#76747e'};border-radius:8px;border:none;padding:7px 15px;font-weight:600;font-size:13px;font-family:'Hanken Grotesk',sans-serif;cursor:pointer;transition:all .15s">Shared Canvas</button>
+      <button id="btn-workspace" onclick="setView('workspace')" style="background:${isWork?TOKENS.text:'transparent'};color:${isWork?'#fff':'#76747e'};border-radius:8px;border:none;padding:7px 15px;font-weight:600;font-size:13px;font-family:'Hanken Grotesk',sans-serif;cursor:pointer;transition:all .15s">Design Team</button>
+    </div>
+    <div style="display:flex;align-items:center;margin-left:auto">
+      <div style="display:flex">
+        <div style="width:30px;height:30px;border-radius:50%;background:#d4456b;border:2px solid #fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;z-index:3">MK</div>
+        <div style="width:30px;height:30px;border-radius:50%;background:#2e8157;border:2px solid #fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;margin-left:-8px;z-index:2">JL</div>
+        <div style="width:30px;height:30px;border-radius:50%;background:#c2700f;border:2px solid #fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;margin-left:-8px;z-index:1">+3</div>
       </div>
     </div>
   `;
-  feed.appendChild(parallelWrap);
-  const fw = document.getElementById('feed-wrapper');
-  fw.scrollTop = fw.scrollHeight;
-
-  const dirs = ['dir-a','dir-b','dir-c'];
-  dirs.forEach((id, i) => {
-    setTimeout(() => {
-      const el = document.getElementById(id);
-      if (el) el.classList.add('visible');
-    }, 300 + i * 150);
-  });
-
-  // Sub-agent spawning
-  setTimeout(() => {
-    const dirA = document.getElementById('dir-a');
-    if (!dirA) return;
-    const sub = document.createElement('div');
-    sub.className = 'sub-agent-card';
-    sub.innerHTML = `
-      <div style="font-weight:700;color:var(--text2);margin-bottom:4px;">↳ Accessibility Sub-Agent <span style="color:var(--text3);font-weight:400">(spawned)</span></div>
-      <div style="color:var(--text3);margin-bottom:6px;">Wireframe Agent detected interaction complexity. Spawning a11y review.</div>
-      <div style="color:var(--teal);font-weight:600;">WCAG 2.1 AA compatible. Touch target sizing ✓</div>
-    `;
-    dirA.appendChild(sub);
-    requestAnimationFrame(() => requestAnimationFrame(() => sub.classList.add('visible')));
-  }, 900);
-
-  setTimeout(() => {
-    agentState('wire', 'complete', 'Complete (×3)');
-    addCanvasItem('exploring', 'Wireframe', 'Direction A — Conversational');
-    addCanvasItem('exploring', 'Wireframe', 'Direction B — Progressive');
-    addCanvasItem('exploring', 'Wireframe', 'Direction C — Visual Journey');
-    setRunBtn('gate');
-    isGate = true;
-
-    addCard(`
-      <div class="card-header" style="margin-bottom:0">
-        <span style="font-size:16px">⏸</span>
-        <span class="card-label" style="color:var(--amber)">Your Review Required</span>
-      </div>
-      <div style="margin-top:10px" class="gate-message">Three wireframe directions ready. Select a direction to continue to visual design.</div>
-      <div class="gate-buttons" style="flex-wrap:wrap">
-        <button class="btn btn-amber" onclick="selectDirection(this,'a')">Select A — Conversational</button>
-        <button class="btn btn-ghost" onclick="selectDirection(this,'b')">Select B — Progressive</button>
-        <button class="btn btn-ghost" onclick="selectDirection(this,'c')">Select C — Visual Journey</button>
-      </div>
-    `, 'gate-amber');
-  }, 1800);
 }
 
-function selectDirection(btn, dir) {
-  const dirs = ['a','b','c'];
-  dirs.forEach(d => {
-    const el = document.getElementById(`dir-${d}`);
-    if (!el) return;
-    el.querySelector('.direction-body').innerHTML = el.querySelector('.direction-body').innerHTML.replace(/<div class="(selected-badge|not-selected-badge)"[^>]*>.*?<\/div>/g, '');
-    const badge = document.createElement('div');
-    if (d === dir) {
-      el.classList.add('selected-dir');
-      el.classList.remove('not-selected');
-      badge.className = 'selected-badge';
-      badge.textContent = 'Selected ✓';
-    } else {
-      el.classList.add('not-selected');
-      el.classList.remove('selected-dir');
-      badge.className = 'not-selected-badge';
-      badge.textContent = 'Not selected';
-    }
-    el.appendChild(badge);
-  });
-  btn.closest('.feed-card').remove();
-  currentStep = 7;
-  isGate = false;
-  setRunBtn('enabled');
-}
+// ─── CANVAS VIEW ─────────────────────────────────────────────────────────────
 
-function step8() {
-  currentStep = 8;
-  updateStepCounter();
-  setRunBtn('processing');
-  agentState('visual', 'active', 'Running…');
+function renderCanvas() {
+  const el = document.getElementById('canvas-view');
+  const promotedCards = [...BASE_CANVAS.promoted];
+  if (state.phase >= 7 && state.selectedDir) {
+    const dir = DIRECTIONS.find(d => d.id === state.selectedDir);
+    const fresh = { id:'pr-fresh', kind:'hifi', kindLabel:'JUST PROMOTED', title:`Onboarding — Direction ${dir.id} · ${dir.name}`, fresh:true, agent:'ECD Agent', agentShort:'EC', agentColor:'#2f5bea', time:'just now', tone:dir.tone };
+    promotedCards.unshift(fresh);
+  }
 
-  const card = spinnerCard('Visual Design Agent', 'agent');
+  const cols = [
+    { key:'exploring', label:'Exploring', color:'#a9762a', cards: BASE_CANVAS.exploring },
+    { key:'review',    label:'In Review', color:'#6f57d4', cards: BASE_CANVAS.review },
+    { key:'approved',  label:'Approved',  color:'#2e8157', cards: BASE_CANVAS.approved },
+    { key:'promoted',  label:'Promoted',  color:'#2f5bea', cards: promotedCards },
+  ];
 
-  setTimeout(() => {
-    resolveCard(card, `
-      <div class="card-header">
-        <span class="card-label">Visual Design Agent</span>
-        <span class="status-badge status-inreview">In Review</span>
-      </div>
-      <div class="card-title">Hi-Fi Concept — Direction A Applied</div>
-      <div class="card-body">Design system applied: Exact Sciences DS v2.1
-Screens completed: 9 of 9
-
-<strong>DESIGN DECISIONS</strong>
-✓ Teal (#0F6E56) for primary CTAs — brand aligned
-✓ Inter typeface, 16px base for readability
-✓ Progress bar: persistent, step-labeled
-✓ Trust card introduced at screen 3 (before PII)
-✓ Plain-language tooltip on "prenatal" and "cfDNA"
-✓ Large touch targets (48px min) — a11y validated
-
-<span class="link-stub">View Hi-Fi Screens ↗</span></div>
-    `, 'agent');
-    addCanvasItem('inReview', 'Visual Design', 'Hi-Fi Concept v1');
-    agentState('visual', 'complete', 'Complete');
-    setRunBtn('enabled');
-  }, 1500);
-}
-
-function step9() {
-  currentStep = 9;
-  updateStepCounter();
-  setRunBtn('processing');
-  agentState('persona', 'active', 'Running…');
-
-  const card = spinnerCard('Persona Review Agent', 'agent');
-
-  setTimeout(() => {
-    resolveCard(card, `
-      <div class="card-header">
-        <span class="card-label">Persona Review Agent</span>
-        <span class="status-badge status-inreview">In Review</span>
-      </div>
-      <div class="card-title">Persona Validation Report — Sarah, 32</div>
-      <div class="card-body"><strong>PASSES ✓</strong>
-✓ Language accessibility passes at 7.8 grade reading level
-✓ Step count (9) within anxiety threshold for health decisions
-✓ Trust signal placement (screen 3) aligns with research finding
-✓ Medical term tooltips resolve jargon barrier
-
-<strong>FLAGS ⚠</strong>
-⚠ CTA copy "Submit Request" on final screen — too clinical
-   Recommendation: "Send My Kit Request" — more conversational
-⚠ Progress bar disappears on error state screens
-   Recommendation: Keep persistent even in error states
-
-<strong>OVERALL</strong>  Concept is strong. Two minor revisions recommended before approval.</div>
-    `, 'agent');
-    agentState('persona', 'complete', 'Complete');
-    agentState('gate', 'active', 'Awaiting ECD…');
-    setRunBtn('gate');
-    isGate = true;
-
-    addCard(`
-      <div class="card-header" style="margin-bottom:0">
-        <span style="font-size:16px">🔐</span>
-        <span class="card-label" style="color:var(--purple)">ECD Agent Review</span>
-      </div>
-      <div style="margin-top:10px;font-size:13px;color:var(--purple);margin-bottom:10px;line-height:1.6">Persona validation complete. Two minor flags identified — both are copywriting and edge-case fixes, not directional issues. Recommend approval with revision notes attached.</div>
-      <hr class="card-hr">
-      <div style="font-size:13px;color:var(--text2);margin-bottom:12px;font-weight:500">Executive Creative Director sign-off required to promote to shared canvas.</div>
-      <div class="gate-buttons">
-        <button class="btn btn-ghost" onclick="requestRevision(this)">Request Full Revision</button>
-        <button class="btn btn-purple" onclick="approveAndPromote(this)">Approve &amp; Promote to Canvas →</button>
-      </div>
-    `, 'gate-purple');
-  }, 1200);
-}
-
-function approveAndPromote(btn) {
-  btn.closest('.feed-card').remove();
-  agentState('gate', 'complete', 'Approved');
-  currentStep = 10;
-  updateStepCounter();
-  isGate = false;
-  setRunBtn('done');
-
-  // Update canvas items to approved then promoted
-  const colInReview = document.getElementById('col-inreview');
-  while (colInReview.firstChild) colInReview.removeChild(colInReview.firstChild);
-  document.getElementById('cnt-inreview').textContent = '0';
-  canvasState.inReview = [];
-
-  const promo = addCard(`
-    <div class="promo-strip" id="promo-strip">
-      <span style="font-size:20px">✓</span>
-      <span>Promoted to Shared Canvas</span>
-      <span style="margin-left:auto;font-size:11px;opacity:0.8">Switching to Canvas view…</span>
+  el.innerHTML = `
+    <div style="padding:16px 20px 8px;display:flex;align-items:center;gap:12px;flex:none">
+      <div style="font-size:13px;font-weight:600;color:${TOKENS.text}">Helios — Onboarding Redesign</div>
+      <div style="font-size:12px;color:${TOKENS.text3};font-family:'JetBrains Mono',monospace">${cols.reduce((s,c)=>s+c.cards.length,0)} artifacts</div>
     </div>
-  `, 'promo');
-
-  setTimeout(() => {
-    document.getElementById('promo-strip').classList.add('visible');
-  }, 100);
-
-  addCanvasItem('promoted', 'Hi-Fi', 'Hi-Fi Concept v1 — Approved');
-
-  setTimeout(() => {
-    switchView('canvas');
-  }, 1800);
+    <div class="canvas-board">
+      ${cols.map(col => `
+        <div class="canvas-col">
+          <div class="canvas-col-header">
+            <span style="width:8px;height:8px;border-radius:50%;background:${col.color};flex:none"></span>
+            <span style="font-size:13px;font-weight:600;flex:1">${col.label}</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:${TOKENS.text3}">${col.cards.length}</span>
+          </div>
+          <div class="canvas-col-body">
+            ${col.cards.map(card => renderCanvasCard(card)).join('')}
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
 }
 
-// ---- DEMO ORCHESTRATION ----
-
-const STEPS = [step1, step2, null, step4, null, step6, null, step8, step9, null];
-// null = handled by gate buttons; step indexing is 0-based internally but displayed 1-based
-
-function advance() {
-  if (isGate || isProcessing) return;
-  if (currentStep >= 10) return;
-  const fn = STEPS[currentStep];
-  if (fn) fn();
+function renderCanvasCard(card) {
+  const freshStyle = card.fresh ? `border-color:${card.tone};box-shadow:0 0 0 2px ${card.tone}22;` : '';
+  const kindColor = card.kindLabel === 'WIREFRAME' ? '#6f57d4'
+    : card.kindLabel === 'RESEARCH BRIEF' ? '#1f9d8f'
+    : card.kindLabel === 'PROMOTED' || card.kindLabel === 'JUST PROMOTED' ? '#2f5bea'
+    : card.agentColor;
+  return `
+    <div class="canvas-card" style="${freshStyle}" onclick="openDetail('${card.id}')">
+      <div style="display:flex;align-items:center;margin-bottom:8px">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:600;color:${kindColor};letter-spacing:.5px">${card.kindLabel}</span>
+        <span style="font-size:11px;color:#b8b4aa;margin-left:auto">${card.time}</span>
+      </div>
+      ${getThumbnail(card, 96)}
+      <div style="font-size:13px;font-weight:600;line-height:1.35;margin-top:9px;margin-bottom:8px">${card.title}</div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <div style="width:18px;height:18px;border-radius:5px;background:${card.agentColor};display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;font-family:'JetBrains Mono',monospace;flex:none">${card.agentShort}</div>
+        <span style="font-size:11.5px;color:#86838b">${card.agent}</span>
+      </div>
+    </div>
+  `;
 }
 
-document.addEventListener('keydown', e => {
+// ─── PIPELINE RAIL ────────────────────────────────────────────────────────────
+
+function renderPipelineRail() {
+  const ph = state.phase;
+  const activeAgent = ph > 0 && ph < 8 ? PHASES[ph].agent : null;
+  const doneAgents = new Set();
+  for (let i = 1; i < ph; i++) {
+    if (PHASES[i].agent) doneAgents.add(PHASES[i].agent);
+  }
+  // Phase 7: ecd is done
+  if (ph >= 7) doneAgents.add('ecd');
+
+  let html = `
+    <div style="margin-bottom:20px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:${TOKENS.text3};letter-spacing:1px;margin-bottom:6px">SEQUENTIAL PIPELINE</div>
+      <div style="font-size:15px;font-weight:700">Design workflow spine</div>
+    </div>
+  `;
+
+  AGENTS.forEach((agent, idx) => {
+    const isActive = agent.key === activeAgent;
+    const isDone = doneAgents.has(agent.key);
+    const isPending = !isActive && !isDone;
+    const isLast = idx === AGENTS.length - 1;
+
+    let dotHtml = '';
+    if (isActive) {
+      dotHtml = `
+        <div style="position:relative;width:28px;height:28px;flex:none">
+          <div style="position:absolute;inset:-5px;border-radius:13px;border:2px solid ${agent.color};opacity:.5;animation:ch-pulse 1.4s ease-in-out infinite"></div>
+          <div style="width:28px;height:28px;border-radius:9px;background:${agent.color};display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:#fff;position:relative;z-index:1">${agent.short}</div>
+        </div>`;
+    } else if (isDone) {
+      dotHtml = `<div style="width:28px;height:28px;border-radius:9px;background:${agent.color};display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;flex:none">✓</div>`;
+    } else {
+      dotHtml = `<div style="width:28px;height:28px;border-radius:9px;background:transparent;border:1.5px solid #cdc7ba;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:#a8a499;flex:none">${agent.short}</div>`;
+    }
+
+    const statusText = isActive ? 'Working…' : isDone ? 'Done' : 'Queued';
+    const statusColor = isActive ? agent.color : isDone ? TOKENS.green : TOKENS.text3;
+    const lineColor = isDone ? agent.color : '#dcd7ca';
+
+    html += `
+      <div style="display:flex;gap:12px;align-items:flex-start">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:0">
+          ${dotHtml}
+          ${!isLast ? `<div style="width:2px;min-height:18px;background:${lineColor};margin:3px 0;flex:1"></div>` : ''}
+        </div>
+        <div style="padding-top:4px;padding-bottom:${isLast?0:20}px">
+          <div style="font-size:13px;font-weight:600;line-height:1.2">${agent.name}</div>
+          <div style="font-size:11px;color:${statusColor};margin-top:2px">${statusText}</div>
+        </div>
+      </div>
+    `;
+  });
+
+  html += `
+    <div style="margin-top:auto;padding-top:20px">
+      <button onclick="resetFlow()" style="width:100%;border:1px solid #ddd8cc;background:#fff;color:#76747e;border-radius:9px;padding:9px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Hanken Grotesk',sans-serif">↺ Reset flow</button>
+    </div>
+  `;
+
+  document.querySelector('.pipeline-rail').innerHTML = html;
+}
+
+// ─── STAGE CONTENT ────────────────────────────────────────────────────────────
+
+function stageEyebrow(ph) {
+  const p = PHASES[ph];
+  const agentColor = p.agent ? AGENT_MAP[p.agent].color : '#2f5bea';
+  return `
+    <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1.5px;color:${agentColor};font-weight:600">${p.eyebrow}</div>
+    <div style="font-family:'Instrument Serif',serif;font-size:33px;line-height:1.12;margin-top:6px;max-width:680px">${p.title}</div>
+    <div style="font-size:14.5px;color:${TOKENS.text2};margin-top:10px;max-width:600px;line-height:1.55;margin-bottom:24px">${p.sub}</div>
+  `;
+}
+
+function stageContent(ph) {
+  if (ph === 0) {
+    return `
+      <div style="max-width:560px;background:${TOKENS.surfaceWarm};border:1px solid ${TOKENS.border};border-radius:14px;padding:22px;box-shadow:${TOKENS.shadowSm}">
+        <div style="display:flex;align-items:center;gap:9px;margin-bottom:14px">
+          <span style="width:22px;height:22px;border-radius:6px;background:${TOKENS.text};color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;font-family:'JetBrains Mono',monospace">BR</span>
+          <span style="font-size:12px;font-weight:700;letter-spacing:.3px">DESIGN CHALLENGE</span>
+        </div>
+        <div style="font-size:16px;font-weight:600;line-height:1.4;margin-bottom:8px">Redesign the Helios onboarding so new users reach their first "aha" moment in under two minutes.</div>
+        <div style="font-size:13.5px;color:${TOKENS.text2};line-height:1.55">Drop-off today is 41% before activation. Audience skews non-technical. Mobile-first. Must use the connected Helios Design System.</div>
+      </div>
+    `;
+  }
+
+  if (ph === 1) {
+    return `
+      <div style="max-width:600px;background:${TOKENS.surfaceWarm};border:1px solid ${TOKENS.border};border-radius:14px;padding:24px;animation:ch-pop .5s ease backwards">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:#1f9d8f;font-weight:600;margin-bottom:14px">RESEARCH BRIEF · synthesized from 6 inputs</div>
+        <div style="display:flex;flex-direction:column;gap:13px">
+          <div>
+            <div style="font-size:11px;font-weight:700;color:${TOKENS.text3};letter-spacing:.5px;margin-bottom:3px">SIGNAL</div>
+            <div style="font-size:14px;line-height:1.45">Users abandon at the workspace-setup step — too many decisions before any payoff.</div>
+          </div>
+          <div>
+            <div style="font-size:11px;font-weight:700;color:${TOKENS.text3};letter-spacing:.5px;margin-bottom:3px">OPPORTUNITY</div>
+            <div style="font-size:14px;line-height:1.45">Defer configuration. Get users to a populated sample workspace first, personalize after.</div>
+          </div>
+          <div>
+            <div style="font-size:11px;font-weight:700;color:${TOKENS.text3};letter-spacing:.5px;margin-bottom:3px">CONSTRAINTS</div>
+            <div style="font-size:14px;line-height:1.45">Mobile-first · non-technical audience · Helios Design System.</div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  if (ph === 2) {
+    return `
+      <div style="display:flex;gap:16px;flex-wrap:wrap;max-width:760px">
+        <div style="flex:1;min-width:230px;background:${TOKENS.surfaceWarm};border:1px solid ${TOKENS.border};border-radius:14px;padding:20px;animation:ch-pop .5s ease backwards">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:#c2700f;font-weight:600;margin-bottom:13px">DESIGN BRIEF</div>
+          <div style="font-size:11px;font-weight:700;color:${TOKENS.text3};margin-bottom:4px">GOAL</div>
+          <div style="font-size:14px;line-height:1.45;margin-bottom:13px">First value in &lt;2 min; cut setup drop-off from 41% → under 20%.</div>
+          <div style="font-size:11px;font-weight:700;color:${TOKENS.text3};margin-bottom:4px">PRINCIPLES</div>
+          <div style="font-size:14px;line-height:1.45">Show before ask · one decision per screen · reversible defaults.</div>
+        </div>
+        <div style="flex:none;width:230px;background:${TOKENS.surfaceWarm};border:1px solid ${TOKENS.border};border-radius:14px;padding:20px;animation:ch-pop .5s ease .06s backwards">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+            <div style="width:40px;height:40px;border-radius:50%;background:#d4456b;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;flex:none">MR</div>
+            <div>
+              <div style="font-size:14px;font-weight:700">Maya Reyes</div>
+              <div style="font-size:11.5px;color:#86838b">Persona · primary</div>
+            </div>
+          </div>
+          <div style="font-size:13px;line-height:1.5;color:#54525a">Small-business owner. Time-poor, not technical. Will abandon anything that feels like work before it feels like value.</div>
+        </div>
+      </div>
+    `;
+  }
+
+  if (ph === 3) {
+    const sel = state.selectedDir;
+    const dirCards = DIRECTIONS.map(dir => {
+      const isSelected = sel === dir.id;
+      const borderStyle = isSelected ? `border-color:${dir.tone};` : '';
+      const opacityStyle = sel && !isSelected ? 'opacity:.5;' : '';
+      return `
+        <div class="dir-card" style="${borderStyle}${opacityStyle}" onclick="selectDir('${dir.id}')">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:${dir.tone}">DIR ${dir.id}</span>
+            <span style="font-size:12px;font-weight:700">${dir.name}</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:#a9762a;background:#fdf6e3;border:1px solid #ecd9a8;border-radius:4px;padding:2px 5px;margin-left:auto">EXPLORING</span>
+          </div>
+          <div style="height:128px;border-radius:7px;background:#f6f4ec;border:1px solid #d8d3c8;padding:10px;display:flex;flex-direction:column;gap:6px;overflow:hidden;margin-bottom:10px">
+            <div style="display:flex;gap:6px;align-items:center">
+              <div style="width:13px;height:13px;border:1.5px solid #bdb6a7;border-radius:3px;flex:none"></div>
+              <div style="height:7px;width:36%;background:#cbc5b7;border-radius:2px"></div>
+              <div style="height:10px;width:20px;border:1.5px solid #bdb6a7;border-radius:3px;margin-left:auto"></div>
+            </div>
+            <div style="flex:1;border:1.5px dashed #cdc7b8;border-radius:4px;background:linear-gradient(to top right,transparent calc(50% - .8px),#e6e1d4,transparent calc(50% + .8px)),linear-gradient(to top left,transparent calc(50% - .8px),#e6e1d4,transparent calc(50% + .8px))"></div>
+            <div style="display:flex;gap:6px;align-items:center">
+              <div style="height:10px;flex:1;border:1.5px solid #bdb6a7;border-radius:3px"></div>
+              <div style="height:10px;width:28px;background:#bdb6a7;border-radius:3px"></div>
+            </div>
+          </div>
+          <div style="font-size:13px;color:#54525a;line-height:1.45;margin-bottom:8px">${dir.desc}</div>
+          ${isSelected ? `<div style="font-size:12px;font-weight:700;color:${dir.tone}">✓ Selected by you</div>` : ''}
+        </div>
+      `;
+    }).join('');
+
+    const gateNotice = !sel ? `
+      <div style="margin-top:18px;display:inline-flex;align-items:center;gap:9px;background:#fdf6e3;border:1px solid #ecd9a8;border-radius:10px;padding:10px 15px;font-size:13px;color:#8a6d1f">
+        <span style="width:7px;height:7px;border-radius:50%;background:#c2700f;flex:none"></span>
+        Human in the loop — select a direction to continue the pipeline.
+      </div>
+    ` : '';
+
+    return `
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+        <span style="display:flex;gap:3px">
+          <span style="width:5px;height:5px;border-radius:50%;background:#6f57d4;animation:ch-pulse 1s infinite"></span>
+          <span style="width:5px;height:5px;border-radius:50%;background:#6f57d4;animation:ch-pulse 1s infinite .2s"></span>
+          <span style="width:5px;height:5px;border-radius:50%;background:#6f57d4;animation:ch-pulse 1s infinite .4s"></span>
+        </span>
+        <span style="font-size:13px;color:${TOKENS.text2}">All three share the Design System · Persona Library · Requirements</span>
+      </div>
+      <div style="display:flex;gap:16px;flex-wrap:wrap;max-width:800px">${dirCards}</div>
+      ${gateNotice}
+    `;
+  }
+
+  // Phases 4-7: hi-fi mockup + side panel
+  const selDir = DIRECTIONS.find(d => d.id === state.selectedDir) || DIRECTIONS[0];
+  const selTone = selDir.tone;
+
+  const hifiMockup = `
+    <div style="flex:none;width:268px;background:#fff;border:1px solid ${TOKENS.border};border-radius:16px;overflow:hidden;box-shadow:${TOKENS.shadowLg};animation:ch-pop .5s ease backwards">
+      <div style="height:48px;background:${selTone};display:flex;align-items:center;padding:0 16px;gap:8px;flex:none">
+        <div style="width:18px;height:18px;border-radius:5px;background:rgba(255,255,255,.9);flex:none"></div>
+        <div style="width:38%;height:8px;background:rgba(255,255,255,.85);border-radius:3px"></div>
+      </div>
+      <div style="padding:18px 16px">
+        <div style="height:11px;width:74%;background:#1f1d22;border-radius:3px;margin-bottom:9px"></div>
+        <div style="height:7px;width:94%;background:#e4dfd4;border-radius:3px;margin-bottom:5px"></div>
+        <div style="height:7px;width:88%;background:#e4dfd4;border-radius:3px;margin-bottom:18px"></div>
+        <div style="display:flex;gap:9px;margin-bottom:18px">
+          <div style="flex:1;height:60px;background:#f4f2ea;border:1px solid #ece8de;border-radius:9px"></div>
+          <div style="flex:1;height:60px;background:#f4f2ea;border:1px solid #ece8de;border-radius:9px"></div>
+        </div>
+        <div style="height:38px;background:${selTone};border-radius:10px;display:flex;align-items:center;justify-content:center">
+          <div style="width:40%;height:8px;background:rgba(255,255,255,.92);border-radius:3px"></div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  let sidePanel = '';
+
+  if (ph === 4) {
+    sidePanel = `
+      <div style="flex:1;min-width:230px;background:${TOKENS.surfaceWarm};border:1px solid ${TOKENS.border};border-radius:14px;padding:22px;animation:ch-pop .5s ease .08s backwards">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:#d4456b;font-weight:600;margin-bottom:14px">DESIGN SYSTEM APPLIED</div>
+        <div style="font-size:14px;line-height:1.5;color:#43414a;margin-bottom:16px">The Visual Design Agent translated the wireframe into a high-fidelity concept using Helios Design System tokens, components, and spacing rules.</div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div style="display:flex;align-items:center;gap:8px;background:#f4f2ea;border-radius:8px;padding:9px 11px">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:${TOKENS.text2}">color.primary</span>
+            <span style="width:14px;height:14px;border-radius:4px;background:${selTone};flex:none;margin-left:auto"></span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;background:#f4f2ea;border-radius:8px;padding:9px 11px">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:${TOKENS.text2}">spacing.md</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:${TOKENS.text3};margin-left:auto">16px</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;background:#f4f2ea;border-radius:8px;padding:9px 11px">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:${TOKENS.text2}">radius.card</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:${TOKENS.text3};margin-left:auto">12px</span>
+          </div>
+        </div>
+      </div>
+    `;
+  } else if (ph === 5) {
+    sidePanel = `
+      <div style="flex:1;min-width:230px;background:${TOKENS.surfaceWarm};border:1px solid ${TOKENS.border};border-radius:14px;padding:22px;animation:ch-pop .5s ease .08s backwards">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+          <div style="width:34px;height:34px;border-radius:50%;background:#d4456b;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex:none">MR</div>
+          <div>
+            <div style="font-size:13px;font-weight:700">Persona review — Maya</div>
+            <div style="font-size:11px;color:#86838b">Persona Review Agent</div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:9px">
+          <div style="display:flex;align-items:flex-start;gap:8px;font-size:13px;line-height:1.45">
+            <span style="color:${TOKENS.green};font-weight:700;flex:none;margin-top:1px">✓</span>
+            <span>Sample workspace up front removes the "blank page" fear.</span>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:8px;font-size:13px;line-height:1.45">
+            <span style="color:${TOKENS.green};font-weight:700;flex:none;margin-top:1px">✓</span>
+            <span>Single primary action per screen — easy to follow.</span>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:8px;font-size:13px;line-height:1.45;background:#fdf6e3;border-radius:8px;padding:9px;border:1px solid #ecd9a8">
+            <span style="color:#c2700f;font-weight:700;flex:none;margin-top:1px">!</span>
+            <span>Step 2 copy still uses the word "configure" — too technical for Maya.</span>
+          </div>
+        </div>
+      </div>
+    `;
+  } else if (ph === 6) {
+    sidePanel = `
+      <div style="flex:1;min-width:230px;background:${TOKENS.blueLight};border:1px solid #cfdcfb;border-radius:14px;padding:22px;animation:ch-pop .5s ease .08s backwards">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:${TOKENS.blue};font-weight:600;margin-bottom:12px">ECD GATE</div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+          <div style="width:30px;height:30px;border-radius:8px;background:${TOKENS.blue};color:#fff;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;flex:none">EC</div>
+          <div style="font-size:13px;font-weight:600">ECD Agent</div>
+        </div>
+        <div style="font-size:14px;line-height:1.5;color:#1e3a8a">
+          Concept is grounded in the brief, design system is consistent, persona feedback addressed. <strong>Promotion needs your sign-off.</strong>
+        </div>
+      </div>
+    `;
+  } else if (ph === 7) {
+    sidePanel = `
+      <div style="flex:1;min-width:230px;background:${TOKENS.greenLight};border:1px solid #c4e3d3;border-radius:14px;padding:22px;animation:ch-pop .5s ease .08s backwards">
+        <div style="font-size:22px;margin-bottom:8px">🎉</div>
+        <div style="font-size:16px;font-weight:700;margin-bottom:8px;color:#1a4731">Promoted to the Shared Canvas</div>
+        <div style="font-size:13.5px;line-height:1.55;color:#2e6847;margin-bottom:16px">Fully traceable from brief to approved concept — now visible to the whole team on the Shared Canvas.</div>
+        <button onclick="setView('canvas')" style="background:${TOKENS.green};color:#fff;border:none;border-radius:9px;padding:10px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Hanken Grotesk',sans-serif">View it on the canvas →</button>
+      </div>
+    `;
+  }
+
+  return `<div style="display:flex;gap:22px;flex-wrap:wrap;align-items:flex-start">${hifiMockup}${sidePanel}</div>`;
+}
+
+function renderStage() {
+  const ph = state.phase;
+  const stage = document.querySelector('.stage');
+
+  const btnLabel = PHASE_BTN_LABELS[ph];
+  const isGate = ph === 3 && !state.selectedDir;
+  const btnDisabled = isGate || ph >= 7;
+  const btnStyle = btnDisabled
+    ? 'background:#dcd8cd;color:#a3a09a;cursor:not-allowed;border-radius:10px;padding:11px 20px;font-size:14px;font-weight:700;display:flex;align-items:center;gap:9px;border:none;font-family:\'Hanken Grotesk\',sans-serif'
+    : `background:${TOKENS.text};color:#fff;border-radius:10px;padding:11px 20px;font-size:14px;font-weight:700;display:flex;align-items:center;gap:9px;border:none;cursor:pointer;font-family:'Hanken Grotesk',sans-serif;transition:opacity .15s`;
+
+  stage.innerHTML = `
+    ${stageEyebrow(ph)}
+    <div style="flex:1">${stageContent(ph)}</div>
+    ${ph < 7 ? `
+    <div style="flex:none;display:flex;align-items:center;gap:14px;padding-top:18px;border-top:1px solid ${TOKENS.border};margin-top:20px">
+      <button id="next-btn" onclick="advance()" ${btnDisabled?'disabled':''} style="${btnStyle}">${btnLabel} <span style="font-size:16px">→</span></button>
+      <span style="font-size:12px;color:${TOKENS.text3}">Step through the flow — each handoff is a visible event in the feed.</span>
+    </div>
+    ` : ''}
+  `;
+}
+
+// ─── FEED RAIL ────────────────────────────────────────────────────────────────
+
+function tagChip(tag) {
+  if (!tag) return '';
+  if (tag === 'parallel') return `<span class="tag-chip" style="color:#6f57d4;background:#efebfb">PARALLEL · 3 AGENTS</span>`;
+  if (tag === 'promote') return `<span class="tag-chip" style="color:${TOKENS.green};background:${TOKENS.greenLight}">GATE PASSED → PROMOTED</span>`;
+  if (tag === 'gate') return `<span class="tag-chip" style="color:${TOKENS.blue};background:${TOKENS.blueLight}">GOVERNANCE</span>`;
+  if (tag === 'human') return `<span class="tag-chip" style="color:#c2700f;background:#fdf6e3">HUMAN IN THE LOOP</span>`;
+  return '';
+}
+
+function renderFeed() {
+  const feed = document.querySelector('.feed-rail');
+  const events = state.events;
+
+  let eventsHtml = '';
+  if (events.length === 0) {
+    eventsHtml = `<div style="flex:1;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px"><div style="font-size:13px;color:${TOKENS.text3};line-height:1.55">Start the flow to watch the team and its agents work in the open.</div></div>`;
+  } else {
+    eventsHtml = `<div style="flex:1;overflow-y:auto">${events.map(ev => {
+      const agent = AGENT_MAP[ev.a];
+      return `
+        <div class="event-card">
+          <div style="display:flex;align-items:center;margin-bottom:6px">
+            <div style="width:20px;height:20px;border-radius:5px;background:${agent.color};display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:#fff;flex:none">${agent.short}</div>
+            <span style="font-size:12px;font-weight:700;margin-left:7px">${agent.name}</span>
+            <span style="font-size:11px;color:#b8b4aa;margin-left:auto">just now</span>
+          </div>
+          <div style="font-size:12.5px;color:#43414a;line-height:1.45">${ev.t}</div>
+          ${tagChip(ev.tag)}
+        </div>
+      `;
+    }).join('')}</div>`;
+  }
+
+  feed.innerHTML = `
+    <div style="margin-bottom:16px;flex:none">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:${TOKENS.text3};letter-spacing:1px;margin-bottom:6px">ACTIVITY FEED</div>
+      <div style="font-size:14px;font-weight:700">Every agent action, visible</div>
+    </div>
+    ${eventsHtml}
+  `;
+}
+
+// ─── WORKSPACE ────────────────────────────────────────────────────────────────
+
+function renderWorkspace() {
+  const ws = document.getElementById('workspace-view');
+  ws.innerHTML = `
+    <aside class="pipeline-rail"></aside>
+    <main class="stage"></main>
+    <aside class="feed-rail"></aside>
+  `;
+  renderPipelineRail();
+  renderStage();
+  renderFeed();
+}
+
+// ─── DETAIL DRAWER ────────────────────────────────────────────────────────────
+
+function findCard(id) {
+  const all = [
+    ...BASE_CANVAS.exploring,
+    ...BASE_CANVAS.review,
+    ...BASE_CANVAS.approved,
+    ...BASE_CANVAS.promoted,
+  ];
+  if (state.phase >= 7 && state.selectedDir) {
+    const dir = DIRECTIONS.find(d => d.id === state.selectedDir);
+    all.unshift({ id:'pr-fresh', kind:'hifi', kindLabel:'JUST PROMOTED', title:`Onboarding — Direction ${dir.id} · ${dir.name}`, fresh:true, agent:'ECD Agent', agentShort:'EC', agentColor:'#2f5bea', time:'just now', tone:dir.tone });
+  }
+  return all.find(c => c.id === id);
+}
+
+function provStep(step) {
+  const agent = AGENT_MAP[step.a];
+  return `
+    <div class="prov-step">
+      <div style="width:20px;height:20px;border-radius:5px;background:${agent.color};display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:#fff;flex:none;margin-top:1px">${agent.short}</div>
+      <div>
+        <div style="font-size:12px;font-weight:600;color:${TOKENS.text}">${agent.name}</div>
+        <div style="font-size:12px;color:${TOKENS.text2};line-height:1.4">${step.t}</div>
+        ${step.tag ? `<div>${tagChip(step.tag)}</div>` : ''}
+      </div>
+    </div>
+  `;
+}
+
+function renderDrawer() {
+  const root = document.getElementById('drawer-root');
+  if (!state.detail) { root.innerHTML = ''; return; }
+
+  const card = findCard(state.detail);
+  if (!card) { root.innerHTML = ''; return; }
+
+  const tone = card.tone || card.agentColor || '#6f57d4';
+  const kindColor = card.agentColor || tone;
+  const prov = PROV_BY_KIND[card.kind] || [];
+  const isHifi = card.kind === 'hifi';
+  const isApproved = card.kindLabel === 'PROMOTED' || card.kindLabel === 'JUST PROMOTED' || card.id === 'ap-1';
+
+  const statusText = card.kindLabel === 'PROMOTED' || card.kindLabel === 'JUST PROMOTED' ? 'Promoted'
+    : card.id === 'ap-1' ? 'Approved'
+    : card.id === 'rv-b' ? 'In Review'
+    : 'Exploring';
+
+  const personaMini = isHifi ? `
+    <div style="border-top:1px solid #ece7db;padding-top:14px;margin-top:14px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.8px;color:${TOKENS.text3};font-weight:600;margin-bottom:10px">PERSONA REVIEW</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:flex-start;gap:7px;font-size:12.5px">
+          <span style="color:${TOKENS.green};font-weight:700;flex:none">✓</span>
+          <span>Sample workspace removes blank-page fear.</span>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:7px;font-size:12.5px">
+          <span style="color:${TOKENS.green};font-weight:700;flex:none">✓</span>
+          <span>Single primary action — easy to follow.</span>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:7px;font-size:12.5px;background:#fdf6e3;border-radius:7px;padding:8px;border:1px solid #ecd9a8">
+          <span style="color:#c2700f;font-weight:700;flex:none">!</span>
+          <span>Step 2 uses "configure" — too technical for Maya.</span>
+        </div>
+      </div>
+    </div>
+  ` : '';
+
+  const ecdMini = isApproved ? `
+    <div style="border-top:1px solid #ece7db;padding-top:14px;margin-top:14px;background:${TOKENS.blueLight};border-radius:10px;padding:12px;border:1px solid #cfdcfb">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.8px;color:${TOKENS.blue};font-weight:600;margin-bottom:8px">ECD GATE PASSED</div>
+      <div style="font-size:12.5px;line-height:1.45;color:#1e3a8a">Concept meets the brief. Design system applied consistently. Promoted to shared canvas.</div>
+    </div>
+  ` : '';
+
+  root.innerHTML = `
+    <div style="position:absolute;inset:0;z-index:50;display:flex;justify-content:flex-end">
+      <div style="position:absolute;inset:0;background:rgba(24,23,26,.32);animation:ch-rise .2s ease" onclick="closeDetail()"></div>
+      <div style="width:420px;max-width:90vw;height:100%;background:${TOKENS.surface2};border-left:1px solid ${TOKENS.border};box-shadow:-12px 0 40px rgba(20,18,12,.14);animation:ch-rise .25s ease;overflow-y:auto;position:relative;z-index:1;display:flex;flex-direction:column">
+        <div style="padding:20px 20px 16px;border-bottom:1px solid ${TOKENS.border};flex:none">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:${kindColor};letter-spacing:.5px">${card.kindLabel}</span>
+            <div style="display:flex;align-items:center;gap:5px;margin-left:auto;background:${TOKENS.surface2};border-radius:6px;padding:4px 9px">
+              <span style="width:6px;height:6px;border-radius:50%;background:${kindColor};flex:none"></span>
+              <span style="font-size:11.5px;font-weight:600;color:${TOKENS.text}">${statusText}</span>
+            </div>
+            <button onclick="closeDetail()" style="background:transparent;border:1px solid ${TOKENS.border};border-radius:7px;padding:5px 10px;font-size:14px;color:${TOKENS.text2};cursor:pointer;flex:none">✕</button>
+          </div>
+          <div style="font-family:'Instrument Serif',serif;font-size:24px;line-height:1.25;margin-bottom:12px">${card.title}</div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div style="width:20px;height:20px;border-radius:5px;background:${card.agentColor};display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:#fff;flex:none">${card.agentShort}</div>
+            <span style="font-size:12.5px;color:${TOKENS.text2}">Owned by ${card.agent}</span>
+          </div>
+        </div>
+        <div style="padding:18px 20px;flex:1;overflow-y:auto">
+          ${isHifi ? `<div style="margin-bottom:18px">${hifiThumbnail(tone, 130)}</div>` : ''}
+          ${card.kind === 'wire' ? `<div style="margin-bottom:18px">${wireThumbnail(100)}</div>` : ''}
+          ${card.kind === 'brief' ? `<div style="margin-bottom:18px">${briefThumbnail(100)}</div>` : ''}
+          <div style="border-top:1px solid #ece7db;padding-top:14px">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.8px;color:${TOKENS.text3};font-weight:600;margin-bottom:4px">PROVENANCE · how this got here</div>
+            ${prov.map(provStep).join('')}
+          </div>
+          ${personaMini}
+          ${ecdMini}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ─── MAIN RENDER ─────────────────────────────────────────────────────────────
+
+function render() {
+  renderHeader();
+
+  const canvasEl = document.getElementById('canvas-view');
+  const workspaceEl = document.getElementById('workspace-view');
+
+  if (state.view === 'canvas') {
+    canvasEl.style.display = 'flex';
+    workspaceEl.style.display = 'none';
+    renderCanvas();
+  } else {
+    canvasEl.style.display = 'none';
+    workspaceEl.style.display = 'flex';
+    renderWorkspace();
+  }
+
+  renderDrawer();
+}
+
+// ─── KEYBOARD SHORTCUTS ───────────────────────────────────────────────────────
+
+document.addEventListener('keydown', function(e) {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
   if (e.key === ' ' || e.key === 'ArrowRight') {
     e.preventDefault();
-    if (!isGate && !runBtn.disabled) advance();
+    if (state.phase !== 3 || state.selectedDir) advance();
   }
+  if (e.key === 'Escape' && state.detail) closeDetail();
 });
 
-// Init
-updateStepCounter();
-setRunBtn('enabled');
+// ─── BOOT ─────────────────────────────────────────────────────────────────────
+
+render();
 </script>
 </body>
 </html>

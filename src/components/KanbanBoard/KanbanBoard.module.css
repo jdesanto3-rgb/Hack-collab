@@ -1,0 +1,165 @@
+/* KanbanBoard */
+
+.board {
+  display: flex;
+  gap: 14px;
+  padding: 20px 24px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  align-items: flex-start;
+}
+
+.column {
+  flex: 1;
+  min-width: 264px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+}
+
+.columnHeader {
+  padding: 14px 14px 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.columnDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: none;
+}
+
+.columnLabel {
+  font-size: var(--text-base);
+  font-weight: var(--weight-semibold);
+  flex: 1;
+  color: var(--text);
+}
+
+.columnCount {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: var(--text-sm);
+  color: var(--text3);
+}
+
+.columnBody {
+  padding: 0 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+}
+
+/* --- Card --- */
+
+.card {
+  background: var(--surface-warm);
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  padding: 11px;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--transition), transform var(--transition);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.cardMeta {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.kindLabel {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9.5px;
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.5px;
+}
+
+.timeLabel {
+  font-size: var(--text-sm);
+  color: #b8b4aa;
+  margin-left: auto;
+}
+
+.cardTitle {
+  font-size: var(--text-base);
+  font-weight: var(--weight-semibold);
+  line-height: 1.35;
+  margin: 9px 0 8px;
+  color: var(--text);
+}
+
+.cardFooter {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.agentName {
+  font-size: 11.5px;
+  color: #86838b;
+}
+
+/* --- Thumbnails --- */
+
+.thumb {
+  border-radius: 7px;
+  overflow: hidden;
+}
+
+.thumbWire {
+  background: var(--surface-warm);
+  border: 1px solid #d8d3c8;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.thumbHifi {
+  background: var(--surface);
+  border: 1px solid #e9e5db;
+  display: flex;
+  flex-direction: column;
+}
+
+.thumbBrief {
+  background: var(--surface);
+  border: 1px solid #e9e5db;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.thumbLine {
+  border-radius: 3px;
+}
+
+.thumbCross {
+  flex: 1;
+  border: 1.5px dashed #cdc7b8;
+  border-radius: 4px;
+  background:
+    linear-gradient(
+      to top right,
+      transparent calc(50% - 0.8px),
+      #e6e1d4,
+      transparent calc(50% + 0.8px)
+    ),
+    linear-gradient(
+      to top left,
+      transparent calc(50% - 0.8px),
+      #e6e1d4,
+      transparent calc(50% + 0.8px)
+    );
+}
