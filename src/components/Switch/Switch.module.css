@@ -42,7 +42,7 @@
 
 /* Checked state */
 .checked .track {
-  background: var(--purple);
+  background: var(--brand);
 }
 
 .checked .thumb {
@@ -64,5 +64,5 @@
 
 /* Focus ring */
 .input:focus-visible ~ .track {
-  box-shadow: 0 0 0 2px var(--purple-light), 0 0 0 3.5px var(--purple);
+  box-shadow: 0 0 0 2px rgba(155, 142, 131, 0.2), 0 0 0 3.5px var(--brand-mid);
 }

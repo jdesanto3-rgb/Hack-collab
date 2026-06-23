@@ -33,7 +33,7 @@
 
 .select {
   width: 100%;
-  padding: 6px 28px 6px 10px;
+  padding: 8px 30px 8px 12px;
   font-size: var(--text-md);
   font-family: inherit;
   color: var(--text);
@@ -53,8 +53,9 @@
 }
 
 .select:focus:not(:disabled) {
-  border-color: var(--purple);
-  box-shadow: 0 0 0 2px var(--purple-light);
+  border-color: var(--brand-mid);
+  box-shadow: 0 0 0 2.5px rgba(155, 142, 131, 0.18);
+  outline: none;
 }
 
 .hasError {

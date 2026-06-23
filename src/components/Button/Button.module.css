@@ -5,32 +5,34 @@
   gap: var(--space-xs);
   border: 1px solid transparent;
   border-radius: var(--radius);
-  font-family: inherit;
+  font-family: var(--font-sans);
   font-weight: var(--weight-medium);
+  letter-spacing: 0.025em;
   cursor: pointer;
   white-space: nowrap;
-  transition: background var(--transition), color var(--transition), border-color var(--transition), opacity var(--transition);
+  transition: background var(--transition), color var(--transition), border-color var(--transition), box-shadow var(--transition);
   text-decoration: none;
   outline: none;
+  -webkit-font-smoothing: antialiased;
 }
 
 .button:focus-visible {
-  box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--brand-mid);
+  box-shadow: 0 0 0 2px var(--bg), 0 0 0 3.5px var(--brand-mid);
 }
 
 /* --- Sizes --- */
 .sm {
-  padding: 4px 10px;
+  padding: 5px 12px;
   font-size: var(--text-sm);
 }
 
 .md {
-  padding: 5px 12px;
-  font-size: var(--text-md);
+  padding: 7px 16px;
+  font-size: var(--text-base);
 }
 
 .lg {
-  padding: 8px 16px;
+  padding: 10px 22px;
   font-size: var(--text-base);
 }
 
@@ -49,17 +51,19 @@
 .secondary {
   background: transparent;
   color: var(--brand);
-  border-color: var(--brand);
+  border-color: var(--border2);
 }
 
 .secondary:hover:not(:disabled) {
   background: var(--brand-light);
+  border-color: var(--brand-mid);
 }
 
 .ghost {
   background: transparent;
   color: var(--text2);
   border-color: transparent;
+  letter-spacing: 0.01em;
 }
 
 .ghost:hover:not(:disabled) {
@@ -71,6 +75,7 @@
   background: var(--teal);
   color: #fff;
   border-color: var(--teal);
+  letter-spacing: 0.025em;
 }
 
 .teal:hover:not(:disabled) {
@@ -92,7 +97,7 @@
 /* --- Disabled state --- */
 .disabled,
 .button:disabled {
-  opacity: 0.45;
+  opacity: 0.38;
   cursor: not-allowed;
   pointer-events: none;
 }

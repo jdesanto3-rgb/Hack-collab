@@ -31,9 +31,9 @@
 
 /* Variants */
 .info {
-  background: var(--purple-light);
-  color: var(--purple);
-  border-left-color: var(--purple);
+  background: var(--stone-light);
+  color: var(--stone);
+  border-left-color: var(--stone-mid);
 }
 
 .success {

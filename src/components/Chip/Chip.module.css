@@ -25,7 +25,7 @@
 }
 
 .clickable:focus-visible {
-  outline: 2px solid var(--purple);
+  outline: 2px solid var(--brand-mid);
   outline-offset: 1px;
 }
 
@@ -58,6 +58,18 @@
 .teal.active,
 .teal:hover {
   background: var(--teal);
+  color: #fff;
+}
+
+.stone {
+  background: var(--stone-light);
+  color: var(--stone);
+  border-color: var(--stone-mid);
+}
+
+.stone.active,
+.stone:hover {
+  background: var(--stone);
   color: #fff;
 }
 

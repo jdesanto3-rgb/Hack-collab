@@ -7,24 +7,25 @@
 }
 
 /* --- Padding scale applied to body --- */
-.pad-sm .body { padding: var(--space-sm); }
-.pad-md .body { padding: var(--space-lg); }
-.pad-lg .body { padding: var(--space-xl); }
+.pad-sm .body { padding: var(--space-md); }
+.pad-md .body { padding: var(--space-xl); }
+.pad-lg .body { padding: var(--space-2xl); }
 
 /* --- Header --- */
 .header {
   display: flex;
   align-items: center;
-  padding: var(--space-sm) var(--space-lg);
+  padding: var(--space-md) var(--space-xl);
   border-bottom: 1px solid var(--border);
-  background: var(--surface2);
+  background: transparent;
 }
 
 .title {
-  font-size: var(--text-md);
-  font-weight: var(--weight-semibold);
+  font-family: var(--font-serif);
+  font-size: var(--text-lg);
+  font-weight: 400;
   color: var(--text);
-  letter-spacing: 0.01em;
+  letter-spacing: var(--tracking-normal);
 }
 
 .body {

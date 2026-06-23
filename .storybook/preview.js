@@ -1,9 +1,9 @@
 import '../src/tokens/tokens.css';
 
-// Load JetBrains Mono for monospace usage in components
+// Load design system fonts
 const fontLink = document.createElement('link');
 fontLink.rel = 'stylesheet';
-fontLink.href = 'https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap';
+fontLink.href = 'https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Instrument+Serif:ital,wght@0,400;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap';
 document.head.appendChild(fontLink);
 
 /** @type { import('@storybook/react').Preview } */
@@ -14,6 +14,7 @@ const preview = {
       values: [
         { name: 'Warm cream', value: '#F0ECE5' },
         { name: 'Warm dark', value: '#1C1914' },
+        { name: 'Pure white', value: '#FFFFFF' },
       ],
     },
     controls: {
