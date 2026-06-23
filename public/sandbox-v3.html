@@ -970,7 +970,7 @@ function renderStage() {
   const btnDisabled = isGate || ph >= 7;
   const btnStyle = btnDisabled
     ? `background:${TOKENS.border};color:${TOKENS.text3};cursor:not-allowed;border-radius:10px;padding:11px 20px;font-size:14px;font-weight:700;display:flex;align-items:center;gap:9px;border:none;font-family:'Hanken Grotesk',sans-serif`
-    : `background:${TOKENS.brand};color:#fff;border-radius:10px;padding:11px 20px;font-size:14px;font-weight:700;display:flex;align-items:center;gap:9px;border:none;cursor:pointer;font-family:'Hanken Grotesk',sans-serif;transition:opacity .15s`;
+    : `background:${TOKENS.brand};color:${TOKENS.bgCanvas};border-radius:10px;padding:11px 20px;font-size:14px;font-weight:700;display:flex;align-items:center;gap:9px;border:none;cursor:pointer;font-family:'Hanken Grotesk',sans-serif;transition:opacity .15s`;
 
   stage.innerHTML = `
     ${stageEyebrow(ph)}
