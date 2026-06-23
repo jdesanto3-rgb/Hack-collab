@@ -1,0 +1,91 @@
+.fieldset {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+.root {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  cursor: pointer;
+  user-select: none;
+}
+
+.input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.circle {
+  position: relative;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border2);
+  background: var(--surface);
+  transition: background var(--transition), border-color var(--transition);
+}
+
+.circle::after {
+  content: '';
+  display: none;
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--surface);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Checked state */
+.checked .circle {
+  background: var(--purple);
+  border-color: var(--purple);
+}
+
+.checked .circle::after {
+  display: block;
+}
+
+/* Disabled */
+.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Group layout */
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.groupLabel {
+  display: block;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--text2);
+  margin-bottom: 4px;
+  padding: 0;
+}
+
+/* Label text */
+.labelText {
+  font-size: var(--text-base);
+  color: var(--text);
+  line-height: 1.4;
+}
+
+/* Focus ring */
+.input:focus-visible ~ .circle {
+  box-shadow: 0 0 0 2px var(--purple-light), 0 0 0 3px var(--purple);
+}

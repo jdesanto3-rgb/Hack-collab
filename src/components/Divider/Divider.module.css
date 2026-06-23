@@ -1,0 +1,52 @@
+.horizontal {
+  width: 100%;
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 0;
+}
+
+.withLabel {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  border-top: none;
+}
+
+.line {
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+  display: block;
+}
+
+.labelText {
+  font-size: var(--text-sm);
+  color: var(--text3);
+  white-space: nowrap;
+  font-weight: var(--weight-medium);
+  flex-shrink: 0;
+}
+
+.vertical {
+  display: inline-block;
+  width: 1px;
+  height: 100%;
+  background: var(--border);
+  align-self: stretch;
+}
+
+/* Spacing */
+.sm {
+  margin-top: var(--space-sm);
+  margin-bottom: var(--space-sm);
+}
+
+.md {
+  margin-top: var(--space-lg);
+  margin-bottom: var(--space-lg);
+}
+
+.lg {
+  margin-top: var(--space-xl);
+  margin-bottom: var(--space-xl);
+}

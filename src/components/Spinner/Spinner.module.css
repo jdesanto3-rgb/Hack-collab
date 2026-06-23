@@ -1,0 +1,72 @@
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.spinner {
+  display: inline-block;
+  border-radius: 50%;
+  border-style: solid;
+  border-color: transparent;
+  animation: spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+/* Sizes */
+.sm {
+  width: 16px;
+  height: 16px;
+  border-width: 2px;
+}
+
+.md {
+  width: 24px;
+  height: 24px;
+  border-width: 2.5px;
+}
+
+.lg {
+  width: 40px;
+  height: 40px;
+  border-width: 3.5px;
+}
+
+/* Color variants — top border is the visible spinning arc */
+.purple {
+  border-top-color: var(--purple);
+  border-right-color: var(--purple-light);
+  border-bottom-color: var(--purple-light);
+  border-left-color: var(--purple-light);
+}
+
+.teal {
+  border-top-color: var(--teal);
+  border-right-color: var(--teal-light);
+  border-bottom-color: var(--teal-light);
+  border-left-color: var(--teal-light);
+}
+
+.white {
+  border-top-color: var(--surface);
+  border-right-color: rgba(255, 255, 255, 0.25);
+  border-bottom-color: rgba(255, 255, 255, 0.25);
+  border-left-color: rgba(255, 255, 255, 0.25);
+}
+
+.muted {
+  border-top-color: var(--text3);
+  border-right-color: var(--border);
+  border-bottom-color: var(--border);
+  border-left-color: var(--border);
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}

@@ -1,0 +1,68 @@
+.root {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.track {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  width: 36px;
+  height: 20px;
+  border-radius: var(--radius-full);
+  background: var(--border2);
+  padding: 2px;
+  position: relative;
+  transition: background var(--transition);
+}
+
+.thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition);
+  transform: translateX(0);
+  flex-shrink: 0;
+}
+
+/* Checked state */
+.checked .track {
+  background: var(--purple);
+}
+
+.checked .thumb {
+  transform: translateX(16px);
+}
+
+/* Disabled */
+.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Label text */
+.labelText {
+  font-size: var(--text-base);
+  color: var(--text);
+  line-height: 1.4;
+}
+
+/* Focus ring */
+.input:focus-visible ~ .track {
+  box-shadow: 0 0 0 2px var(--purple-light), 0 0 0 3.5px var(--purple);
+}

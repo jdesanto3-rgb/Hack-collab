@@ -1,0 +1,80 @@
+.alert {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--radius);
+  border-left: 3px solid transparent;
+  font-size: var(--text-base);
+  line-height: 1.5;
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
+}
+
+.title {
+  font-weight: var(--weight-semibold);
+  margin-bottom: 2px;
+  line-height: 1.4;
+}
+
+.body {
+  line-height: 1.5;
+  opacity: 0.85;
+}
+
+.title + .body {
+  margin-top: 2px;
+}
+
+/* Variants */
+.info {
+  background: var(--purple-light);
+  color: var(--purple);
+  border-left-color: var(--purple);
+}
+
+.success {
+  background: var(--teal-light);
+  color: var(--teal);
+  border-left-color: var(--teal);
+}
+
+.warning {
+  background: var(--amber-light);
+  color: var(--amber);
+  border-left-color: var(--amber);
+}
+
+.error {
+  background: var(--red-light);
+  color: var(--red);
+  border-left-color: var(--red);
+}
+
+.dismiss {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: inherit;
+  opacity: 0.6;
+  padding: 2px;
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+  transition: opacity var(--transition);
+  margin-top: 1px;
+}
+
+.dismiss:hover {
+  opacity: 1;
+}
+
+.dismiss:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 1px;
+}
