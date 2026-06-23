@@ -18,6 +18,12 @@
   border: 1px solid var(--border);
 }
 
+.brand {
+  background: var(--brand-light);
+  color: var(--brand);
+  border: 1px solid var(--brand-mid);
+}
+
 .purple {
   background: var(--purple-light);
   color: var(--purple);

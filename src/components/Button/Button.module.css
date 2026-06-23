@@ -15,7 +15,7 @@
 }
 
 .button:focus-visible {
-  box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--purple);
+  box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--brand);
 }
 
 /* --- Sizes --- */
@@ -36,24 +36,24 @@
 
 /* --- Variants --- */
 .primary {
-  background: var(--purple);
+  background: var(--brand);
   color: #fff;
-  border-color: var(--purple);
+  border-color: var(--brand);
 }
 
 .primary:hover:not(:disabled) {
-  background: #4540a3;
-  border-color: #4540a3;
+  background: var(--brand-dark);
+  border-color: var(--brand-dark);
 }
 
 .secondary {
   background: transparent;
-  color: var(--purple);
-  border-color: var(--purple);
+  color: var(--brand);
+  border-color: var(--brand);
 }
 
 .secondary:hover:not(:disabled) {
-  background: var(--purple-light);
+  background: var(--brand-light);
 }
 
 .ghost {

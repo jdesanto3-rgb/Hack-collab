@@ -12,8 +12,8 @@ const preview = {
     backgrounds: {
       default: 'light',
       values: [
-        { name: 'light', value: '#f7f6f3' },
-        { name: 'dark', value: '#1a1916' },
+        { name: 'Warm cream', value: '#F0ECE5' },
+        { name: 'Warm dark', value: '#1C1914' },
       ],
     },
     controls: {

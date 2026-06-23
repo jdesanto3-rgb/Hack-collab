@@ -27,12 +27,12 @@ header{height:58px;background:var(--surface);border-bottom:1px solid var(--borde
 .pipeline-rail{width:248px;flex:none;background:var(--surface2);border-right:1px solid var(--border);padding:22px 18px;display:flex;flex-direction:column;overflow-y:auto}
 .stage{flex:1;padding:30px 40px;overflow-y:auto;display:flex;flex-direction:column}
 .feed-rail{width:298px;flex:none;background:var(--surface2);border-left:1px solid var(--border);padding:20px 16px;display:flex;flex-direction:column;overflow-y:auto}
-.canvas-board{flex:1;overflow-x:auto;overflow-y:hidden;padding:20px 24px;display:flex;gap:14px;align-items:flex-start}
-.canvas-col{flex:1;min-width:264px;background:var(--surface2);border-radius:14px;border:1px solid var(--border);display:flex;flex-direction:column;max-height:calc(100vh - 100px)}
-.canvas-col-header{padding:14px 14px 10px;display:flex;align-items:center;gap:8px;flex:none}
-.canvas-col-body{padding:0 10px 14px;overflow-y:auto;display:flex;flex-direction:column;gap:10px}
-.canvas-card{background:var(--surface-warm);border:1px solid var(--border);border-radius:11px;padding:11px;cursor:pointer;box-shadow:var(--shadow-sm);animation:ch-rise .4s ease;transition:box-shadow .15s,transform .15s}
-.canvas-card:hover{box-shadow:var(--shadow-md);transform:translateY(-1px)}
+.canvas-board{flex:1;overflow-x:auto;overflow-y:hidden;padding:16px 20px 20px;display:flex;gap:14px;align-items:flex-start}
+.canvas-col{flex:1;min-width:284px;background:#F7F5F0;border-radius:13px;border:1px solid #E4E0D7;display:flex;flex-direction:column;max-height:calc(100vh - 158px)}
+.canvas-col-header{padding:14px 16px 12px;display:flex;align-items:center;gap:8px;flex:none}
+.canvas-col-body{padding:10px 12px 12px;overflow-y:auto;display:flex;flex-direction:column;gap:10px}
+.canvas-card{background:#ffffff;border:1px solid #E8E3D8;border-radius:11px;padding:12px;cursor:pointer;box-shadow:0 1px 3px rgba(20,18,12,.06);animation:ch-rise .4s ease;transition:box-shadow .15s,transform .15s}
+.canvas-card:hover{box-shadow:0 3px 12px rgba(20,18,12,.10);transform:translateY(-1px)}
 .dir-card{background:var(--surface-warm);border:2px solid var(--border);border-radius:13px;padding:15px;cursor:pointer;transition:border-color .2s,opacity .2s;flex:1;min-width:210px}
 .dir-card:hover{box-shadow:0 3px 12px rgba(20,18,12,.09)}
 .event-card{background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:12px;animation:ch-rise .35s ease;margin-bottom:9px}
@@ -312,23 +312,36 @@ function renderCanvas() {
   ];
 
   el.innerHTML = `
-    <div style="padding:16px 20px 8px;display:flex;align-items:center;gap:12px;flex:none">
-      <div style="font-size:13px;font-weight:600;color:${TOKENS.text}">Helios — Onboarding Redesign</div>
-      <div style="font-size:12px;color:${TOKENS.text3};font-family:'JetBrains Mono',monospace">${cols.reduce((s,c)=>s+c.cards.length,0)} artifacts</div>
+    <div style="padding:20px 28px 16px;display:flex;align-items:center;flex:none;border-bottom:1px solid #E4E0D7;background:rgba(255,255,255,.5)">
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.2px;color:#a3a09a;margin-bottom:5px">SHARED PROJECT CANVAS</div>
+        <div style="font-family:'Instrument Serif',serif;font-size:28px;line-height:1.1;color:#18171a">All work in motion, in one governed view</div>
+      </div>
+      <div style="margin-left:auto;display:flex;align-items:center;gap:7px">
+        <span style="width:6px;height:6px;border-radius:50%;background:#2f5bea;flex:none"></span>
+        <span style="font-size:12.5px;color:#6c6a72">Promotions require a gate</span>
+      </div>
     </div>
-    <div class="canvas-board">
-      ${cols.map(col => `
-        <div class="canvas-col">
-          <div class="canvas-col-header">
-            <span style="width:8px;height:8px;border-radius:50%;background:${col.color};flex:none"></span>
-            <span style="font-size:13px;font-weight:600;flex:1">${col.label}</span>
-            <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:${TOKENS.text3}">${col.cards.length}</span>
+    <div style="flex:1;overflow:hidden">
+      <div class="canvas-board">
+        ${cols.map(col => `
+          <div class="canvas-col">
+            <div style="height:3px;background:${col.color};border-radius:13px 13px 0 0;flex:none"></div>
+            <div class="canvas-col-header">
+              <span style="width:8px;height:8px;border-radius:50%;background:${col.color};flex:none"></span>
+              <span style="font-size:14px;font-weight:600;flex:1;color:#18171a">${col.label}</span>
+              <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#a3a09a">${col.cards.length}</span>
+            </div>
+            <div style="height:1px;background:#E8E3D9;margin:0 14px;flex:none"></div>
+            <div class="canvas-col-body">
+              ${col.cards.length === 0
+                ? '<div style="padding:20px;text-align:center;font-size:12px;color:#b8b4aa;font-style:italic">No artifacts yet</div>'
+                : col.cards.map(card => renderCanvasCard(card)).join('')
+              }
+            </div>
           </div>
-          <div class="canvas-col-body">
-            ${col.cards.map(card => renderCanvasCard(card)).join('')}
-          </div>
-        </div>
-      `).join('')}
+        `).join('')}
+      </div>
     </div>
   `;
 }
@@ -345,8 +358,9 @@ function renderCanvasCard(card) {
         <span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:600;color:${kindColor};letter-spacing:.5px">${card.kindLabel}</span>
         <span style="font-size:11px;color:#b8b4aa;margin-left:auto">${card.time}</span>
       </div>
-      ${getThumbnail(card, 96)}
-      <div style="font-size:13px;font-weight:600;line-height:1.35;margin-top:9px;margin-bottom:8px">${card.title}</div>
+      ${getThumbnail(card, 104)}
+      <div style="font-size:13px;font-weight:600;line-height:1.35;margin-top:9px;margin-bottom:6px;color:#18171a">${card.title}</div>
+      <div style="height:1px;background:#EDE9E2;margin-bottom:8px"></div>
       <div style="display:flex;align-items:center;gap:6px">
         <div style="width:18px;height:18px;border-radius:5px;background:${card.agentColor};display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;font-family:'JetBrains Mono',monospace;flex:none">${card.agentShort}</div>
         <span style="font-size:11.5px;color:#86838b">${card.agent}</span>

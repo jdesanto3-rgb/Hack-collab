@@ -1,19 +1,25 @@
 /* ============================================================
    Design Tokens — CSS Custom Properties
-   Auto-synced with src/tokens/tokens.json
    ============================================================ */
 
 :root {
   /* --- Colors: Light mode --- */
-  --bg: #f7f6f3;
-  --surface: #ffffff;
-  --surface2: #f0efe9;
-  --border: #e2e0d8;
-  --border2: #ccc9be;
-  --text: #1a1916;
-  --text2: #6b6960;
-  --text3: #9c9a90;
+  --bg: #F0ECE5;
+  --surface: #FDFAF6;
+  --surface2: #E8E3D9;
+  --border: #D8D2C6;
+  --border2: #C4BCAF;
+  --text: #1C1914;
+  --text2: #6B6860;
+  --text3: #9C9890;
 
+  /* Brand — terracotta / quiet luxury */
+  --brand: #8B3A1E;
+  --brand-light: #F5E8E2;
+  --brand-mid: #C67A60;
+  --brand-dark: #5C2518;
+
+  /* Accents — kept for components & agent colors */
   --purple: #534AB7;
   --purple-light: #EEEDFE;
   --purple-mid: #AFA9EC;
@@ -32,11 +38,11 @@
   --npt: #1B4B6B;
   --npt-light: #e8f0f6;
 
-  /* --- Canvas & workflow --- */
+  /* Canvas & workflow */
   --bg-canvas: #ecebe5;
   --surface-warm: #fffdf8;
 
-  /* --- Extended accents --- */
+  /* Extended accents */
   --blue: #2f5bea;
   --blue-light: #e7eefe;
   --green: #2e8157;
@@ -76,9 +82,9 @@
   --weight-bold: 700;
 
   /* --- Shadows --- */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
-  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.08);
-  --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.10);
+  --shadow-sm: 0 1px 2px rgba(28, 25, 20, 0.06);
+  --shadow-md: 0 2px 8px rgba(28, 25, 20, 0.08);
+  --shadow-lg: 0 4px 16px rgba(28, 25, 20, 0.10);
 
   /* --- Transitions --- */
   --transition-fast: 100ms ease;
@@ -89,14 +95,19 @@
 /* --- Dark mode overrides --- */
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #1a1916;
-    --surface: #222120;
-    --surface2: #2c2b28;
-    --border: #3a3834;
-    --border2: #4a4844;
-    --text: #e8e6df;
-    --text2: #9c9a90;
-    --text3: #6b6960;
+    --bg: #1C1914;
+    --surface: #252119;
+    --surface2: #2E2B23;
+    --border: #3C3830;
+    --border2: #4C4840;
+    --text: #EAE7E0;
+    --text2: #9C9890;
+    --text3: #6B6860;
+
+    --brand: #C67A60;
+    --brand-light: #3A1A0E;
+    --brand-mid: #8B3A1E;
+    --brand-dark: #E8B4A0;
 
     --purple: #7F77DD;
     --purple-light: #26215C;
@@ -115,8 +126,10 @@
 
     --npt: #4d9ed4;
     --npt-light: #0e2535;
+
     --bg-canvas: #1a1916;
     --surface-warm: #1e1d1a;
+
     --blue: #6b8ef5;
     --blue-light: #121c3a;
     --green: #4aad7a;
@@ -131,7 +144,7 @@
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-size: var(--text-base);
   color: var(--text);
   background: var(--bg);
