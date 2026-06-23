@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chorus — Project</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Instrument+Serif:ital,wght@0,400;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/tokens.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;font-family:'Hanken Grotesk',sans-serif;font-size:14px;color:var(--text);background:var(--bg-canvas)}
+button{font-family:'Hanken Grotesk',sans-serif;border:none;cursor:pointer}
+a{text-decoration:none;color:inherit}
+@keyframes ch-rise{from{transform:translateY(8px);opacity:0}to{transform:none;opacity:1}}
+@keyframes ch-pop{0%{transform:translateY(10px) scale(.975);opacity:0}60%{transform:translateY(-2px) scale(1.006)}100%{transform:none;opacity:1}}
+@keyframes ch-pulse{0%,100%{opacity:.35;transform:scale(1)}50%{opacity:1;transform:scale(1.3)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes flow{from{background-position:0 0}to{background-position:24px 0}}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-thumb{background:var(--border2,#cfcabd);border-radius:8px;border:2px solid transparent;background-clip:padding-box}
+::-webkit-scrollbar-track{background:transparent}
+
+#app{height:100vh;display:flex;flex-direction:column;overflow:hidden}
+header{height:56px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:0;flex:none;z-index:10}
+#body{flex:1;min-height:0;display:flex;overflow:hidden}
+.pipeline-col{width:420px;flex:none;border-right:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column}
+.pipeline-hero{padding:28px 28px 20px;border-bottom:1px solid var(--border);flex:none}
+.steps-list{padding:20px 28px 40px;display:flex;flex-direction:column;gap:0;flex:1}
+.activity-col{flex:1;overflow-y:auto;display:flex;flex-direction:column}
+.activity-head{padding:20px 24px 14px;border-bottom:1px solid var(--border);flex:none;background:var(--surface);position:sticky;top:0;z-index:2}
+.activity-body{padding:16px 24px;display:flex;flex-direction:column;gap:0}
+.step-row{display:flex;gap:0;align-items:flex-start;cursor:pointer}
+.step-spine{display:flex;flex-direction:column;align-items:center;width:40px;flex:none}
+.step-dot{width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex:none;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;transition:all .15s}
+.step-line{width:2px;flex:1;min-height:12px;margin:3px 0;border-radius:2px}
+.step-card{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:10px;transition:all .15s;box-shadow:var(--shadow-sm)}
+.step-card:hover{box-shadow:var(--shadow-md);transform:translateX(2px)}
+.step-card.active{border-color:var(--step-color,#2f5bea);box-shadow:0 0 0 2px color-mix(in srgb,var(--step-color,#2f5bea) 15%,transparent)}
+.step-card.queued{opacity:.6}
+.open-editor-btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;border:none;transition:all .15s;margin-top:10px}
+.ev-row{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.ev-row:last-child{border-bottom:none}
+.ev-dot-wrap{display:flex;flex-direction:column;align-items:center;flex:none;width:28px;gap:4px}
+.ev-agent{width:24px;height:24px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:#fff;flex:none}
+.ev-line{width:2px;flex:1;min-height:8px;background:var(--border);border-radius:2px}
+.tag{display:inline-flex;align-items:center;border-radius:4px;padding:2px 6px;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;letter-spacing:.3px}
+.breadcrumb-sep{font-size:13px;color:var(--text3);padding:0 6px}
+</style>
+</head>
+<body>
+<div id="app">
+  <header id="hdr"></header>
+  <div id="body">
+    <div class="pipeline-col" id="pipeline"></div>
+    <div class="activity-col" id="activity"></div>
+  </div>
+</div>
+<script>
+// ── TOKENS ────────────────────────────────────────────────────────────────────
+function readTokens(){
+  const s=getComputedStyle(document.documentElement),g=v=>s.getPropertyValue(v).trim();
+  return{
+    bgCanvas:g('--bg-canvas')||'#ecebe5',surface:g('--surface')||'#FDFAF6',
+    surfaceWarm:g('--surface-warm')||'#fffdf8',surface2:g('--surface2')||'#E8E3D9',
+    border:g('--border')||'#D8D2C6',border2:g('--border2')||'#C4BCAF',
+    text:g('--text')||'#1C1914',text2:g('--text2')||'#6B6860',text3:g('--text3')||'#9C9890',
+    brand:g('--brand')||'#1E1C18',
+    blue:g('--blue')||'#2f5bea',blueLight:g('--blue-light')||'#e7eefe',
+    green:g('--green')||'#2e8157',greenLight:g('--green-light')||'#e6f3ec',
+    purple:g('--purple')||'#6f57d4',purpleLight:g('--purple-light')||'#efebfb',
+    teal:g('--teal')||'#1f9d8f',tealLight:'#e0f3f2',
+    amber:g('--amber')||'#c2700f',amberLight:g('--amber-light')||'#faeeda',
+    red:g('--red')||'#d4456b',redLight:'#fce8ee',
+    shadowSm:g('--shadow-sm')||'0 1px 2px rgba(28,25,20,.06)',
+    shadowMd:g('--shadow-md')||'0 2px 8px rgba(28,25,20,.08)',
+    shadowLg:g('--shadow-lg')||'0 4px 16px rgba(28,25,20,.10)',
+  };
+}
+let T=readTokens();
+function isDark(){const a=document.documentElement.getAttribute('data-theme');if(a==='dark')return true;if(a==='light')return false;return window.matchMedia('(prefers-color-scheme:dark)').matches;}
+function toggleTheme(){document.documentElement.setAttribute('data-theme',isDark()?'light':'dark');T=readTokens();render();}
+
+// ── DATA ──────────────────────────────────────────────────────────────────────
+const PROJECT={
+  id:'axiom-intake',
+  name:'Axiom — Test Request Intake',
+  client:'Axiom QA',
+  accent:'#2f5bea',
+  brief:'Redesign the QA test request intake to cut 55% abandon rate and reduce triage time from 3.4 days to under 4 hours.',
+  goal:'First submission < 60 s · abandon rate from 55% → under 20%',
+  started:'June 18, 2026',
+  dueDate:'July 2, 2026',
+  progress:68,
+};
+
+const STEPS=[
+  {
+    id:'research',
+    label:'Research Brief',
+    agent:'RE', agentName:'Research Agent', agentColor:'#1f9d8f',
+    status:'done',
+    summary:'Synthesised 5 project inputs. Engineers abandon at priority tagging. Auto-suggest + smart defaults identified as highest-leverage change.',
+    outputs:['Research Brief','5 competitive references','Abandon-rate heatmap'],
+    completedAt:'June 19, 2026',
+    app:null,
+  },
+  {
+    id:'strategy',
+    label:'Design Brief',
+    agent:'ST', agentName:'Strategy Agent', agentColor:'#c2700f',
+    status:'done',
+    summary:'Goals, persona (Devon Park), and constraints with Axiom DS wired in. ECD flagged brief ready for concepting.',
+    outputs:['Design Brief','Persona card — Devon Park','DS token constraints'],
+    completedAt:'June 20, 2026',
+    app:null,
+  },
+  {
+    id:'wireframe',
+    label:'Wireframe Concepts',
+    agent:'WF', agentName:'Wireframe Agent', agentColor:'#6f57d4',
+    status:'done',
+    summary:'Three directions explored in parallel. Direction B (Guided step flow) selected by the team.',
+    outputs:['Direction A — Single-screen form','Direction B — Guided step flow ✓ selected','Direction C — Conversational'],
+    completedAt:'June 21, 2026',
+    parallel:true,
+    app:null,
+  },
+  {
+    id:'visual',
+    label:'Visual Design',
+    agent:'VD', agentName:'Visual Design Agent', agentColor:'#d4456b',
+    status:'active',
+    summary:'Applying Axiom Design System to Direction B. v2 in persona review — v3 addresses all flagged feedback.',
+    outputs:['Hi-fi v1 — Direction B initial','Hi-fi v2 — DS applied, in review','Hi-fi v3 — Persona feedback addressed'],
+    activeNote:'Working on v3 — resolving Priority/Severity consolidation',
+    app:'sandbox-v4-design.html',
+    appLabel:'Open Design Editor',
+  },
+  {
+    id:'persona',
+    label:'Persona Review',
+    agent:'PR', agentName:'Persona Review Agent', agentColor:'#2e8157',
+    status:'queued',
+    summary:'Devon Park persona review against the approved hi-fi. Structured feedback returned to Visual Design Agent.',
+    outputs:[],
+    app:null,
+  },
+  {
+    id:'ecd',
+    label:'ECD Gate',
+    agent:'EC', agentName:'ECD Agent', agentColor:'#2f5bea',
+    status:'queued',
+    summary:'Executive Creative Director reviews persona feedback and concept, then promotes to Shared Canvas.',
+    outputs:[],
+    app:null,
+  },
+];
+
+const EVENTS=[
+  {agent:'VD',agentColor:'#d4456b',text:'Created hi-fi v3 — Severity merged into Priority auto-suggest, Attach file marked optional',time:'2m ago',tag:''},
+  {agent:'PR',agentColor:'#2e8157',text:'Persona review returned — 2 flags on v2 (Severity/Priority consolidation, optional Attach)',time:'18m ago',tag:'feedback'},
+  {agent:'VD',agentColor:'#d4456b',text:'Applied Axiom Design System to Direction B · v2 ready for persona review',time:'1h ago',tag:''},
+  {agent:'EC',agentColor:'#2f5bea',text:'Design Brief confirmed — concept phase unlocked',time:'2h ago',tag:'gate'},
+  {agent:'WF',agentColor:'#6f57d4',text:'Direction B selected by Jordan Lee · Guided step flow advancing to hi-fi',time:'3h ago',tag:'human'},
+  {agent:'WF',agentColor:'#6f57d4',text:'Spawned 3 wireframe directions in parallel — all Exploring',time:'4h ago',tag:'parallel'},
+  {agent:'ST',agentColor:'#c2700f',text:'Design Brief complete — Devon Park persona card attached',time:'Jun 20',tag:''},
+  {agent:'RE',agentColor:'#1f9d8f',text:'Research Brief synthesised from 5 project inputs · abandon rate root cause identified',time:'Jun 19',tag:''},
+];
+
+const state={expandedStep:'visual'};
+
+// ── RENDER ────────────────────────────────────────────────────────────────────
+function renderHeader(){
+  document.getElementById('hdr').innerHTML=`
+    <a href="sandbox-v4-canvas.html" style="display:flex;align-items:center;gap:8px;padding:0 14px 0 0;border-right:1px solid ${T.border};margin-right:14px;cursor:pointer;color:${T.text2};transition:color .15s;white-space:nowrap" onmouseover="this.style.color='${T.text}'" onmouseout="this.style.color='${T.text2}'">
+      <span style="font-size:16px">‹</span>
+      <span style="font-family:'Instrument Serif',serif;font-size:19px">Chorus</span>
+    </a>
+    <span style="color:${T.text3}" class="breadcrumb-sep">›</span>
+    <span style="font-size:13px;color:${T.text2}">Team Canvas</span>
+    <span class="breadcrumb-sep">›</span>
+    <span style="font-size:13px;font-weight:600;color:${T.text}">${PROJECT.name}</span>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:10px">
+      <button onclick="toggleTheme()" style="width:32px;height:32px;border-radius:8px;background:${T.surface2};border:1px solid ${T.border};display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;color:${T.text2}" onmouseover="this.style.background='${T.border}'" onmouseout="this.style.background='${T.surface2}'">${isDark()?'☀︎':'◑'}</button>
+      <div style="display:flex">
+        <div style="width:28px;height:28px;border-radius:50%;background:#d4456b;border:2px solid ${T.surface};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;z-index:3;margin-right:-7px">DP</div>
+        <div style="width:28px;height:28px;border-radius:50%;background:#2e8157;border:2px solid ${T.surface};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;z-index:2;margin-right:-7px">JL</div>
+        <div style="width:28px;height:28px;border-radius:50%;background:${T.border2};border:2px solid ${T.surface};display:flex;align-items:center;justify-content:center;font-size:9.5px;font-weight:700;color:${T.text2};z-index:1">+3</div>
+      </div>
+    </div>
+  `;
+}
+
+function renderPipeline(){
+  const progColor=PROJECT.progress>=90?T.green:PROJECT.progress>=50?T.blue:T.amber;
+  let html=`
+    <div class="pipeline-hero">
+      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:16px">
+        <div style="flex:1">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:${PROJECT.accent};font-weight:600;margin-bottom:6px">${PROJECT.client} · PROJECT</div>
+          <div style="font-family:'Instrument Serif',serif;font-size:26px;line-height:1.15;margin-bottom:8px">${PROJECT.name}</div>
+          <div style="font-size:13px;color:${T.text2};line-height:1.5;margin-bottom:14px">${PROJECT.brief}</div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:14px">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:11.5px;font-weight:600;color:${T.text2}">Overall progress</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:${progColor};font-weight:600">${PROJECT.progress}%</span>
+        </div>
+        <div style="height:6px;background:${T.border};border-radius:3px;overflow:hidden">
+          <div style="height:100%;width:${PROJECT.progress}%;background:${progColor};border-radius:3px;transition:width .6s ease"></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap">
+        <div style="font-size:11.5px;color:${T.text3}">Started <strong style="color:${T.text2}">${PROJECT.started}</strong></div>
+        <div style="font-size:11.5px;color:${T.text3}">Due <strong style="color:${T.text2}">${PROJECT.dueDate}</strong></div>
+        <div style="font-size:11.5px;color:${T.text3}">Goal: <strong style="color:${T.text2}">${PROJECT.goal}</strong></div>
+      </div>
+    </div>
+    <div class="steps-list">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:${T.text3};font-weight:600;margin-bottom:16px">DESIGN PIPELINE · ${STEPS.length} PHASES</div>
+  `;
+
+  STEPS.forEach((step,i)=>{
+    const isLast=i===STEPS.length-1;
+    const isActive=step.status==='active';
+    const isDone=step.status==='done';
+    const isQueued=step.status==='queued';
+    const isExpanded=state.expandedStep===step.id;
+    const color=step.agentColor;
+
+    let dotHtml='';
+    if(isDone){
+      dotHtml=`<div class="step-dot" style="background:${color};color:#fff;font-size:15px">✓</div>`;
+    } else if(isActive){
+      dotHtml=`<div style="position:relative;width:32px;height:32px;flex:none">
+        <div style="position:absolute;inset:-4px;border-radius:12px;border:2px solid ${color};opacity:.45;animation:ch-pulse 1.6s ease-in-out infinite"></div>
+        <div class="step-dot" style="background:${color};color:#fff;position:relative;z-index:1">${step.agent}</div>
+      </div>`;
+    } else {
+      dotHtml=`<div class="step-dot" style="background:transparent;border:1.5px solid ${T.border2};color:${T.text3}">${step.agent}</div>`;
+    }
+
+    const lineColor=isDone?color:T.border;
+
+    html+=`
+      <div class="step-row" onclick="state.expandedStep=state.expandedStep==='${step.id}'?null:'${step.id}';renderPipeline()">
+        <div class="step-spine">
+          ${dotHtml}
+          ${!isLast?`<div class="step-line" style="background:${lineColor}"></div>`:''}
+        </div>
+        <div style="flex:1;padding-top:2px;${isLast?'':'padding-bottom:0'}">
+          <div class="step-card${isActive?' active':''}${isQueued?' queued':''}" style="${isActive?`--step-color:${color}`:''};animation:ch-rise ${.3+i*.07}s ease">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:${isExpanded?'10':'0'}px">
+              <div style="font-size:13.5px;font-weight:700;flex:1">${step.label}</div>
+              ${isDone?`<span style="font-size:10px;font-weight:700;color:${color};background:${color}18;border-radius:4px;padding:2px 7px">Done</span>`:''}
+              ${isActive?`<span style="display:flex;align-items:center;gap:4px;font-size:10px;font-weight:700;color:${color}"><span style="width:5px;height:5px;border-radius:50%;background:${color};animation:ch-pulse 1.4s infinite"></span>Active</span>`:''}
+              ${isQueued?`<span style="font-size:10px;color:${T.text3}">Queued</span>`:''}
+              <span style="font-size:13px;color:${T.text3};transition:transform .2s;${isExpanded?'transform:rotate(90deg)':''}">›</span>
+            </div>
+            ${isExpanded?`
+              <div style="font-size:13px;color:${T.text2};line-height:1.5;margin-bottom:10px">${step.summary}</div>
+              ${step.parallel?`<div style="display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:700;color:${T.purple};background:${T.purpleLight};border-radius:4px;padding:3px 8px;margin-bottom:10px"><span>⊕</span>Ran in parallel</div>`:''}
+              ${isActive&&step.activeNote?`
+                <div style="background:${color}12;border:1px solid ${color}33;border-radius:9px;padding:9px 12px;margin-bottom:10px;display:flex;align-items:flex-start;gap:7px">
+                  <span style="width:6px;height:6px;border-radius:50%;background:${color};flex:none;margin-top:5px;animation:ch-pulse 1.4s infinite"></span>
+                  <span style="font-size:12px;color:${color};font-weight:600">${step.activeNote}</span>
+                </div>`:''}
+              ${step.outputs.length>0?`
+                <div style="font-size:10.5px;font-weight:700;color:${T.text3};margin-bottom:6px;letter-spacing:.3px">OUTPUTS</div>
+                <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:12px">
+                  ${step.outputs.map(o=>`
+                    <div style="display:flex;align-items:center;gap:7px;font-size:12.5px">
+                      <span style="color:${isDone?color:T.text3};font-weight:700;flex:none">${isDone?'✓':'○'}</span>
+                      <span style="color:${T.text2}">${o}</span>
+                    </div>`).join('')}
+                </div>`:''}
+              ${step.app?`
+                <a href="${step.app}?project=${PROJECT.id}&step=${step.id}" class="open-editor-btn" style="background:${color};color:#fff;text-decoration:none" onclick="event.stopPropagation()">
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="1" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/><rect x="3.5" y="3.5" width="3" height="3" rx=".5" fill="currentColor"/><rect x="7.5" y="3.5" width="3" height="3" rx=".5" fill="currentColor" opacity=".6"/><rect x="3.5" y="7.5" width="7" height="1.5" rx=".5" fill="currentColor" opacity=".5"/></svg>
+                  ${step.appLabel} →
+                </a>`:''}
+              ${isDone&&step.completedAt?`<div style="font-size:11px;color:${T.text3};margin-top:8px">Completed ${step.completedAt}</div>`:''}
+            `:''}
+          </div>
+        </div>
+      </div>
+    `;
+  });
+
+  html+='</div>';
+  document.getElementById('pipeline').innerHTML=html;
+}
+
+function renderActivity(){
+  const tagColor={feedback:T.amber,gate:T.blue,parallel:T.purple,human:T.green,promote:T.green};
+  const tagBg={feedback:T.amberLight,gate:T.blueLight,parallel:T.purpleLight,human:T.greenLight,promote:T.greenLight};
+
+  document.getElementById('activity').innerHTML=`
+    <div class="activity-head">
+      <div style="font-size:15px;font-weight:700;margin-bottom:3px">Activity Feed</div>
+      <div style="font-size:12px;color:${T.text3}">Live pipeline events · most recent first</div>
+    </div>
+    <div class="activity-body">
+      ${EVENTS.map((ev,i)=>`
+        <div class="ev-row" style="animation:ch-rise ${.2+i*.05}s ease">
+          <div class="ev-dot-wrap">
+            <div class="ev-agent" style="background:${ev.agentColor}">${ev.agent}</div>
+            ${i<EVENTS.length-1?`<div class="ev-line"></div>`:''}
+          </div>
+          <div style="flex:1;padding-top:1px">
+            <div style="font-size:12.5px;line-height:1.45;margin-bottom:4px;color:${T.text}">${ev.text}</div>
+            <div style="display:flex;align-items:center;gap:6px">
+              <span style="font-size:11px;color:${T.text3}">${ev.time}</span>
+              ${ev.tag?`<span class="tag" style="background:${tagBg[ev.tag]||T.surface2};color:${tagColor[ev.tag]||T.text3}">${ev.tag}</span>`:''}
+            </div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function render(){renderHeader();renderPipeline();renderActivity();}
+render();
+</script>
+</body>
+</html>
