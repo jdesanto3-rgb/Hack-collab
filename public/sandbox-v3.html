@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chorus — Axiom · Test Request Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Instrument+Serif:ital,wght@0,400;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/tokens.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;font-family:'Hanken Grotesk',sans-serif;font-size:14px;color:var(--text);background:var(--bg-canvas)}
+button{font-family:'Hanken Grotesk',sans-serif;border:none;cursor:pointer}
+@keyframes ch-rise{from{transform:translateY(9px);opacity:0}to{transform:none;opacity:1}}
+@keyframes ch-pop{0%{transform:translateY(12px) scale(.975);opacity:0}60%{transform:translateY(-2px) scale(1.008)}100%{transform:none;opacity:1}}
+@keyframes ch-pulse{0%,100%{opacity:.35;transform:scale(1)}50%{opacity:1;transform:scale(1.25)}}
+@keyframes ch-flow{from{background-position:0 0}to{background-position:24px 0}}
+@keyframes spin{to{transform:rotate(360deg)}}
+::-webkit-scrollbar{width:9px;height:9px}
+::-webkit-scrollbar-thumb{background:var(--border2,#cfcabd);border-radius:9px;border:2px solid transparent;background-clip:padding-box}
+::-webkit-scrollbar-track{background:transparent}
+
+#app{height:100vh;display:flex;flex-direction:column;overflow:hidden}
+header{height:58px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 18px;gap:13px;flex:none;z-index:10}
+#body{flex:1;min-height:0;position:relative;display:flex}
+#canvas-view{flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column}
+#workspace-view{flex:1;min-height:0;overflow:hidden;display:flex}
+
+.pipeline-rail{width:264px;flex:none;background:var(--surface2);border-right:1px solid var(--border);padding:22px 18px;display:flex;flex-direction:column;overflow-y:auto}
+.stage{flex:1;padding:28px 36px;overflow-y:auto;display:flex;flex-direction:column}
+.feed-rail{width:300px;flex:none;background:var(--surface2);border-left:1px solid var(--border);padding:20px 16px;display:flex;flex-direction:column;overflow-y:auto}
+
+.canvas-board{flex:1;overflow-x:auto;overflow-y:hidden;padding:16px 20px 20px;display:flex;gap:14px;align-items:flex-start}
+.canvas-col{flex:1;min-width:284px;background:var(--surface2);border-radius:13px;border:1px solid var(--border);display:flex;flex-direction:column;max-height:calc(100vh - 158px)}
+.canvas-col-header{padding:14px 16px 12px;display:flex;align-items:center;gap:8px;flex:none}
+.canvas-col-body{padding:10px 12px 12px;overflow-y:auto;display:flex;flex-direction:column;gap:10px}
+.canvas-card{background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:12px;cursor:pointer;box-shadow:var(--shadow-sm);animation:ch-rise .4s ease;transition:box-shadow .15s,transform .15s}
+.canvas-card:hover{box-shadow:var(--shadow-md);transform:translateY(-1px)}
+.dir-card{background:var(--surface-warm);border:2px solid var(--border);border-radius:13px;padding:15px;cursor:pointer;transition:border-color .2s,opacity .2s;flex:1;min-width:210px}
+.dir-card:hover{box-shadow:0 3px 12px rgba(20,18,12,.09)}
+.event-card{background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:12px;animation:ch-rise .35s ease;margin-bottom:9px}
+.tag-chip{display:inline-flex;align-items:center;border-radius:5px;padding:3px 7px;font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:600;margin-top:7px}
+.prov-step{display:flex;align-items:flex-start;gap:9px;padding:8px 0;border-bottom:1px solid var(--border)}
+.prov-step:last-child{border-bottom:none}
+
+/* Director panel */
+.dir-panel{margin-bottom:10px;border-radius:9px;border:1px solid var(--border2);overflow:hidden;background:var(--surface)}
+.dir-panel-header{padding:9px 11px;font-size:11px;font-weight:600;color:var(--text2);background:var(--surface2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px}
+.dir-textarea{width:100%;padding:9px 11px;border:none;background:var(--surface);color:var(--text);font-family:'Hanken Grotesk',sans-serif;font-size:12.5px;line-height:1.5;resize:vertical;min-height:62px;outline:none;display:block}
+.dir-footer{padding:7px 10px;background:var(--surface2);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px}
+.dir-hint{font-size:10px;color:var(--text3)}
+
+/* Reference cards */
+.ref-row{display:flex;gap:10px;margin-top:18px;padding-top:16px;border-top:1px solid var(--border);overflow-x:auto}
+.ref-card{flex:none;width:148px;background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;transition:box-shadow .15s}
+.ref-card:hover{box-shadow:var(--shadow-md)}
+.ref-thumb{height:76px;overflow:hidden}
+.ref-meta{padding:7px 9px}
+.ref-source{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;letter-spacing:.5px}
+.ref-label{font-size:11.5px;font-weight:600;margin-top:2px;line-height:1.3}
+
+/* Editable content */
+[contenteditable="true"]{outline:1.5px dashed var(--border2);border-radius:4px;padding:2px 4px;transition:outline .15s}
+[contenteditable="true"]:focus{outline:2px solid var(--brand);background:var(--surface-warm)}
+.edit-btn{font-size:11px;padding:4px 10px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--text3);cursor:pointer;transition:all .15s;font-family:'Hanken Grotesk',sans-serif}
+.edit-btn:hover{background:var(--surface2);color:var(--text)}
+.edit-btn.saving{background:var(--green);color:#fff;border-color:var(--green)}
+</style>
+</head>
+<body>
+<div id="app">
+  <header id="header"></header>
+  <div id="body">
+    <div id="canvas-view"></div>
+    <div id="workspace-view" style="display:none"></div>
+  </div>
+</div>
+<div id="drawer-root"></div>
+
+<script>
+// ─── TOKENS ──────────────────────────────────────────────────────────────────
+
+function readTokens() {
+  const s = getComputedStyle(document.documentElement);
+  const get = v => s.getPropertyValue(v).trim();
+  return {
+    bgCanvas:    get('--bg-canvas')    || '#ecebe5',
+    surface:     get('--surface')      || '#FDFAF6',
+    surfaceWarm: get('--surface-warm') || '#fffdf8',
+    surface2:    get('--surface2')     || '#E8E3D9',
+    border:      get('--border')       || '#D8D2C6',
+    border2:     get('--border2')      || '#C4BCAF',
+    text:        get('--text')         || '#1C1914',
+    text2:       get('--text2')        || '#6B6860',
+    text3:       get('--text3')        || '#9C9890',
+    brand:       get('--brand')        || '#1E1C18',
+    brandLight:  get('--brand-light')  || '#EDEAE4',
+    brandMid:    get('--brand-mid')    || '#9B8E83',
+    stone:       get('--stone')        || '#7A6A5C',
+    stoneLight:  get('--stone-light')  || '#F2EDE7',
+    stoneMid:    get('--stone-mid')    || '#C4B5A8',
+    blue:        get('--blue')         || '#2f5bea',
+    blueLight:   get('--blue-light')   || '#e7eefe',
+    green:       get('--green')        || '#2e8157',
+    greenLight:  get('--green-light')  || '#e6f3ec',
+    purple:      get('--purple')       || '#6f57d4',
+    purpleLight: get('--purple-light') || '#efebfb',
+    teal:        get('--teal')         || '#1f9d8f',
+    amber:       get('--amber')        || '#c2700f',
+    amberLight:  get('--amber-light')  || '#faeeda',
+    red:         get('--red')          || '#d4456b',
+    shadowSm:    get('--shadow-sm')    || '0 1px 2px rgba(28,25,20,.06)',
+    shadowMd:    get('--shadow-md')    || '0 2px 8px rgba(28,25,20,.08)',
+    shadowLg:    get('--shadow-lg')    || '0 4px 16px rgba(28,25,20,.10)',
+  };
+}
+
+let TOKENS = readTokens();
+
+function isDark() {
+  const attr = document.documentElement.getAttribute('data-theme');
+  if (attr === 'dark') return true;
+  if (attr === 'light') return false;
+  return window.matchMedia('(prefers-color-scheme: dark)').matches;
+}
+
+function toggleTheme() {
+  document.documentElement.setAttribute('data-theme', isDark() ? 'light' : 'dark');
+  TOKENS = readTokens();
+  render();
+}
+
+// ─── DATA ────────────────────────────────────────────────────────────────────
+
+const AGENTS = [
+  { key:'research',  name:'Research Agent',       short:'RE', color:'#1f9d8f' },
+  { key:'strategy',  name:'Strategy Agent',        short:'ST', color:'#c2700f' },
+  { key:'wireframe', name:'Wireframe Agent',       short:'WF', color:'#6f57d4' },
+  { key:'visual',    name:'Visual Design Agent',   short:'VD', color:'#d4456b' },
+  { key:'persona',   name:'Persona Review Agent',  short:'PR', color:'#2e8157' },
+  { key:'ecd',       name:'ECD Agent',             short:'EC', color:'#2f5bea' },
+];
+const AGENT_MAP = Object.fromEntries(AGENTS.map(a => [a.key, a]));
+
+const PHASES = [
+  { agent:null,        kind:'idle',     eyebrow:'INTAKE',                      title:'A new brief just landed',                               sub:'The Research Agent picks it up and synthesizes context from five project sources.' },
+  { agent:'research',  kind:'research', eyebrow:'RESEARCH AGENT',              title:'Research Brief',                                        sub:'Five inputs synthesized into the signal that matters for the test request flow.' },
+  { agent:'strategy',  kind:'strategy', eyebrow:'STRATEGY AGENT',              title:'Design Brief',                                          sub:'Goals, persona, and constraints — with the Axiom Design System wired in.' },
+  { agent:'wireframe', kind:'concepts', eyebrow:'WIREFRAME AGENT · PARALLEL',  title:'Three directions, generated at once',                    sub:'The Wireframe Agent ran three explorations in parallel. A human picks the direction.' },
+  { agent:'visual',    kind:'visual',   eyebrow:'VISUAL DESIGN AGENT',         title:'Hi-fi concept',                                         sub:'The Visual Design Agent applied the Axiom Design System to the chosen direction.' },
+  { agent:'persona',   kind:'persona',  eyebrow:'PERSONA REVIEW AGENT',        title:'Persona review — Devon',                                sub:'Validated against the defined persona. This is the AI governance moment.' },
+  { agent:'ecd',       kind:'ecd',      eyebrow:'ECD AGENT · GATE',            title:'Executive Creative Director gate',                      sub:'The ECD reviews feedback and concept, then a human confirms the promotion.' },
+  { agent:'ecd',       kind:'promoted', eyebrow:'PROMOTED',                    title:'Promoted to the Shared Canvas',                         sub:'Traceable from brief to approved — now visible to the whole team.' },
+];
+
+const DIRECTIONS = [
+  { id:'A', name:'Single-screen form',   desc:'All fields on one focused screen — minimal steps, maximum speed.', tone:'#6f57d4' },
+  { id:'B', name:'Guided step flow',     desc:'Multi-step wizard with a visible progress rail and smart defaults.', tone:'#2f5bea' },
+  { id:'C', name:'Conversational',       desc:'Chat-led intake that infers type, priority, and owner from answers.', tone:'#1f9d8f' },
+];
+
+const PHASE_BTN_LABELS = [
+  'Start the flow',
+  'Continue',
+  'Continue',
+  'Select a direction to continue',
+  'Run persona review',
+  'Send to ECD review',
+  'Approve & promote to canvas',
+  'Flow complete',
+];
+
+const PHASE_EVENTS = {
+  1: [{ a:'research',  t:'Synthesized 5 inputs into a Research Brief', tag:'' }],
+  2: [
+    { a:'strategy', t:'Converted brief → Design Brief (goals · persona · constraints)', tag:'' },
+    { a:'ecd',      t:'Flagged Design Brief ready for concepting', tag:'gate' },
+  ],
+  3: [{ a:'wireframe', t:'Spawned 3 directions in parallel · all Exploring', tag:'parallel' }],
+  4: [{ a:'visual',    t:'Applied Axiom Design System to selected direction', tag:'' }],
+  5: [{ a:'persona',   t:'Returned structured feedback vs. persona "Devon Park"', tag:'' }],
+  6: [{ a:'ecd',       t:'Reviewed persona feedback — concept meets the bar', tag:'' }],
+  7: [{ a:'ecd',       t:'Approved & promoted to Shared Canvas', tag:'promote' }],
+};
+
+const PROV_BY_KIND = {
+  wire: [
+    { a:'strategy',  t:'Design Brief handed off', tag:'' },
+    { a:'wireframe', t:'Generated as one of 3 parallel directions', tag:'parallel' },
+  ],
+  hifi: [
+    { a:'wireframe', t:'Wireframe direction selected by human', tag:'human' },
+    { a:'visual',    t:'Axiom Design System applied', tag:'' },
+    { a:'persona',   t:'Persona review returned', tag:'' },
+    { a:'ecd',       t:'ECD approved · promoted', tag:'promote' },
+  ],
+  brief: [
+    { a:'research', t:'Synthesized 5 project inputs', tag:'' },
+    { a:'ecd',      t:'Promoted to shared canvas', tag:'promote' },
+  ],
+};
+
+const IDENTITY_NAMES = ['Chorus', 'Quorum', 'Atelier'];
+
+const state = {
+  view: 'canvas',
+  phase: 0,
+  selectedDir: null,
+  events: [],
+  detail: null,
+  identityIdx: 0,
+  editModes: {},       // cardId → boolean
+  dirPanels: {},       // agentKey → boolean (open/closed)
+};
+
+const BASE_CANVAS = {
+  exploring: [
+    { id:'ex-a', kind:'wire', kindLabel:'WIREFRAME', title:'Direction A — Single-screen form',   agent:'Wireframe Agent', agentShort:'WF', agentColor:'#6f57d4', time:'5m' },
+    { id:'ex-b', kind:'wire', kindLabel:'WIREFRAME', title:'Direction B — Guided step flow',     agent:'Wireframe Agent', agentShort:'WF', agentColor:'#6f57d4', time:'5m' },
+    { id:'ex-c', kind:'wire', kindLabel:'WIREFRAME', title:'Direction C — Conversational',       agent:'Wireframe Agent', agentShort:'WF', agentColor:'#6f57d4', time:'5m' },
+  ],
+  review: [
+    { id:'rv-b', kind:'hifi', kindLabel:'HI-FI CONCEPT', title:'Direction B — Axiom system applied', agent:'Visual Design Agent', agentShort:'VD', agentColor:'#d4456b', time:'2m', tone:'#2f5bea' },
+  ],
+  approved: [
+    { id:'ap-1', kind:'hifi', kindLabel:'HI-FI CONCEPT', title:'Request intake — step 1 of 3', agent:'ECD Agent', agentShort:'EC', agentColor:'#2f5bea', time:'just now', tone:'#2e8157' },
+  ],
+  promoted: [
+    { id:'pr-1', kind:'hifi',  kindLabel:'PROMOTED',       title:'Test request form — v1',                    agent:'ECD Agent',      agentShort:'EC', agentColor:'#2f5bea', time:'2h',  tone:'#2f5bea' },
+    { id:'pr-2', kind:'brief', kindLabel:'RESEARCH BRIEF', title:'Axiom intake — context synthesis',           agent:'Research Agent', agentShort:'RE', agentColor:'#1f9d8f', time:'3h' },
+  ],
+};
+
+// ─── STATE HELPERS ────────────────────────────────────────────────────────────
+
+function setState(updates) {
+  Object.assign(state, updates);
+  render();
+}
+function setView(v) { setState({ view: v }); }
+function advance() {
+  if (state.phase === 3 && !state.selectedDir) return;
+  if (state.phase >= 7) return;
+  const next = state.phase + 1;
+  const newEvents = (PHASE_EVENTS[next] || []).map(e => ({ ...e }));
+  setState({ phase: next, events: [...newEvents, ...state.events] });
+}
+function resetFlow() { setState({ phase: 0, selectedDir: null, events: [], editModes: {}, dirPanels: {} }); }
+function selectDir(id) { if (state.phase === 3) setState({ selectedDir: id }); }
+function cycleIdentity() { setState({ identityIdx: (state.identityIdx + 1) % IDENTITY_NAMES.length }); }
+function openDetail(cardId) { setState({ detail: cardId }); }
+function closeDetail() { setState({ detail: null }); }
+
+// ─── DIRECTOR PANEL ───────────────────────────────────────────────────────────
+
+function toggleDirPanel(key) {
+  const p = document.getElementById('dir-panel-' + key);
+  if (!p) return;
+  const open = p.style.display === 'none';
+  p.style.display = open ? 'block' : 'none';
+  if (open) { setTimeout(() => document.getElementById('dta-' + key)?.focus(), 30); }
+}
+
+function sendDirection(key) {
+  const ta = document.getElementById('dta-' + key);
+  if (!ta) return;
+  const txt = ta.value.trim();
+  if (!txt) return;
+  const ev = { a: key, t: txt, tag: 'directed' };
+  setState({ events: [ev, ...state.events] });
+  ta.value = '';
+  const p = document.getElementById('dir-panel-' + key);
+  if (p) p.style.display = 'none';
+}
+
+// ─── INLINE EDIT ─────────────────────────────────────────────────────────────
+
+function toggleEdit(cardId) {
+  const newModes = Object.assign({}, state.editModes);
+  newModes[cardId] = !newModes[cardId];
+  state.editModes = newModes;
+  const card = document.getElementById(cardId);
+  if (!card) return;
+  const isEdit = newModes[cardId];
+  card.querySelectorAll('[data-ed]').forEach(el => {
+    el.contentEditable = isEdit ? 'true' : 'false';
+  });
+  const btn = document.getElementById('edit-btn-' + cardId);
+  if (btn) {
+    btn.textContent = isEdit ? 'Save ✓' : '✎ Edit';
+    btn.className = 'edit-btn' + (isEdit ? ' saving' : '');
+  }
+}
+
+// ─── THUMBNAILS ───────────────────────────────────────────────────────────────
+
+function wireThumbnail(h) {
+  h = h || 96;
+  return `<div style="height:${h}px;border-radius:7px;background:${TOKENS.surfaceWarm};border:1px solid ${TOKENS.border};padding:9px;display:flex;flex-direction:column;gap:6px;overflow:hidden">
+    <div style="display:flex;gap:5px;align-items:center">
+      <div style="width:12px;height:12px;border:1.5px solid ${TOKENS.border2};border-radius:3px;flex:none"></div>
+      <div style="height:6px;width:38%;background:${TOKENS.border2};border-radius:2px"></div>
+      <div style="height:9px;width:20px;border:1.5px solid ${TOKENS.border2};border-radius:3px;margin-left:auto"></div>
+    </div>
+    <div style="height:4px;width:90%;background:${TOKENS.border};border-radius:2px"></div>
+    <div style="height:18px;border:1.5px solid ${TOKENS.border};border-radius:4px;background:${TOKENS.surface};display:flex;align-items:center;padding:0 6px">
+      <div style="height:4px;width:55%;background:${TOKENS.border};border-radius:2px"></div>
+    </div>
+    <div style="height:18px;border:1.5px solid ${TOKENS.border};border-radius:4px;background:${TOKENS.surface};display:flex;align-items:center;padding:0 6px">
+      <div style="height:4px;width:40%;background:${TOKENS.border};border-radius:2px"></div>
+    </div>
+    <div style="flex:1;display:flex;gap:5px;align-items:flex-end">
+      <div style="flex:1;height:10px;border:1.5px solid ${TOKENS.border2};border-radius:4px;background:${TOKENS.surface2}"></div>
+      <div style="height:10px;width:32px;background:${TOKENS.border2};border-radius:4px"></div>
+    </div>
+  </div>`;
+}
+
+function hifiThumbnail(tone, h) {
+  h = h || 96;
+  return `<div style="height:${h}px;border-radius:7px;background:${TOKENS.surface};border:1px solid ${TOKENS.border};overflow:hidden;display:flex;flex-direction:column">
+    <div style="height:28px;background:${tone};display:flex;align-items:center;padding:0 9px;gap:6px;flex:none">
+      <div style="width:24%;height:6px;background:rgba(255,255,255,.9);border-radius:3px"></div>
+      <div style="display:flex;gap:3px;margin-left:auto">
+        <div style="width:12px;height:8px;background:rgba(255,255,255,.5);border-radius:2px"></div>
+        <div style="width:12px;height:8px;background:rgba(255,255,255,.5);border-radius:2px"></div>
+      </div>
+    </div>
+    <div style="flex:1;padding:9px 10px;display:flex;flex-direction:column;gap:5px">
+      <div style="height:5px;width:70%;background:${TOKENS.text};border-radius:3px"></div>
+      <div style="height:4px;width:90%;background:${TOKENS.surface2};border-radius:3px"></div>
+      <div style="height:13px;background:${TOKENS.surface2};border-radius:3px;margin-top:2px"></div>
+      <div style="height:13px;background:${TOKENS.surface2};border-radius:3px"></div>
+      <div style="height:13px;width:50%;background:${tone};border-radius:5px;margin-top:4px"></div>
+    </div>
+  </div>`;
+}
+
+function briefThumbnail(h) {
+  h = h || 96;
+  return `<div style="height:${h}px;border-radius:7px;background:${TOKENS.surface};border:1px solid ${TOKENS.border};padding:10px;display:flex;flex-direction:column;gap:5px;overflow:hidden">
+    <div style="height:7px;width:50%;background:${TOKENS.border2};border-radius:3px"></div>
+    <div style="height:4px;width:92%;background:${TOKENS.border};border-radius:3px;margin-top:3px"></div>
+    <div style="height:4px;width:84%;background:${TOKENS.border};border-radius:3px"></div>
+    <div style="height:4px;width:88%;background:${TOKENS.border};border-radius:3px"></div>
+    <div style="height:4px;width:60%;background:${TOKENS.border};border-radius:3px"></div>
+  </div>`;
+}
+
+function getThumbnail(card, h) {
+  if (card.kind === 'wire') return wireThumbnail(h);
+  if (card.kind === 'brief') return briefThumbnail(h);
+  return hifiThumbnail(card.tone || '#6f57d4', h);
+}
+
+// Reference card thumbnails — faux UI screens for inspiration/competitive refs
+function refThumb_form() {
+  return `<div style="width:100%;height:100%;background:${TOKENS.surface};padding:7px;display:flex;flex-direction:column;gap:4px;overflow:hidden">
+    <div style="height:5px;width:42%;background:${TOKENS.text};border-radius:2px;margin-bottom:3px"></div>
+    <div style="height:4px;width:70%;background:${TOKENS.border2};border-radius:2px"></div>
+    <div style="height:14px;border:1.5px solid ${TOKENS.border2};border-radius:3px;background:${TOKENS.surface2}"></div>
+    <div style="height:4px;width:60%;background:${TOKENS.border2};border-radius:2px;margin-top:2px"></div>
+    <div style="height:14px;border:1.5px solid ${TOKENS.border2};border-radius:3px;background:${TOKENS.surface2}"></div>
+    <div style="height:11px;width:40%;background:${TOKENS.blue};border-radius:3px;margin-top:auto"></div>
+  </div>`;
+}
+
+function refThumb_steps() {
+  return `<div style="width:100%;height:100%;background:${TOKENS.surfaceWarm};padding:7px;display:flex;flex-direction:column;gap:4px;overflow:hidden">
+    <div style="display:flex;gap:3px;margin-bottom:3px">
+      ${['#2f5bea','#2f5bea','#D8D2C6','#D8D2C6'].map(c=>`<div style="flex:1;height:4px;background:${c};border-radius:2px"></div>`).join('')}
+    </div>
+    <div style="height:5px;width:30%;background:${TOKENS.blue};border-radius:2px"></div>
+    <div style="height:4px;width:70%;background:${TOKENS.border2};border-radius:2px"></div>
+    <div style="flex:1;border:1.5px solid ${TOKENS.border};border-radius:3px;background:${TOKENS.surface}"></div>
+    <div style="height:11px;width:35%;background:${TOKENS.blue};border-radius:3px;margin-left:auto"></div>
+  </div>`;
+}
+
+function refThumb_kanban() {
+  const cols = ['#9B8E83','#6f57d4','#2e8157'];
+  return `<div style="width:100%;height:100%;background:${TOKENS.surface2};padding:5px;display:flex;gap:4px;overflow:hidden">
+    ${cols.map(c=>`<div style="flex:1;display:flex;flex-direction:column;gap:3px">
+      <div style="height:4px;width:70%;background:${c};border-radius:2px;margin-bottom:2px"></div>
+      <div style="height:16px;background:${TOKENS.surface};border:1px solid ${TOKENS.border};border-radius:3px"></div>
+      <div style="height:16px;background:${TOKENS.surface};border:1px solid ${TOKENS.border};border-radius:3px"></div>
+      ${c==='#9B8E83'?`<div style="height:16px;background:${TOKENS.surface};border:1px solid ${TOKENS.border};border-radius:3px"></div>`:''}
+    </div>`).join('')}
+  </div>`;
+}
+
+function refThumb_chat() {
+  return `<div style="width:100%;height:100%;background:${TOKENS.surface};padding:7px;display:flex;flex-direction:column;gap:4px;overflow:hidden">
+    <div style="display:flex;gap:5px;align-items:flex-start">
+      <div style="width:14px;height:14px;border-radius:50%;background:${TOKENS.teal};flex:none"></div>
+      <div style="flex:1;background:${TOKENS.surface2};border-radius:0 5px 5px 5px;padding:4px 5px">
+        <div style="height:3px;width:80%;background:${TOKENS.border2};border-radius:2px;margin-bottom:3px"></div>
+        <div style="height:3px;width:60%;background:${TOKENS.border2};border-radius:2px"></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:5px;align-items:flex-start;justify-content:flex-end;margin-top:2px">
+      <div style="background:${TOKENS.teal};border-radius:5px 0 5px 5px;padding:4px 6px;opacity:.8">
+        <div style="height:3px;width:50px;background:rgba(255,255,255,.7);border-radius:2px"></div>
+      </div>
+    </div>
+    <div style="margin-top:auto;height:14px;border:1.5px solid ${TOKENS.border};border-radius:5px;background:${TOKENS.surface2}"></div>
+  </div>`;
+}
+
+function refThumb_table() {
+  return `<div style="width:100%;height:100%;background:${TOKENS.surface};overflow:hidden">
+    <div style="height:16px;background:${TOKENS.surface2};display:flex;align-items:center;padding:0 6px;gap:4px;border-bottom:1px solid ${TOKENS.border}">
+      ${['30%','25%','20%'].map(w=>`<div style="height:3px;width:${w};background:${TOKENS.border2};border-radius:2px"></div>`).join('')}
+    </div>
+    ${[0,1,2,3].map(i=>`<div style="height:15px;border-bottom:1px solid ${TOKENS.border};display:flex;align-items:center;padding:0 6px;gap:4px">
+      <div style="height:3px;width:28%;background:${i===0?TOKENS.blue:TOKENS.border};border-radius:2px"></div>
+      <div style="height:3px;width:22%;background:${TOKENS.border};border-radius:2px"></div>
+      <div style="height:7px;width:18%;background:${i===0?TOKENS.amberLight:TOKENS.greenLight};border-radius:3px;border:1px solid ${i===0?TOKENS.amber+'44':TOKENS.green+'44'}"></div>
+    </div>`).join('')}
+  </div>`;
+}
+
+function referenceCard(label, source, thumbFn, color) {
+  return `<div class="ref-card" title="${label} — ${source}">
+    <div class="ref-thumb" style="border-bottom:1px solid ${TOKENS.border}">${thumbFn()}</div>
+    <div class="ref-meta">
+      <div class="ref-source" style="color:${color}">${source}</div>
+      <div class="ref-label" style="color:${TOKENS.text}">${label}</div>
+    </div>
+  </div>`;
+}
+
+// ─── HEADER ──────────────────────────────────────────────────────────────────
+
+function renderHeader() {
+  const name = IDENTITY_NAMES[state.identityIdx];
+  const isCanvas = state.view === 'canvas';
+  const isWork = state.view === 'workspace';
+  document.getElementById('header').innerHTML = `
+    <div style="display:flex;align-items:center;gap:9px;cursor:pointer" onclick="cycleIdentity()">
+      <div style="width:26px;height:26px;border-radius:7px;background:${TOKENS.text};display:flex;align-items:center;justify-content:center;flex:none">
+        <div style="display:flex;align-items:flex-end;gap:2px;height:13px">
+          <span style="width:2.5px;height:6px;background:#ffd166;border-radius:2px"></span>
+          <span style="width:2.5px;height:13px;background:${TOKENS.bgCanvas};border-radius:2px"></span>
+          <span style="width:2.5px;height:9px;background:#7aa2ff;border-radius:2px"></span>
+        </div>
+      </div>
+      <span style="font-family:'Instrument Serif',serif;font-size:23px;letter-spacing:.3px;line-height:1">${name}</span>
+      <span style="font-size:9px;font-family:'JetBrains Mono',monospace;color:${TOKENS.text3};border:1px solid ${TOKENS.border};border-radius:4px;padding:2px 5px;letter-spacing:.5px">BETA</span>
+    </div>
+    <div style="width:1px;height:24px;background:${TOKENS.border};flex:none"></div>
+    <div style="font-size:13px;color:${TOKENS.text2}">Project / <span style="color:${TOKENS.text};font-weight:600">Axiom — Test Request Portal</span></div>
+    <div style="margin:0 auto;display:flex;background:${TOKENS.surface2};border:1px solid ${TOKENS.border};border-radius:10px;padding:3px;gap:2px">
+      <button onclick="setView('canvas')" style="background:${isCanvas?TOKENS.brand:'transparent'};color:${isCanvas?TOKENS.bgCanvas:TOKENS.text2};border-radius:8px;border:none;padding:7px 15px;font-weight:600;font-size:13px;font-family:'Hanken Grotesk',sans-serif;cursor:pointer;transition:all .15s">Shared Canvas</button>
+      <button onclick="setView('workspace')" style="background:${isWork?TOKENS.brand:'transparent'};color:${isWork?TOKENS.bgCanvas:TOKENS.text2};border-radius:8px;border:none;padding:7px 15px;font-weight:600;font-size:13px;font-family:'Hanken Grotesk',sans-serif;cursor:pointer;transition:all .15s">Design Team</button>
+    </div>
+    <button onclick="toggleTheme()" title="Toggle light/dark" style="width:32px;height:32px;border-radius:8px;background:${TOKENS.surface2};border:1px solid ${TOKENS.border};display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;color:${TOKENS.text2};transition:all .15s;margin-left:auto;flex:none" onmouseover="this.style.background='${TOKENS.border}'" onmouseout="this.style.background='${TOKENS.surface2}'">${isDark() ? '☀︎' : '◑'}</button>
+    <div style="display:flex;align-items:center">
+      <div style="display:flex">
+        <div style="width:30px;height:30px;border-radius:50%;background:#d4456b;border:2px solid ${TOKENS.surface};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;z-index:3" title="Devon Park">DP</div>
+        <div style="width:30px;height:30px;border-radius:50%;background:#2e8157;border:2px solid ${TOKENS.surface};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;margin-left:-8px;z-index:2" title="Jordan Lee">JL</div>
+        <div style="width:30px;height:30px;border-radius:50%;background:#c2700f;border:2px solid ${TOKENS.surface};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;margin-left:-8px;z-index:1">+2</div>
+      </div>
+    </div>
+  `;
+}
+
+// ─── CANVAS VIEW ─────────────────────────────────────────────────────────────
+
+function renderCanvas() {
+  const el = document.getElementById('canvas-view');
+  const promotedCards = [...BASE_CANVAS.promoted];
+  if (state.phase >= 7 && state.selectedDir) {
+    const dir = DIRECTIONS.find(d => d.id === state.selectedDir);
+    const fresh = { id:'pr-fresh', kind:'hifi', kindLabel:'JUST PROMOTED', title:`Test Request — Direction ${dir.id} · ${dir.name}`, fresh:true, agent:'ECD Agent', agentShort:'EC', agentColor:'#2f5bea', time:'just now', tone:dir.tone };
+    promotedCards.unshift(fresh);
+  }
+  const cols = [
+    { key:'exploring', label:'Exploring', color:'#a9762a', cards: BASE_CANVAS.exploring },
+    { key:'review',    label:'In Review', color:'#6f57d4', cards: BASE_CANVAS.review },
+    { key:'approved',  label:'Approved',  color:'#2e8157', cards: BASE_CANVAS.approved },
+    { key:'promoted',  label:'Promoted',  color:'#2f5bea', cards: promotedCards },
+  ];
+  el.innerHTML = `
+    <div style="padding:20px 28px 16px;display:flex;align-items:center;flex:none;border-bottom:1px solid ${TOKENS.border};background:${TOKENS.surface}">
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.2px;color:${TOKENS.text3};margin-bottom:5px">SHARED PROJECT CANVAS</div>
+        <div style="font-family:'Instrument Serif',serif;font-size:28px;line-height:1.1;color:${TOKENS.text}">All work in motion, in one governed view</div>
+      </div>
+      <div style="margin-left:auto;display:flex;align-items:center;gap:7px">
+        <span style="width:6px;height:6px;border-radius:50%;background:#2f5bea;flex:none"></span>
+        <span style="font-size:12.5px;color:${TOKENS.text2}">Promotions require a gate</span>
+      </div>
+    </div>
+    <div style="flex:1;overflow:hidden">
+      <div class="canvas-board">
+        ${cols.map(col => `
+          <div class="canvas-col">
+            <div style="height:3px;background:${col.color};border-radius:13px 13px 0 0;flex:none"></div>
+            <div class="canvas-col-header">
+              <span style="width:8px;height:8px;border-radius:50%;background:${col.color};flex:none"></span>
+              <span style="font-size:14px;font-weight:600;flex:1;color:${TOKENS.text}">${col.label}</span>
+              <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:${TOKENS.text3}">${col.cards.length}</span>
+            </div>
+            <div style="height:1px;background:${TOKENS.border};margin:0 14px;flex:none"></div>
+            <div class="canvas-col-body">
+              ${col.cards.length === 0
+                ? `<div style="padding:20px;text-align:center;font-size:12px;color:${TOKENS.text3};font-style:italic">No artifacts yet</div>`
+                : col.cards.map(card => renderCanvasCard(card)).join('')
+              }
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function renderCanvasCard(card) {
+  const freshStyle = card.fresh ? `border-color:${card.tone};box-shadow:0 0 0 2px ${card.tone}22;` : '';
+  const kindColor = card.kindLabel === 'WIREFRAME' ? '#6f57d4'
+    : card.kindLabel === 'RESEARCH BRIEF' ? '#1f9d8f'
+    : card.kindLabel === 'PROMOTED' || card.kindLabel === 'JUST PROMOTED' ? '#2f5bea'
+    : card.agentColor;
+  return `
+    <div class="canvas-card" style="${freshStyle}" onclick="openDetail('${card.id}')">
+      <div style="display:flex;align-items:center;margin-bottom:8px">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:600;color:${kindColor};letter-spacing:.5px">${card.kindLabel}</span>
+        <span style="font-size:11px;color:${TOKENS.text3};margin-left:auto">${card.time}</span>
+      </div>
+      ${getThumbnail(card, 104)}
+      <div style="font-size:13px;font-weight:600;line-height:1.35;margin-top:9px;margin-bottom:6px;color:${TOKENS.text}">${card.title}</div>
+      <div style="height:1px;background:${TOKENS.border};margin-bottom:8px"></div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <div style="width:18px;height:18px;border-radius:5px;background:${card.agentColor};display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;font-family:'JetBrains Mono',monospace;flex:none">${card.agentShort}</div>
+        <span style="font-size:11.5px;color:${TOKENS.text2}">${card.agent}</span>
+      </div>
+    </div>
+  `;
+}
+
+// ─── PIPELINE RAIL ────────────────────────────────────────────────────────────
+
+function renderPipelineRail() {
+  const ph = state.phase;
+  const activeAgent = ph > 0 && ph < 8 ? PHASES[ph].agent : null;
+  const doneAgents = new Set();
+  for (let i = 1; i < ph; i++) { if (PHASES[i].agent) doneAgents.add(PHASES[i].agent); }
+  if (ph >= 7) doneAgents.add('ecd');
+
+  let html = `
+    <div style="margin-bottom:20px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:${TOKENS.text3};letter-spacing:1px;margin-bottom:6px">SEQUENTIAL PIPELINE</div>
+      <div style="font-size:15px;font-weight:700;margin-bottom:3px">Design workflow spine</div>
+      <div style="font-size:11.5px;color:${TOKENS.text3}">Click <strong>Direct</strong> on any agent to send instructions.</div>
+    </div>
+  `;
+
+  AGENTS.forEach((agent, idx) => {
+    const isActive = agent.key === activeAgent;
+    const isDone = doneAgents.has(agent.key);
+    const isLast = idx === AGENTS.length - 1;
+    const statusText = isActive ? 'Working…' : isDone ? 'Done' : 'Queued';
+    const statusColor = isActive ? agent.color : isDone ? TOKENS.green : TOKENS.text3;
+    const lineColor = isDone ? agent.color : TOKENS.border;
+
+    let dotHtml = '';
+    if (isActive) {
+      dotHtml = `<div style="position:relative;width:28px;height:28px;flex:none">
+        <div style="position:absolute;inset:-5px;border-radius:13px;border:2px solid ${agent.color};opacity:.5;animation:ch-pulse 1.4s ease-in-out infinite"></div>
+        <div style="width:28px;height:28px;border-radius:9px;background:${agent.color};display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:#fff;position:relative;z-index:1">${agent.short}</div>
+      </div>`;
+    } else if (isDone) {
+      dotHtml = `<div style="width:28px;height:28px;border-radius:9px;background:${agent.color};display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;flex:none">✓</div>`;
+    } else {
+      dotHtml = `<div style="width:28px;height:28px;border-radius:9px;background:transparent;border:1.5px solid ${TOKENS.border2};display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:${TOKENS.text3};flex:none">${agent.short}</div>`;
+    }
+
+    html += `
+      <div style="display:flex;gap:11px;align-items:flex-start">
+        <div style="display:flex;flex-direction:column;align-items:center">
+          ${dotHtml}
+          ${!isLast ? `<div style="width:2px;min-height:16px;background:${lineColor};margin:3px 0;flex:1"></div>` : ''}
+        </div>
+        <div style="padding-top:3px;padding-bottom:${isLast?0:4}px;flex:1;min-width:0">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px">
+            <div style="font-size:13px;font-weight:600;line-height:1.2;flex:1">${agent.name}</div>
+            <button onclick="toggleDirPanel('${agent.key}')"
+              style="font-size:10px;padding:3px 8px;border-radius:5px;background:transparent;border:1px solid ${TOKENS.border};color:${TOKENS.text3};cursor:pointer;flex:none;font-family:'Hanken Grotesk',sans-serif;transition:all .12s"
+              onmouseover="this.style.borderColor='${agent.color}';this.style.color='${agent.color}'"
+              onmouseout="this.style.borderColor='${TOKENS.border}';this.style.color='${TOKENS.text3}'">Direct ↓</button>
+          </div>
+          <div style="font-size:11px;color:${statusColor};margin-bottom:8px">${statusText}</div>
+
+          <!-- Director panel -->
+          <div id="dir-panel-${agent.key}" class="dir-panel" style="display:none;margin-bottom:14px">
+            <div class="dir-panel-header">
+              <span style="width:7px;height:7px;border-radius:50%;background:${agent.color};flex:none"></span>
+              Direction for ${agent.name}
+            </div>
+            <textarea
+              id="dta-${agent.key}"
+              class="dir-textarea"
+              placeholder="What should ${agent.name} focus on or change? e.g. "Prioritise mobile-first layouts" or "Flag anything that conflicts with the brand guide.""
+              onkeydown="if((event.metaKey||event.ctrlKey)&&event.key==='Enter'){sendDirection('${agent.key}')}"
+            ></textarea>
+            <div class="dir-footer">
+              <span class="dir-hint">⌘ + Enter to send</span>
+              <div style="display:flex;gap:6px">
+                <button onclick="toggleDirPanel('${agent.key}')"
+                  style="font-size:11px;padding:4px 10px;border-radius:5px;border:1px solid ${TOKENS.border};background:transparent;color:${TOKENS.text2};cursor:pointer;font-family:'Hanken Grotesk',sans-serif">Cancel</button>
+                <button onclick="sendDirection('${agent.key}')"
+                  style="font-size:11px;padding:4px 12px;border-radius:5px;border:none;background:${agent.color};color:#fff;font-weight:600;cursor:pointer;font-family:'Hanken Grotesk',sans-serif">↑ Send</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    `;
+  });
+
+  html += `
+    <div style="margin-top:auto;padding-top:20px">
+      <button onclick="resetFlow()" style="width:100%;border:1px solid ${TOKENS.border};background:${TOKENS.surface};color:${TOKENS.text2};border-radius:9px;padding:9px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Hanken Grotesk',sans-serif">↺ Reset flow</button>
+    </div>
+  `;
+
+  document.querySelector('.pipeline-rail').innerHTML = html;
+}
+
+// ─── STAGE CONTENT ────────────────────────────────────────────────────────────
+
+function editableCard(id, content, label) {
+  const isEdit = !!state.editModes[id];
+  return `
+    <div style="position:relative">
+      <div id="${id}" style="background:${TOKENS.surfaceWarm};border:1px solid ${TOKENS.border};border-radius:14px;padding:22px;animation:ch-pop .5s ease backwards">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:${TOKENS.text3};font-weight:600">${label}</div>
+          <button id="edit-btn-${id}" class="edit-btn ${isEdit?'saving':''}" onclick="toggleEdit('${id}')">
+            ${isEdit ? 'Save ✓' : '✎ Edit'}
+          </button>
+        </div>
+        ${content}
+      </div>
+    </div>
+  `;
+}
+
+function stageEyebrow(ph) {
+  const p = PHASES[ph];
+  const agentColor = p.agent ? AGENT_MAP[p.agent].color : '#2f5bea';
+  return `
+    <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1.5px;color:${agentColor};font-weight:600">${p.eyebrow}</div>
+    <div style="font-family:'Instrument Serif',serif;font-size:33px;line-height:1.12;margin-top:6px;max-width:680px">${p.title}</div>
+    <div style="font-size:14.5px;color:${TOKENS.text2};margin-top:10px;max-width:600px;line-height:1.55;margin-bottom:24px">${p.sub}</div>
+  `;
+}
+
+function stageContent(ph) {
+
+  // ── Phase 0: Intake brief ──────────────────────────────────────────────────
+  if (ph === 0) {
+    const cardId = 'card-intake';
+    const isEdit = !!state.editModes[cardId];
+    return `
+      <div style="max-width:580px">
+        ${editableCard(cardId, `
+          <div style="display:flex;align-items:center;gap:9px;margin-bottom:14px">
+            <span style="width:22px;height:22px;border-radius:6px;background:${TOKENS.brand};color:${TOKENS.bgCanvas};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;font-family:'JetBrains Mono',monospace;flex:none">AX</span>
+            <span data-ed style="font-size:12px;font-weight:700;letter-spacing:.3px">DESIGN CHALLENGE · AXIOM</span>
+          </div>
+          <div data-ed style="font-size:16px;font-weight:600;line-height:1.4;margin-bottom:10px">Redesign the Axiom test request intake so engineers, PMs, and clients can submit, track, and prioritise requests in under 60 seconds.</div>
+          <div data-ed style="font-size:13.5px;color:${TOKENS.text2};line-height:1.6;margin-bottom:14px">Abandon rate is 55% before submission. The current form averages 3.4 days from submission to triage. Audience spans technical (QA engineers) to non-technical (external clients). Must use the existing Axiom Design System.</div>
+          <div style="display:flex;gap:7px;flex-wrap:wrap">
+            <span style="font-size:11px;padding:3px 8px;border-radius:4px;background:${TOKENS.surface2};border:1px solid ${TOKENS.border};color:${TOKENS.text2}">No auth redesign</span>
+            <span style="font-size:11px;padding:3px 8px;border-radius:4px;background:${TOKENS.surface2};border:1px solid ${TOKENS.border};color:${TOKENS.text2}">Mobile-responsive</span>
+            <span style="font-size:11px;padding:3px 8px;border-radius:4px;background:${TOKENS.surface2};border:1px solid ${TOKENS.border};color:${TOKENS.text2}">Axiom DS tokens</span>
+            <span style="font-size:11px;padding:3px 8px;border-radius:4px;background:${TOKENS.amberLight};border:1px solid ${isDark()?'#5a4010':'#ecd9a8'};color:${TOKENS.amber}">55% abandon rate</span>
+          </div>
+        `, 'BRIEF · CLICK ✎ TO EDIT')}
+      </div>
+    `;
+  }
+
+  // ── Phase 1: Research brief + visual refs ─────────────────────────────────
+  if (ph === 1) {
+    const cardId = 'card-research';
+    return `
+      <div style="max-width:640px">
+        ${editableCard(cardId, `
+          <div style="display:flex;flex-direction:column;gap:14px">
+            <div>
+              <div style="font-size:11px;font-weight:700;color:${TOKENS.text3};letter-spacing:.5px;margin-bottom:3px">SIGNAL</div>
+              <div data-ed style="font-size:14px;line-height:1.5">Engineers abandon at the "priority tagging" step — too many decisions before the submit button. PMs skip tagging entirely, creating triage noise downstream.</div>
+            </div>
+            <div>
+              <div style="font-size:11px;font-weight:700;color:${TOKENS.text3};letter-spacing:.5px;margin-bottom:3px">OPPORTUNITY</div>
+              <div data-ed style="font-size:14px;line-height:1.5">Auto-suggest priority based on linked issue type and severity. Let users confirm or skip — never block. Pre-fill known fields from issue tracker context.</div>
+            </div>
+            <div>
+              <div style="font-size:11px;font-weight:700;color:${TOKENS.text3};letter-spacing:.5px;margin-bottom:3px">CONSTRAINTS</div>
+              <div data-ed style="font-size:14px;line-height:1.5">Axiom Design System tokens · no auth layer changes · must work for non-technical external clients · mobile-responsive.</div>
+            </div>
+          </div>
+
+          <!-- Visual references -->
+          <div style="margin-top:20px;padding-top:16px;border-top:1px solid ${TOKENS.border}">
+            <div style="font-size:11px;font-weight:700;color:${TOKENS.text3};letter-spacing:.5px;margin-bottom:10px">VISUAL REFERENCES · competitive & inspirational</div>
+            <div style="display:flex;gap:10px;overflow-x:auto;padding-bottom:4px">
+              ${referenceCard('Intake form', 'Linear', refThumb_form, TOKENS.purple)}
+              ${referenceCard('Step-by-step', 'Jira Service Mgmt', refThumb_steps, TOKENS.blue)}
+              ${referenceCard('Request board', 'GitHub Issues', refThumb_kanban, TOKENS.green)}
+              ${referenceCard('Chat intake', 'Intercom', refThumb_chat, TOKENS.teal)}
+              ${referenceCard('Triage table', 'Shortcut', refThumb_table, TOKENS.amber)}
+            </div>
+          </div>
+        `, 'RESEARCH BRIEF · synthesised from 5 inputs')}
+      </div>
+    `;
+  }
+
+  // ── Phase 2: Design brief + persona + refs ────────────────────────────────
+  if (ph === 2) {
+    const cardId = 'card-brief';
+    const personaId = 'card-persona';
+    return `
+      <div style="max-width:800px">
+        <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:18px">
+
+          ${editableCard(cardId, `
+            <div style="display:flex;flex-direction:column;gap:12px">
+              <div>
+                <div style="font-size:11px;font-weight:700;color:${TOKENS.text3};margin-bottom:3px">GOAL</div>
+                <div data-ed style="font-size:14px;line-height:1.45">First submission in &lt;60 s; cut pre-submit abandon rate from 55% → under 20%.</div>
+              </div>
+              <div>
+                <div style="font-size:11px;font-weight:700;color:${TOKENS.text3};margin-bottom:3px">PRINCIPLES</div>
+                <div data-ed style="font-size:14px;line-height:1.45">Smart defaults first · one decision per screen for novices · always resumable · never block on optional fields.</div>
+              </div>
+              <div>
+                <div style="font-size:11px;font-weight:700;color:${TOKENS.text3};margin-bottom:3px">DESIGN SYSTEM</div>
+                <div style="display:flex;gap:5px;flex-wrap:wrap">
+                  ${[['AX-Primary','#2f5bea'],['AX-Surface','#F2EDE7'],['AX-Amber','#c2700f']].map(([n,c])=>`
+                    <div style="display:flex;align-items:center;gap:5px;background:${TOKENS.surface2};border-radius:6px;padding:5px 8px">
+                      <span style="width:11px;height:11px;border-radius:3px;background:${c};flex:none;border:1px solid ${TOKENS.border}"></span>
+                      <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:${TOKENS.text2}">${n}</span>
+                    </div>`).join('')}
+                </div>
+              </div>
+            </div>
+          `, 'DESIGN BRIEF')}
+
+          ${editableCard(personaId, `
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+              <div style="width:42px;height:42px;border-radius:50%;background:#d4456b;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;flex:none">DP</div>
+              <div>
+                <div data-ed style="font-size:14px;font-weight:700">Devon Park</div>
+                <div data-ed style="font-size:11.5px;color:${TOKENS.text2}">Senior QA Lead · primary persona</div>
+              </div>
+            </div>
+            <div data-ed style="font-size:13px;line-height:1.55;color:${TOKENS.text2};margin-bottom:10px">Detail-oriented, time-pressured. Currently opens three tools to file a single test request. Will abandon any flow that adds decisions before value.</div>
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <div style="font-size:11.5px;display:flex;align-items:flex-start;gap:6px">
+                <span style="color:${TOKENS.amber};font-weight:700;flex:none">!</span>
+                <span data-ed style="color:${TOKENS.text2}">Motivated by speed over comprehensiveness</span>
+              </div>
+              <div style="font-size:11.5px;display:flex;align-items:flex-start;gap:6px">
+                <span style="color:${TOKENS.green};font-weight:700;flex:none">✓</span>
+                <span data-ed style="color:${TOKENS.text2}">Trusts auto-fill if it's clearly labelled</span>
+              </div>
+            </div>
+          `, 'PERSONA · primary')}
+
+        </div>
+
+        <!-- Reference moodboard -->
+        <div style="background:${TOKENS.surfaceWarm};border:1px solid ${TOKENS.border};border-radius:14px;padding:18px">
+          <div style="font-size:11px;font-weight:700;color:${TOKENS.text3};letter-spacing:.5px;margin-bottom:12px">MOODBOARD · tone & direction references</div>
+          <div style="display:flex;gap:10px;overflow-x:auto;padding-bottom:4px">
+            ${referenceCard('Minimal intake', 'Notion Forms', refThumb_form, TOKENS.text3)}
+            ${referenceCard('Progress rail', 'Stripe Checkout', refThumb_steps, TOKENS.blue)}
+            ${referenceCard('Triage view', 'Linear', refThumb_table, TOKENS.purple)}
+            ${referenceCard('Conversational', 'Typeform', refThumb_chat, TOKENS.teal)}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  // ── Phase 3: Direction selection ──────────────────────────────────────────
+  if (ph === 3) {
+    const sel = state.selectedDir;
+    const dirCards = DIRECTIONS.map(dir => {
+      const isSelected = sel === dir.id;
+      const borderStyle = isSelected ? `border-color:${dir.tone};` : '';
+      const opacityStyle = sel && !isSelected ? 'opacity:.5;' : '';
+      return `
+        <div class="dir-card" style="${borderStyle}${opacityStyle}" onclick="selectDir('${dir.id}')">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:${dir.tone}">DIR ${dir.id}</span>
+            <span style="font-size:12px;font-weight:700">${dir.name}</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:${TOKENS.amber};background:${TOKENS.amberLight};border:1px solid ${isDark()?'#5a4010':'#ecd9a8'};border-radius:4px;padding:2px 5px;margin-left:auto">EXPLORING</span>
+          </div>
+          <div style="margin-bottom:10px">${wireThumbnail(128)}</div>
+          <div style="font-size:13px;color:${TOKENS.text2};line-height:1.45;margin-bottom:8px">${dir.desc}</div>
+          ${isSelected ? `<div style="font-size:12px;font-weight:700;color:${dir.tone}">✓ Selected by you</div>` : ''}
+        </div>
+      `;
+    }).join('');
+
+    const gateNotice = !sel ? `
+      <div style="margin-top:18px;display:inline-flex;align-items:center;gap:9px;background:${TOKENS.amberLight};border:1px solid ${isDark()?'#5a4010':'#ecd9a8'};border-radius:10px;padding:10px 15px;font-size:13px;color:${TOKENS.amber}">
+        <span style="width:7px;height:7px;border-radius:50%;background:${TOKENS.amber};flex:none"></span>
+        Human in the loop — select a direction to continue the pipeline.
+      </div>
+    ` : '';
+
+    return `
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+        <span style="display:flex;gap:3px">
+          <span style="width:5px;height:5px;border-radius:50%;background:#6f57d4;animation:ch-pulse 1s infinite"></span>
+          <span style="width:5px;height:5px;border-radius:50%;background:#6f57d4;animation:ch-pulse 1s infinite .2s"></span>
+          <span style="width:5px;height:5px;border-radius:50%;background:#6f57d4;animation:ch-pulse 1s infinite .4s"></span>
+        </span>
+        <span style="font-size:13px;color:${TOKENS.text2}">All three share the Design System · Devon persona · Requirements</span>
+      </div>
+      <div style="display:flex;gap:16px;flex-wrap:wrap;max-width:820px">${dirCards}</div>
+      ${gateNotice}
+    `;
+  }
+
+  // ── Phases 4–7: hi-fi mockup ──────────────────────────────────────────────
+  const selDir = DIRECTIONS.find(d => d.id === state.selectedDir) || DIRECTIONS[0];
+  const selTone = selDir.tone;
+
+  const hifiMockup = `
+    <div style="flex:none;width:280px;background:${TOKENS.surface};border:1px solid ${TOKENS.border};border-radius:16px;overflow:hidden;box-shadow:${TOKENS.shadowLg};animation:ch-pop .5s ease backwards">
+      <!-- App shell -->
+      <div style="height:42px;background:${selTone};display:flex;align-items:center;padding:0 14px;gap:8px;flex:none">
+        <div style="width:16px;height:16px;border-radius:4px;background:rgba(255,255,255,.9);flex:none"></div>
+        <div style="width:34%;height:7px;background:rgba(255,255,255,.85);border-radius:3px"></div>
+        <div style="margin-left:auto;display:flex;gap:5px">
+          <div style="width:18px;height:7px;background:rgba(255,255,255,.5);border-radius:3px"></div>
+          <div style="width:18px;height:7px;background:rgba(255,255,255,.5);border-radius:3px"></div>
+        </div>
+      </div>
+      <!-- Progress bar (if step flow selected) -->
+      ${selDir.id === 'B' ? `<div style="height:4px;background:${TOKENS.surface2}"><div style="height:100%;width:33%;background:${selTone};transition:width .4s"></div></div>` : ''}
+      <div style="padding:18px 16px">
+        <!-- Form title -->
+        <div style="height:10px;width:68%;background:${TOKENS.text};border-radius:3px;margin-bottom:6px"></div>
+        <div style="height:6px;width:90%;background:${TOKENS.surface2};border-radius:3px;margin-bottom:18px"></div>
+        <!-- Field 1 -->
+        <div style="margin-bottom:12px">
+          <div style="height:5px;width:30%;background:${TOKENS.border2};border-radius:2px;margin-bottom:5px"></div>
+          <div style="height:28px;border:1.5px solid ${TOKENS.border2};border-radius:7px;background:${TOKENS.surface};display:flex;align-items:center;padding:0 10px">
+            <div style="height:5px;width:50%;background:${TOKENS.border};border-radius:2px"></div>
+          </div>
+        </div>
+        <!-- Field 2 -->
+        <div style="margin-bottom:12px">
+          <div style="height:5px;width:24%;background:${TOKENS.border2};border-radius:2px;margin-bottom:5px"></div>
+          <div style="height:28px;border:1.5px solid ${TOKENS.border2};border-radius:7px;background:${TOKENS.surface};display:flex;align-items:center;padding:0 10px">
+            <div style="height:5px;width:35%;background:${TOKENS.border};border-radius:2px"></div>
+          </div>
+        </div>
+        <!-- Priority auto-suggest -->
+        <div style="margin-bottom:16px;background:${TOKENS.amberLight};border:1px solid ${isDark()?'#5a4010':'#ecd9a8'};border-radius:8px;padding:8px 10px;display:flex;align-items:center;gap:6px">
+          <div style="width:7px;height:7px;border-radius:50%;background:${TOKENS.amber};flex:none"></div>
+          <div style="height:5px;width:60%;background:${TOKENS.amber};border-radius:2px;opacity:.6"></div>
+        </div>
+        <!-- CTA -->
+        <div style="height:34px;background:${selTone};border-radius:9px;display:flex;align-items:center;justify-content:center">
+          <div style="height:7px;width:38%;background:rgba(255,255,255,.92);border-radius:3px"></div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  let sidePanel = '';
+
+  if (ph === 4) {
+    sidePanel = `
+      <div style="flex:1;min-width:240px;background:${TOKENS.surfaceWarm};border:1px solid ${TOKENS.border};border-radius:14px;padding:22px;animation:ch-pop .5s ease .08s backwards">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:#d4456b;font-weight:600;margin-bottom:14px">DESIGN SYSTEM APPLIED · AXIOM DS</div>
+        <div style="font-size:14px;line-height:1.5;color:${TOKENS.text2};margin-bottom:16px">The Visual Design Agent translated the wireframe into a high-fidelity concept using Axiom token library, spacing rules, and interactive component patterns.</div>
+        <div style="display:flex;flex-direction:column;gap:7px">
+          ${[
+            ['AX-Primary','#2f5bea'],
+            ['AX-Surface','#F2EDE7'],
+            ['spacing-form-gap','14px'],
+            ['radius-input','7px'],
+            ['shadow-card','0 2px 8px rgba(…)'],
+          ].map(([k,v]) => `
+            <div style="display:flex;align-items:center;gap:8px;background:${TOKENS.surface2};border-radius:7px;padding:8px 10px">
+              ${v.startsWith('#') ? `<span style="width:13px;height:13px;border-radius:3px;background:${v};flex:none;border:1px solid ${TOKENS.border}"></span>` : ''}
+              <span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:600;color:${TOKENS.text2};flex:1">${k}</span>
+              <span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:${TOKENS.text3}">${v}</span>
+            </div>`).join('')}
+        </div>
+      </div>
+    `;
+  } else if (ph === 5) {
+    sidePanel = `
+      <div style="flex:1;min-width:240px;background:${TOKENS.surfaceWarm};border:1px solid ${TOKENS.border};border-radius:14px;padding:22px;animation:ch-pop .5s ease .08s backwards">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+          <div style="width:34px;height:34px;border-radius:50%;background:#d4456b;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex:none">DP</div>
+          <div>
+            <div style="font-size:13px;font-weight:700">Persona review — Devon Park</div>
+            <div style="font-size:11px;color:${TOKENS.text2}">Persona Review Agent · Senior QA Lead</div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:9px">
+          <div style="display:flex;align-items:flex-start;gap:8px;font-size:13px;line-height:1.45">
+            <span style="color:${TOKENS.green};font-weight:700;flex:none;margin-top:1px">✓</span>
+            <span>Priority auto-suggest eliminates the biggest drop-off step.</span>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:8px;font-size:13px;line-height:1.45">
+            <span style="color:${TOKENS.green};font-weight:700;flex:none;margin-top:1px">✓</span>
+            <span>Single primary action per screen — Devon won't stall.</span>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:8px;font-size:13px;line-height:1.45;background:${TOKENS.amberLight};border-radius:8px;padding:9px;border:1px solid ${isDark()?'#5a4010':'#ecd9a8'}">
+            <span style="color:${TOKENS.amber};font-weight:700;flex:none;margin-top:1px">!</span>
+            <span>Step 2 label reads "Severity" — Devon reads this as redundant with "Priority". Consolidate or explain the difference.</span>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:8px;font-size:13px;line-height:1.45;background:${TOKENS.amberLight};border-radius:8px;padding:9px;border:1px solid ${isDark()?'#5a4010':'#ecd9a8'}">
+            <span style="color:${TOKENS.amber};font-weight:700;flex:none;margin-top:1px">!</span>
+            <span>The "Attach file" field is prominent for Devon but de-scoped. Either remove or mark optional clearly.</span>
+          </div>
+        </div>
+      </div>
+    `;
+  } else if (ph === 6) {
+    sidePanel = `
+      <div style="flex:1;min-width:240px;background:${TOKENS.blueLight};border:1px solid ${isDark()?'#1a3070':'#cfdcfb'};border-radius:14px;padding:22px;animation:ch-pop .5s ease .08s backwards">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:${TOKENS.blue};font-weight:600;margin-bottom:12px">ECD GATE</div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+          <div style="width:30px;height:30px;border-radius:8px;background:${TOKENS.blue};color:#fff;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;flex:none">EC</div>
+          <div style="font-size:13px;font-weight:600">ECD Agent</div>
+        </div>
+        <div style="font-size:14px;line-height:1.5;color:${isDark()?'#7a9ef5':'#1e3a8a'}">
+          Concept is grounded in the brief, Axiom Design System is consistent, and persona feedback has been addressed. <strong>Promotion needs your sign-off.</strong>
+        </div>
+      </div>
+    `;
+  } else if (ph === 7) {
+    sidePanel = `
+      <div style="flex:1;min-width:240px;background:${TOKENS.greenLight};border:1px solid ${isDark()?'#1a4731':'#c4e3d3'};border-radius:14px;padding:22px;animation:ch-pop .5s ease .08s backwards">
+        <div style="font-size:22px;margin-bottom:8px">🎉</div>
+        <div style="font-size:16px;font-weight:700;margin-bottom:8px;color:${isDark()?'#4aad7a':'#1a4731'}">Promoted to the Shared Canvas</div>
+        <div style="font-size:13.5px;line-height:1.55;color:${isDark()?'#4aad7a':'#2e6847'};margin-bottom:16px">Fully traceable from brief to approved — now visible to the whole team. Devon's session is unblocked.</div>
+        <button onclick="setView('canvas')" style="background:${TOKENS.green};color:#fff;border:none;border-radius:9px;padding:10px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Hanken Grotesk',sans-serif">View it on the canvas →</button>
+      </div>
+    `;
+  }
+
+  return `<div style="display:flex;gap:22px;flex-wrap:wrap;align-items:flex-start">${hifiMockup}${sidePanel}</div>`;
+}
+
+// ─── STAGE RENDER ─────────────────────────────────────────────────────────────
+
+function renderStage() {
+  const ph = state.phase;
+  const stage = document.querySelector('.stage');
+  const btnLabel = PHASE_BTN_LABELS[ph];
+  const isGate = ph === 3 && !state.selectedDir;
+  const btnDisabled = isGate || ph >= 7;
+  const btnStyle = btnDisabled
+    ? `background:${TOKENS.border};color:${TOKENS.text3};cursor:not-allowed;border-radius:10px;padding:11px 20px;font-size:14px;font-weight:700;display:flex;align-items:center;gap:9px;border:none;font-family:'Hanken Grotesk',sans-serif`
+    : `background:${TOKENS.brand};color:#fff;border-radius:10px;padding:11px 20px;font-size:14px;font-weight:700;display:flex;align-items:center;gap:9px;border:none;cursor:pointer;font-family:'Hanken Grotesk',sans-serif;transition:opacity .15s`;
+
+  stage.innerHTML = `
+    ${stageEyebrow(ph)}
+    <div style="flex:1">${stageContent(ph)}</div>
+    ${ph < 7 ? `
+    <div style="flex:none;display:flex;align-items:center;gap:14px;padding-top:18px;border-top:1px solid ${TOKENS.border};margin-top:20px">
+      <button id="next-btn" onclick="advance()" ${btnDisabled?'disabled':''} style="${btnStyle}">${btnLabel} <span style="font-size:16px">→</span></button>
+      <span style="font-size:12px;color:${TOKENS.text3}">Step through the flow — each handoff is a visible event in the feed.</span>
+    </div>
+    ` : ''}
+  `;
+
+  // Re-apply edit states after re-render
+  Object.entries(state.editModes).forEach(([cardId, isEdit]) => {
+    if (!isEdit) return;
+    const card = document.getElementById(cardId);
+    if (!card) return;
+    card.querySelectorAll('[data-ed]').forEach(el => { el.contentEditable = 'true'; });
+    const btn = document.getElementById('edit-btn-' + cardId);
+    if (btn) { btn.textContent = 'Save ✓'; btn.className = 'edit-btn saving'; }
+  });
+}
+
+// ─── FEED RAIL ────────────────────────────────────────────────────────────────
+
+function tagChip(tag) {
+  if (!tag) return '';
+  if (tag === 'parallel')  return `<span class="tag-chip" style="color:${TOKENS.purple};background:${TOKENS.purpleLight}">PARALLEL · 3 AGENTS</span>`;
+  if (tag === 'promote')   return `<span class="tag-chip" style="color:${TOKENS.green};background:${TOKENS.greenLight}">GATE PASSED → PROMOTED</span>`;
+  if (tag === 'gate')      return `<span class="tag-chip" style="color:${TOKENS.blue};background:${TOKENS.blueLight}">GOVERNANCE</span>`;
+  if (tag === 'human')     return `<span class="tag-chip" style="color:${TOKENS.amber};background:${TOKENS.amberLight}">HUMAN IN THE LOOP</span>`;
+  if (tag === 'directed')  return `<span class="tag-chip" style="color:${TOKENS.amber};background:${TOKENS.amberLight}">→ DIRECTED BY YOU</span>`;
+  return '';
+}
+
+function renderFeed() {
+  const feed = document.querySelector('.feed-rail');
+  const events = state.events;
+  let eventsHtml = '';
+  if (events.length === 0) {
+    eventsHtml = `<div style="flex:1;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px"><div style="font-size:13px;color:${TOKENS.text3};line-height:1.55">Start the flow — or direct an agent — to see activity here.</div></div>`;
+  } else {
+    eventsHtml = `<div style="flex:1;overflow-y:auto">${events.map(ev => {
+      const agent = AGENT_MAP[ev.a];
+      const isDirected = ev.tag === 'directed';
+      return `
+        <div class="event-card" style="${isDirected?`border-color:${agent.color};border-left:3px solid ${agent.color};`:''}">
+          <div style="display:flex;align-items:center;margin-bottom:6px">
+            <div style="width:20px;height:20px;border-radius:5px;background:${agent.color};display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:#fff;flex:none">${agent.short}</div>
+            <span style="font-size:12px;font-weight:700;margin-left:7px">${isDirected ? 'You → ' : ''}${agent.name}</span>
+            <span style="font-size:11px;color:${TOKENS.text3};margin-left:auto">just now</span>
+          </div>
+          <div style="font-size:12.5px;color:${TOKENS.text2};line-height:1.45">${ev.t}</div>
+          ${tagChip(ev.tag)}
+        </div>
+      `;
+    }).join('')}</div>`;
+  }
+
+  feed.innerHTML = `
+    <div style="margin-bottom:16px;flex:none">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:${TOKENS.text3};letter-spacing:1px;margin-bottom:6px">ACTIVITY FEED</div>
+      <div style="font-size:14px;font-weight:700">Every agent action, visible</div>
+      <div style="font-size:11.5px;color:${TOKENS.text3};margin-top:3px">Directions you send appear here too.</div>
+    </div>
+    ${eventsHtml}
+  `;
+}
+
+// ─── WORKSPACE ────────────────────────────────────────────────────────────────
+
+function renderWorkspace() {
+  const ws = document.getElementById('workspace-view');
+  ws.innerHTML = `
+    <aside class="pipeline-rail"></aside>
+    <main class="stage"></main>
+    <aside class="feed-rail"></aside>
+  `;
+  renderPipelineRail();
+  renderStage();
+  renderFeed();
+}
+
+// ─── DETAIL DRAWER ────────────────────────────────────────────────────────────
+
+function findCard(id) {
+  const all = [
+    ...BASE_CANVAS.exploring, ...BASE_CANVAS.review,
+    ...BASE_CANVAS.approved,  ...BASE_CANVAS.promoted,
+  ];
+  if (state.phase >= 7 && state.selectedDir) {
+    const dir = DIRECTIONS.find(d => d.id === state.selectedDir);
+    all.unshift({ id:'pr-fresh', kind:'hifi', kindLabel:'JUST PROMOTED', title:`Test Request — Direction ${dir.id} · ${dir.name}`, fresh:true, agent:'ECD Agent', agentShort:'EC', agentColor:'#2f5bea', time:'just now', tone:dir.tone });
+  }
+  return all.find(c => c.id === id);
+}
+
+function provStep(step) {
+  const agent = AGENT_MAP[step.a];
+  return `
+    <div class="prov-step">
+      <div style="width:20px;height:20px;border-radius:5px;background:${agent.color};display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:#fff;flex:none;margin-top:1px">${agent.short}</div>
+      <div>
+        <div style="font-size:12px;font-weight:600;color:${TOKENS.text}">${agent.name}</div>
+        <div style="font-size:12px;color:${TOKENS.text2};line-height:1.4">${step.t}</div>
+        ${step.tag ? `<div>${tagChip(step.tag)}</div>` : ''}
+      </div>
+    </div>
+  `;
+}
+
+function renderDrawer() {
+  const root = document.getElementById('drawer-root');
+  if (!state.detail) { root.innerHTML = ''; return; }
+  const card = findCard(state.detail);
+  if (!card) { root.innerHTML = ''; return; }
+
+  const tone = card.tone || card.agentColor || '#6f57d4';
+  const kindColor = card.agentColor || tone;
+  const prov = PROV_BY_KIND[card.kind] || [];
+  const isHifi = card.kind === 'hifi';
+  const isApproved = card.kindLabel === 'PROMOTED' || card.kindLabel === 'JUST PROMOTED' || card.id === 'ap-1';
+  const statusText = card.kindLabel === 'PROMOTED' || card.kindLabel === 'JUST PROMOTED' ? 'Promoted'
+    : card.id === 'ap-1' ? 'Approved'
+    : card.id === 'rv-b' ? 'In Review'
+    : 'Exploring';
+
+  const personaMini = isHifi ? `
+    <div style="border-top:1px solid ${TOKENS.border};padding-top:14px;margin-top:14px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.8px;color:${TOKENS.text3};font-weight:600;margin-bottom:10px">PERSONA REVIEW · Devon Park</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:flex-start;gap:7px;font-size:12.5px"><span style="color:${TOKENS.green};font-weight:700;flex:none">✓</span><span>Priority auto-suggest removes biggest drop-off.</span></div>
+        <div style="display:flex;align-items:flex-start;gap:7px;font-size:12.5px"><span style="color:${TOKENS.green};font-weight:700;flex:none">✓</span><span>Single primary action — Devon won't stall.</span></div>
+        <div style="display:flex;align-items:flex-start;gap:7px;font-size:12.5px;background:${TOKENS.amberLight};border-radius:7px;padding:8px;border:1px solid ${isDark()?'#5a4010':'#ecd9a8'}"><span style="color:${TOKENS.amber};font-weight:700;flex:none">!</span><span>"Severity" vs "Priority" — consolidate or explain.</span></div>
+      </div>
+    </div>
+  ` : '';
+
+  const ecdMini = isApproved ? `
+    <div style="background:${TOKENS.blueLight};border-radius:10px;padding:12px;margin-top:14px;border:1px solid ${isDark()?'#1a3070':'#cfdcfb'}">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.8px;color:${TOKENS.blue};font-weight:600;margin-bottom:8px">ECD GATE PASSED</div>
+      <div style="font-size:12.5px;line-height:1.45;color:${isDark()?'#7a9ef5':'#1e3a8a'}">Concept meets the brief. Axiom DS applied consistently. Promoted to shared canvas.</div>
+    </div>
+  ` : '';
+
+  root.innerHTML = `
+    <div style="position:absolute;inset:0;z-index:50;display:flex;justify-content:flex-end">
+      <div style="position:absolute;inset:0;background:rgba(24,23,26,.32);animation:ch-rise .2s ease" onclick="closeDetail()"></div>
+      <div style="width:440px;max-width:90vw;height:100%;background:${TOKENS.surface};border-left:1px solid ${TOKENS.border};box-shadow:-12px 0 40px rgba(20,18,12,.14);animation:ch-rise .25s ease;overflow-y:auto;position:relative;z-index:1;display:flex;flex-direction:column">
+        <div style="padding:20px 20px 16px;border-bottom:1px solid ${TOKENS.border};flex:none">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:${kindColor};letter-spacing:.5px">${card.kindLabel}</span>
+            <div style="display:flex;align-items:center;gap:5px;margin-left:auto;background:${TOKENS.surface2};border-radius:6px;padding:4px 9px">
+              <span style="width:6px;height:6px;border-radius:50%;background:${kindColor};flex:none"></span>
+              <span style="font-size:11.5px;font-weight:600;color:${TOKENS.text}">${statusText}</span>
+            </div>
+            <button onclick="closeDetail()" style="background:transparent;border:1px solid ${TOKENS.border};border-radius:7px;padding:5px 10px;font-size:14px;color:${TOKENS.text2};cursor:pointer;flex:none">✕</button>
+          </div>
+          <div style="font-family:'Instrument Serif',serif;font-size:24px;line-height:1.25;margin-bottom:12px">${card.title}</div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div style="width:20px;height:20px;border-radius:5px;background:${card.agentColor};display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:#fff;flex:none">${card.agentShort}</div>
+            <span style="font-size:12.5px;color:${TOKENS.text2}">Owned by ${card.agent}</span>
+          </div>
+        </div>
+        <div style="padding:18px 20px;flex:1;overflow-y:auto">
+          ${isHifi  ? `<div style="margin-bottom:18px">${hifiThumbnail(tone, 140)}</div>` : ''}
+          ${card.kind === 'wire'  ? `<div style="margin-bottom:18px">${wireThumbnail(110)}</div>` : ''}
+          ${card.kind === 'brief' ? `<div style="margin-bottom:18px">${briefThumbnail(110)}</div>` : ''}
+          <div style="border-top:1px solid ${TOKENS.border};padding-top:14px">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.8px;color:${TOKENS.text3};font-weight:600;margin-bottom:4px">PROVENANCE · how this got here</div>
+            ${prov.map(provStep).join('')}
+          </div>
+          ${personaMini}
+          ${ecdMini}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ─── MAIN RENDER ─────────────────────────────────────────────────────────────
+
+function render() {
+  renderHeader();
+  const canvasEl = document.getElementById('canvas-view');
+  const workspaceEl = document.getElementById('workspace-view');
+  if (state.view === 'canvas') {
+    canvasEl.style.display = 'flex';
+    workspaceEl.style.display = 'none';
+    renderCanvas();
+  } else {
+    canvasEl.style.display = 'none';
+    workspaceEl.style.display = 'flex';
+    renderWorkspace();
+  }
+  renderDrawer();
+}
+
+// ─── KEYBOARD ─────────────────────────────────────────────────────────────────
+
+document.addEventListener('keydown', function(e) {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable) return;
+  if (e.key === ' ' || e.key === 'ArrowRight') {
+    e.preventDefault();
+    if (state.phase !== 3 || state.selectedDir) advance();
+  }
+  if (e.key === 'Escape' && state.detail) closeDetail();
+});
+
+// ─── BOOT ─────────────────────────────────────────────────────────────────────
+
+render();
+</script>
+</body>
+</html>
