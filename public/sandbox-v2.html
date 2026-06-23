@@ -296,7 +296,7 @@ function renderHeader() {
       <div style="width:26px;height:26px;border-radius:7px;background:${TOKENS.text};display:flex;align-items:center;justify-content:center;flex:none">
         <div style="display:flex;align-items:flex-end;gap:2px;height:13px">
           <span style="width:2.5px;height:6px;background:#ffd166;border-radius:2px"></span>
-          <span style="width:2.5px;height:13px;background:#fff;border-radius:2px"></span>
+          <span style="width:2.5px;height:13px;background:${TOKENS.bgCanvas};border-radius:2px"></span>
           <span style="width:2.5px;height:9px;background:#7aa2ff;border-radius:2px"></span>
         </div>
       </div>
@@ -306,8 +306,8 @@ function renderHeader() {
     <div style="width:1px;height:24px;background:${TOKENS.border};flex:none"></div>
     <div style="font-size:13px;color:${TOKENS.text2}">Project / <span style="color:${TOKENS.text};font-weight:600">Helios — Onboarding Redesign</span></div>
     <div style="margin:0 auto;display:flex;background:${TOKENS.surface2};border:1px solid ${TOKENS.border};border-radius:10px;padding:3px;gap:2px">
-      <button id="btn-canvas" onclick="setView('canvas')" style="background:${isCanvas?TOKENS.brand:'transparent'};color:${isCanvas?'#fff':'#76747e'};border-radius:8px;border:none;padding:7px 15px;font-weight:600;font-size:13px;font-family:'Hanken Grotesk',sans-serif;cursor:pointer;transition:all .15s">Shared Canvas</button>
-      <button id="btn-workspace" onclick="setView('workspace')" style="background:${isWork?TOKENS.brand:'transparent'};color:${isWork?'#fff':'#76747e'};border-radius:8px;border:none;padding:7px 15px;font-weight:600;font-size:13px;font-family:'Hanken Grotesk',sans-serif;cursor:pointer;transition:all .15s">Design Team</button>
+      <button id="btn-canvas" onclick="setView('canvas')" style="background:${isCanvas?TOKENS.brand:'transparent'};color:${isCanvas?TOKENS.bgCanvas:TOKENS.text2};border-radius:8px;border:none;padding:7px 15px;font-weight:600;font-size:13px;font-family:'Hanken Grotesk',sans-serif;cursor:pointer;transition:all .15s">Shared Canvas</button>
+      <button id="btn-workspace" onclick="setView('workspace')" style="background:${isWork?TOKENS.brand:'transparent'};color:${isWork?TOKENS.bgCanvas:TOKENS.text2};border-radius:8px;border:none;padding:7px 15px;font-weight:600;font-size:13px;font-family:'Hanken Grotesk',sans-serif;cursor:pointer;transition:all .15s">Design Team</button>
     </div>
     <button onclick="toggleTheme()" title="Toggle light/dark" style="width:32px;height:32px;border-radius:8px;background:${TOKENS.surface2};border:1px solid ${TOKENS.border};display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;color:${TOKENS.text2};transition:all .15s;margin-left:auto;flex:none" onmouseover="this.style.background='${TOKENS.border}'" onmouseout="this.style.background='${TOKENS.surface2}'">${isDark() ? '☀︎' : '◑'}</button>
     <div style="display:flex;align-items:center">
