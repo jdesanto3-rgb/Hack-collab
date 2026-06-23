@@ -1,57 +1,65 @@
 /* ============================================================
    Design Tokens — CSS Custom Properties
+   Modern flat-glass palette · cool blue-violet
    ============================================================ */
 
 :root {
-  /* --- Colors: Light mode --- */
-  --bg: #F0ECE5;
-  --surface: #FDFAF6;
-  --surface2: #E8E3D9;
-  --border: #D8D2C6;
-  --border2: #C4BCAF;
-  --text: #1C1914;
-  --text2: #6B6860;
-  --text3: #9C9890;
+  /* --- Surface & background --- */
+  --bg: #ECEEFF;              /* cool lavender-blue canvas */
+  --bg-canvas: #FFFFFF;       /* pure white — also text-on-brand color */
+  --surface: #FFFFFF;         /* cards, panels */
+  --surface2: #F3F4FD;        /* secondary surface, sidebar fills */
+  --surface-warm: #F8F8FF;    /* subtle tint for form areas */
 
-  /* Brand — quiet luxury, warm near-black primary */
-  --brand: #1E1C18;        /* warm near-black — the primary ink color */
-  --brand-light: #EDEAE4;  /* very subtle warm tint for hover states */
-  --brand-mid: #9B8E83;    /* warm stone-gray for midtones */
-  --brand-dark: #0E0D0B;   /* very deep for pressed states */
+  /* --- Borders --- */
+  --border: #E1E3F5;          /* default border */
+  --border2: #C8CBEC;         /* stronger border */
 
-  /* Stone accent — warm neutral for tags, chips, secondary UI */
-  --stone: #7A6A5C;
-  --stone-light: #F2EDE7;
-  --stone-mid: #C4B5A8;
+  /* --- Text --- */
+  --text: #18192C;            /* cool near-black */
+  --text2: #54577A;           /* medium cool gray */
+  --text3: #9396B8;           /* light cool gray */
 
-  /* Accents — kept for components & agent colors */
-  --purple: #534AB7;
-  --purple-light: #EEEDFE;
-  --purple-mid: #AFA9EC;
+  /* --- Brand: vibrant violet-purple --- */
+  --brand: #5448FF;
+  --brand-light: #EEECFF;
+  --brand-mid: #9B96FF;
+  --brand-dark: #3A2EE8;
 
-  --teal: #0F6E56;
-  --teal-light: #E1F5EE;
-  --teal-mid: #5DCAA5;
+  /* --- Stone: cool neutral --- */
+  --stone: #6468A0;
+  --stone-light: #F2F3FC;
+  --stone-mid: #AEB2D8;
 
-  --amber: #854F0B;
-  --amber-light: #FAEEDA;
-  --amber-mid: #EF9F27;
+  /* --- Semantic accents --- */
+  --purple: #5448FF;
+  --purple-light: #EEECFF;
+  --purple-mid: #9B96FF;
 
-  --red: #a32d2d;
-  --red-light: #fcebeb;
+  --teal: #0099A8;
+  --teal-light: #DFF6F8;
+  --teal-mid: #55C8D6;
 
-  --npt: #1B4B6B;
-  --npt-light: #e8f0f6;
+  --amber: #D97706;
+  --amber-light: #FEF3C7;
+  --amber-mid: #F59E0B;
 
-  /* Canvas & workflow */
-  --bg-canvas: #ecebe5;
-  --surface-warm: #fffdf8;
+  --red: #DC2626;
+  --red-light: #FEE2E2;
 
-  /* Extended accents */
-  --blue: #2f5bea;
-  --blue-light: #e7eefe;
-  --green: #2e8157;
-  --green-light: #e6f3ec;
+  --npt: #2563EB;
+  --npt-light: #DBEAFE;
+
+  --blue: #3B6AEA;
+  --blue-light: #EBF0FF;
+
+  --green: #059669;
+  --green-light: #D1FAE5;
+
+  /* --- Shadows: blue-tinted for glass feel --- */
+  --shadow-sm:  0 2px 8px  rgba(84, 72, 255, 0.06), 0 0 0 0.5px rgba(84, 72, 255, 0.04);
+  --shadow-md:  0 4px 20px rgba(84, 72, 255, 0.10), 0 1px 4px  rgba(84, 72, 255, 0.05);
+  --shadow-lg:  0 8px 40px rgba(84, 72, 255, 0.14), 0 2px 8px  rgba(84, 72, 255, 0.07);
 
   /* --- Spacing --- */
   --space-xs: 4px;
@@ -62,11 +70,12 @@
   --space-2xl: 32px;
   --space-3xl: 48px;
 
-  /* --- Border Radius --- */
-  --radius-sm: 4px;
-  --radius: 6px;
-  --radius-lg: 8px;
-  --radius-pill: 20px;
+  /* --- Border Radius (larger, modern) --- */
+  --radius-sm: 6px;
+  --radius: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-pill: 999px;
   --radius-full: 9999px;
 
   /* --- Font Size --- */
@@ -99,162 +108,137 @@
   --tracking-wider: 0.08em;
   --tracking-widest: 0.12em;
 
-  /* --- Shadows --- */
-  --shadow-sm: 0 1px 2px rgba(28, 25, 20, 0.06);
-  --shadow-md: 0 2px 8px rgba(28, 25, 20, 0.08);
-  --shadow-lg: 0 4px 16px rgba(28, 25, 20, 0.10);
-
   /* --- Transitions --- */
   --transition-fast: 100ms ease;
   --transition: 150ms ease;
   --transition-slow: 250ms ease;
 }
 
-/* --- Dark mode overrides --- */
+/* ─── Dark mode ───────────────────────────────────────────── */
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #1C1914;
-    --surface: #252119;
-    --surface2: #2E2B23;
-    --border: #3C3830;
-    --border2: #4C4840;
-    --text: #EAE7E0;
-    --text2: #9C9890;
-    --text3: #6B6860;
-
-    --brand: #EAE6DF;        /* inverted — near-white for dark bg */
-    --brand-light: #2A2720;
-    --brand-mid: #9B8E83;
-    --brand-dark: #F5F2EC;
-
-    --stone: #C4B5A8;
-    --stone-light: #2A2520;
-    --stone-mid: #7A6A5C;
-
-    --purple: #7F77DD;
-    --purple-light: #26215C;
-    --purple-mid: #3C3489;
-
-    --teal: #1D9E75;
-    --teal-light: #04342C;
-    --teal-mid: #0F6E56;
-
-    --amber: #EF9F27;
-    --amber-light: #412402;
-    --amber-mid: #854F0B;
-
-    --red: #d94f4f;
-    --red-light: #3d1212;
-
-    --npt: #4d9ed4;
-    --npt-light: #0e2535;
-
-    --bg-canvas: #1a1916;
-    --surface-warm: #1e1d1a;
-
-    --blue: #6b8ef5;
-    --blue-light: #121c3a;
-    --green: #4aad7a;
-    --green-light: #0a2318;
+    --bg: #0F0F1C;
+    --bg-canvas: #0F0F1C;
+    --surface: #1A1A2E;
+    --surface2: #222238;
+    --surface-warm: #1E1E32;
+    --border: #2C2C4A;
+    --border2: #3C3C62;
+    --text: #E6E7F8;
+    --text2: #9396B8;
+    --text3: #62659A;
+    --brand: #A09AFF;
+    --brand-light: #1E1C40;
+    --brand-mid: #6866CC;
+    --brand-dark: #C4BFFF;
+    --stone: #9396B8;
+    --stone-light: #1E1E38;
+    --stone-mid: #62659A;
+    --purple: #A09AFF;
+    --purple-light: #1A1840;
+    --purple-mid: #6866CC;
+    --teal: #2DD4BF;
+    --teal-light: #083535;
+    --teal-mid: #0A8A80;
+    --amber: #FBB040;
+    --amber-light: #3A2500;
+    --amber-mid: #D97706;
+    --red: #F87171;
+    --red-light: #3D1010;
+    --npt: #6B8EFF;
+    --npt-light: #101C3A;
+    --blue: #6B8EFF;
+    --blue-light: #141C3A;
+    --green: #34D399;
+    --green-light: #0A2820;
+    --shadow-sm:  0 2px 8px  rgba(0, 0, 0, 0.28);
+    --shadow-md:  0 4px 20px rgba(0, 0, 0, 0.38);
+    --shadow-lg:  0 8px 40px rgba(0, 0, 0, 0.50);
   }
 }
 
-/* --- Explicit dark theme (JS toggle) --- */
 html[data-theme="dark"] {
-  --bg: #1C1914;
-  --surface: #252119;
-  --surface2: #2E2B23;
-  --border: #3C3830;
-  --border2: #4C4840;
-  --text: #EAE7E0;
-  --text2: #9C9890;
-  --text3: #6B6860;
-
-  --brand: #EAE6DF;
-  --brand-light: #2A2720;
-  --brand-mid: #9B8E83;
-  --brand-dark: #F5F2EC;
-
-  --stone: #C4B5A8;
-  --stone-light: #2A2520;
-  --stone-mid: #7A6A5C;
-
-  --purple: #7F77DD;
-  --purple-light: #26215C;
-  --purple-mid: #3C3489;
-
-  --teal: #1D9E75;
-  --teal-light: #04342C;
-  --teal-mid: #0F6E56;
-
-  --amber: #EF9F27;
-  --amber-light: #412402;
-  --amber-mid: #854F0B;
-
-  --red: #d94f4f;
-  --red-light: #3d1212;
-
-  --npt: #4d9ed4;
-  --npt-light: #0e2535;
-
-  --bg-canvas: #1a1916;
-  --surface-warm: #1e1d1a;
-
-  --blue: #6b8ef5;
-  --blue-light: #121c3a;
-  --green: #4aad7a;
-  --green-light: #0a2318;
-
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.20);
-  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.28);
-  --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.36);
+  --bg: #0F0F1C;
+  --bg-canvas: #0F0F1C;
+  --surface: #1A1A2E;
+  --surface2: #222238;
+  --surface-warm: #1E1E32;
+  --border: #2C2C4A;
+  --border2: #3C3C62;
+  --text: #E6E7F8;
+  --text2: #9396B8;
+  --text3: #62659A;
+  --brand: #A09AFF;
+  --brand-light: #1E1C40;
+  --brand-mid: #6866CC;
+  --brand-dark: #C4BFFF;
+  --stone: #9396B8;
+  --stone-light: #1E1E38;
+  --stone-mid: #62659A;
+  --purple: #A09AFF;
+  --purple-light: #1A1840;
+  --purple-mid: #6866CC;
+  --teal: #2DD4BF;
+  --teal-light: #083535;
+  --teal-mid: #0A8A80;
+  --amber: #FBB040;
+  --amber-light: #3A2500;
+  --amber-mid: #D97706;
+  --red: #F87171;
+  --red-light: #3D1010;
+  --npt: #6B8EFF;
+  --npt-light: #101C3A;
+  --blue: #6B8EFF;
+  --blue-light: #141C3A;
+  --green: #34D399;
+  --green-light: #0A2820;
+  --shadow-sm:  0 2px 8px  rgba(0, 0, 0, 0.28);
+  --shadow-md:  0 4px 20px rgba(0, 0, 0, 0.38);
+  --shadow-lg:  0 8px 40px rgba(0, 0, 0, 0.50);
 }
 
-/* Force light when explicitly set */
 html[data-theme="light"] {
-  --bg: #F0ECE5;
-  --surface: #FDFAF6;
-  --surface2: #E8E3D9;
-  --border: #D8D2C6;
-  --border2: #C4BCAF;
-  --text: #1C1914;
-  --text2: #6B6860;
-  --text3: #9C9890;
-  --brand: #1E1C18;
-  --brand-light: #EDEAE4;
-  --brand-mid: #9B8E83;
-  --brand-dark: #0E0D0B;
-  --stone: #7A6A5C;
-  --stone-light: #F2EDE7;
-  --stone-mid: #C4B5A8;
-  --purple: #534AB7;
-  --purple-light: #EEEDFE;
-  --purple-mid: #AFA9EC;
-  --teal: #0F6E56;
-  --teal-light: #E1F5EE;
-  --teal-mid: #5DCAA5;
-  --amber: #854F0B;
-  --amber-light: #FAEEDA;
-  --amber-mid: #EF9F27;
-  --red: #a32d2d;
-  --red-light: #fcebeb;
-  --npt: #1B4B6B;
-  --npt-light: #e8f0f6;
-  --bg-canvas: #ecebe5;
-  --surface-warm: #fffdf8;
-  --blue: #2f5bea;
-  --blue-light: #e7eefe;
-  --green: #2e8157;
-  --green-light: #e6f3ec;
-  --shadow-sm: 0 1px 2px rgba(28, 25, 20, 0.06);
-  --shadow-md: 0 2px 8px rgba(28, 25, 20, 0.08);
-  --shadow-lg: 0 4px 16px rgba(28, 25, 20, 0.10);
+  --bg: #ECEEFF;
+  --bg-canvas: #FFFFFF;
+  --surface: #FFFFFF;
+  --surface2: #F3F4FD;
+  --surface-warm: #F8F8FF;
+  --border: #E1E3F5;
+  --border2: #C8CBEC;
+  --text: #18192C;
+  --text2: #54577A;
+  --text3: #9396B8;
+  --brand: #5448FF;
+  --brand-light: #EEECFF;
+  --brand-mid: #9B96FF;
+  --brand-dark: #3A2EE8;
+  --stone: #6468A0;
+  --stone-light: #F2F3FC;
+  --stone-mid: #AEB2D8;
+  --purple: #5448FF;
+  --purple-light: #EEECFF;
+  --purple-mid: #9B96FF;
+  --teal: #0099A8;
+  --teal-light: #DFF6F8;
+  --teal-mid: #55C8D6;
+  --amber: #D97706;
+  --amber-light: #FEF3C7;
+  --amber-mid: #F59E0B;
+  --red: #DC2626;
+  --red-light: #FEE2E2;
+  --npt: #2563EB;
+  --npt-light: #DBEAFE;
+  --blue: #3B6AEA;
+  --blue-light: #EBF0FF;
+  --green: #059669;
+  --green-light: #D1FAE5;
+  --shadow-sm:  0 2px 8px  rgba(84, 72, 255, 0.06), 0 0 0 0.5px rgba(84, 72, 255, 0.04);
+  --shadow-md:  0 4px 20px rgba(84, 72, 255, 0.10), 0 1px 4px  rgba(84, 72, 255, 0.05);
+  --shadow-lg:  0 8px 40px rgba(84, 72, 255, 0.14), 0 2px 8px  rgba(84, 72, 255, 0.07);
 }
 
-/* --- Global base styles --- */
-*, *::before, *::after {
-  box-sizing: border-box;
-}
+/* --- Global base --- */
+*, *::before, *::after { box-sizing: border-box; }
 
 body {
   margin: 0;

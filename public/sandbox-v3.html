@@ -10,62 +10,148 @@
 <link rel="stylesheet" href="/tokens.css">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;overflow:hidden;font-family:'Hanken Grotesk',sans-serif;font-size:14px;color:var(--text);background:var(--bg-canvas)}
+html,body{height:100%;overflow:hidden;font-family:'Hanken Grotesk',sans-serif;font-size:14px;color:var(--text);background:var(--bg)}
 button{font-family:'Hanken Grotesk',sans-serif;border:none;cursor:pointer}
 @keyframes ch-rise{from{transform:translateY(9px);opacity:0}to{transform:none;opacity:1}}
 @keyframes ch-pop{0%{transform:translateY(12px) scale(.975);opacity:0}60%{transform:translateY(-2px) scale(1.008)}100%{transform:none;opacity:1}}
 @keyframes ch-pulse{0%,100%{opacity:.35;transform:scale(1)}50%{opacity:1;transform:scale(1.25)}}
 @keyframes ch-flow{from{background-position:0 0}to{background-position:24px 0}}
 @keyframes spin{to{transform:rotate(360deg)}}
-::-webkit-scrollbar{width:9px;height:9px}
-::-webkit-scrollbar-thumb{background:var(--border2,#cfcabd);border-radius:9px;border:2px solid transparent;background-clip:padding-box}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:8px;border:2px solid transparent;background-clip:padding-box}
 ::-webkit-scrollbar-track{background:transparent}
 
 #app{height:100vh;display:flex;flex-direction:column;overflow:hidden}
-header{height:58px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 18px;gap:13px;flex:none;z-index:10}
+header{
+  height:58px;
+  background:rgba(255,255,255,0.82);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 18px;gap:13px;flex:none;z-index:10;
+}
+html[data-theme="dark"] header{background:rgba(26,26,46,0.88)}
 #body{flex:1;min-height:0;position:relative;display:flex}
 #canvas-view{flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column}
 #workspace-view{flex:1;min-height:0;overflow:hidden;display:flex}
 
-.pipeline-rail{width:264px;flex:none;background:var(--surface2);border-right:1px solid var(--border);padding:22px 18px;display:flex;flex-direction:column;overflow-y:auto}
+/* Rails: glass panels */
+.pipeline-rail{
+  width:268px;flex:none;
+  background:rgba(255,255,255,0.75);
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  border-right:1px solid var(--border);
+  padding:22px 18px;display:flex;flex-direction:column;overflow-y:auto;
+}
+html[data-theme="dark"] .pipeline-rail{background:rgba(26,26,46,0.80)}
 .stage{flex:1;padding:28px 36px;overflow-y:auto;display:flex;flex-direction:column}
-.feed-rail{width:300px;flex:none;background:var(--surface2);border-left:1px solid var(--border);padding:20px 16px;display:flex;flex-direction:column;overflow-y:auto}
+.feed-rail{
+  width:304px;flex:none;
+  background:rgba(255,255,255,0.75);
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  border-left:1px solid var(--border);
+  padding:20px 16px;display:flex;flex-direction:column;overflow-y:auto;
+}
+html[data-theme="dark"] .feed-rail{background:rgba(26,26,46,0.80)}
 
+/* Canvas board */
 .canvas-board{flex:1;overflow-x:auto;overflow-y:hidden;padding:16px 20px 20px;display:flex;gap:14px;align-items:flex-start}
-.canvas-col{flex:1;min-width:284px;background:var(--surface2);border-radius:13px;border:1px solid var(--border);display:flex;flex-direction:column;max-height:calc(100vh - 158px)}
+.canvas-col{
+  flex:1;min-width:286px;
+  background:rgba(255,255,255,0.55);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border-radius:18px;border:1px solid var(--border);
+  display:flex;flex-direction:column;max-height:calc(100vh - 160px);
+}
+html[data-theme="dark"] .canvas-col{background:rgba(26,26,46,0.55)}
 .canvas-col-header{padding:14px 16px 12px;display:flex;align-items:center;gap:8px;flex:none}
 .canvas-col-body{padding:10px 12px 12px;overflow-y:auto;display:flex;flex-direction:column;gap:10px}
-.canvas-card{background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:12px;cursor:pointer;box-shadow:var(--shadow-sm);animation:ch-rise .4s ease;transition:box-shadow .15s,transform .15s}
-.canvas-card:hover{box-shadow:var(--shadow-md);transform:translateY(-1px)}
-.dir-card{background:var(--surface-warm);border:2px solid var(--border);border-radius:13px;padding:15px;cursor:pointer;transition:border-color .2s,opacity .2s;flex:1;min-width:210px}
-.dir-card:hover{box-shadow:0 3px 12px rgba(20,18,12,.09)}
-.event-card{background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:12px;animation:ch-rise .35s ease;margin-bottom:9px}
-.tag-chip{display:inline-flex;align-items:center;border-radius:5px;padding:3px 7px;font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:600;margin-top:7px}
+
+/* Canvas cards: glass */
+.canvas-card{
+  background:rgba(255,255,255,0.92);
+  border:1px solid rgba(225,227,245,0.8);
+  border-radius:16px;
+  padding:13px;cursor:pointer;
+  box-shadow:var(--shadow-sm);
+  animation:ch-rise .4s ease;
+  transition:box-shadow .2s,transform .2s,border-color .2s;
+}
+html[data-theme="dark"] .canvas-card{background:rgba(34,34,56,0.90);border-color:rgba(44,44,74,0.8)}
+.canvas-card:hover{
+  box-shadow:var(--shadow-md);
+  transform:translateY(-2px);
+  border-color:var(--brand-mid);
+}
+
+/* Direction cards */
+.dir-card{
+  background:rgba(255,255,255,0.80);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  border:1.5px solid var(--border);
+  border-radius:18px;padding:17px;
+  cursor:pointer;transition:border-color .2s,opacity .2s,box-shadow .2s;
+  flex:1;min-width:210px;
+}
+html[data-theme="dark"] .dir-card{background:rgba(26,26,46,0.70)}
+.dir-card:hover{box-shadow:var(--shadow-md)}
+
+/* Event cards */
+.event-card{
+  background:rgba(255,255,255,0.88);
+  border:1px solid rgba(225,227,245,0.7);
+  border-radius:12px;
+  padding:12px;
+  animation:ch-rise .35s ease;
+  margin-bottom:8px;
+  box-shadow:0 1px 4px rgba(84,72,255,.04);
+}
+html[data-theme="dark"] .event-card{background:rgba(34,34,56,0.85);border-color:rgba(44,44,74,0.7)}
+
+/* Tag chips: pill-shaped */
+.tag-chip{
+  display:inline-flex;align-items:center;
+  border-radius:999px;
+  padding:3px 9px;
+  font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;
+  letter-spacing:.3px;margin-top:7px;
+}
 .prov-step{display:flex;align-items:flex-start;gap:9px;padding:8px 0;border-bottom:1px solid var(--border)}
 .prov-step:last-child{border-bottom:none}
 
+/* Reference cards */
+.ref-row{display:flex;gap:10px;margin-top:18px;padding-top:16px;border-top:1px solid var(--border);overflow-x:auto}
+.ref-card{
+  flex:none;width:150px;
+  background:rgba(255,255,255,0.9);
+  border:1px solid var(--border);
+  border-radius:14px;overflow:hidden;cursor:pointer;
+  transition:box-shadow .2s,transform .2s;
+}
+.ref-card:hover{box-shadow:var(--shadow-md);transform:translateY(-1px)}
+.ref-thumb{height:76px;overflow:hidden}
+.ref-meta{padding:8px 10px}
+.ref-source{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.5px}
+.ref-label{font-size:11.5px;font-weight:600;margin-top:2px;line-height:1.3}
+
+/* Editable content */
+[contenteditable="true"]{outline:1.5px dashed var(--border2);border-radius:5px;padding:2px 5px;transition:outline .15s}
+[contenteditable="true"]:focus{outline:2px solid var(--brand);background:var(--brand-light)}
+.edit-btn{
+  font-size:11px;padding:4px 11px;border-radius:999px;
+  border:1px solid var(--border);background:transparent;
+  color:var(--text3);cursor:pointer;transition:all .15s;
+  font-family:'Hanken Grotesk',sans-serif;
+}
+.edit-btn:hover{background:var(--surface2);color:var(--text);border-color:var(--border2)}
+.edit-btn.saving{background:var(--green);color:#fff;border-color:var(--green)}
+
 /* Director panel */
-.dir-panel{margin-bottom:10px;border-radius:9px;border:1px solid var(--border2);overflow:hidden;background:var(--surface)}
+.dir-panel{margin-bottom:10px;border-radius:12px;border:1px solid var(--border);overflow:hidden;background:var(--surface)}
 .dir-panel-header{padding:9px 11px;font-size:11px;font-weight:600;color:var(--text2);background:var(--surface2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px}
 .dir-textarea{width:100%;padding:9px 11px;border:none;background:var(--surface);color:var(--text);font-family:'Hanken Grotesk',sans-serif;font-size:12.5px;line-height:1.5;resize:vertical;min-height:62px;outline:none;display:block}
 .dir-footer{padding:7px 10px;background:var(--surface2);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px}
 .dir-hint{font-size:10px;color:var(--text3)}
-
-/* Reference cards */
-.ref-row{display:flex;gap:10px;margin-top:18px;padding-top:16px;border-top:1px solid var(--border);overflow-x:auto}
-.ref-card{flex:none;width:148px;background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;transition:box-shadow .15s}
-.ref-card:hover{box-shadow:var(--shadow-md)}
-.ref-thumb{height:76px;overflow:hidden}
-.ref-meta{padding:7px 9px}
-.ref-source{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;letter-spacing:.5px}
-.ref-label{font-size:11.5px;font-weight:600;margin-top:2px;line-height:1.3}
-
-/* Editable content */
-[contenteditable="true"]{outline:1.5px dashed var(--border2);border-radius:4px;padding:2px 4px;transition:outline .15s}
-[contenteditable="true"]:focus{outline:2px solid var(--brand);background:var(--surface-warm)}
-.edit-btn{font-size:11px;padding:4px 10px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--text3);cursor:pointer;transition:all .15s;font-family:'Hanken Grotesk',sans-serif}
-.edit-btn:hover{background:var(--surface2);color:var(--text)}
-.edit-btn.saving{background:var(--green);color:#fff;border-color:var(--green)}
 </style>
 </head>
 <body>
@@ -85,34 +171,34 @@ function readTokens() {
   const s = getComputedStyle(document.documentElement);
   const get = v => s.getPropertyValue(v).trim();
   return {
-    bgCanvas:    get('--bg-canvas')    || '#ecebe5',
-    surface:     get('--surface')      || '#FDFAF6',
-    surfaceWarm: get('--surface-warm') || '#fffdf8',
-    surface2:    get('--surface2')     || '#E8E3D9',
-    border:      get('--border')       || '#D8D2C6',
-    border2:     get('--border2')      || '#C4BCAF',
-    text:        get('--text')         || '#1C1914',
-    text2:       get('--text2')        || '#6B6860',
-    text3:       get('--text3')        || '#9C9890',
-    brand:       get('--brand')        || '#1E1C18',
-    brandLight:  get('--brand-light')  || '#EDEAE4',
-    brandMid:    get('--brand-mid')    || '#9B8E83',
-    stone:       get('--stone')        || '#7A6A5C',
-    stoneLight:  get('--stone-light')  || '#F2EDE7',
-    stoneMid:    get('--stone-mid')    || '#C4B5A8',
-    blue:        get('--blue')         || '#2f5bea',
-    blueLight:   get('--blue-light')   || '#e7eefe',
-    green:       get('--green')        || '#2e8157',
-    greenLight:  get('--green-light')  || '#e6f3ec',
-    purple:      get('--purple')       || '#6f57d4',
-    purpleLight: get('--purple-light') || '#efebfb',
-    teal:        get('--teal')         || '#1f9d8f',
-    amber:       get('--amber')        || '#c2700f',
-    amberLight:  get('--amber-light')  || '#faeeda',
-    red:         get('--red')          || '#d4456b',
-    shadowSm:    get('--shadow-sm')    || '0 1px 2px rgba(28,25,20,.06)',
-    shadowMd:    get('--shadow-md')    || '0 2px 8px rgba(28,25,20,.08)',
-    shadowLg:    get('--shadow-lg')    || '0 4px 16px rgba(28,25,20,.10)',
+    bgCanvas:    get('--bg-canvas')    || '#FFFFFF',
+    surface:     get('--surface')      || '#FFFFFF',
+    surfaceWarm: get('--surface-warm') || '#F8F8FF',
+    surface2:    get('--surface2')     || '#F3F4FD',
+    border:      get('--border')       || '#E1E3F5',
+    border2:     get('--border2')      || '#C8CBEC',
+    text:        get('--text')         || '#18192C',
+    text2:       get('--text2')        || '#54577A',
+    text3:       get('--text3')        || '#9396B8',
+    brand:       get('--brand')        || '#5448FF',
+    brandLight:  get('--brand-light')  || '#EEECFF',
+    brandMid:    get('--brand-mid')    || '#9B96FF',
+    stone:       get('--stone')        || '#6468A0',
+    stoneLight:  get('--stone-light')  || '#F2F3FC',
+    stoneMid:    get('--stone-mid')    || '#AEB2D8',
+    blue:        get('--blue')         || '#3B6AEA',
+    blueLight:   get('--blue-light')   || '#EBF0FF',
+    green:       get('--green')        || '#059669',
+    greenLight:  get('--green-light')  || '#D1FAE5',
+    purple:      get('--purple')       || '#5448FF',
+    purpleLight: get('--purple-light') || '#EEECFF',
+    teal:        get('--teal')         || '#0099A8',
+    amber:       get('--amber')        || '#D97706',
+    amberLight:  get('--amber-light')  || '#FEF3C7',
+    red:         get('--red')          || '#DC2626',
+    shadowSm:    get('--shadow-sm')    || '0 2px 8px rgba(84,72,255,.06)',
+    shadowMd:    get('--shadow-md')    || '0 4px 20px rgba(84,72,255,.10)',
+    shadowLg:    get('--shadow-lg')    || '0 8px 40px rgba(84,72,255,.14)',
   };
 }
 
@@ -810,7 +896,7 @@ function renderPhase5DesignReview() {
 
   const personaPanel = `
     <div style="flex:1;min-width:230px;max-width:280px">
-      <div style="background:${T.surfaceWarm};border:1px solid ${T.border};border-radius:14px;padding:20px;animation:ch-pop .5s ease .1s backwards">
+      <div style="background:${T.surface};border:1px solid ${T.border};border-radius:18px;padding:20px;box-shadow:${T.shadowSm};animation:ch-pop .5s ease .1s backwards">
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
           <div style="width:36px;height:36px;border-radius:50%;background:#d4456b;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex:none">DP</div>
           <div>
@@ -890,11 +976,11 @@ function renderHeader() {
     </div>
     <div style="width:1px;height:24px;background:${TOKENS.border};flex:none"></div>
     <div style="font-size:13px;color:${TOKENS.text2}">Project / <span style="color:${TOKENS.text};font-weight:600">Axiom — Test Request Portal</span></div>
-    <div style="margin:0 auto;display:flex;background:${TOKENS.surface2};border:1px solid ${TOKENS.border};border-radius:10px;padding:3px;gap:2px">
-      <button onclick="setView('canvas')" style="background:${isCanvas?TOKENS.brand:'transparent'};color:${isCanvas?TOKENS.bgCanvas:TOKENS.text2};border-radius:8px;border:none;padding:7px 15px;font-weight:600;font-size:13px;font-family:'Hanken Grotesk',sans-serif;cursor:pointer;transition:all .15s">Shared Canvas</button>
-      <button onclick="setView('workspace')" style="background:${isWork?TOKENS.brand:'transparent'};color:${isWork?TOKENS.bgCanvas:TOKENS.text2};border-radius:8px;border:none;padding:7px 15px;font-weight:600;font-size:13px;font-family:'Hanken Grotesk',sans-serif;cursor:pointer;transition:all .15s">Design Team</button>
+    <div style="margin:0 auto;display:flex;background:${TOKENS.surface2};border:1px solid ${TOKENS.border};border-radius:14px;padding:3px;gap:2px">
+      <button onclick="setView('canvas')" style="background:${isCanvas?TOKENS.brand:'transparent'};color:${isCanvas?TOKENS.bgCanvas:TOKENS.text2};border-radius:11px;border:none;padding:7px 18px;font-weight:600;font-size:13px;font-family:'Hanken Grotesk',sans-serif;cursor:pointer;transition:all .18s;box-shadow:${isCanvas?'0 2px 8px rgba(84,72,255,.22)':'none'}">Shared Canvas</button>
+      <button onclick="setView('workspace')" style="background:${isWork?TOKENS.brand:'transparent'};color:${isWork?TOKENS.bgCanvas:TOKENS.text2};border-radius:11px;border:none;padding:7px 18px;font-weight:600;font-size:13px;font-family:'Hanken Grotesk',sans-serif;cursor:pointer;transition:all .18s;box-shadow:${isWork?'0 2px 8px rgba(84,72,255,.22)':'none'}">Design Team</button>
     </div>
-    <button onclick="toggleTheme()" title="Toggle light/dark" style="width:32px;height:32px;border-radius:8px;background:${TOKENS.surface2};border:1px solid ${TOKENS.border};display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;color:${TOKENS.text2};transition:all .15s;margin-left:auto;flex:none" onmouseover="this.style.background='${TOKENS.border}'" onmouseout="this.style.background='${TOKENS.surface2}'">${isDark() ? '☀︎' : '◑'}</button>
+    <button onclick="toggleTheme()" title="Toggle light/dark" style="width:32px;height:32px;border-radius:10px;background:${TOKENS.surface2};border:1px solid ${TOKENS.border};display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;color:${TOKENS.text2};transition:all .15s;margin-left:auto;flex:none" onmouseover="this.style.background='${TOKENS.border}'" onmouseout="this.style.background='${TOKENS.surface2}'">${isDark() ? '☀︎' : '◑'}</button>
     <div style="display:flex;align-items:center">
       <div style="display:flex">
         <div style="width:30px;height:30px;border-radius:50%;background:#d4456b;border:2px solid ${TOKENS.surface};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;z-index:3" title="Devon Park">DP</div>
@@ -922,7 +1008,7 @@ function renderCanvas() {
     { key:'promoted',  label:'Promoted',  color:'#2f5bea', cards: promotedCards },
   ];
   el.innerHTML = `
-    <div style="padding:20px 28px 16px;display:flex;align-items:center;flex:none;border-bottom:1px solid ${TOKENS.border};background:${TOKENS.surface}">
+    <div style="padding:20px 28px 16px;display:flex;align-items:center;flex:none;border-bottom:1px solid ${TOKENS.border};background:rgba(255,255,255,0.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)">
       <div>
         <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.2px;color:${TOKENS.text3};margin-bottom:5px">SHARED PROJECT CANVAS</div>
         <div style="font-family:'Instrument Serif',serif;font-size:28px;line-height:1.1;color:${TOKENS.text}">All work in motion, in one governed view</div>
@@ -936,7 +1022,7 @@ function renderCanvas() {
       <div class="canvas-board">
         ${cols.map(col => `
           <div class="canvas-col">
-            <div style="height:3px;background:${col.color};border-radius:13px 13px 0 0;flex:none"></div>
+            <div style="height:4px;background:linear-gradient(90deg,${col.color},${col.color}cc);border-radius:18px 18px 0 0;flex:none"></div>
             <div class="canvas-col-header">
               <span style="width:8px;height:8px;border-radius:50%;background:${col.color};flex:none"></span>
               <span style="font-size:14px;font-weight:600;flex:1;color:${TOKENS.text}">${col.label}</span>
@@ -975,7 +1061,7 @@ function renderCanvasCard(card) {
         <div style="width:18px;height:18px;border-radius:5px;background:${card.agentColor};display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;font-family:'JetBrains Mono',monospace;flex:none">${card.agentShort}</div>
         <span style="font-size:11.5px;color:${TOKENS.text2}">${card.agent}</span>
         <button onclick="goToDesignView(event,'${card.id}')"
-          style="margin-left:auto;font-size:10.5px;font-weight:600;padding:4px 9px;border-radius:5px;border:1px solid ${TOKENS.border};background:${TOKENS.surface2};color:${TOKENS.text2};cursor:pointer;font-family:'Hanken Grotesk',sans-serif;transition:all .12s;white-space:nowrap"
+          style="margin-left:auto;font-size:10.5px;font-weight:600;padding:4px 11px;border-radius:999px;border:1px solid ${TOKENS.border};background:${TOKENS.surface2};color:${TOKENS.text2};cursor:pointer;font-family:'Hanken Grotesk',sans-serif;transition:all .15s;white-space:nowrap"
           onmouseover="this.style.background='${TOKENS.brand}';this.style.color='${TOKENS.bgCanvas}';this.style.borderColor='${TOKENS.brand}'"
           onmouseout="this.style.background='${TOKENS.surface2}';this.style.color='${TOKENS.text2}';this.style.borderColor='${TOKENS.border}'">Design View →</button>
       </div>
@@ -1040,7 +1126,7 @@ function renderPipelineRail() {
 
   html += `
     <div style="margin-top:auto;padding-top:20px">
-      <button onclick="resetFlow()" style="width:100%;border:1px solid ${TOKENS.border};background:${TOKENS.surface};color:${TOKENS.text2};border-radius:9px;padding:9px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Hanken Grotesk',sans-serif">↺ Reset flow</button>
+      <button onclick="resetFlow()" style="width:100%;border:1px solid ${TOKENS.border};background:${TOKENS.surface};color:${TOKENS.text2};border-radius:999px;padding:9px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Hanken Grotesk',sans-serif;transition:all .15s" onmouseover="this.style.borderColor='${TOKENS.brand}';this.style.color='${TOKENS.brand}'" onmouseout="this.style.borderColor='${TOKENS.border}';this.style.color='${TOKENS.text2}'">↺ Reset flow</button>
     </div>
   `;
 
@@ -1053,7 +1139,7 @@ function editableCard(id, content, label) {
   const isEdit = !!state.editModes[id];
   return `
     <div style="position:relative">
-      <div id="${id}" style="background:${TOKENS.surfaceWarm};border:1px solid ${TOKENS.border};border-radius:14px;padding:22px;animation:ch-pop .5s ease backwards">
+      <div id="${id}" style="background:${TOKENS.surface};border:1px solid ${TOKENS.border};border-radius:18px;padding:22px;box-shadow:${TOKENS.shadowSm};animation:ch-pop .5s ease backwards">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
           <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:${TOKENS.text3};font-weight:600">${label}</div>
           <button id="edit-btn-${id}" class="edit-btn ${isEdit?'saving':''}" onclick="toggleEdit('${id}')">
@@ -1257,7 +1343,7 @@ function stageContent(ph) {
   const selTone = selDir.tone;
 
   const hifiMockup = `
-    <div style="flex:none;width:280px;background:${TOKENS.surface};border:1px solid ${TOKENS.border};border-radius:16px;overflow:hidden;box-shadow:${TOKENS.shadowLg};animation:ch-pop .5s ease backwards">
+    <div style="flex:none;width:284px;background:${TOKENS.surface};border:1px solid ${TOKENS.border};border-radius:20px;overflow:hidden;box-shadow:${TOKENS.shadowLg};animation:ch-pop .5s ease backwards">
       <!-- App shell -->
       <div style="height:42px;background:${selTone};display:flex;align-items:center;padding:0 14px;gap:8px;flex:none">
         <div style="width:16px;height:16px;border-radius:4px;background:rgba(255,255,255,.9);flex:none"></div>
@@ -1304,7 +1390,7 @@ function stageContent(ph) {
 
   if (ph === 4) {
     sidePanel = `
-      <div style="flex:1;min-width:240px;background:${TOKENS.surfaceWarm};border:1px solid ${TOKENS.border};border-radius:14px;padding:22px;animation:ch-pop .5s ease .08s backwards">
+      <div style="flex:1;min-width:240px;background:${TOKENS.surface};border:1px solid ${TOKENS.border};border-radius:18px;padding:22px;box-shadow:${TOKENS.shadowSm};animation:ch-pop .5s ease .08s backwards">
         <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:#d4456b;font-weight:600;margin-bottom:14px">DESIGN SYSTEM APPLIED · AXIOM DS</div>
         <div style="font-size:14px;line-height:1.5;color:${TOKENS.text2};margin-bottom:16px">The Visual Design Agent translated the wireframe into a high-fidelity concept using Axiom token library, spacing rules, and interactive component patterns.</div>
         <div style="display:flex;flex-direction:column;gap:7px">
@@ -1355,7 +1441,7 @@ function stageContent(ph) {
     `;
   } else if (ph === 6) {
     sidePanel = `
-      <div style="flex:1;min-width:240px;background:${TOKENS.blueLight};border:1px solid ${isDark()?'#1a3070':'#cfdcfb'};border-radius:14px;padding:22px;animation:ch-pop .5s ease .08s backwards">
+      <div style="flex:1;min-width:240px;background:${TOKENS.blueLight};border:1px solid ${isDark()?'#141C3A':'#C8D8FC'};border-radius:18px;padding:22px;box-shadow:${TOKENS.shadowSm};animation:ch-pop .5s ease .08s backwards">
         <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:${TOKENS.blue};font-weight:600;margin-bottom:12px">ECD GATE</div>
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
           <div style="width:30px;height:30px;border-radius:8px;background:${TOKENS.blue};color:#fff;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;flex:none">EC</div>
@@ -1368,7 +1454,7 @@ function stageContent(ph) {
     `;
   } else if (ph === 7) {
     sidePanel = `
-      <div style="flex:1;min-width:240px;background:${TOKENS.greenLight};border:1px solid ${isDark()?'#1a4731':'#c4e3d3'};border-radius:14px;padding:22px;animation:ch-pop .5s ease .08s backwards">
+      <div style="flex:1;min-width:240px;background:${TOKENS.greenLight};border:1px solid ${isDark()?'#0A2820':'#A7F3D0'};border-radius:18px;padding:22px;box-shadow:${TOKENS.shadowSm};animation:ch-pop .5s ease .08s backwards">
         <div style="font-size:22px;margin-bottom:8px">🎉</div>
         <div style="font-size:16px;font-weight:700;margin-bottom:8px;color:${isDark()?'#4aad7a':'#1a4731'}">Promoted to the Shared Canvas</div>
         <div style="font-size:13.5px;line-height:1.55;color:${isDark()?'#4aad7a':'#2e6847'};margin-bottom:16px">Fully traceable from brief to approved — now visible to the whole team. Devon's session is unblocked.</div>
@@ -1390,7 +1476,7 @@ function renderStage() {
   const btnDisabled = isGate || ph >= 7;
   const btnStyle = btnDisabled
     ? `background:${TOKENS.border};color:${TOKENS.text3};cursor:not-allowed;border-radius:10px;padding:11px 20px;font-size:14px;font-weight:700;display:flex;align-items:center;gap:9px;border:none;font-family:'Hanken Grotesk',sans-serif`
-    : `background:${TOKENS.brand};color:${TOKENS.bgCanvas};border-radius:10px;padding:11px 20px;font-size:14px;font-weight:700;display:flex;align-items:center;gap:9px;border:none;cursor:pointer;font-family:'Hanken Grotesk',sans-serif;transition:opacity .15s`;
+    : `background:${TOKENS.brand};color:${TOKENS.bgCanvas};border-radius:999px;padding:11px 24px;font-size:14px;font-weight:700;display:flex;align-items:center;gap:9px;border:none;cursor:pointer;font-family:'Hanken Grotesk',sans-serif;transition:opacity .15s;box-shadow:0 4px 16px rgba(84,72,255,.30)`;
 
   stage.innerHTML = `
     ${stageEyebrow(ph)}
@@ -1628,7 +1714,7 @@ function renderDrawer() {
   root.innerHTML = `
     <div style="position:absolute;inset:0;z-index:50;display:flex;justify-content:flex-end">
       <div style="position:absolute;inset:0;background:rgba(24,23,26,.32);animation:ch-rise .2s ease" onclick="closeDetail()"></div>
-      <div style="width:440px;max-width:90vw;height:100%;background:${TOKENS.surface};border-left:1px solid ${TOKENS.border};box-shadow:-12px 0 40px rgba(20,18,12,.14);animation:ch-rise .25s ease;overflow-y:auto;position:relative;z-index:1;display:flex;flex-direction:column">
+      <div style="width:440px;max-width:90vw;height:100%;background:rgba(255,255,255,0.92);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-left:1px solid ${TOKENS.border};box-shadow:-8px 0 48px rgba(84,72,255,.12);animation:ch-rise .25s ease;overflow-y:auto;position:relative;z-index:1;display:flex;flex-direction:column">
         <div style="padding:20px 20px 16px;border-bottom:1px solid ${TOKENS.border};flex:none">
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
             <span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:${kindColor};letter-spacing:.5px">${card.kindLabel}</span>
