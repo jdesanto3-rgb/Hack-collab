@@ -1,7 +1,6 @@
 [build]
-  base = "chorus"
-  command = "npm install && npm run build"
-  publish = "chorus/dist"
+  command = "npm install && npm run build-storybook"
+  publish = "storybook-static"
 
 [[headers]]
   for = "/*"
