@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chorus — Design Editor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Instrument+Serif:ital,wght@0,400;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/tokens.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;font-family:'Hanken Grotesk',sans-serif;font-size:13px;color:var(--text);background:var(--bg-canvas)}
+button,input,textarea{font-family:'Hanken Grotesk',sans-serif;border:none;cursor:pointer}
+input,textarea{outline:none}
+a{text-decoration:none;color:inherit}
+
+@keyframes ch-rise{from{transform:translateY(6px);opacity:0}to{transform:none;opacity:1}}
+@keyframes ch-pop{0%{transform:scale(.96);opacity:0}70%{transform:scale(1.02)}100%{transform:none;opacity:1}}
+@keyframes ch-pulse{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:1;transform:scale(1.4)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes cursor-move-vd{
+  0%  {transform:translate(290px,148px)}
+  20% {transform:translate(420px,200px)}
+  40% {transform:translate(290px,258px)}
+  60% {transform:translate(440px,310px)}
+  80% {transform:translate(290px,360px)}
+  100%{transform:translate(290px,148px)}
+}
+@keyframes cursor-move-dp{
+  0%  {transform:translate(160px,200px)}
+  30% {transform:translate(240px,258px)}
+  60% {transform:translate(160px,310px)}
+  100%{transform:translate(160px,200px)}
+}
+@keyframes cursor-move-jl{
+  0%  {transform:translate(350px,90px)}
+  50% {transform:translate(220px,160px)}
+  100%{transform:translate(350px,90px)}
+}
+@keyframes agent-suggest{
+  0%,85%{opacity:0;transform:translateY(4px)}
+  90%,95%{opacity:1;transform:none}
+  100%{opacity:0}
+}
+@keyframes toast-in{from{transform:translateY(12px);opacity:0}to{transform:none;opacity:1}}
+
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-thumb{background:var(--border2,#cfcabd);border-radius:6px;border:1px solid transparent;background-clip:padding-box}
+::-webkit-scrollbar-track{background:transparent}
+
+/* ── SHELL ── */
+#app{height:100vh;display:flex;flex-direction:column;overflow:hidden}
+#toolbar{height:50px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 14px;gap:0;flex:none;z-index:20}
+#main{flex:1;min-height:0;display:flex;overflow:hidden}
+
+/* ── LEFT PANEL ── */
+#left{width:256px;flex:none;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+.lp-tabs{display:flex;border-bottom:1px solid var(--border);flex:none}
+.lp-tab{flex:1;height:38px;display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:600;cursor:pointer;color:var(--text3);border-bottom:2px solid transparent;transition:all .15s;gap:5px}
+.lp-tab.on{color:var(--text);border-bottom-color:var(--brand)}
+.lp-body{flex:1;overflow-y:auto;overflow-x:hidden}
+.ds-header{padding:10px 12px;border-bottom:1px solid var(--border);background:var(--surface2);display:flex;align-items:center;gap:7px;flex:none}
+.ds-badge{display:flex;align-items:center;gap:4px;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;padding:3px 7px;border-radius:4px;cursor:pointer;transition:all .15s}
+.ds-sync{font-size:10px;padding:3px 8px;border-radius:5px;border:1px solid var(--border);background:transparent;color:var(--text3);cursor:pointer;transition:all .15s}
+.ds-sync:hover{background:var(--surface2);color:var(--text)}
+.ds-sync.spinning span{display:inline-block;animation:spin .7s linear infinite}
+.comp-search{margin:8px 10px;padding:6px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);font-size:12px;color:var(--text);width:calc(100% - 20px);transition:border .15s}
+.comp-search:focus{border-color:var(--brand)}
+.comp-section{padding:0}
+.comp-section-head{padding:7px 12px 4px;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:var(--text3);letter-spacing:.8px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none}
+.comp-item{display:flex;align-items:center;gap:8px;padding:5px 12px;cursor:pointer;transition:background .1s;border-radius:0}
+.comp-item:hover{background:var(--surface2)}
+.comp-item.adding{background:var(--brand-light,#EDEAE4)}
+.comp-icon{width:22px;height:22px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:8px;font-weight:700;color:#fff;flex:none}
+.comp-story{font-size:9px;font-family:'JetBrains Mono',monospace;color:var(--text3);margin-left:auto}
+.layer-item{display:flex;align-items:center;gap:6px;padding:4px 8px;cursor:pointer;transition:background .1s;border-radius:5px;margin:1px 6px}
+.layer-item:hover{background:var(--surface2)}
+.layer-item.selected{background:var(--blue)18;color:var(--blue)}
+.layer-item.selected .layer-name{color:var(--blue);font-weight:600}
+.token-section{padding:8px 12px}
+.token-row{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--border)}
+.token-row:last-child{border-bottom:none}
+
+/* ── CANVAS ── */
+#canvas{flex:1;overflow:hidden;position:relative;background:var(--bg-canvas)}
+.canvas-bg{position:absolute;inset:0;background-image:radial-gradient(circle,var(--border) 1px,transparent 1px);background-size:24px 24px;opacity:.5}
+.canvas-viewport{position:absolute;inset:0;overflow:auto;display:flex;align-items:flex-start;justify-content:center;padding:40px}
+.canvas-scaler{transform-origin:top center;transition:transform .2s ease}
+.artboard-wrap{display:flex;flex-direction:column;align-items:center;gap:32px}
+.artboard{background:var(--surface);border-radius:4px;position:relative;box-shadow:0 4px 24px rgba(20,18,12,.14),0 1px 4px rgba(20,18,12,.08)}
+.artboard-label{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text3);margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.frame-handle{width:8px;height:8px;border-radius:2px;background:var(--border2);flex:none}
+
+/* Component selection */
+.comp-on-canvas{position:absolute;cursor:pointer;transition:outline .1s}
+.comp-on-canvas.sel{outline:2px solid #2f5bea;outline-offset:1px;z-index:5}
+.comp-on-canvas.sel::before{content:'';position:absolute;inset:-6px;border:none}
+
+/* Corner handles */
+.comp-on-canvas.sel::after{content:'';pointer-events:none}
+.sel-handle{position:absolute;width:7px;height:7px;border-radius:2px;background:#2f5bea;border:1.5px solid #fff;z-index:6}
+
+/* Live cursors */
+.live-cursor{position:absolute;pointer-events:none;z-index:10;transition:transform 2s ease}
+.cursor-badge{display:flex;align-items:center;gap:4px;padding:3px 7px;border-radius:12px;font-size:10px;font-weight:700;color:#fff;white-space:nowrap;margin-top:4px;margin-left:6px}
+
+/* Agent suggest bubble */
+.agent-bubble{position:absolute;right:12px;bottom:60px;background:var(--surface);border:1.5px solid var(--border);border-radius:12px;padding:10px 12px;max-width:220px;box-shadow:var(--shadow-md);z-index:8;animation:agent-suggest 8s ease-in-out infinite;pointer-events:none}
+
+/* Canvas controls */
+.canvas-controls{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:6px 10px;box-shadow:var(--shadow-md);z-index:10}
+.zoom-btn{width:26px;height:26px;border-radius:6px;background:transparent;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;color:var(--text2);transition:all .12s}
+.zoom-btn:hover{background:var(--surface2);color:var(--text)}
+
+/* ── RIGHT PANEL ── */
+#right{width:272px;flex:none;background:var(--surface);border-left:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column}
+.rp-section{padding:14px 14px 12px;border-bottom:1px solid var(--border)}
+.rp-label{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:var(--text3);letter-spacing:.7px;margin-bottom:8px}
+.variant-btn{padding:5px 10px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--text2);font-size:11.5px;cursor:pointer;transition:all .12s}
+.variant-btn.on{background:var(--brand);color:var(--bg-canvas);border-color:var(--brand)}
+.prop-row{display:flex;align-items:center;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border)}
+.prop-row:last-child{border-bottom:none}
+.prop-key{font-size:11.5px;color:var(--text3)}
+.prop-val{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text);background:var(--surface2);border-radius:4px;padding:2px 6px;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.token-bind{display:flex;align-items:center;gap:6px;padding:4px 0;border-bottom:1px solid var(--border);font-size:11.5px}
+.token-bind:last-child{border-bottom:none}
+.token-swatch{width:12px;height:12px;border-radius:3px;flex:none;border:1px solid rgba(0,0,0,.1)}
+.token-name{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--blue)}
+.sb-link{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--blue);padding:4px 0;cursor:pointer}
+.sb-link:hover{text-decoration:underline}
+.ai-suggest{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px;margin-top:2px}
+.ai-apply{padding:5px 12px;border-radius:6px;background:var(--brand);color:var(--bg-canvas);font-size:11.5px;font-weight:700;cursor:pointer;transition:opacity .15s}
+.ai-apply:hover{opacity:.85}
+.ai-dismiss{padding:5px 10px;border-radius:6px;background:transparent;border:1px solid var(--border);color:var(--text2);font-size:11.5px;cursor:pointer}
+
+/* Toolbar pieces */
+.tb-sep{width:1px;height:22px;background:var(--border);flex:none;margin:0 10px}
+.tool-btn{width:32px;height:32px;border-radius:7px;background:transparent;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text2);font-size:14px;transition:all .12s}
+.tool-btn:hover,.tool-btn.on{background:var(--surface2);color:var(--text)}
+.tool-btn.on{background:var(--brand-light,#EDEAE4);color:var(--brand)}
+.preview-btn{padding:7px 14px;border-radius:8px;background:var(--brand);color:var(--bg-canvas);font-size:12px;font-weight:700;cursor:pointer;transition:opacity .15s}
+.preview-btn:hover{opacity:.85}
+.share-btn{padding:7px 14px;border-radius:8px;background:transparent;border:1px solid var(--border);color:var(--text2);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s}
+.share-btn:hover{background:var(--surface2)}
+.ds-connected{display:flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:600;padding:5px 10px;border-radius:6px;border:1px solid var(--border);color:var(--green);background:var(--green-light,#e6f3ec);cursor:pointer;transition:all .15s}
+.ds-connected:hover{opacity:.85}
+
+/* Toast */
+#toast-area{position:fixed;bottom:24px;right:24px;display:flex;flex-direction:column;gap:8px;z-index:100;pointer-events:none}
+.toast{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 14px;box-shadow:var(--shadow-lg);animation:toast-in .3s ease;display:flex;align-items:center;gap:9px;font-size:12.5px;max-width:280px;pointer-events:all}
+
+/* No-selection placeholder */
+.no-sel{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 20px;color:var(--text3);text-align:center;gap:8px;flex:1}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="toolbar"></div>
+  <div id="main">
+    <div id="left"></div>
+    <div id="canvas">
+      <div class="canvas-bg"></div>
+      <div class="canvas-viewport" id="viewport">
+        <div class="canvas-scaler" id="scaler" style="transform:scale(0.72)">
+          <div class="artboard-wrap" id="artboard-wrap"></div>
+        </div>
+      </div>
+      <div class="canvas-controls" id="controls"></div>
+    </div>
+    <div id="right"></div>
+  </div>
+</div>
+<div id="toast-area"></div>
+
+<script>
+// ── TOKENS ────────────────────────────────────────────────────────────────────
+function readTokens(){
+  const s=getComputedStyle(document.documentElement),g=v=>s.getPropertyValue(v).trim();
+  return{
+    bgCanvas:g('--bg-canvas')||'#ecebe5',surface:g('--surface')||'#FDFAF6',
+    surfaceWarm:g('--surface-warm')||'#fffdf8',surface2:g('--surface2')||'#E8E3D9',
+    border:g('--border')||'#D8D2C6',border2:g('--border2')||'#C4BCAF',
+    text:g('--text')||'#1C1914',text2:g('--text2')||'#6B6860',text3:g('--text3')||'#9C9890',
+    brand:g('--brand')||'#1E1C18',brandLight:g('--brand-light')||'#EDEAE4',
+    blue:g('--blue')||'#2f5bea',blueLight:g('--blue-light')||'#e7eefe',
+    green:g('--green')||'#2e8157',greenLight:g('--green-light')||'#e6f3ec',
+    purple:g('--purple')||'#6f57d4',purpleLight:g('--purple-light')||'#efebfb',
+    teal:g('--teal')||'#1f9d8f',tealLight:'#e0f3f1',
+    amber:g('--amber')||'#c2700f',amberLight:g('--amber-light')||'#faeeda',
+    red:g('--red')||'#d4456b',
+    shadowSm:g('--shadow-sm')||'0 1px 2px rgba(28,25,20,.06)',
+    shadowMd:g('--shadow-md')||'0 2px 8px rgba(28,25,20,.08)',
+    shadowLg:g('--shadow-lg')||'0 4px 16px rgba(28,25,20,.10)',
+  };
+}
+let T=readTokens();
+function isDark(){const a=document.documentElement.getAttribute('data-theme');if(a==='dark')return true;if(a==='light')return false;return window.matchMedia('(prefers-color-scheme:dark)').matches;}
+function toggleTheme(){document.documentElement.setAttribute('data-theme',isDark()?'light':'dark');T=readTokens();render();}
+
+// ── DS COMPONENT LIBRARY (maps to src/components/) ───────────────────────────
+const DS_SECTIONS=[
+  {
+    label:'CORE',
+    open:true,
+    components:[
+      {id:'Button',    icon:'Bt',color:'#2f5bea',story:'Button/Primary',    file:'Button.jsx'},
+      {id:'Input',     icon:'In',color:'#1f9d8f',story:'Input/Default',     file:'Input.jsx'},
+      {id:'Select',    icon:'Sl',color:'#1f9d8f',story:'Select/Default',    file:'Select.jsx'},
+      {id:'Checkbox',  icon:'Cb',color:'#6f57d4',story:'Checkbox/Default',  file:'Checkbox.jsx'},
+      {id:'Radio',     icon:'Rd',color:'#6f57d4',story:'Radio/Default',     file:'Radio.jsx'},
+      {id:'Switch',    icon:'Sw',color:'#6f57d4',story:'Switch/Default',    file:'Switch.jsx'},
+      {id:'Typography',icon:'Tx',color:'#9C9890',story:'Typography/Heading',file:'Typography.jsx'},
+    ],
+  },
+  {
+    label:'DISPLAY',
+    open:true,
+    components:[
+      {id:'Badge',     icon:'Bd',color:'#c2700f',story:'Badge/Default',     file:'Badge.jsx'},
+      {id:'Avatar',    icon:'Av',color:'#d4456b',story:'Avatar/Default',    file:'Avatar.jsx'},
+      {id:'Chip',      icon:'Ch',color:'#9C9890',story:'Chip/Default',      file:'Chip.jsx'},
+      {id:'Tooltip',   icon:'Tp',color:'#1f9d8f',story:'Tooltip/Default',   file:'Tooltip.jsx'},
+      {id:'Divider',   icon:'Dv',color:'#9C9890',story:'Divider/Default',   file:'Divider.jsx'},
+    ],
+  },
+  {
+    label:'FEEDBACK',
+    open:false,
+    components:[
+      {id:'Alert',       icon:'Al',color:'#c2700f',story:'Alert/Warning',      file:'Alert.jsx'},
+      {id:'Spinner',     icon:'Sp',color:'#2f5bea',story:'Spinner/Default',    file:'Spinner.jsx'},
+      {id:'ProgressBar', icon:'Pb',color:'#2e8157',story:'ProgressBar/Default',file:'ProgressBar.jsx'},
+      {id:'Toast',       icon:'Ts',color:'#2e8157',story:'Toast/Default',      file:'Toast.jsx'},
+    ],
+  },
+  {
+    label:'LAYOUT',
+    open:false,
+    components:[
+      {id:'Card',   icon:'Cd',color:'#9C9890',story:'Card/Default',  file:'Card.jsx'},
+      {id:'Modal',  icon:'Md',color:'#6f57d4',story:'Modal/Default', file:'Modal.jsx'},
+      {id:'Tabs',   icon:'Tb',color:'#2f5bea',story:'Tabs/Default',  file:'Tabs.jsx'},
+    ],
+  },
+  {
+    label:'COMPLEX',
+    open:false,
+    components:[
+      {id:'KanbanBoard', icon:'Kb',color:'#6f57d4',story:'KanbanBoard/Default', file:'KanbanBoard.jsx'},
+      {id:'ActivityFeed',icon:'Af',color:'#1f9d8f',story:'ActivityFeed/Default',file:'ActivityFeed.jsx'},
+      {id:'PipelineRail',icon:'Pp',color:'#c2700f',story:'PipelineRail/Default',file:'PipelineRail.jsx'},
+      {id:'AgentBadge',  icon:'Ab',color:'#d4456b',story:'AgentBadge/Default',  file:'AgentBadge.jsx'},
+    ],
+  },
+];
+
+const DS_MAP={};
+DS_SECTIONS.forEach(s=>s.components.forEach(c=>{DS_MAP[c.id]=c;}));
+
+// ── CANVAS COMPONENTS (placed on artboard) ────────────────────────────────────
+// Each has: id, type, x, y, w, h, props, variant, size
+const DESKTOP_COMPONENTS=[
+  {id:'app-header',  type:'AppHeader',      x:0,   y:0,   w:916, h:52,  props:{title:'Axiom QA — New Request',version:'v3'},          variant:'default',size:'md'},
+  {id:'prog-bar',    type:'ProgressBar',    x:0,   y:52,  w:916, h:5,   props:{value:33,color:'blue'},                                variant:'default',size:'md'},
+  {id:'step-label',  type:'Typography',     x:32,  y:74,  w:500, h:28,  props:{text:'Step 1 of 2 · Request details',variant:'label'}, variant:'label',  size:'md'},
+  {id:'revised-tag', type:'Badge',          x:752, y:74,  w:132, h:28,  props:{label:'✓ Revised',color:'green'},                      variant:'green',  size:'sm'},
+  {id:'name-input',  type:'Input',          x:32,  y:122, w:500, h:56,  props:{label:'Test Name',placeholder:'e.g. Login flow regression',required:true},variant:'default',size:'md'},
+  {id:'priority-suggest',type:'PrioritySuggest',x:32,y:194,w:500,h:72, props:{value:'High',auto:true,source:'Linked issue severity'}, variant:'success', size:'md'},
+  {id:'attach-input',type:'FileInput',      x:32,  y:282, w:500, h:64,  props:{label:'Attach files',optional:true},                   variant:'default',size:'md'},
+  {id:'submit-btn',  type:'Button',         x:32,  y:362, w:500, h:48,  props:{label:'Submit Test Request →',tone:'green'},            variant:'primary', size:'lg'},
+  {id:'ds-tag',      type:'Typography',     x:32,  y:428, w:500, h:22,  props:{text:'Axiom DS · persona-reviewed · v3',variant:'caption'},variant:'caption',size:'sm'},
+];
+
+const MOBILE_COMPONENTS=[
+  {id:'m-header',    type:'AppHeader',      x:0,   y:0,   w:375, h:48,  props:{title:'Axiom QA',version:'v3'},                       variant:'default',size:'md'},
+  {id:'m-prog',      type:'ProgressBar',    x:0,   y:48,  w:375, h:4,   props:{value:33,color:'blue'},                               variant:'default',size:'sm'},
+  {id:'m-label',     type:'Typography',     x:16,  y:64,  w:343, h:24,  props:{text:'Step 1 of 2',variant:'label'},                  variant:'label',  size:'sm'},
+  {id:'m-input',     type:'Input',          x:16,  y:100, w:343, h:50,  props:{label:'Test Name',placeholder:'e.g. Login flow…',required:true},variant:'default',size:'sm'},
+  {id:'m-priority',  type:'PrioritySuggest',x:16,  y:164, w:343, h:64,  props:{value:'High',auto:true},                              variant:'success', size:'sm'},
+  {id:'m-btn',       type:'Button',         x:16,  y:244, w:343, h:44,  props:{label:'Submit →',tone:'green'},                       variant:'primary', size:'md'},
+];
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+const state={
+  leftTab:'components',           // 'layers' | 'components' | 'tokens'
+  activeTool:'select',            // 'select' | 'hand' | 'insert' | 'frame'
+  zoom:0.72,
+  selectedId:null,
+  activeFrame:'desktop',
+  sections:Object.fromEntries(DS_SECTIONS.map(s=>[s.label,s.open])),
+  dsSearch:'',
+  syncSpinning:false,
+  aiSuggestionDismissed:false,
+  rightTab:'inspect',             // 'inspect' | 'code'
+  addingId:null,
+};
+
+function getSelected(){
+  if(!state.selectedId) return null;
+  const all=[...DESKTOP_COMPONENTS,...MOBILE_COMPONENTS];
+  return all.find(c=>c.id===state.selectedId)||null;
+}
+
+// ── COMPONENT RENDERERS (on-canvas HTML) ──────────────────────────────────────
+function renderCompHtml(comp){
+  const T2=T;
+  switch(comp.type){
+    case 'AppHeader':
+      return `<div style="width:100%;height:100%;background:#2f5bea;display:flex;align-items:center;padding:0 16px;gap:10px">
+        <div style="width:20px;height:20px;border-radius:5px;background:rgba(255,255,255,.9);flex:none;display:flex;align-items:center;justify-content:center"><span style="font-size:7px;font-weight:800;color:#2f5bea">AX</span></div>
+        <span style="font-size:12px;font-weight:600;color:rgba(255,255,255,.9)">${comp.props.title}</span>
+        <span style="margin-left:auto;font-size:8px;font-family:'JetBrains Mono',monospace;color:rgba(255,255,255,.4)">${comp.props.version||''}</span>
+        <div style="display:flex;gap:5px">
+          <div style="width:24px;height:24px;border-radius:50%;background:#d4456b;border:1.5px solid rgba(255,255,255,.4);display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:#fff">DP</div>
+          <div style="width:24px;height:24px;border-radius:50%;background:#2e8157;border:1.5px solid rgba(255,255,255,.4);display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:#fff">JL</div>
+        </div>
+      </div>`;
+    case 'ProgressBar':
+      return `<div style="width:100%;height:100%;background:${T2.surface2}"><div style="height:100%;width:${comp.props.value||33}%;background:#2f5bea;transition:width .4s"></div></div>`;
+    case 'Typography':
+      if(comp.props.variant==='label'||comp.props.variant==='caption'){
+        const fs=comp.props.variant==='caption'?10:comp.w>400?11:10;
+        return `<div style="width:100%;height:100%;display:flex;align-items:center;font-size:${fs}px;font-weight:${comp.props.variant==='label'?700:400};color:${comp.props.variant==='caption'?T2.text3:T2.text2}">${comp.props.text}</div>`;
+      }
+      return `<div style="width:100%;height:100%;display:flex;align-items:center;font-size:16px;font-weight:700;color:${T2.text}">${comp.props.text}</div>`;
+    case 'Badge':
+      const badgeColor=comp.props.color==='green'?T2.green:T2.blue;
+      const badgeBg=comp.props.color==='green'?T2.greenLight:T2.blueLight;
+      return `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:flex-end"><span style="display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;color:${badgeColor};background:${badgeBg};border:1px solid ${badgeColor}33;border-radius:5px;padding:3px 9px">${comp.props.label}</span></div>`;
+    case 'Input':
+      return `<div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;gap:5px">
+        <div style="display:flex;align-items:center;gap:4px">
+          <span style="font-size:10.5px;font-weight:600;color:${T2.text2}">${comp.props.label}</span>
+          ${comp.props.required?`<span style="color:${T2.red};font-size:10px;font-weight:700">*</span>`:''}
+        </div>
+        <div style="height:36px;border:1.5px solid ${T2.border2};border-radius:7px;background:${T2.surface};display:flex;align-items:center;padding:0 11px">
+          <span style="font-size:11.5px;color:${T2.text3}">${comp.props.placeholder}</span>
+        </div>
+      </div>`;
+    case 'PrioritySuggest':
+      return `<div style="width:100%;height:100%;background:${T2.greenLight};border:1.5px solid ${T2.green}55;border-radius:9px;padding:10px 12px;display:flex;flex-direction:column;justify-content:center;gap:6px">
+        <div style="display:flex;align-items:center;gap:6px">
+          <span style="font-size:9px;font-weight:700;color:${T2.green};font-family:'JetBrains Mono',monospace">⚡ PRIORITY</span>
+          <span style="font-size:8.5px;font-weight:700;color:${T2.green};background:${T2.green}18;border-radius:3px;padding:1px 5px">auto-suggested</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div style="width:10px;height:10px;border-radius:50%;background:${T2.green};flex:none"></div>
+          <span style="font-size:13px;font-weight:700;color:${isDark()?'#6dcc9a':'#1a4731'}">High</span>
+          <span style="font-size:10px;color:${T2.green};margin-left:auto;border-bottom:1px dashed ${T2.green}66;cursor:pointer">Change</span>
+        </div>
+        ${comp.props.source?`<span style="font-size:9.5px;color:${T2.green};opacity:.7">${comp.props.source} · confirm or adjust</span>`:''}
+      </div>`;
+    case 'FileInput':
+      return `<div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;gap:5px">
+        <div style="display:flex;align-items:center;gap:6px">
+          <span style="font-size:10.5px;font-weight:600;color:${T2.text2}">${comp.props.label}</span>
+          ${comp.props.optional?`<span style="font-size:9px;font-weight:600;color:${T2.text3};background:${T2.surface2};border-radius:4px;padding:1px 5px">optional</span>`:''}
+        </div>
+        <div style="height:44px;border:1.5px dashed ${T2.border};border-radius:7px;background:${T2.surface2};display:flex;align-items:center;justify-content:center">
+          <span style="font-size:11px;color:${T2.text3}">↑ Drop or click · or skip</span>
+        </div>
+      </div>`;
+    case 'Button':
+      const btnBg=comp.props.tone==='green'?T2.green:T2.blue;
+      return `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:${btnBg};border-radius:9px;cursor:pointer">
+        <span style="font-size:13.5px;font-weight:700;color:#fff">${comp.props.label}</span>
+      </div>`;
+    default:
+      return `<div style="width:100%;height:100%;background:${T2.surface2};border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;color:${T2.text3}">${comp.type}</div>`;
+  }
+}
+
+// ── TOOLBAR ───────────────────────────────────────────────────────────────────
+function renderToolbar(){
+  document.getElementById('toolbar').innerHTML=`
+    <a href="sandbox-v4-project.html" style="display:flex;align-items:center;gap:7px;padding-right:12px;border-right:1px solid ${T.border};margin-right:12px;color:${T.text2};transition:color .15s;white-space:nowrap;font-size:12px" onmouseover="this.style.color='${T.text}'" onmouseout="this.style.color='${T.text2}'">
+      <span style="font-size:15px">‹</span>
+      <span style="font-family:'Instrument Serif',serif;font-size:18px">Chorus</span>
+    </a>
+    <span style="font-size:11.5px;color:${T.text3}">Axiom — Test Request Intake</span>
+    <span style="font-size:11.5px;color:${T.border2};margin:0 4px">›</span>
+    <span style="font-size:11.5px;font-weight:600">Visual Design</span>
+    <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:${T.red};background:${T.red}18;border-radius:4px;padding:2px 6px;margin-left:6px;display:flex;align-items:center;gap:4px"><span style="width:5px;height:5px;border-radius:50%;background:${T.red};animation:ch-pulse 1.4s infinite"></span>Active</span>
+    <div class="tb-sep"></div>
+    ${[
+      {id:'select',icon:'↖',title:'Select (V)'},
+      {id:'hand',  icon:'✋',title:'Hand (H)'},
+      {id:'insert',icon:'◻',title:'Insert (I)'},
+      {id:'frame', icon:'⊞',title:'Frame (F)'},
+    ].map(t=>`<button class="tool-btn${state.activeTool===t.id?' on':''}" onclick="state.activeTool='${t.id}';renderToolbar()" title="${t.title}">${t.icon}</button>`).join('')}
+    <div class="tb-sep"></div>
+    <button class="tool-btn" onclick="undo()" title="Undo (⌘Z)">↩</button>
+    <button class="tool-btn" title="Redo (⌘⇧Z)">↪</button>
+    <div style="flex:1"></div>
+    <button class="ds-connected" onclick="syncDS()">
+      <span style="width:6px;height:6px;border-radius:50%;background:${T.green};flex:none;animation:ch-pulse 3s infinite"></span>
+      axiom-ds · Storybook
+    </button>
+    <div class="tb-sep"></div>
+    <button class="share-btn">Share</button>
+    <button class="preview-btn" onclick="showToast('Opening preview…','#2f5bea')">Preview ▶</button>
+    <div class="tb-sep"></div>
+    <button onclick="toggleTheme()" style="width:32px;height:32px;border-radius:8px;background:${T.surface2};border:1px solid ${T.border};display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;color:${T.text2};flex:none" onmouseover="this.style.background='${T.border}'" onmouseout="this.style.background='${T.surface2}'">${isDark()?'☀︎':'◑'}</button>
+  `;
+}
+
+// ── LEFT PANEL ────────────────────────────────────────────────────────────────
+function renderLeft(){
+  const tab=state.leftTab;
+  document.getElementById('left').innerHTML=`
+    <div class="lp-tabs">
+      <div class="lp-tab${tab==='layers'?' on':''}" onclick="state.leftTab='layers';renderLeft()">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="1" y="1" width="11" height="3" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="1" y="5.5" width="11" height="3" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="1" y="10" width="11" height="2" rx="1" stroke="currentColor" stroke-width="1.2"/></svg>
+        Layers
+      </div>
+      <div class="lp-tab${tab==='components'?' on':''}" onclick="state.leftTab='components';renderLeft()">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="1" y="1" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="7" y="1" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="1" y="7" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="7" y="7" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.2"/></svg>
+        Components
+      </div>
+      <div class="lp-tab${tab==='tokens'?' on':''}" onclick="state.leftTab='tokens';renderLeft()">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="4" cy="4" r="2.5" stroke="currentColor" stroke-width="1.2"/><circle cx="9" cy="9" r="2.5" stroke="currentColor" stroke-width="1.2"/><line x1="6" y1="4" x2="12" y2="4" stroke="currentColor" stroke-width="1.2"/><line x1="1" y1="9" x2="7" y2="9" stroke="currentColor" stroke-width="1.2"/></svg>
+        Tokens
+      </div>
+    </div>
+    <div class="lp-body" id="lp-body">
+      ${tab==='components'?renderComponentsPanel():''}
+      ${tab==='layers'?renderLayersPanel():''}
+      ${tab==='tokens'?renderTokensPanel():''}
+    </div>
+  `;
+}
+
+function renderComponentsPanel(){
+  const q=state.dsSearch.toLowerCase();
+  return `
+    <div class="ds-header">
+      <div class="ds-badge" style="background:${T.green}18;color:${T.green};border:1px solid ${T.green}33" onclick="showToast('Opening axiom-ds in Storybook…','${T.green}')">
+        <span style="width:5px;height:5px;border-radius:50%;background:${T.green};animation:ch-pulse 3s infinite"></span>
+        axiom-ds
+      </div>
+      <span style="font-size:10px;color:${T.text3};flex:1">Storybook</span>
+      <button class="ds-sync${state.syncSpinning?' spinning':''}" onclick="syncDS()" id="sync-btn"><span>↻</span> Sync</button>
+    </div>
+    <input class="comp-search" id="comp-search" placeholder="Search components…" value="${state.dsSearch}" oninput="state.dsSearch=this.value;document.getElementById('lp-body').innerHTML=''+renderComponentsPanel()" />
+    ${DS_SECTIONS.map(sec=>{
+      const filtered=sec.components.filter(c=>!q||c.id.toLowerCase().includes(q)||c.story.toLowerCase().includes(q));
+      if(q&&filtered.length===0) return '';
+      const open=state.sections[sec.label];
+      return `
+        <div class="comp-section">
+          <div class="comp-section-head" onclick="state.sections['${sec.label}']=!state.sections['${sec.label}'];document.getElementById('lp-body').innerHTML=''+renderComponentsPanel()">
+            <span>${open?'▾':'▸'} ${sec.label}</span>
+            <span style="font-size:10px;color:${T.text3}">${sec.components.length}</span>
+          </div>
+          ${open?filtered.map(c=>`
+            <div class="comp-item${state.addingId===c.id?' adding':''}" id="ci-${c.id}" onclick="addComponent('${c.id}')" title="Add ${c.id} to canvas">
+              <div class="comp-icon" style="background:${c.color}">${c.icon}</div>
+              <span style="font-size:12px;font-weight:500;flex:1">${c.id}</span>
+              <span class="comp-story">${c.story.split('/')[1]}</span>
+            </div>
+          `).join(''):''}
+        </div>
+      `;
+    }).join('')}
+  `;
+}
+
+function renderLayersPanel(){
+  const comps=DESKTOP_COMPONENTS;
+  return `
+    <div style="padding:8px 6px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:${T.text3};letter-spacing:.6px;padding:4px 8px 8px;font-weight:700">FRAMES</div>
+      <div style="margin-bottom:2px">
+        <div class="layer-item" style="font-size:11.5px;font-weight:600" onclick="state.activeFrame=state.activeFrame==='desktop'?state.activeFrame:'desktop';renderLeft()">
+          <span style="color:${T.text3};font-size:10px">◻</span>
+          <span style="flex:1">Desktop · 916</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:${T.text3}">916×460</span>
+        </div>
+        ${comps.map(c=>{
+          const ds=DS_MAP[c.type]||{icon:'?',color:T.text3};
+          const isSel=state.selectedId===c.id;
+          return `<div class="layer-item${isSel?' selected':''}" style="padding-left:20px;font-size:11.5px" onclick="state.selectedId='${c.id}';renderLeft();renderRight()">
+            <div style="width:16px;height:16px;border-radius:4px;background:${ds.color};display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:700;color:#fff;flex:none">${ds.icon||c.type.slice(0,2)}</div>
+            <span class="layer-name" style="flex:1">${c.type}</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:${T.text3}">${c.props.label||c.props.text||''}</span>
+          </div>`;
+        }).join('')}
+      </div>
+      <div style="margin-top:6px">
+        <div class="layer-item" style="font-size:11.5px;font-weight:600;opacity:.6">
+          <span style="color:${T.text3};font-size:10px">◻</span>
+          <span style="flex:1">Mobile · 375</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:${T.text3}">375×320</span>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderTokensPanel(){
+  const sections=[
+    {label:'COLOR',tokens:[
+      {name:'--bg-canvas',    val:'#ECEBE5',swatch:'#ECEBE5'},
+      {name:'--surface',      val:'#FDFAF6',swatch:'#FDFAF6'},
+      {name:'--surface-warm', val:'#FFFDF8',swatch:'#FFFDF8'},
+      {name:'--surface2',     val:'#E8E3D9',swatch:'#E8E3D9'},
+      {name:'--text',         val:'#1C1914',swatch:'#1C1914'},
+      {name:'--text2',        val:'#6B6860',swatch:'#6B6860'},
+      {name:'--blue',         val:'#2F5BEA',swatch:'#2F5BEA'},
+      {name:'--green',        val:'#2E8157',swatch:'#2E8157'},
+      {name:'--amber',        val:'#C2700F',swatch:'#C2700F'},
+      {name:'--red',          val:'#D4456B',swatch:'#D4456B'},
+      {name:'--purple',       val:'#6F57D4',swatch:'#6F57D4'},
+      {name:'--teal',         val:'#1F9D8F',swatch:'#1F9D8F'},
+    ]},
+    {label:'RADIUS',tokens:[
+      {name:'--radius-sm',val:'4px',swatch:null},
+      {name:'--radius-md',val:'7px',swatch:null},
+      {name:'--radius-lg',val:'12px',swatch:null},
+      {name:'--radius-xl',val:'16px',swatch:null},
+    ]},
+    {label:'SPACING',tokens:[
+      {name:'--space-1',val:'4px',swatch:null},
+      {name:'--space-2',val:'8px',swatch:null},
+      {name:'--space-3',val:'12px',swatch:null},
+      {name:'--space-4',val:'16px',swatch:null},
+      {name:'--space-5',val:'20px',swatch:null},
+      {name:'--space-6',val:'24px',swatch:null},
+    ]},
+  ];
+  return sections.map(sec=>`
+    <div class="token-section">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:${T.text3};letter-spacing:.7px;padding:8px 0 4px">${sec.label}</div>
+      ${sec.tokens.map(tok=>`
+        <div class="token-row">
+          ${tok.swatch?`<div class="token-swatch" style="background:${tok.swatch}"></div>`:'<div style="width:12px;flex:none"></div>'}
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:${T.blue};flex:1">${tok.name}</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:${T.text3}">${tok.val}</span>
+        </div>
+      `).join('')}
+    </div>
+  `).join('');
+}
+
+// ── CANVAS RENDER ─────────────────────────────────────────────────────────────
+function renderCanvas(){
+  const wrap=document.getElementById('artboard-wrap');
+  const deskH=Math.max(...DESKTOP_COMPONENTS.map(c=>c.y+c.h))+40;
+  const mobH=Math.max(...MOBILE_COMPONENTS.map(c=>c.y+c.h))+40;
+  wrap.innerHTML=`
+    <!-- DESKTOP FRAME -->
+    <div>
+      <div class="artboard-label">
+        <div class="frame-handle"></div>
+        Desktop · 916 × ${deskH}
+        <span style="font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:${T.red};background:${T.red}18;border-radius:3px;padding:1px 5px;margin-left:4px;display:flex;align-items:center;gap:3px"><span style="width:4px;height:4px;border-radius:50%;background:${T.red};animation:ch-pulse 1.4s infinite"></span>VD Agent working</span>
+      </div>
+      <div class="artboard" style="width:916px;height:${deskH}px" id="desk-board">
+        ${DESKTOP_COMPONENTS.map(comp=>renderCanvasComp(comp)).join('')}
+        <!-- Live cursors -->
+        <div class="live-cursor" style="animation:cursor-move-vd 12s ease-in-out infinite;pointer-events:none;position:absolute;top:0;left:0;z-index:9">
+          <svg width="16" height="20" viewBox="0 0 16 20" fill="none"><path d="M1 1l10 8.5-4 .8L9 18 6.5 15l-3 3.5L1 1z" fill="#d4456b" stroke="#fff" stroke-width="1"/></svg>
+          <div class="cursor-badge" style="background:#d4456b">VD</div>
+        </div>
+        <div class="live-cursor" style="animation:cursor-move-dp 18s ease-in-out infinite;pointer-events:none;position:absolute;top:0;left:0;z-index:8">
+          <svg width="14" height="18" viewBox="0 0 14 18" fill="none"><path d="M1 1l9 7.5-3.5.7 1.5 6.5L6 13l-2.5 3L1 1z" fill="#d4456b" stroke="#fff" stroke-width="1"/></svg>
+          <div class="cursor-badge" style="background:#d4456b">DP</div>
+        </div>
+        <div class="live-cursor" style="animation:cursor-move-jl 22s ease-in-out infinite;pointer-events:none;position:absolute;top:0;left:0;z-index:7">
+          <svg width="14" height="18" viewBox="0 0 14 18" fill="none"><path d="M1 1l9 7.5-3.5.7 1.5 6.5L6 13l-2.5 3L1 1z" fill="#2e8157" stroke="#fff" stroke-width="1"/></svg>
+          <div class="cursor-badge" style="background:#2e8157">JL</div>
+        </div>
+        <!-- Agent suggest bubble -->
+        ${!state.aiSuggestionDismissed?`
+          <div class="agent-bubble" id="agent-bubble">
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
+              <div style="width:18px;height:18px;border-radius:5px;background:#d4456b;display:flex;align-items:center;justify-content:center;font-size:7.5px;font-weight:700;color:#fff;font-family:'JetBrains Mono',monospace">VD</div>
+              <span style="font-size:10.5px;font-weight:700;color:${T.text}">VD Agent suggests</span>
+            </div>
+            <div style="font-size:11.5px;color:${T.text2};line-height:1.4">Match Submit CTA to the Approved state — use <span style="font-family:'JetBrains Mono',monospace;color:${T.green}">--green</span> to echo persona approval.</div>
+          </div>
+        `:''}
+      </div>
+    </div>
+    <!-- MOBILE FRAME -->
+    <div>
+      <div class="artboard-label">
+        <div class="frame-handle"></div>
+        Mobile · 375 × ${mobH}
+        <span style="font-size:10px;color:${T.text3};margin-left:4px">Responsive parity</span>
+      </div>
+      <div class="artboard" style="width:375px;height:${mobH}px;opacity:.85" id="mob-board">
+        ${MOBILE_COMPONENTS.map(comp=>renderCanvasComp(comp)).join('')}
+      </div>
+    </div>
+  `;
+  // Controls
+  document.getElementById('controls').innerHTML=`
+    <button class="zoom-btn" onclick="setZoom(state.zoom-.1)">−</button>
+    <span style="font-family:'JetBrains Mono',monospace;font-size:11px;min-width:44px;text-align:center;color:${T.text2}">${Math.round(state.zoom*100)}%</span>
+    <button class="zoom-btn" onclick="setZoom(state.zoom+.1)">+</button>
+    <div style="width:1px;height:18px;background:${T.border};margin:0 4px"></div>
+    <button class="zoom-btn" onclick="setZoom(1)" title="Actual size">1:1</button>
+    <button class="zoom-btn" onclick="fitZoom()" title="Fit to screen">⊡</button>
+  `;
+}
+
+function renderCanvasComp(comp){
+  const isSel=state.selectedId===comp.id;
+  const handles=isSel?`
+    <div class="sel-handle" style="top:-4px;left:-4px"></div>
+    <div class="sel-handle" style="top:-4px;right:-4px"></div>
+    <div class="sel-handle" style="bottom:-4px;left:-4px"></div>
+    <div class="sel-handle" style="bottom:-4px;right:-4px"></div>
+  `:'';
+  return `
+    <div class="comp-on-canvas${isSel?' sel':''}"
+      style="left:${comp.x}px;top:${comp.y}px;width:${comp.w}px;height:${comp.h}px;position:absolute"
+      onclick="selectComp('${comp.id}')"
+      data-comp="${comp.id}">
+      ${renderCompHtml(comp)}
+      ${handles}
+    </div>
+  `;
+}
+
+// ── RIGHT PANEL ───────────────────────────────────────────────────────────────
+function renderRight(){
+  const sel=getSelected();
+  const el=document.getElementById('right');
+  if(!sel){
+    el.innerHTML=`
+      <div style="padding:14px;border-bottom:1px solid ${T.border}">
+        <div style="display:flex;gap:0">
+          <button class="lp-tab${state.rightTab==='inspect'?' on':''}" style="flex:1;height:34px" onclick="state.rightTab='inspect';renderRight()">Inspect</button>
+          <button class="lp-tab${state.rightTab==='code'?' on':''}" style="flex:1;height:34px" onclick="state.rightTab='code';renderRight()">Code</button>
+        </div>
+      </div>
+      <div class="no-sel">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="2" y="2" width="24" height="24" rx="4" stroke="currentColor" stroke-width="1.5" opacity=".3"/><path d="M8 20l12-12M14 8h6v6" stroke="currentColor" stroke-width="1.5" opacity=".5"/></svg>
+        <div style="font-size:12.5px;font-weight:600">No selection</div>
+        <div style="font-size:11.5px">Click a component on the canvas to inspect it</div>
+      </div>
+    `;
+    return;
+  }
+  const ds=DS_MAP[sel.type]||{id:sel.type,icon:'?',color:T.text3,story:'—',file:'—'};
+  const tokenBindings={
+    'Button':    [{k:'background',v:'--green',    sw:T.green},{k:'color',v:'--surface',sw:T.surface},{k:'radius',v:'--radius-md',sw:null},{k:'font',v:'--label-lg',sw:null}],
+    'Input':     [{k:'border',v:'--border2',     sw:T.border2},{k:'background',v:'--surface',sw:T.surface},{k:'radius',v:'--radius-md',sw:null}],
+    'ProgressBar':[{k:'fill',v:'--blue',         sw:T.blue},{k:'track',v:'--surface2',sw:T.surface2}],
+    'AppHeader': [{k:'background',v:'--blue',    sw:T.blue},{k:'color',v:'--surface',sw:'#fff'}],
+    'Badge':     [{k:'background',v:'--green-light',sw:T.greenLight},{k:'color',v:'--green',sw:T.green}],
+    'PrioritySuggest':[{k:'background',v:'--green-light',sw:T.greenLight},{k:'border',v:'--green',sw:T.green}],
+    'FileInput': [{k:'border',v:'--border',sw:T.border},{k:'background',v:'--surface2',sw:T.surface2}],
+    'Typography':[{k:'color',v:'--text2',sw:T.text2},{k:'font',v:'--body-md',sw:null}],
+  };
+  const binds=tokenBindings[sel.type]||[{k:'color',v:'--text',sw:T.text},{k:'background',v:'--surface',sw:T.surface}];
+  const propRows=Object.entries(sel.props).map(([k,v])=>`
+    <div class="prop-row">
+      <span class="prop-key">${k}</span>
+      <span class="prop-val">${String(v)}</span>
+    </div>`).join('');
+
+  if(state.rightTab==='code'){
+    const codeStr=`import ${sel.type} from '@axiom-ds/${sel.type.toLowerCase()}';\n\n<${sel.type}\n${Object.entries(sel.props).map(([k,v])=>`  ${k}=${typeof v==='string'?`"${v}"`:v}`).join('\n')}\n/>`;
+    el.innerHTML=`
+      <div style="padding:14px;border-bottom:1px solid ${T.border}">
+        <div style="display:flex;gap:0">
+          <button class="lp-tab${state.rightTab==='inspect'?' on':''}" style="flex:1;height:34px" onclick="state.rightTab='inspect';renderRight()">Inspect</button>
+          <button class="lp-tab${state.rightTab==='code'?' on':''}" style="flex:1;height:34px" onclick="state.rightTab='code';renderRight()">Code</button>
+        </div>
+      </div>
+      <div style="padding:14px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:${T.text3}">JSX</span>
+          <button onclick="navigator.clipboard.writeText(${JSON.stringify(codeStr)}).then(()=>showToast('Copied to clipboard','${T.green}')).catch(()=>showToast('Copy failed','${T.red}'))" style="font-size:11px;padding:3px 9px;border-radius:5px;border:1px solid ${T.border};background:transparent;color:${T.text2};cursor:pointer;font-family:'Hanken Grotesk',sans-serif">Copy</button>
+        </div>
+        <pre style="background:${T.surface2};border-radius:8px;padding:12px;font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.6;color:${T.text};overflow-x:auto;white-space:pre-wrap">${codeStr}</pre>
+        <div style="margin-top:12px;padding:10px;background:${T.blueLight};border-radius:8px;border:1px solid ${T.blue}22">
+          <div style="font-size:11px;font-weight:700;color:${T.blue};margin-bottom:4px">Source file</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:${T.blue}">src/components/${sel.type}/${ds.file}</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:${T.blue}">src/components/${sel.type}/${sel.type}.stories.jsx</div>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  el.innerHTML=`
+    <div style="padding:14px;border-bottom:1px solid ${T.border}">
+      <div style="display:flex;gap:0;margin-bottom:12px">
+        <button class="lp-tab${state.rightTab==='inspect'?' on':''}" style="flex:1;height:34px" onclick="state.rightTab='inspect';renderRight()">Inspect</button>
+        <button class="lp-tab${state.rightTab==='code'?' on':''}" style="flex:1;height:34px" onclick="state.rightTab='code';renderRight()">Code</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <div style="width:26px;height:26px;border-radius:7px;background:${ds.color};display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:#fff;flex:none">${ds.icon}</div>
+        <div>
+          <div style="font-size:14px;font-weight:700">${sel.type}</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:${T.text3}">${ds.file}</div>
+        </div>
+        <span style="margin-left:auto;font-size:9px;font-weight:700;color:${T.green};background:${T.greenLight};border:1px solid ${T.green}33;border-radius:4px;padding:2px 6px">DS ✓</span>
+      </div>
+    </div>
+
+    <div class="rp-section">
+      <div class="rp-label">VARIANT</div>
+      <div style="display:flex;gap:5px;flex-wrap:wrap">
+        ${['Primary','Secondary','Ghost'].map(v=>`<button class="variant-btn${sel.variant==='primary'&&v==='Primary'?' on':sel.variant===v.toLowerCase()?' on':''}" onclick="sel.variant='${v.toLowerCase()}';renderRight()">${v}</button>`).join('')}
+      </div>
+    </div>
+
+    <div class="rp-section">
+      <div class="rp-label">SIZE</div>
+      <div style="display:flex;gap:5px">
+        ${['SM','MD','LG'].map(s=>`<button class="variant-btn${sel.size===s.toLowerCase()?' on':''}" onclick="sel.size='${s.toLowerCase()}';renderRight()">${s}</button>`).join('')}
+      </div>
+    </div>
+
+    <div class="rp-section">
+      <div class="rp-label">PROPS</div>
+      ${propRows}
+    </div>
+
+    <div class="rp-section">
+      <div class="rp-label">TOKEN BINDINGS</div>
+      ${binds.map(b=>`
+        <div class="token-bind">
+          ${b.sw?`<div class="token-swatch" style="background:${b.sw}"></div>`:`<div style="width:12px;height:12px;border:1px dashed ${T.border};border-radius:3px;flex:none"></div>`}
+          <span style="font-size:11px;color:${T.text3};min-width:72px">${b.k}</span>
+          <span class="token-name">${b.v}</span>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="rp-section">
+      <div class="rp-label">STORYBOOK · axiom-ds</div>
+      <div class="sb-link" onclick="showToast('Opening ${ds.story} in Storybook…','${T.blue}')">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 2h8v8H2z" stroke="currentColor" stroke-width="1.2"/><path d="M5 5l4-4M9 1H7M9 1v2" stroke="currentColor" stroke-width="1.2"/></svg>
+        ${ds.story}
+      </div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;color:${T.text3};margin-top:4px">src/components/${sel.type}/${ds.file}</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px">
+        <span style="font-size:10.5px;color:${T.text3}">Last synced: just now</span>
+        <button onclick="syncDS()" style="font-size:10px;padding:3px 9px;border-radius:5px;border:1px solid ${T.border};background:transparent;color:${T.text2};cursor:pointer;font-family:'Hanken Grotesk',sans-serif">↻ Sync</button>
+      </div>
+    </div>
+
+    ${!state.aiSuggestionDismissed?`
+    <div class="rp-section">
+      <div class="rp-label">AI SUGGESTION · VD Agent</div>
+      <div class="ai-suggest">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:7px">
+          <div style="width:18px;height:18px;border-radius:5px;background:#d4456b;display:flex;align-items:center;justify-content:center;font-size:7.5px;font-weight:700;color:#fff;font-family:'JetBrains Mono',monospace;flex:none">VD</div>
+          <span style="font-size:11.5px;font-weight:700">VD Agent</span>
+        </div>
+        <div style="font-size:12px;color:${T.text2};line-height:1.5;margin-bottom:10px">"Match the Submit CTA tone to the Approved state — use <span style="font-family:'JetBrains Mono',monospace;color:${T.green}">--green</span> to visually echo persona approval."</div>
+        <div style="display:flex;gap:7px">
+          <button class="ai-apply" onclick="applyAiSuggestion()">✓ Apply</button>
+          <button class="ai-dismiss" onclick="state.aiSuggestionDismissed=true;renderRight()">✕</button>
+        </div>
+      </div>
+    </div>
+    `:''}
+
+    <div class="rp-section">
+      <div class="rp-label">LAYOUT</div>
+      <div class="prop-row"><span class="prop-key">x</span><span class="prop-val">${sel.x}px</span></div>
+      <div class="prop-row"><span class="prop-key">y</span><span class="prop-val">${sel.y}px</span></div>
+      <div class="prop-row"><span class="prop-key">width</span><span class="prop-val">${sel.w}px</span></div>
+      <div class="prop-row"><span class="prop-key">height</span><span class="prop-val">${sel.h}px</span></div>
+    </div>
+  `;
+}
+
+// ── INTERACTIONS ──────────────────────────────────────────────────────────────
+function selectComp(id){
+  state.selectedId=state.selectedId===id?null:id;
+  // Re-render only what's needed for performance
+  document.querySelectorAll('.comp-on-canvas').forEach(el=>{
+    const eid=el.dataset.comp;
+    if(eid===id||eid===state.selectedId||(!state.selectedId&&eid===id)){
+      el.className='comp-on-canvas'+(state.selectedId===eid?' sel':'');
+      // Rebuild handles
+      const existing=el.querySelectorAll('.sel-handle');
+      existing.forEach(h=>h.remove());
+      if(state.selectedId===eid){
+        ['top:−4px;left:−4px','top:−4px;right:−4px','bottom:−4px;left:−4px','bottom:−4px;right:−4px'].forEach(pos=>{
+          const h=document.createElement('div');
+          h.className='sel-handle';
+          h.style.cssText=pos.replace(/−/g,'-');
+          el.appendChild(h);
+        });
+      }
+    }
+  });
+  renderRight();
+}
+
+function addComponent(id){
+  state.addingId=id;
+  const ci=document.getElementById('ci-'+id);
+  if(ci) ci.className='comp-item adding';
+  setTimeout(()=>{
+    state.addingId=null;
+    const ci2=document.getElementById('ci-'+id);
+    if(ci2) ci2.className='comp-item';
+    showToast(`${id} added to canvas`,'#2f5bea');
+  },600);
+}
+
+function setZoom(z){
+  state.zoom=Math.max(.1,Math.min(2,z));
+  document.getElementById('scaler').style.transform=`scale(${state.zoom})`;
+  document.getElementById('controls').innerHTML=`
+    <button class="zoom-btn" onclick="setZoom(state.zoom-.1)">−</button>
+    <span style="font-family:'JetBrains Mono',monospace;font-size:11px;min-width:44px;text-align:center;color:${T.text2}">${Math.round(state.zoom*100)}%</span>
+    <button class="zoom-btn" onclick="setZoom(state.zoom+.1)">+</button>
+    <div style="width:1px;height:18px;background:${T.border};margin:0 4px"></div>
+    <button class="zoom-btn" onclick="setZoom(1)">1:1</button>
+    <button class="zoom-btn" onclick="fitZoom()">⊡</button>
+  `;
+}
+
+function fitZoom(){setZoom(.72);}
+
+function syncDS(){
+  state.syncSpinning=true;
+  const btn=document.getElementById('sync-btn');
+  if(btn) btn.className='ds-sync spinning';
+  showToast('Syncing with axiom-ds Storybook repo…',T.green);
+  setTimeout(()=>{
+    state.syncSpinning=false;
+    const btn2=document.getElementById('sync-btn');
+    if(btn2) btn2.className='ds-sync';
+    showToast('axiom-ds · All components up to date',T.green);
+  },1800);
+}
+
+function applyAiSuggestion(){
+  const btn=document.querySelector('#right .ai-apply');
+  if(btn){btn.textContent='✓ Applied';btn.style.background=T.green;}
+  const comp=DESKTOP_COMPONENTS.find(c=>c.id==='submit-btn');
+  if(comp) comp.props.tone='green';
+  showToast('VD Agent suggestion applied — Submit CTA updated to --green',T.green);
+  setTimeout(()=>{state.aiSuggestionDismissed=true;renderRight();},1000);
+}
+
+function undo(){showToast('Undo — no further history',T.text3);}
+
+// ── TOASTS ────────────────────────────────────────────────────────────────────
+let toastTimer=null;
+function showToast(msg,color){
+  const area=document.getElementById('toast-area');
+  const id='t'+Date.now();
+  const toast=document.createElement('div');
+  toast.className='toast';
+  toast.id=id;
+  toast.innerHTML=`<span style="width:8px;height:8px;border-radius:50%;background:${color};flex:none"></span><span style="font-size:12.5px">${msg}</span>`;
+  area.appendChild(toast);
+  setTimeout(()=>{
+    const t=document.getElementById(id);
+    if(t){t.style.opacity='0';t.style.transform='translateY(6px)';t.style.transition='all .3s ease';setTimeout(()=>t.remove(),300);}
+  },2800);
+}
+
+// Keyboard
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){state.selectedId=null;renderCanvas();renderRight();}
+  if(e.key==='v'&&!e.metaKey&&!e.ctrlKey){state.activeTool='select';renderToolbar();}
+  if(e.key==='h'&&!e.metaKey&&!e.ctrlKey){state.activeTool='hand';renderToolbar();}
+});
+
+// Canvas click-away
+document.getElementById('viewport').addEventListener('click',e=>{
+  if(e.target.id==='viewport'||e.target.closest('.artboard')&&!e.target.closest('.comp-on-canvas')){
+    if(state.selectedId){state.selectedId=null;document.querySelectorAll('.comp-on-canvas').forEach(el=>el.classList.remove('sel'));renderRight();}
+  }
+});
+
+// ── AGENT TOASTS (periodic simulation) ───────────────────────────────────────
+const AGENT_MESSAGES=[
+  ()=>showToast('VD Agent applying --green token to Submit CTA','#d4456b'),
+  ()=>showToast('Devon Park is reviewing Priority field layout','#d4456b'),
+  ()=>showToast('Jordan Lee added a comment on ProgressBar','#2e8157'),
+  ()=>showToast('VD Agent: Severity field removed — v3 clean','#d4456b'),
+  ()=>showToast('axiom-ds · Button.jsx last updated 4m ago','#2f5bea'),
+];
+let agentMsgIdx=0;
+function scheduleAgentMessage(){
+  const delay=6000+Math.random()*12000;
+  setTimeout(()=>{
+    if(agentMsgIdx<AGENT_MESSAGES.length){
+      AGENT_MESSAGES[agentMsgIdx]();
+      agentMsgIdx++;
+    }
+    scheduleAgentMessage();
+  },delay);
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+function render(){renderToolbar();renderLeft();renderCanvas();renderRight();}
+render();
+scheduleAgentMessage();
+
+// Initial toast after load
+setTimeout(()=>showToast('VD Agent active · v3 in progress',T.red),1200);
+</script>
+</body>
+</html>
