@@ -25,17 +25,17 @@ a{text-decoration:none;color:inherit}
 ::-webkit-scrollbar-track{background:transparent}
 
 #app{height:100vh;display:flex;flex-direction:column;overflow:hidden}
-header{height:56px;background:linear-gradient(to bottom,var(--surface),color-mix(in srgb,var(--surface) 92%,var(--bg-canvas)));border-bottom:1px solid color-mix(in srgb,var(--border) 80%,transparent);display:flex;align-items:center;padding:0 20px;gap:0;flex:none;z-index:10}
+header{height:56px;background:linear-gradient(to bottom,var(--surface),color-mix(in srgb,var(--surface) 92%,var(--bg-canvas)));display:flex;align-items:center;padding:0 20px;gap:0;flex:none;z-index:10}
 #body{flex:1;min-height:0;display:flex;overflow:hidden}
 
 /* Left sidebar */
-.left-sidebar{width:248px;flex:none;border-right:1px solid color-mix(in srgb,var(--border) 75%,transparent);overflow-y:auto;display:flex;flex-direction:column;background:linear-gradient(to bottom,var(--surface),color-mix(in srgb,var(--surface) 88%,var(--bg-canvas)))}
+.left-sidebar{width:248px;flex:none;overflow-y:auto;display:flex;flex-direction:column;background:linear-gradient(to bottom,var(--surface),color-mix(in srgb,var(--surface) 88%,var(--bg-canvas)))}
 
 /* Center */
 .center-col{flex:1;overflow-y:auto;display:flex;flex-direction:column;background:var(--bg-canvas)}
 
 /* Right sidebar */
-.right-sidebar{width:288px;flex:none;border-left:1px solid color-mix(in srgb,var(--border) 75%,transparent);overflow-y:auto;display:flex;flex-direction:column;background:linear-gradient(to bottom,var(--surface),color-mix(in srgb,var(--surface) 88%,var(--bg-canvas)))}
+.right-sidebar{width:288px;flex:none;overflow-y:auto;display:flex;flex-direction:column;background:linear-gradient(to bottom,var(--surface),color-mix(in srgb,var(--surface) 88%,var(--bg-canvas)))}
 
 .breadcrumb-sep{font-size:13px;color:var(--text3);padding:0 6px}
 
@@ -56,24 +56,24 @@ header{height:56px;background:linear-gradient(to bottom,var(--surface),color-mix
 .graph-node:hover .circle{transform:scale(1.08)}
 
 /* Agent rows */
-.agent-row{display:flex;align-items:flex-start;gap:9px;padding:9px 0;border-bottom:1px solid var(--border)}
+.agent-row{display:flex;align-items:flex-start;gap:9px;padding:9px 0}
 .agent-row:last-child{border-bottom:none}
 .agent-badge{width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:8px;font-weight:700;color:#fff;flex:none;margin-top:1px}
 
 /* Decision cards */
-.decision-card{border-left:3px solid var(--border2);padding:7px 10px;margin-bottom:6px;border-radius:0 6px 6px 0;background:var(--surface2,#E8E3D9)30}
+.decision-card{padding:8px 12px;margin-bottom:6px;border-radius:8px;background:var(--surface2)}
 
 /* Tabs */
-.tab-bar{display:flex;gap:0;border-bottom:1px solid var(--border)}
+.tab-bar{display:flex;gap:0}
 .tab-item{padding:9px 18px;font-size:13px;font-weight:500;cursor:pointer;border-bottom:2px solid transparent;color:var(--text3);transition:all .15s;margin-bottom:-1px}
 .tab-item.active{color:var(--text);border-bottom-color:var(--blue,#2f5bea);font-weight:600}
 .tab-item:hover:not(.active){color:var(--text2)}
 
 /* Detail panel */
-.detail-panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;margin:12px 20px 0;animation:ch-rise .2s ease}
+.detail-panel{background:var(--surface);border-radius:12px;padding:16px;margin:12px 20px 0;animation:ch-rise .2s ease}
 
 /* Section divider in right rail */
-.rail-divider{height:1px;background:var(--border);margin:10px 0}
+.rail-divider{display:none}
 .rail-section-title{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;letter-spacing:.8px;color:var(--text3);padding:10px 16px 6px;text-transform:uppercase}
 </style>
 </head>

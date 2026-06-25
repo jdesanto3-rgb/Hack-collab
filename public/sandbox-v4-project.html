@@ -23,24 +23,24 @@ a{text-decoration:none;color:inherit}
 ::-webkit-scrollbar-track{background:transparent}
 
 #app{height:100vh;display:flex;flex-direction:column;overflow:hidden}
-header{height:64px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;gap:0;flex:none;z-index:10}
+header{height:64px;background:var(--surface);display:flex;align-items:center;padding:0 24px;gap:0;flex:none;z-index:10}
 #body{flex:1;min-height:0;display:flex;overflow:hidden}
-.pipeline-col{width:460px;flex:none;border-right:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column}
-.pipeline-hero{padding:32px 32px 24px;border-bottom:1px solid var(--border);flex:none}
+.pipeline-col{width:460px;flex:none;overflow-y:auto;display:flex;flex-direction:column}
+.pipeline-hero{padding:32px 32px 24px;flex:none}
 .steps-list{padding:24px 32px 48px;display:flex;flex-direction:column;gap:0;flex:1}
 .activity-col{flex:1;overflow-y:auto;display:flex;flex-direction:column}
-.activity-head{padding:24px 28px 16px;border-bottom:1px solid var(--border);flex:none;background:var(--surface);position:sticky;top:0;z-index:2}
+.activity-head{padding:24px 28px 16px;flex:none;background:var(--surface);position:sticky;top:0;z-index:2}
 .activity-body{padding:20px 28px;display:flex;flex-direction:column;gap:0}
 .step-row{display:flex;gap:0;align-items:flex-start;cursor:pointer}
 .step-spine{display:flex;flex-direction:column;align-items:center;width:44px;flex:none}
 .step-dot{width:36px;height:36px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex:none;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;transition:all .15s}
 .step-line{width:2px;flex:1;min-height:14px;margin:3px 0;border-radius:2px}
-.step-card{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:12px;transition:all .15s;box-shadow:var(--shadow-sm)}
-.step-card:hover{box-shadow:var(--shadow-md);transform:translateX(2px)}
-.step-card.active{border-color:var(--step-color,#2f5bea);box-shadow:0 0 0 2px color-mix(in srgb,var(--step-color,#2f5bea) 15%,transparent)}
+.step-card{flex:1;background:var(--surface);border-radius:16px;padding:20px;margin-bottom:12px;transition:all .15s}
+.step-card:hover{transform:translateX(2px)}
+.step-card.active{background:color-mix(in srgb,var(--step-color,#2f5bea) 6%,var(--surface))}
 .step-card.queued{opacity:.6}
 .open-editor-btn{display:inline-flex;align-items:center;gap:8px;padding:11px 22px;border-radius:11px;font-size:14px;font-weight:700;cursor:pointer;border:none;transition:all .15s;margin-top:12px}
-.ev-row{display:flex;gap:12px;padding:13px 0;border-bottom:1px solid var(--border)}
+.ev-row{display:flex;gap:12px;padding:13px 0}
 .ev-row:last-child{border-bottom:none}
 .ev-dot-wrap{display:flex;flex-direction:column;align-items:center;flex:none;width:30px;gap:4px}
 .ev-agent{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:#fff;flex:none}

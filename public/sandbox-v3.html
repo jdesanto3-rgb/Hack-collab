@@ -22,39 +22,39 @@ button{font-family:'Sofia Sans',sans-serif;border:none;cursor:pointer}
 ::-webkit-scrollbar-track{background:transparent}
 
 #app{height:100vh;display:flex;flex-direction:column;overflow:hidden}
-header{height:58px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 18px;gap:13px;flex:none;z-index:10}
+header{height:58px;background:var(--surface);display:flex;align-items:center;padding:0 18px;gap:13px;flex:none;z-index:10}
 #body{flex:1;min-height:0;position:relative;display:flex}
 #canvas-view{flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column}
 #workspace-view{flex:1;min-height:0;overflow:hidden;display:flex}
 
-.pipeline-rail{width:264px;flex:none;background:var(--surface2);border-right:1px solid var(--border);padding:22px 18px;display:flex;flex-direction:column;overflow-y:auto}
+.pipeline-rail{width:264px;flex:none;background:var(--surface2);padding:22px 18px;display:flex;flex-direction:column;overflow-y:auto}
 .stage{flex:1;padding:28px 36px;overflow-y:auto;display:flex;flex-direction:column}
-.feed-rail{width:300px;flex:none;background:var(--surface2);border-left:1px solid var(--border);padding:20px 16px;display:flex;flex-direction:column;overflow-y:auto}
+.feed-rail{width:300px;flex:none;background:var(--surface2);padding:20px 16px;display:flex;flex-direction:column;overflow-y:auto}
 
 .canvas-board{flex:1;overflow-x:auto;overflow-y:hidden;padding:16px 20px 20px;display:flex;gap:14px;align-items:flex-start}
-.canvas-col{flex:1;min-width:284px;background:var(--surface2);border-radius:13px;border:1px solid var(--border);display:flex;flex-direction:column;max-height:calc(100vh - 158px)}
+.canvas-col{flex:1;min-width:284px;background:var(--surface2);border-radius:13px;display:flex;flex-direction:column;max-height:calc(100vh - 158px)}
 .canvas-col-header{padding:14px 16px 12px;display:flex;align-items:center;gap:8px;flex:none}
 .canvas-col-body{padding:10px 12px 12px;overflow-y:auto;display:flex;flex-direction:column;gap:10px}
-.canvas-card{background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:12px;cursor:pointer;box-shadow:var(--shadow-sm);animation:ch-rise .4s ease;transition:box-shadow .15s,transform .15s}
-.canvas-card:hover{box-shadow:var(--shadow-md);transform:translateY(-1px)}
-.dir-card{background:var(--surface-warm);border:2px solid var(--border);border-radius:13px;padding:15px;cursor:pointer;transition:border-color .2s,opacity .2s;flex:1;min-width:210px}
+.canvas-card{background:var(--surface);border-radius:11px;padding:12px;cursor:pointer;animation:ch-rise .4s ease;transition:box-shadow .15s,transform .15s}
+.canvas-card:hover{transform:translateY(-1px)}
+.dir-card{background:var(--surface-warm);border-radius:13px;padding:15px;cursor:pointer;transition:opacity .2s;flex:1;min-width:210px}
 .dir-card:hover{box-shadow:0 3px 12px rgba(20,18,12,.09)}
-.event-card{background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:12px;animation:ch-rise .35s ease;margin-bottom:9px}
+.event-card{background:var(--surface);border-radius:11px;padding:12px;animation:ch-rise .35s ease;margin-bottom:9px}
 .tag-chip{display:inline-flex;align-items:center;border-radius:5px;padding:3px 7px;font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:600;margin-top:7px}
-.prov-step{display:flex;align-items:flex-start;gap:9px;padding:8px 0;border-bottom:1px solid var(--border)}
+.prov-step{display:flex;align-items:flex-start;gap:9px;padding:8px 0}
 .prov-step:last-child{border-bottom:none}
 
 /* Director panel */
-.dir-panel{margin-bottom:10px;border-radius:9px;border:1px solid var(--border2);overflow:hidden;background:var(--surface)}
-.dir-panel-header{padding:9px 11px;font-size:11px;font-weight:600;color:var(--text2);background:var(--surface2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px}
+.dir-panel{margin-bottom:10px;border-radius:9px;overflow:hidden;background:var(--surface)}
+.dir-panel-header{padding:9px 11px;font-size:11px;font-weight:600;color:var(--text2);background:var(--surface2);display:flex;align-items:center;gap:6px}
 .dir-textarea{width:100%;padding:9px 11px;border:none;background:var(--surface);color:var(--text);font-family:'Sofia Sans',sans-serif;font-size:12.5px;line-height:1.5;resize:vertical;min-height:62px;outline:none;display:block}
-.dir-footer{padding:7px 10px;background:var(--surface2);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px}
+.dir-footer{padding:7px 10px;background:var(--surface2);display:flex;align-items:center;justify-content:space-between;gap:8px}
 .dir-hint{font-size:10px;color:var(--text3)}
 
 /* Reference cards */
-.ref-row{display:flex;gap:10px;margin-top:18px;padding-top:16px;border-top:1px solid var(--border);overflow-x:auto}
-.ref-card{flex:none;width:148px;background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;transition:box-shadow .15s}
-.ref-card:hover{box-shadow:var(--shadow-md)}
+.ref-row{display:flex;gap:10px;margin-top:20px;overflow-x:auto}
+.ref-card{flex:none;width:148px;background:var(--surface);border-radius:10px;overflow:hidden;cursor:pointer;transition:box-shadow .15s}
+.ref-card:hover{}
 .ref-thumb{height:76px;overflow:hidden}
 .ref-meta{padding:7px 9px}
 .ref-source{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;letter-spacing:.5px}
@@ -63,7 +63,7 @@ header{height:58px;background:var(--surface);border-bottom:1px solid var(--borde
 /* Editable content */
 [contenteditable="true"]{outline:1.5px dashed var(--border2);border-radius:4px;padding:2px 4px;transition:outline .15s}
 [contenteditable="true"]:focus{outline:2px solid var(--brand);background:var(--surface-warm)}
-.edit-btn{font-size:11px;padding:4px 10px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--text3);cursor:pointer;transition:all .15s;font-family:'Sofia Sans',sans-serif}
+.edit-btn{font-size:11px;padding:4px 10px;border-radius:6px;background:transparent;color:var(--text3);cursor:pointer;transition:all .15s;font-family:'Sofia Sans',sans-serif}
 .edit-btn:hover{background:var(--surface2);color:var(--text)}
 .edit-btn.saving{background:var(--green);color:#fff;border-color:var(--green)}
 </style>

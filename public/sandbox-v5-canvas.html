@@ -22,15 +22,15 @@ a{text-decoration:none;color:inherit}
 ::-webkit-scrollbar-track{background:transparent}
 
 #app{height:100vh;display:flex;flex-direction:column;overflow:hidden}
-header{height:56px;background:linear-gradient(to bottom,var(--surface),color-mix(in srgb,var(--surface) 94%,var(--bg-canvas)));border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:14px;flex:none;z-index:10}
-#subheader{height:48px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;gap:8px;flex:none}
+header{height:56px;background:linear-gradient(to bottom,var(--surface),color-mix(in srgb,var(--surface) 94%,var(--bg-canvas)));display:flex;align-items:center;padding:0 20px;gap:14px;flex:none;z-index:10}
+#subheader{height:48px;background:var(--surface);display:flex;align-items:center;padding:0 24px;gap:8px;flex:none}
 #body{flex:1;overflow:hidden}
 .board{height:100%;overflow-x:auto;overflow-y:hidden;padding:20px 24px 28px;display:flex;gap:16px;align-items:flex-start}
 .col{flex:none;width:292px;display:flex;flex-direction:column}
 .col-head{padding:0 2px 10px;display:flex;align-items:center;gap:8px}
 .col-body{display:flex;flex-direction:column;gap:10px;overflow-y:auto;max-height:calc(100vh - 164px);padding:2px;padding-bottom:32px}
-.proj{background:linear-gradient(160deg,var(--surface) 0%,color-mix(in srgb,var(--surface) 80%,var(--surface2)) 100%);border:1px solid color-mix(in srgb,var(--border) 70%,transparent);border-radius:16px;cursor:pointer;box-shadow:var(--shadow-sm);animation:ch-rise .4s ease;transition:box-shadow .2s,transform .2s,border-color .15s;display:flex;flex-direction:column;overflow:hidden}
-.proj:hover{box-shadow:var(--shadow-md);transform:translateY(-3px);border-color:color-mix(in srgb,var(--border) 90%,var(--brand))}
+.proj{background:linear-gradient(160deg,var(--surface) 0%,color-mix(in srgb,var(--surface) 80%,var(--surface2)) 100%);border-radius:16px;cursor:pointer;animation:ch-rise .4s ease;transition:transform .2s;display:flex;flex-direction:column;overflow:hidden}
+.proj:hover{transform:translateY(-3px)}
 .proj-inner{padding:16px;display:flex;flex-direction:column;gap:0}
 .proj-accent{height:3px;flex:none}
 .proj-client{display:inline-flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;letter-spacing:.5px;padding:3px 7px;border-radius:4px;margin-bottom:8px}
@@ -41,20 +41,20 @@ header{height:56px;background:linear-gradient(to bottom,var(--surface),color-mix
 .obj-row{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text3);line-height:1.5;margin-bottom:10px;letter-spacing:.1px}
 .proj-agents{display:flex;align-items:center;margin-bottom:12px}
 .agent-dot{width:22px;height:22px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:8.5px;font-weight:700;color:#fff;flex:none;border:2px solid var(--surface);margin-right:-5px;position:relative}
-.proj-footer{display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--border);padding:10px 0 0}
-.open-btn{font-size:12px;font-weight:600;padding:5px 12px;border-radius:7px;background:var(--surface2);border:1px solid var(--border);color:var(--text2);transition:all .12s;cursor:pointer}
-.open-btn:hover{background:var(--brand);color:var(--bg-canvas);border-color:var(--brand)}
-.pill{padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text2);font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;white-space:nowrap}
-.pill.on{background:var(--brand);color:var(--bg-canvas);border-color:var(--brand)}
+.proj-footer{display:flex;align-items:center;justify-content:space-between;padding:10px 0 0}
+.open-btn{font-size:12px;font-weight:600;padding:5px 12px;border-radius:7px;background:transparent;color:var(--text2);transition:all .12s;cursor:pointer}
+.open-btn:hover{background:var(--brand);color:var(--bg-canvas)}
+.pill{padding:5px 12px;border-radius:20px;background:transparent;color:var(--text2);font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;white-space:nowrap}
+.pill.on{background:var(--brand);color:var(--bg-canvas)}
 .new-btn{padding:8px 16px;border-radius:9px;background:var(--brand);color:var(--bg-canvas);font-size:13px;font-weight:700;border:none;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:5px;margin-left:auto;transition:opacity .15s}
 .new-btn:hover{opacity:.85}
 .add-col{flex:none;width:260px;border:2px dashed var(--border2);border-radius:14px;display:flex;align-items:center;justify-content:center;cursor:pointer;min-height:80px;color:var(--text3);font-size:13px;gap:7px;transition:all .15s;padding:20px}
 .add-col:hover{border-color:var(--brand);color:var(--brand)}
 .live-dot{width:6px;height:6px;border-radius:50%;background:#2e8157;animation:ch-pulse 2s ease-in-out infinite;flex:none}
-.view-toggle{display:flex;border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.view-toggle{display:flex;border-radius:8px;overflow:hidden}
 .view-btn{padding:5px 13px;font-size:12px;font-weight:500;background:transparent;color:var(--text2);border:none;cursor:pointer;transition:all .15s}
 .view-btn.active{background:var(--surface2);color:var(--text);font-weight:600}
-.subh-sep{width:1px;height:22px;background:var(--border);flex:none}
+.subh-sep{display:none}
 </style>
 </head>
 <body>
@@ -233,12 +233,10 @@ function renderSubheader(){
     ${FILTERS.map(f=>`
       <button class="pill${state.filter===f.k?' on':''}" onclick="state.filter='${f.k}';renderBoard()">${f.l}</button>
     `).join('')}
-    <div class="subh-sep" style="margin-left:4px"></div>
     <div class="view-toggle">
       <button class="view-btn" onclick="">List</button>
       <button class="view-btn active" onclick="">Board</button>
     </div>
-    <div class="subh-sep"></div>
     <button class="new-btn" onclick="alert('New Project wizard — coming soon')">
       <span style="font-size:16px;line-height:1">+</span> New Project
     </button>
@@ -262,7 +260,6 @@ function renderBoard(){
           <span style="font-size:13.5px;font-weight:600;flex:1">${col.label}</span>
           <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:${T.text3}">${cards.length}</span>
         </div>
-        <div style="height:2px;background:${col.dot};border-radius:2px;margin-bottom:12px;opacity:.3"></div>
         <div class="col-body">
           ${cards.length===0
             ?`<div style="padding:28px 16px;text-align:center;font-size:12px;color:${T.text3};font-style:italic;border:1.5px dashed ${T.border};border-radius:12px">No projects here</div>`
