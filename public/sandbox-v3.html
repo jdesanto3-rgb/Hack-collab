@@ -35,8 +35,8 @@ header{height:58px;background:var(--surface);display:flex;align-items:center;pad
 .canvas-col{flex:1;min-width:284px;background:var(--surface2);border-radius:13px;display:flex;flex-direction:column;max-height:calc(100vh - 158px)}
 .canvas-col-header{padding:14px 16px 12px;display:flex;align-items:center;gap:8px;flex:none}
 .canvas-col-body{padding:10px 12px 12px;overflow-y:auto;display:flex;flex-direction:column;gap:10px}
-.canvas-card{background:var(--surface);border-radius:11px;padding:12px;cursor:pointer;animation:ch-rise .4s ease;transition:box-shadow .15s,transform .15s}
-.canvas-card:hover{transform:translateY(-1px)}
+.canvas-card{background:var(--surface);border-radius:11px;padding:12px;cursor:pointer;animation:ch-rise .4s ease;transition:box-shadow .15s,transform .15s;box-shadow:var(--shadow-sm)}
+.canvas-card:hover{transform:translateY(-1px);box-shadow:var(--shadow-md)}
 .dir-card{background:var(--surface-warm);border-radius:13px;padding:15px;cursor:pointer;transition:opacity .2s;flex:1;min-width:210px}
 .dir-card:hover{box-shadow:0 3px 12px rgba(20,18,12,.09)}
 .event-card{background:var(--surface);border-radius:11px;padding:12px;animation:ch-rise .35s ease;margin-bottom:9px}
@@ -973,7 +973,7 @@ function renderCanvas() {
 }
 
 function renderCanvasCard(card) {
-  const freshStyle = card.fresh ? `border-color:${card.tone};box-shadow:0 0 0 2px ${card.tone}22;` : '';
+  const freshStyle = card.fresh ? `box-shadow:var(--shadow-md);` : '';
   const kindColor = card.kindLabel === 'WIREFRAME' ? '#6f57d4'
     : card.kindLabel === 'RESEARCH BRIEF' ? '#1f9d8f'
     : card.kindLabel === 'PROMOTED' || card.kindLabel === 'JUST PROMOTED' ? '#2f5bea'
@@ -1459,7 +1459,7 @@ function renderFeed() {
       const agent = AGENT_MAP[ev.a];
       const isDirected = ev.tag === 'directed';
       return `
-        <div class="event-card" style="${isDirected ? `border-color:${agent.color};border-left:3px solid ${agent.color};` : ''}">
+        <div class="event-card" style="${isDirected ? `border-left:2px solid ${agent.color}55;` : ''}">
           <div style="display:flex;align-items:center;margin-bottom:6px">
             <div style="width:20px;height:20px;border-radius:5px;background:${agent.color};display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:#fff;flex:none">${agent.short}</div>
             <span style="font-size:12px;font-weight:700;margin-left:7px">${isDirected ? 'You → ' : ''}${agent.name}</span>

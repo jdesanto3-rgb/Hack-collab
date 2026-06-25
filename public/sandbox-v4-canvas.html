@@ -29,10 +29,10 @@ header{height:64px;background:var(--surface);display:flex;align-items:center;pad
 .col{flex:none;width:316px;display:flex;flex-direction:column}
 .col-head{padding:0 2px 12px;display:flex;align-items:center;gap:9px}
 .col-body{display:flex;flex-direction:column;gap:14px;overflow-y:auto;max-height:calc(100vh - 172px);padding:2px;padding-bottom:36px}
-.proj{background:var(--surface);border-radius:16px;padding:20px;cursor:pointer;animation:ch-rise .4s ease;transition:transform .2s;display:flex;flex-direction:column;gap:0}
-.proj:hover{transform:translateY(-3px)}
-.proj-accent{height:4px;border-radius:15px 15px 0 0;margin:-20px -20px 16px;flex:none}
-.proj-client{display:inline-flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.5px;padding:4px 9px;border-radius:5px;margin-bottom:10px}
+.proj{background:var(--surface);border-radius:16px;padding:20px;cursor:pointer;animation:ch-rise .4s ease;transition:transform .2s,box-shadow .2s;display:flex;flex-direction:column;gap:0;box-shadow:var(--shadow-sm)}
+.proj:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+.proj-accent{display:none}
+.proj-client{display:inline-flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;letter-spacing:.5px;padding:3px 8px;border-radius:5px;margin-bottom:10px;background:var(--surface2);color:var(--text3)}
 .proj-name{font-family:'Playfair Display',Georgia,serif;font-size:19px;line-height:1.2;letter-spacing:-.02em;margin-bottom:7px}
 .proj-brief{font-size:13px;color:var(--text2);line-height:1.5;margin-bottom:14px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .prog-bar{height:4px;border-radius:2px;background:var(--border);overflow:hidden;margin-bottom:14px}
@@ -279,8 +279,7 @@ function renderCard(p){
   const progColor=p.progress>=90?T.green:p.progress>=50?T.blue:T.amber;
   return `
     <a class="proj" href="sandbox-v4-project.html?project=${p.id}" style="display:flex;flex-direction:column">
-      <div class="proj-accent" style="background:${p.accent}"></div>
-      <div class="proj-client" style="background:${p.clientColor}18;color:${p.clientColor}">
+      <div class="proj-client">
         <span style="width:5px;height:5px;border-radius:50%;background:${p.clientColor};flex:none"></span>
         ${p.client}
       </div>
@@ -293,7 +292,7 @@ function renderCard(p){
       </div>
       <div class="proj-footer">
         <div style="display:flex;flex-direction:column;gap:3px">
-          <span style="font-size:12.5px;font-weight:700;color:${p.tagColor}">${p.tag}</span>
+          <span style="font-size:12px;color:${T.text2}">${p.tag}</span>
           <span style="font-size:12px;color:${T.text3}">Updated ${p.updated}</span>
         </div>
         <button class="open-btn" onclick="event.preventDefault();window.location.href='sandbox-v4-project.html?project=${p.id}'">Open →</button>
