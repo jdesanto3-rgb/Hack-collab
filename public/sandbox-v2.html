@@ -6,12 +6,12 @@
 <title>Chorus — Design Team</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sofia+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/tokens.css">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;overflow:hidden;font-family:'Hanken Grotesk',sans-serif;font-size:14px;color:var(--text);background:var(--bg-canvas)}
-button{font-family:'Hanken Grotesk',sans-serif;border:none;cursor:pointer}
+html,body{height:100%;overflow:hidden;font-family:'Sofia Sans',sans-serif;font-size:14px;color:var(--text);background:var(--bg-canvas)}
+button{font-family:'Sofia Sans',sans-serif;border:none;cursor:pointer}
 @keyframes ch-rise{from{transform:translateY(9px);opacity:0}to{transform:none;opacity:1}}
 @keyframes ch-pop{0%{transform:translateY(12px) scale(.975);opacity:0}60%{transform:translateY(-2px) scale(1.008)}100%{transform:none;opacity:1}}
 @keyframes ch-pulse{0%,100%{opacity:.35;transform:scale(1)}50%{opacity:1;transform:scale(1.25)}}
@@ -88,7 +88,7 @@ function readTokens() {
     radiusSm:    get('--radius-sm')    || '4px',
     radius:      get('--radius')       || '6px',
     radiusLg:    get('--radius-lg')    || '8px',
-    fontSans:    get('--font-sans')    || "'Hanken Grotesk', sans-serif",
+    fontSans:    get('--font-sans')    || "'Sofia Sans', sans-serif",
     fontSerif:   get('--font-serif')   || "'Space Grotesk', serif",
     fontMono:    get('--font-mono')    || "'JetBrains Mono', monospace",
   };
@@ -300,14 +300,14 @@ function renderHeader() {
           <span style="width:2.5px;height:9px;background:#7aa2ff;border-radius:2px"></span>
         </div>
       </div>
-      <span id="wordmark" style="font-family:'Space Grotesk',sans-serif;font-size:23px;letter-spacing:.3px;line-height:1">${name}</span>
+      <span id="wordmark" style="font-family:'Sofia Sans',sans-serif;font-size:23px;letter-spacing:.3px;line-height:1">${name}</span>
       <span style="font-size:9px;font-family:'JetBrains Mono',monospace;color:${TOKENS.text3};border:1px solid ${TOKENS.border};border-radius:4px;padding:2px 5px;letter-spacing:.5px">BETA</span>
     </div>
     <div style="width:1px;height:24px;background:${TOKENS.border};flex:none"></div>
     <div style="font-size:13px;color:${TOKENS.text2}">Project / <span style="color:${TOKENS.text};font-weight:600">Helios — Onboarding Redesign</span></div>
     <div style="margin:0 auto;display:flex;background:${TOKENS.surface2};border:1px solid ${TOKENS.border};border-radius:10px;padding:3px;gap:2px">
-      <button id="btn-canvas" onclick="setView('canvas')" style="background:${isCanvas?TOKENS.brand:'transparent'};color:${isCanvas?TOKENS.bgCanvas:TOKENS.text2};border-radius:8px;border:none;padding:7px 15px;font-weight:600;font-size:13px;font-family:'Hanken Grotesk',sans-serif;cursor:pointer;transition:all .15s">Shared Canvas</button>
-      <button id="btn-workspace" onclick="setView('workspace')" style="background:${isWork?TOKENS.brand:'transparent'};color:${isWork?TOKENS.bgCanvas:TOKENS.text2};border-radius:8px;border:none;padding:7px 15px;font-weight:600;font-size:13px;font-family:'Hanken Grotesk',sans-serif;cursor:pointer;transition:all .15s">Design Team</button>
+      <button id="btn-canvas" onclick="setView('canvas')" style="background:${isCanvas?TOKENS.brand:'transparent'};color:${isCanvas?TOKENS.bgCanvas:TOKENS.text2};border-radius:8px;border:none;padding:7px 15px;font-weight:600;font-size:13px;font-family:'Sofia Sans',sans-serif;cursor:pointer;transition:all .15s">Shared Canvas</button>
+      <button id="btn-workspace" onclick="setView('workspace')" style="background:${isWork?TOKENS.brand:'transparent'};color:${isWork?TOKENS.bgCanvas:TOKENS.text2};border-radius:8px;border:none;padding:7px 15px;font-weight:600;font-size:13px;font-family:'Sofia Sans',sans-serif;cursor:pointer;transition:all .15s">Design Team</button>
     </div>
     <button onclick="toggleTheme()" title="Toggle light/dark" style="width:32px;height:32px;border-radius:8px;background:${TOKENS.surface2};border:1px solid ${TOKENS.border};display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;color:${TOKENS.text2};transition:all .15s;margin-left:auto;flex:none" onmouseover="this.style.background='${TOKENS.border}'" onmouseout="this.style.background='${TOKENS.surface2}'">${isDark() ? '☀︎' : '◑'}</button>
     <div style="display:flex;align-items:center">
@@ -342,7 +342,7 @@ function renderCanvas() {
     <div style="padding:20px 28px 16px;display:flex;align-items:center;flex:none;border-bottom:1px solid ${TOKENS.border};background:${TOKENS.surface}">
       <div>
         <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.2px;color:${TOKENS.text3};margin-bottom:5px">SHARED PROJECT CANVAS</div>
-        <div style="font-family:'Space Grotesk',sans-serif;font-size:28px;line-height:1.1;color:${TOKENS.text}">All work in motion, in one governed view</div>
+        <div style="font-family:'Sofia Sans',sans-serif;font-size:28px;line-height:1.1;color:${TOKENS.text}">All work in motion, in one governed view</div>
       </div>
       <div style="margin-left:auto;display:flex;align-items:center;gap:7px">
         <span style="width:6px;height:6px;border-radius:50%;background:#2f5bea;flex:none"></span>
@@ -454,7 +454,7 @@ function renderPipelineRail() {
 
   html += `
     <div style="margin-top:auto;padding-top:20px">
-      <button onclick="resetFlow()" style="width:100%;border:1px solid ${TOKENS.border};background:${TOKENS.surface};color:${TOKENS.text2};border-radius:9px;padding:9px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Hanken Grotesk',sans-serif">↺ Reset flow</button>
+      <button onclick="resetFlow()" style="width:100%;border:1px solid ${TOKENS.border};background:${TOKENS.surface};color:${TOKENS.text2};border-radius:9px;padding:9px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Sofia Sans',sans-serif">↺ Reset flow</button>
     </div>
   `;
 
@@ -468,7 +468,7 @@ function stageEyebrow(ph) {
   const agentColor = p.agent ? AGENT_MAP[p.agent].color : '#2f5bea';
   return `
     <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1.5px;color:${agentColor};font-weight:600">${p.eyebrow}</div>
-    <div style="font-family:'Space Grotesk',sans-serif;font-size:33px;line-height:1.12;margin-top:6px;max-width:680px">${p.title}</div>
+    <div style="font-family:'Sofia Sans',sans-serif;font-size:33px;line-height:1.12;margin-top:6px;max-width:680px">${p.title}</div>
     <div style="font-size:14.5px;color:${TOKENS.text2};margin-top:10px;max-width:600px;line-height:1.55;margin-bottom:24px">${p.sub}</div>
   `;
 }
@@ -667,7 +667,7 @@ function stageContent(ph) {
         <div style="font-size:22px;margin-bottom:8px">🎉</div>
         <div style="font-size:16px;font-weight:700;margin-bottom:8px;color:${isDark()?'#4aad7a':'#1a4731'}">Promoted to the Shared Canvas</div>
         <div style="font-size:13.5px;line-height:1.55;color:${isDark()?'#4aad7a':'#2e6847'};margin-bottom:16px">Fully traceable from brief to approved concept — now visible to the whole team on the Shared Canvas.</div>
-        <button onclick="setView('canvas')" style="background:${TOKENS.green};color:#fff;border:none;border-radius:9px;padding:10px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Hanken Grotesk',sans-serif">View it on the canvas →</button>
+        <button onclick="setView('canvas')" style="background:${TOKENS.green};color:#fff;border:none;border-radius:9px;padding:10px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Sofia Sans',sans-serif">View it on the canvas →</button>
       </div>
     `;
   }
@@ -683,8 +683,8 @@ function renderStage() {
   const isGate = ph === 3 && !state.selectedDir;
   const btnDisabled = isGate || ph >= 7;
   const btnStyle = btnDisabled
-    ? `background:${TOKENS.border};color:${TOKENS.text3};cursor:not-allowed;border-radius:10px;padding:11px 20px;font-size:14px;font-weight:700;display:flex;align-items:center;gap:9px;border:none;font-family:'Hanken Grotesk',sans-serif`
-    : `background:${TOKENS.brand};color:${TOKENS.bgCanvas};border-radius:10px;padding:11px 20px;font-size:14px;font-weight:700;display:flex;align-items:center;gap:9px;border:none;cursor:pointer;font-family:'Hanken Grotesk',sans-serif;transition:opacity .15s`;
+    ? `background:${TOKENS.border};color:${TOKENS.text3};cursor:not-allowed;border-radius:10px;padding:11px 20px;font-size:14px;font-weight:700;display:flex;align-items:center;gap:9px;border:none;font-family:'Sofia Sans',sans-serif`
+    : `background:${TOKENS.brand};color:${TOKENS.bgCanvas};border-radius:10px;padding:11px 20px;font-size:14px;font-weight:700;display:flex;align-items:center;gap:9px;border:none;cursor:pointer;font-family:'Sofia Sans',sans-serif;transition:opacity .15s`;
 
   stage.innerHTML = `
     ${stageEyebrow(ph)}
@@ -844,7 +844,7 @@ function renderDrawer() {
             </div>
             <button onclick="closeDetail()" style="background:transparent;border:1px solid ${TOKENS.border};border-radius:7px;padding:5px 10px;font-size:14px;color:${TOKENS.text2};cursor:pointer;flex:none">✕</button>
           </div>
-          <div style="font-family:'Space Grotesk',sans-serif;font-size:24px;line-height:1.25;margin-bottom:12px">${card.title}</div>
+          <div style="font-family:'Sofia Sans',sans-serif;font-size:24px;line-height:1.25;margin-bottom:12px">${card.title}</div>
           <div style="display:flex;align-items:center;gap:8px">
             <div style="width:20px;height:20px;border-radius:5px;background:${card.agentColor};display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:#fff;flex:none">${card.agentShort}</div>
             <span style="font-size:12.5px;color:${TOKENS.text2}">Owned by ${card.agent}</span>

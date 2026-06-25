@@ -6,12 +6,12 @@
 <title>Weave v5 — Test Request Form</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sofia+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/tokens.css">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;overflow:hidden;font-family:'Hanken Grotesk',sans-serif;font-size:14px;color:var(--text);background:var(--bg-canvas)}
-button{font-family:'Hanken Grotesk',sans-serif;border:none;cursor:pointer}
+html,body{height:100%;overflow:hidden;font-family:'Sofia Sans',sans-serif;font-size:14px;color:var(--text);background:var(--bg-canvas);background-image:radial-gradient(ellipse at 15% 25%, color-mix(in srgb,var(--brand) 4%,transparent) 0%,transparent 50%),radial-gradient(ellipse at 85% 75%, color-mix(in srgb,var(--amber) 3%,transparent) 0%,transparent 50%)}
+button{font-family:'Sofia Sans',sans-serif;border:none;cursor:pointer}
 a{text-decoration:none;color:inherit}
 
 @keyframes ch-rise{from{transform:translateY(8px);opacity:0}to{transform:none;opacity:1}}
@@ -25,17 +25,17 @@ a{text-decoration:none;color:inherit}
 ::-webkit-scrollbar-track{background:transparent}
 
 #app{height:100vh;display:flex;flex-direction:column;overflow:hidden}
-header{height:56px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:0;flex:none;z-index:10}
+header{height:56px;background:linear-gradient(to bottom,var(--surface),color-mix(in srgb,var(--surface) 92%,var(--bg-canvas)));border-bottom:1px solid color-mix(in srgb,var(--border) 80%,transparent);display:flex;align-items:center;padding:0 20px;gap:0;flex:none;z-index:10}
 #body{flex:1;min-height:0;display:flex;overflow:hidden}
 
 /* Left sidebar */
-.left-sidebar{width:248px;flex:none;border-right:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column;background:var(--surface)}
+.left-sidebar{width:248px;flex:none;border-right:1px solid color-mix(in srgb,var(--border) 75%,transparent);overflow-y:auto;display:flex;flex-direction:column;background:linear-gradient(to bottom,var(--surface),color-mix(in srgb,var(--surface) 88%,var(--bg-canvas)))}
 
 /* Center */
 .center-col{flex:1;overflow-y:auto;display:flex;flex-direction:column;background:var(--bg-canvas)}
 
 /* Right sidebar */
-.right-sidebar{width:288px;flex:none;border-left:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column;background:var(--surface)}
+.right-sidebar{width:288px;flex:none;border-left:1px solid color-mix(in srgb,var(--border) 75%,transparent);overflow-y:auto;display:flex;flex-direction:column;background:linear-gradient(to bottom,var(--surface),color-mix(in srgb,var(--surface) 88%,var(--bg-canvas)))}
 
 .breadcrumb-sep{font-size:13px;color:var(--text3);padding:0 6px}
 
@@ -215,7 +215,7 @@ function render(){
   renderRightSidebar();
 }
 
-const WEAVE_LOGO_SVG=`<svg viewBox="0 0 24 20" fill="none" xmlns="http://www.w3.org/2000/svg" width="22" height="18" style="display:block;flex:none"><line x1="1" y1="10.8" x2="4.5" y2="10.8" stroke="#F5B800" stroke-width="1.6" stroke-linecap="round" opacity="0.5"/><line x1="19.5" y1="10.8" x2="23" y2="10.8" stroke="#8B5CF6" stroke-width="1.6" stroke-linecap="round" opacity="0.5"/><polyline points="7,17 12,8 17,17" stroke="#E83E6C" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/><line x1="5.8" y1="10.8" x2="18.2" y2="10.8" stroke="#E83E6C" stroke-width="1.6" opacity="0.45"/><line x1="2.5" y1="2" x2="7" y2="17" stroke="#F5B800" stroke-width="2.4" stroke-linecap="round"/><line x1="17" y1="17" x2="21.5" y2="2" stroke="#8B5CF6" stroke-width="2.4" stroke-linecap="round"/></svg>`;
+const WEAVE_LOGO_SVG=`<svg viewBox="0 0 106 48" fill="none" xmlns="http://www.w3.org/2000/svg" width="40" height="18" style="display:block;flex:none;filter:drop-shadow(0 0 4px rgba(218,90,40,.45)) drop-shadow(0 0 8px rgba(190,30,60,.25))"><defs><linearGradient id="wg-hdr5p" gradientUnits="userSpaceOnUse" x1="5" y1="24" x2="101" y2="24"><stop offset="0%" stop-color="#D4920A"/><stop offset="35%" stop-color="#E85A30"/><stop offset="50%" stop-color="#C83060"/><stop offset="65%" stop-color="#E85A30"/><stop offset="100%" stop-color="#D4920A"/></linearGradient></defs><line x1="3" y1="24" x2="11" y2="24" stroke="#D4920A" stroke-width="1.5" stroke-linecap="round" opacity=".55"/><line x1="95" y1="24" x2="103" y2="24" stroke="#D4920A" stroke-width="1.5" stroke-linecap="round" opacity=".55"/><ellipse cx="33" cy="24" rx="22" ry="18" stroke="url(#wg-hdr5p)" stroke-width="4.5" fill="none" opacity=".2"/><ellipse cx="73" cy="24" rx="22" ry="18" stroke="url(#wg-hdr5p)" stroke-width="4.5" fill="none" opacity=".2"/><ellipse cx="73" cy="24" rx="22" ry="18" stroke="url(#wg-hdr5p)" stroke-width="1.8" fill="none"/><ellipse cx="33" cy="24" rx="22" ry="18" stroke="url(#wg-hdr5p)" stroke-width="1.8" fill="none"/></svg>`;
 
 function renderHeader(){
   document.getElementById('hdr').innerHTML=`
@@ -349,7 +349,7 @@ function renderCenter(){
     <div style="padding:20px 20px 0;border-bottom:1px solid ${T.border};background:${T.surface}">
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
         <span style="font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.8px;background:#d4456b18;color:#d4456b;border-radius:4px;padding:3px 7px">SCREEN</span>
-        <h1 style="font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:400;color:${T.text}">Test Request Form</h1>
+        <h1 style="font-family:'Sofia Sans',sans-serif;font-size:22px;font-weight:400;color:${T.text}">Test Request Form</h1>
         <div style="display:flex;align-items:center;gap:5px;margin-left:4px">
           <span style="width:6px;height:6px;border-radius:50%;background:#2e8157;animation:ch-pulse 2s ease-in-out infinite"></span>
           <span style="font-size:11.5px;color:${T.text2}">Active · Updated 2m ago</span>

@@ -6,12 +6,12 @@
 <title>Weave v5 — Test Request Form · Experience OS</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sofia+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/tokens.css">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;overflow:hidden;font-family:'Hanken Grotesk',sans-serif;font-size:13px;color:var(--text);background:var(--bg-canvas)}
-button,input,textarea{font-family:'Hanken Grotesk',sans-serif;border:none;cursor:pointer}
+html,body{height:100%;overflow:hidden;font-family:'Sofia Sans',sans-serif;font-size:13px;color:var(--text);background:var(--bg-canvas);background-image:radial-gradient(ellipse at 70% 20%, color-mix(in srgb,var(--brand) 5%,transparent) 0%,transparent 50%),radial-gradient(ellipse at 10% 80%, color-mix(in srgb,var(--teal) 4%,transparent) 0%,transparent 50%)}
+button,input,textarea{font-family:'Sofia Sans',sans-serif;border:none;cursor:pointer}
 input,textarea{outline:none}
 a{text-decoration:none;color:inherit}
 
@@ -42,7 +42,7 @@ a{text-decoration:none;color:inherit}
 
 /* ── SHELL ── */
 #app{height:100vh;display:flex;flex-direction:column;overflow:hidden}
-#toolbar{height:50px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 12px;gap:0;flex:none;z-index:20}
+#toolbar{height:50px;background:linear-gradient(to bottom,var(--surface),color-mix(in srgb,var(--surface) 92%,var(--bg-canvas)));border-bottom:1px solid color-mix(in srgb,var(--border) 80%,transparent);display:flex;align-items:center;padding:0 12px;gap:0;flex:none;z-index:20}
 #main{flex:1;min-height:0;display:flex;overflow:hidden}
 
 /* ── TOOLBAR PIECES ── */
@@ -68,7 +68,7 @@ html[data-theme="dark"] .status-chip{background:#3d2800;color:#f5c55a;border-col
 .theme-btn:hover{background:var(--surface2);color:var(--text)}
 
 /* ── LEFT PANEL ── */
-#left{width:220px;flex:none;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+#left{width:220px;flex:none;background:linear-gradient(to bottom,var(--surface),color-mix(in srgb,var(--surface) 85%,var(--bg-canvas)));border-right:1px solid color-mix(in srgb,var(--border) 75%,transparent);display:flex;flex-direction:column;overflow:hidden}
 .lp-tabs{display:flex;border-bottom:1px solid var(--border);flex:none}
 .lp-tab{flex:1;height:36px;display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:600;cursor:pointer;color:var(--text3);border-bottom:2px solid transparent;transition:all .15s}
 .lp-tab.on{color:var(--text);border-bottom-color:var(--brand)}
@@ -106,7 +106,7 @@ html[data-theme="dark"] .status-chip{background:#3d2800;color:#f5c55a;border-col
 .nav-item.on{color:#fff}
 .page-body{padding:20px 18px 16px;background:#FAFAF9}
 .page-breadcrumb{font-size:10px;color:#9C9890;margin-bottom:12px;font-family:'JetBrains Mono',monospace}
-.page-h1{font-family:'Space Grotesk',sans-serif;font-size:20px;color:#1C1914;margin-bottom:14px;line-height:1.2}
+.page-h1{font-family:'Sofia Sans',sans-serif;font-size:20px;color:#1C1914;margin-bottom:14px;line-height:1.2}
 .step-progress{display:flex;align-items:center;gap:0;margin-bottom:18px}
 .step-dot{display:flex;align-items:center;gap:6px;font-size:10px}
 .step-circle{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700}
@@ -120,14 +120,14 @@ html[data-theme="dark"] .status-chip{background:#3d2800;color:#f5c55a;border-col
 .step-sep{width:24px;height:1px;background:#D8D2C6;margin:0 6px;flex:none}
 .form-field{margin-bottom:14px}
 .field-label{font-size:11px;font-weight:600;color:#5C5752;margin-bottom:5px}
-.field-input{width:100%;padding:8px 10px;border:1px solid #D8D2C6;border-radius:7px;font-size:12px;color:#1C1914;background:#fff;font-family:'Hanken Grotesk',sans-serif}
+.field-input{width:100%;padding:8px 10px;border:1px solid #D8D2C6;border-radius:7px;font-size:12px;color:#1C1914;background:#fff;font-family:'Sofia Sans',sans-serif}
 .field-input.focus-sim{border-color:#2f5bea;box-shadow:0 0 0 2px rgba(47,91,234,.12)}
 .priority-chip{display:flex;align-items:flex-start;gap:7px;padding:8px 10px;border-radius:7px;background:#FEF3C7;border:1px solid #FDE68A;margin-top:6px}
 .pchip-icon{font-size:12px;flex:none;margin-top:1px}
 .pchip-text{font-size:10.5px;color:#92400E;line-height:1.4}
 .pchip-label{font-size:9px;font-family:'JetBrains Mono',monospace;font-weight:700;color:#B45309;display:block;margin-bottom:2px}
 .pchip-val{font-weight:700;color:#92400E}
-.field-textarea{width:100%;padding:8px 10px;border:1px solid #D8D2C6;border-radius:7px;font-size:11.5px;color:#1C1914;background:#fff;resize:none;font-family:'Hanken Grotesk',sans-serif;line-height:1.45;height:64px}
+.field-textarea{width:100%;padding:8px 10px;border:1px solid #D8D2C6;border-radius:7px;font-size:11.5px;color:#1C1914;background:#fff;resize:none;font-family:'Sofia Sans',sans-serif;line-height:1.45;height:64px}
 .pills-row{display:flex;gap:6px;flex-wrap:wrap}
 .type-pill{padding:5px 11px;border-radius:20px;font-size:11px;font-weight:500;border:1px solid #D8D2C6;background:#fff;color:#6B6860;cursor:pointer}
 .type-pill.sel{background:#1C1914;color:#fff;border-color:#1C1914;font-weight:600}
@@ -148,7 +148,7 @@ html[data-theme="dark"] .status-chip{background:#3d2800;color:#f5c55a;border-col
 .ver-tab:hover:not(.on){background:var(--surface2);color:var(--text)}
 
 /* ── RIGHT PANEL — EXPERIENCE GRAPH ── */
-#right{width:308px;flex:none;background:var(--surface);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+#right{width:308px;flex:none;background:linear-gradient(to bottom,var(--surface),color-mix(in srgb,var(--surface) 85%,var(--bg-canvas)));border-left:1px solid color-mix(in srgb,var(--border) 75%,transparent);display:flex;flex-direction:column;overflow:hidden}
 .rp-header{padding:12px 14px 10px;border-bottom:1px solid var(--border);flex:none}
 .rp-title{display:flex;align-items:center;gap:7px;font-size:14px;font-weight:700;color:var(--text)}
 .rp-title-icon{width:22px;height:22px;border-radius:6px;background:linear-gradient(135deg,#2f5bea,#6f57d4);display:flex;align-items:center;justify-content:center;font-size:11px}
@@ -210,13 +210,14 @@ html[data-theme="dark"] .exp-stat{background:#0a2318;color:#4aad7a}
   <!-- TOOLBAR -->
   <div id="toolbar">
     <a class="tb-back" href="sandbox-v5-project.html" style="display:flex;align-items:center;gap:6px">
-      <svg viewBox="0 0 24 20" fill="none" xmlns="http://www.w3.org/2000/svg" width="20" height="17" style="display:block;flex:none">
-        <line x1="1" y1="10.8" x2="4.5" y2="10.8" stroke="#F5B800" stroke-width="1.6" stroke-linecap="round" opacity="0.5"/>
-        <line x1="19.5" y1="10.8" x2="23" y2="10.8" stroke="#8B5CF6" stroke-width="1.6" stroke-linecap="round" opacity="0.5"/>
-        <polyline points="7,17 12,8 17,17" stroke="#E83E6C" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-        <line x1="5.8" y1="10.8" x2="18.2" y2="10.8" stroke="#E83E6C" stroke-width="1.6" opacity="0.45"/>
-        <line x1="2.5" y1="2" x2="7" y2="17" stroke="#F5B800" stroke-width="2.4" stroke-linecap="round"/>
-        <line x1="17" y1="17" x2="21.5" y2="2" stroke="#8B5CF6" stroke-width="2.4" stroke-linecap="round"/>
+      <svg viewBox="0 0 106 48" fill="none" xmlns="http://www.w3.org/2000/svg" width="36" height="16" style="display:block;flex:none;filter:drop-shadow(0 0 4px rgba(218,90,40,.4)) drop-shadow(0 0 7px rgba(190,30,60,.22))">
+        <defs><linearGradient id="wg-hdr5d" gradientUnits="userSpaceOnUse" x1="5" y1="24" x2="101" y2="24"><stop offset="0%" stop-color="#D4920A"/><stop offset="35%" stop-color="#E85A30"/><stop offset="50%" stop-color="#C83060"/><stop offset="65%" stop-color="#E85A30"/><stop offset="100%" stop-color="#D4920A"/></linearGradient></defs>
+        <line x1="3" y1="24" x2="11" y2="24" stroke="#D4920A" stroke-width="1.5" stroke-linecap="round" opacity=".55"/>
+        <line x1="95" y1="24" x2="103" y2="24" stroke="#D4920A" stroke-width="1.5" stroke-linecap="round" opacity=".55"/>
+        <ellipse cx="33" cy="24" rx="22" ry="18" stroke="url(#wg-hdr5d)" stroke-width="4.5" fill="none" opacity=".2"/>
+        <ellipse cx="73" cy="24" rx="22" ry="18" stroke="url(#wg-hdr5d)" stroke-width="4.5" fill="none" opacity=".2"/>
+        <ellipse cx="73" cy="24" rx="22" ry="18" stroke="url(#wg-hdr5d)" stroke-width="1.8" fill="none"/>
+        <ellipse cx="33" cy="24" rx="22" ry="18" stroke="url(#wg-hdr5d)" stroke-width="1.8" fill="none"/>
       </svg>
       <span>&#8249; Project</span>
     </a>

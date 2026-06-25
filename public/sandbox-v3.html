@@ -6,12 +6,12 @@
 <title>Weave — Axiom · Test Request Portal</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sofia+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/tokens.css">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;overflow:hidden;font-family:'Hanken Grotesk',sans-serif;font-size:14px;color:var(--text);background:var(--bg-canvas)}
-button{font-family:'Hanken Grotesk',sans-serif;border:none;cursor:pointer}
+html,body{height:100%;overflow:hidden;font-family:'Sofia Sans',sans-serif;font-size:14px;color:var(--text);background:var(--bg-canvas)}
+button{font-family:'Sofia Sans',sans-serif;border:none;cursor:pointer}
 @keyframes ch-rise{from{transform:translateY(9px);opacity:0}to{transform:none;opacity:1}}
 @keyframes ch-pop{0%{transform:translateY(12px) scale(.975);opacity:0}60%{transform:translateY(-2px) scale(1.008)}100%{transform:none;opacity:1}}
 @keyframes ch-pulse{0%,100%{opacity:.35;transform:scale(1)}50%{opacity:1;transform:scale(1.25)}}
@@ -47,7 +47,7 @@ header{height:58px;background:var(--surface);border-bottom:1px solid var(--borde
 /* Director panel */
 .dir-panel{margin-bottom:10px;border-radius:9px;border:1px solid var(--border2);overflow:hidden;background:var(--surface)}
 .dir-panel-header{padding:9px 11px;font-size:11px;font-weight:600;color:var(--text2);background:var(--surface2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px}
-.dir-textarea{width:100%;padding:9px 11px;border:none;background:var(--surface);color:var(--text);font-family:'Hanken Grotesk',sans-serif;font-size:12.5px;line-height:1.5;resize:vertical;min-height:62px;outline:none;display:block}
+.dir-textarea{width:100%;padding:9px 11px;border:none;background:var(--surface);color:var(--text);font-family:'Sofia Sans',sans-serif;font-size:12.5px;line-height:1.5;resize:vertical;min-height:62px;outline:none;display:block}
 .dir-footer{padding:7px 10px;background:var(--surface2);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px}
 .dir-hint{font-size:10px;color:var(--text3)}
 
@@ -63,7 +63,7 @@ header{height:58px;background:var(--surface);border-bottom:1px solid var(--borde
 /* Editable content */
 [contenteditable="true"]{outline:1.5px dashed var(--border2);border-radius:4px;padding:2px 4px;transition:outline .15s}
 [contenteditable="true"]:focus{outline:2px solid var(--brand);background:var(--surface-warm)}
-.edit-btn{font-size:11px;padding:4px 10px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--text3);cursor:pointer;transition:all .15s;font-family:'Hanken Grotesk',sans-serif}
+.edit-btn{font-size:11px;padding:4px 10px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--text3);cursor:pointer;transition:all .15s;font-family:'Sofia Sans',sans-serif}
 .edit-btn:hover{background:var(--surface2);color:var(--text)}
 .edit-btn.saving{background:var(--green);color:#fff;border-color:var(--green)}
 </style>
@@ -823,7 +823,7 @@ function renderPhase5DesignReview() {
       <textarea
         placeholder="Version notes — what changed, what to watch…"
         oninput="state.designNotes[${v}]=this.value"
-        style="width:316px;height:54px;padding:8px 11px;border:1.5px solid ${T.border};border-radius:8px;background:${T.surface};color:${T.text};font-family:'Hanken Grotesk',sans-serif;font-size:12px;line-height:1.5;resize:none;outline:none;transition:border .15s"
+        style="width:316px;height:54px;padding:8px 11px;border:1.5px solid ${T.border};border-radius:8px;background:${T.surface};color:${T.text};font-family:'Sofia Sans',sans-serif;font-size:12px;line-height:1.5;resize:none;outline:none;transition:border .15s"
         onfocus="this.style.borderColor='${tone}'" onblur="this.style.borderColor='${T.border}'"
       >${state.designNotes[v] || ''}</textarea>
     </div>`;
@@ -867,7 +867,7 @@ function renderPhase5DesignReview() {
           }
         </div>
         ${!v3Exists
-          ? `<button onclick="createDesignV3()" ${creating?'disabled':''} style="width:100%;padding:10px 14px;border-radius:9px;border:none;background:${tone};color:#fff;font-size:13px;font-weight:700;cursor:${creating?'default':'pointer'};font-family:'Hanken Grotesk',sans-serif;transition:opacity .15s;${creating?'opacity:.65':''}">
+          ? `<button onclick="createDesignV3()" ${creating?'disabled':''} style="width:100%;padding:10px 14px;border-radius:9px;border:none;background:${tone};color:#fff;font-size:13px;font-weight:700;cursor:${creating?'default':'pointer'};font-family:'Sofia Sans',sans-serif;transition:opacity .15s;${creating?'opacity:.65':''}">
               ${creating?'⟳ Generating v3…':'Create v3 — address feedback →'}
              </button>`
           : `<div style="background:${T.greenLight};border:1px solid ${isDark()?'#1a4731':'#c4e3d3'};border-radius:9px;padding:10px 14px;text-align:center;font-size:13px;font-weight:700;color:${isDark()?'#4aad7a':'#1a4731'}">
@@ -892,14 +892,7 @@ function renderPhase5DesignReview() {
 
 // ─── HEADER ──────────────────────────────────────────────────────────────────
 
-const WEAVE_LOGO_SVG = `<svg viewBox="0 0 24 20" fill="none" xmlns="http://www.w3.org/2000/svg" width="28" height="23" style="display:block;flex:none">
-  <line x1="1" y1="10.8" x2="4.5" y2="10.8" stroke="#F5B800" stroke-width="1.6" stroke-linecap="round" opacity="0.5"/>
-  <line x1="19.5" y1="10.8" x2="23" y2="10.8" stroke="#8B5CF6" stroke-width="1.6" stroke-linecap="round" opacity="0.5"/>
-  <polyline points="7,17 12,8 17,17" stroke="#E83E6C" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-  <line x1="5.8" y1="10.8" x2="18.2" y2="10.8" stroke="#E83E6C" stroke-width="1.6" opacity="0.45"/>
-  <line x1="2.5" y1="2" x2="7" y2="17" stroke="#F5B800" stroke-width="2.4" stroke-linecap="round"/>
-  <line x1="17" y1="17" x2="21.5" y2="2" stroke="#8B5CF6" stroke-width="2.4" stroke-linecap="round"/>
-</svg>`;
+const WEAVE_LOGO_SVG = `<svg viewBox="0 0 106 48" fill="none" xmlns="http://www.w3.org/2000/svg" width="52" height="24" style="display:block;flex:none;filter:drop-shadow(0 0 5px rgba(218,90,40,.5)) drop-shadow(0 0 10px rgba(190,30,60,.28))"><defs><linearGradient id="wg-hdr3" gradientUnits="userSpaceOnUse" x1="5" y1="24" x2="101" y2="24"><stop offset="0%" stop-color="#D4920A"/><stop offset="35%" stop-color="#E85A30"/><stop offset="50%" stop-color="#C83060"/><stop offset="65%" stop-color="#E85A30"/><stop offset="100%" stop-color="#D4920A"/></linearGradient></defs><line x1="3" y1="24" x2="11" y2="24" stroke="#D4920A" stroke-width="1.5" stroke-linecap="round" opacity=".6"/><line x1="95" y1="24" x2="103" y2="24" stroke="#D4920A" stroke-width="1.5" stroke-linecap="round" opacity=".6"/><ellipse cx="33" cy="24" rx="22" ry="18" stroke="url(#wg-hdr3)" stroke-width="4.5" fill="none" opacity=".22"/><ellipse cx="73" cy="24" rx="22" ry="18" stroke="url(#wg-hdr3)" stroke-width="4.5" fill="none" opacity=".22"/><ellipse cx="73" cy="24" rx="22" ry="18" stroke="url(#wg-hdr3)" stroke-width="1.8" fill="none"/><ellipse cx="33" cy="24" rx="22" ry="18" stroke="url(#wg-hdr3)" stroke-width="1.8" fill="none"/></svg>`;
 
 function renderHeader() {
   const name = IDENTITY_NAMES[state.identityIdx];
@@ -908,14 +901,14 @@ function renderHeader() {
   document.getElementById('header').innerHTML = `
     <div style="display:flex;align-items:center;gap:9px;cursor:pointer" onclick="cycleIdentity()">
       ${WEAVE_LOGO_SVG}
-      <span style="font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:600;letter-spacing:-.3px;line-height:1">${name}</span>
+      <span style="font-family:'Sofia Sans',sans-serif;font-size:20px;font-weight:600;letter-spacing:-.3px;line-height:1">${name}</span>
       <span style="font-size:9px;font-family:'JetBrains Mono',monospace;color:${TOKENS.text3};border:1px solid ${TOKENS.border};border-radius:4px;padding:2px 5px;letter-spacing:.5px">BETA</span>
     </div>
     <div style="width:1px;height:24px;background:${TOKENS.border};flex:none"></div>
     <div style="font-size:13px;color:${TOKENS.text2}">Project / <span style="color:${TOKENS.text};font-weight:600">Axiom — Test Request Portal</span></div>
     <div style="margin:0 auto;display:flex;background:${TOKENS.surface2};border:1px solid ${TOKENS.border};border-radius:10px;padding:3px;gap:2px">
-      <button onclick="setView('canvas')" style="background:${isCanvas?TOKENS.brand:'transparent'};color:${isCanvas?TOKENS.bgCanvas:TOKENS.text2};border-radius:8px;border:none;padding:7px 15px;font-weight:600;font-size:13px;font-family:'Hanken Grotesk',sans-serif;cursor:pointer;transition:all .15s">Shared Canvas</button>
-      <button onclick="setView('workspace')" style="background:${isWork?TOKENS.brand:'transparent'};color:${isWork?TOKENS.bgCanvas:TOKENS.text2};border-radius:8px;border:none;padding:7px 15px;font-weight:600;font-size:13px;font-family:'Hanken Grotesk',sans-serif;cursor:pointer;transition:all .15s">Design Team</button>
+      <button onclick="setView('canvas')" style="background:${isCanvas?TOKENS.brand:'transparent'};color:${isCanvas?TOKENS.bgCanvas:TOKENS.text2};border-radius:8px;border:none;padding:7px 15px;font-weight:600;font-size:13px;font-family:'Sofia Sans',sans-serif;cursor:pointer;transition:all .15s">Shared Canvas</button>
+      <button onclick="setView('workspace')" style="background:${isWork?TOKENS.brand:'transparent'};color:${isWork?TOKENS.bgCanvas:TOKENS.text2};border-radius:8px;border:none;padding:7px 15px;font-weight:600;font-size:13px;font-family:'Sofia Sans',sans-serif;cursor:pointer;transition:all .15s">Design Team</button>
     </div>
     <button onclick="toggleTheme()" title="Toggle light/dark" style="width:32px;height:32px;border-radius:8px;background:${TOKENS.surface2};border:1px solid ${TOKENS.border};display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;color:${TOKENS.text2};transition:all .15s;margin-left:auto;flex:none" onmouseover="this.style.background='${TOKENS.border}'" onmouseout="this.style.background='${TOKENS.surface2}'">${isDark() ? '☀︎' : '◑'}</button>
     <div style="display:flex;align-items:center">
@@ -948,7 +941,7 @@ function renderCanvas() {
     <div style="padding:20px 28px 16px;display:flex;align-items:center;flex:none;border-bottom:1px solid ${TOKENS.border};background:${TOKENS.surface}">
       <div>
         <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.2px;color:${TOKENS.text3};margin-bottom:5px">SHARED PROJECT CANVAS</div>
-        <div style="font-family:'Space Grotesk',sans-serif;font-size:28px;line-height:1.1;color:${TOKENS.text}">All work in motion, in one governed view</div>
+        <div style="font-family:'Sofia Sans',sans-serif;font-size:28px;line-height:1.1;color:${TOKENS.text}">All work in motion, in one governed view</div>
       </div>
       <div style="margin-left:auto;display:flex;align-items:center;gap:7px">
         <span style="width:6px;height:6px;border-radius:50%;background:#2f5bea;flex:none"></span>
@@ -999,7 +992,7 @@ function renderCanvasCard(card) {
         <span style="font-size:11.5px;color:${TOKENS.text2}">${card.agent}</span>
         ${card.kind !== 'brief' ? `<button onclick="event.stopPropagation();openPrototype('${card.id}')" title="Preview prototype" style="margin-left:auto;width:26px;height:26px;display:flex;align-items:center;justify-content:center;border-radius:5px;border:1px solid ${TOKENS.border};background:${TOKENS.surface2};color:${TOKENS.text2};cursor:pointer;font-size:10px;transition:all .12s;flex:none" onmouseover="this.style.background='${TOKENS.brand}';this.style.color='${TOKENS.bgCanvas}';this.style.borderColor='${TOKENS.brand}'" onmouseout="this.style.background='${TOKENS.surface2}';this.style.color='${TOKENS.text2}';this.style.borderColor='${TOKENS.border}'">▶</button>` : ''}
         <button onclick="goToDesignView(event,'${card.id}')"
-          style="${card.kind === 'brief' ? 'margin-left:auto;' : ''}font-size:10.5px;font-weight:600;padding:4px 9px;border-radius:5px;border:1px solid ${TOKENS.border};background:${TOKENS.surface2};color:${TOKENS.text2};cursor:pointer;font-family:'Hanken Grotesk',sans-serif;transition:all .12s;white-space:nowrap"
+          style="${card.kind === 'brief' ? 'margin-left:auto;' : ''}font-size:10.5px;font-weight:600;padding:4px 9px;border-radius:5px;border:1px solid ${TOKENS.border};background:${TOKENS.surface2};color:${TOKENS.text2};cursor:pointer;font-family:'Sofia Sans',sans-serif;transition:all .12s;white-space:nowrap"
           onmouseover="this.style.background='${TOKENS.brand}';this.style.color='${TOKENS.bgCanvas}';this.style.borderColor='${TOKENS.brand}'"
           onmouseout="this.style.background='${TOKENS.surface2}';this.style.color='${TOKENS.text2}';this.style.borderColor='${TOKENS.border}'">Design View →</button>
       </div>
@@ -1064,7 +1057,7 @@ function renderPipelineRail() {
 
   html += `
     <div style="margin-top:auto;padding-top:20px">
-      <button onclick="resetFlow()" style="width:100%;border:1px solid ${TOKENS.border};background:${TOKENS.surface};color:${TOKENS.text2};border-radius:9px;padding:9px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Hanken Grotesk',sans-serif">↺ Reset flow</button>
+      <button onclick="resetFlow()" style="width:100%;border:1px solid ${TOKENS.border};background:${TOKENS.surface};color:${TOKENS.text2};border-radius:9px;padding:9px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Sofia Sans',sans-serif">↺ Reset flow</button>
     </div>
   `;
 
@@ -1095,7 +1088,7 @@ function stageEyebrow(ph) {
   const agentColor = p.agent ? AGENT_MAP[p.agent].color : '#2f5bea';
   return `
     <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1.5px;color:${agentColor};font-weight:600">${p.eyebrow}</div>
-    <div style="font-family:'Space Grotesk',sans-serif;font-size:33px;line-height:1.12;margin-top:6px;max-width:680px">${p.title}</div>
+    <div style="font-family:'Sofia Sans',sans-serif;font-size:33px;line-height:1.12;margin-top:6px;max-width:680px">${p.title}</div>
     <div style="font-size:14.5px;color:${TOKENS.text2};margin-top:10px;max-width:600px;line-height:1.55;margin-bottom:24px">${p.sub}</div>
   `;
 }
@@ -1396,7 +1389,7 @@ function stageContent(ph) {
         <div style="font-size:22px;margin-bottom:8px">🎉</div>
         <div style="font-size:16px;font-weight:700;margin-bottom:8px;color:${isDark()?'#4aad7a':'#1a4731'}">Promoted to the Shared Canvas</div>
         <div style="font-size:13.5px;line-height:1.55;color:${isDark()?'#4aad7a':'#2e6847'};margin-bottom:16px">Fully traceable from brief to approved — now visible to the whole team. Devon's session is unblocked.</div>
-        <button onclick="setView('canvas')" style="background:${TOKENS.green};color:#fff;border:none;border-radius:9px;padding:10px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Hanken Grotesk',sans-serif">View it on the canvas →</button>
+        <button onclick="setView('canvas')" style="background:${TOKENS.green};color:#fff;border:none;border-radius:9px;padding:10px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Sofia Sans',sans-serif">View it on the canvas →</button>
       </div>
     `;
   }
@@ -1413,8 +1406,8 @@ function renderStage() {
   const isGate = ph === 3 && !state.selectedDir;
   const btnDisabled = isGate || ph >= 7;
   const btnStyle = btnDisabled
-    ? `background:${TOKENS.border};color:${TOKENS.text3};cursor:not-allowed;border-radius:10px;padding:11px 20px;font-size:14px;font-weight:700;display:flex;align-items:center;gap:9px;border:none;font-family:'Hanken Grotesk',sans-serif`
-    : `background:${TOKENS.brand};color:${TOKENS.bgCanvas};border-radius:10px;padding:11px 20px;font-size:14px;font-weight:700;display:flex;align-items:center;gap:9px;border:none;cursor:pointer;font-family:'Hanken Grotesk',sans-serif;transition:opacity .15s`;
+    ? `background:${TOKENS.border};color:${TOKENS.text3};cursor:not-allowed;border-radius:10px;padding:11px 20px;font-size:14px;font-weight:700;display:flex;align-items:center;gap:9px;border:none;font-family:'Sofia Sans',sans-serif`
+    : `background:${TOKENS.brand};color:${TOKENS.bgCanvas};border-radius:10px;padding:11px 20px;font-size:14px;font-weight:700;display:flex;align-items:center;gap:9px;border:none;cursor:pointer;font-family:'Sofia Sans',sans-serif;transition:opacity .15s`;
 
   stage.innerHTML = `
     ${stageEyebrow(ph)}
@@ -1423,7 +1416,7 @@ function renderStage() {
     <div style="flex:none;display:flex;align-items:center;gap:14px;padding-top:18px;border-top:1px solid ${TOKENS.border};margin-top:20px">
       <button id="next-btn" onclick="advance()" ${btnDisabled?'disabled':''} style="${btnStyle}">${btnLabel} <span style="font-size:16px">→</span></button>
       <span style="font-size:12px;color:${TOKENS.text3}">Step through the flow — each handoff is a visible event in the feed.</span>
-      ${ph >= 4 ? `<button onclick="openPrototype()" style="margin-left:auto;display:flex;align-items:center;gap:6px;background:transparent;border:1px solid ${TOKENS.border};border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;color:${TOKENS.text2};cursor:pointer;font-family:'Hanken Grotesk',sans-serif;transition:all .12s;white-space:nowrap" onmouseover="this.style.background='${TOKENS.brand}';this.style.color='${TOKENS.bgCanvas}';this.style.borderColor='${TOKENS.brand}'" onmouseout="this.style.background='transparent';this.style.color='${TOKENS.text2}';this.style.borderColor='${TOKENS.border}'">▶ Preview prototype</button>` : ''}
+      ${ph >= 4 ? `<button onclick="openPrototype()" style="margin-left:auto;display:flex;align-items:center;gap:6px;background:transparent;border:1px solid ${TOKENS.border};border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;color:${TOKENS.text2};cursor:pointer;font-family:'Sofia Sans',sans-serif;transition:all .12s;white-space:nowrap" onmouseover="this.style.background='${TOKENS.brand}';this.style.color='${TOKENS.bgCanvas}';this.style.borderColor='${TOKENS.brand}'" onmouseout="this.style.background='transparent';this.style.color='${TOKENS.text2}';this.style.borderColor='${TOKENS.border}'">▶ Preview prototype</button>` : ''}
     </div>
     ` : ''}
   `;
@@ -1509,9 +1502,9 @@ function renderFeed() {
   const tabBar = `
     <div style="display:flex;align-items:center;border-bottom:1px solid ${TOKENS.border};margin:0 -16px 14px;padding:0 16px 0;flex:none">
       <button onclick="switchFeedTab('activity')"
-        style="padding:9px 12px 8px;font-size:12px;font-weight:600;border:none;background:transparent;cursor:pointer;font-family:'Hanken Grotesk',sans-serif;color:${isActivity ? TOKENS.text : TOKENS.text3};border-bottom:2px solid ${isActivity ? TOKENS.brand : 'transparent'};margin-bottom:-1px;transition:all .15s">Activity</button>
+        style="padding:9px 12px 8px;font-size:12px;font-weight:600;border:none;background:transparent;cursor:pointer;font-family:'Sofia Sans',sans-serif;color:${isActivity ? TOKENS.text : TOKENS.text3};border-bottom:2px solid ${isActivity ? TOKENS.brand : 'transparent'};margin-bottom:-1px;transition:all .15s">Activity</button>
       <button onclick="switchFeedTab('chat')"
-        style="padding:9px 12px 8px;font-size:12px;font-weight:600;border:none;background:transparent;cursor:pointer;font-family:'Hanken Grotesk',sans-serif;color:${!isActivity ? TOKENS.text : TOKENS.text3};border-bottom:2px solid ${!isActivity ? TOKENS.brand : 'transparent'};margin-bottom:-1px;transition:all .15s">AI Chat</button>
+        style="padding:9px 12px 8px;font-size:12px;font-weight:600;border:none;background:transparent;cursor:pointer;font-family:'Sofia Sans',sans-serif;color:${!isActivity ? TOKENS.text : TOKENS.text3};border-bottom:2px solid ${!isActivity ? TOKENS.brand : 'transparent'};margin-bottom:-1px;transition:all .15s">AI Chat</button>
       <button onclick="toggleFeed()" title="Close panel"
         style="margin-left:auto;width:24px;height:24px;border-radius:6px;background:transparent;border:1px solid ${TOKENS.border};color:${TOKENS.text3};font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;margin-bottom:1px">›</button>
     </div>`;
@@ -1547,11 +1540,11 @@ function renderFeed() {
         <div style="display:flex;gap:7px;align-items:flex-end">
           <textarea id="chat-input"
             placeholder="Direct the agent or ask a question…"
-            style="flex:1;padding:8px 10px;border-radius:8px;border:1px solid ${TOKENS.border};background:${TOKENS.surface};color:${TOKENS.text};font-family:'Hanken Grotesk',sans-serif;font-size:12.5px;line-height:1.45;resize:none;height:58px;outline:none"
+            style="flex:1;padding:8px 10px;border-radius:8px;border:1px solid ${TOKENS.border};background:${TOKENS.surface};color:${TOKENS.text};font-family:'Sofia Sans',sans-serif;font-size:12.5px;line-height:1.45;resize:none;height:58px;outline:none"
             onkeydown="if((event.metaKey||event.ctrlKey)&&event.key==='Enter'){sendChat()}"
           ></textarea>
           <button onclick="sendChat()"
-            style="padding:8px 13px;border-radius:8px;border:none;background:${TOKENS.brand};color:${TOKENS.bgCanvas};font-size:13px;font-weight:600;cursor:pointer;font-family:'Hanken Grotesk',sans-serif;white-space:nowrap;align-self:flex-end">↑ Send</button>
+            style="padding:8px 13px;border-radius:8px;border:none;background:${TOKENS.brand};color:${TOKENS.bgCanvas};font-size:13px;font-weight:600;cursor:pointer;font-family:'Sofia Sans',sans-serif;white-space:nowrap;align-self:flex-end">↑ Send</button>
         </div>
         <div style="font-size:10px;color:${TOKENS.text3};margin-top:5px">⌘ + Enter · directions are logged to the active agent</div>
       </div>
@@ -1663,20 +1656,20 @@ function renderDrawer() {
             </div>
             <button onclick="closeDetail()" style="background:transparent;border:1px solid ${TOKENS.border};border-radius:7px;padding:5px 10px;font-size:14px;color:${TOKENS.text2};cursor:pointer;flex:none">✕</button>
           </div>
-          <div style="font-family:'Space Grotesk',sans-serif;font-size:24px;line-height:1.25;margin-bottom:12px">${card.title}</div>
+          <div style="font-family:'Sofia Sans',sans-serif;font-size:24px;line-height:1.25;margin-bottom:12px">${card.title}</div>
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
             <div style="width:20px;height:20px;border-radius:5px;background:${card.agentColor};display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:#fff;flex:none">${card.agentShort}</div>
             <span style="font-size:12.5px;color:${TOKENS.text2}">Owned by ${card.agent}</span>
           </div>
           <button onclick="goToDesignView(null,'${card.id}')"
-            style="width:100%;padding:10px 16px;border-radius:9px;border:none;background:${TOKENS.brand};color:${TOKENS.bgCanvas};font-size:13px;font-weight:700;cursor:pointer;font-family:'Hanken Grotesk',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;transition:opacity .15s"
+            style="width:100%;padding:10px 16px;border-radius:9px;border:none;background:${TOKENS.brand};color:${TOKENS.bgCanvas};font-size:13px;font-weight:700;cursor:pointer;font-family:'Sofia Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;transition:opacity .15s"
             onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
             Open Design View
             <span style="font-size:16px">→</span>
           </button>
           ${card.kind !== 'brief' ? `
           <button onclick="closeDetail();openPrototype('${card.id}')"
-            style="width:100%;margin-top:8px;padding:9px 16px;border-radius:9px;border:1px solid ${TOKENS.border};background:transparent;color:${TOKENS.text2};font-size:13px;font-weight:600;cursor:pointer;font-family:'Hanken Grotesk',sans-serif;display:flex;align-items:center;justify-content:center;gap:7px;transition:all .15s"
+            style="width:100%;margin-top:8px;padding:9px 16px;border-radius:9px;border:1px solid ${TOKENS.border};background:transparent;color:${TOKENS.text2};font-size:13px;font-weight:600;cursor:pointer;font-family:'Sofia Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:7px;transition:all .15s"
             onmouseover="this.style.background='${TOKENS.surface2}'" onmouseout="this.style.background='transparent'">
             ▶ Preview prototype
           </button>
@@ -1877,8 +1870,8 @@ function renderPrototype() {
 
   const pageFooter = `
     <div style="padding:12px 24px;border-top:1px solid ${T.border};display:flex;align-items:center;gap:10px;flex:none;background:${T.surface}">
-      <button onclick="protoPrev()" ${s===0?'disabled':''} style="padding:9px 18px;border-radius:8px;border:1.5px solid ${T.border};background:transparent;color:${s===0?T.text3:T.text};font-size:12.5px;font-weight:600;cursor:${s===0?'default':'pointer'};font-family:'Hanken Grotesk',sans-serif;opacity:${s===0?.4:1}">← Back</button>
-      <button onclick="${s<2?'protoNext()':'closePrototype()'}" style="padding:9px 20px;border-radius:8px;border:none;background:${isWire?T.brand:acc};color:#fff;font-size:12.5px;font-weight:700;cursor:pointer;font-family:'Hanken Grotesk',sans-serif">
+      <button onclick="protoPrev()" ${s===0?'disabled':''} style="padding:9px 18px;border-radius:8px;border:1.5px solid ${T.border};background:transparent;color:${s===0?T.text3:T.text};font-size:12.5px;font-weight:600;cursor:${s===0?'default':'pointer'};font-family:'Sofia Sans',sans-serif;opacity:${s===0?.4:1}">← Back</button>
+      <button onclick="${s<2?'protoNext()':'closePrototype()'}" style="padding:9px 20px;border-radius:8px;border:none;background:${isWire?T.brand:acc};color:#fff;font-size:12.5px;font-weight:700;cursor:pointer;font-family:'Sofia Sans',sans-serif">
         ${s<2?'Continue →':'Submit Test Request →'}
       </button>
       <span style="font-size:11px;color:${T.text3}">${s<2?'Progress is auto-saved':''}</span>
@@ -1887,7 +1880,7 @@ function renderPrototype() {
   root.innerHTML = `
     <div onclick="if(event.target===this)closePrototype()" style="position:fixed;inset:0;z-index:200;display:flex;flex-direction:column;background:rgba(8,8,16,.82);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)">
       <div style="height:50px;background:#0C0C18;display:flex;align-items:center;padding:0 16px;gap:12px;flex:none;border-bottom:1px solid rgba(255,255,255,.07)">
-        <button onclick="closePrototype()" style="display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:7px;padding:5px 11px;color:rgba(255,255,255,.8);font-size:12px;font-weight:600;cursor:pointer;font-family:'Hanken Grotesk',sans-serif" onmouseover="this.style.background='rgba(255,255,255,.14)'" onmouseout="this.style.background='rgba(255,255,255,.08)'">✕ Close</button>
+        <button onclick="closePrototype()" style="display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:7px;padding:5px 11px;color:rgba(255,255,255,.8);font-size:12px;font-weight:600;cursor:pointer;font-family:'Sofia Sans',sans-serif" onmouseover="this.style.background='rgba(255,255,255,.14)'" onmouseout="this.style.background='rgba(255,255,255,.08)'">✕ Close</button>
         <div style="width:1px;height:18px;background:rgba(255,255,255,.1)"></div>
         <div style="font-size:13px;font-weight:600;color:rgba(255,255,255,.88)">Axiom Test Request Portal <span style="color:rgba(255,255,255,.35)">·</span> <span style="color:rgba(255,255,255,.55);font-size:12px;font-weight:400">${fLabel}</span></div>
         <span style="font-size:11px;color:rgba(255,255,255,.28)">—</span>
@@ -1897,7 +1890,7 @@ function renderPrototype() {
           <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,.38);min-width:28px;text-align:center">${s+1}/3</span>
           <button onclick="protoNext()" ${s===2?'disabled':''} style="width:28px;height:28px;border-radius:7px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:rgba(255,255,255,${s===2?.2:.8});cursor:${s===2?'default':'pointer'};font-size:14px;display:flex;align-items:center;justify-content:center;font-family:sans-serif">›</button>
           <div style="width:1px;height:18px;background:rgba(255,255,255,.1);margin:0 4px"></div>
-          <button id="proto-copy-btn" onclick="navigator.clipboard.writeText('axiom.internal/qa/prototype/${isWire?'wireframe':'hifi-v'+(ctx.version||2)}').then(()=>{const b=document.getElementById('proto-copy-btn');b.textContent='Copied!';setTimeout(()=>b.textContent='🔗 Copy link',1600)})" style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:7px;padding:5px 11px;color:rgba(255,255,255,.6);font-size:11px;font-weight:600;cursor:pointer;font-family:'Hanken Grotesk',sans-serif">🔗 Copy link</button>
+          <button id="proto-copy-btn" onclick="navigator.clipboard.writeText('axiom.internal/qa/prototype/${isWire?'wireframe':'hifi-v'+(ctx.version||2)}').then(()=>{const b=document.getElementById('proto-copy-btn');b.textContent='Copied!';setTimeout(()=>b.textContent='🔗 Copy link',1600)})" style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:7px;padding:5px 11px;color:rgba(255,255,255,.6);font-size:11px;font-weight:600;cursor:pointer;font-family:'Sofia Sans',sans-serif">🔗 Copy link</button>
         </div>
       </div>
       <div style="flex:1;display:flex;align-items:center;justify-content:center;padding:20px 24px">
@@ -1907,7 +1900,7 @@ function renderPrototype() {
           <div style="flex:1;overflow-y:auto;display:flex;flex-direction:column">
             <div style="padding:16px 24px 0;flex:none">
               <div style="font-size:11px;color:${T.text3};margin-bottom:4px">Test Requests <span>›</span> <span style="color:${T.text2};font-weight:600">New Request</span></div>
-              <div style="font-size:20px;font-weight:700;color:${T.text};font-family:'Space Grotesk',sans-serif">New Test Request</div>
+              <div style="font-size:20px;font-weight:700;color:${T.text};font-family:'Sofia Sans',sans-serif">New Test Request</div>
             </div>
             <div style="padding:18px 24px;flex:1">
               ${renderProtoPageContent(s, ctx.tone, isWire)}
