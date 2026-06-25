@@ -4,50 +4,52 @@ import Footer from '../components/Footer'
 const STEPS = [
   {
     num: '01',
-    title: 'Brief Ingestion',
-    short: 'A structured brief enters Chorus from any team.',
-    desc: 'A team member submits a brief — a product feature, design direction, or technical spec. Chorus ingests it, structures it into machine-readable intent, and queues it for routing. No more briefs lost in Slack.',
-    agents: ['Brief Parser Agent', 'Context Enricher', 'Priority Router'],
+    title: 'A thread enters the model',
+    short: 'A customer insight or brief enters Weave.',
+    desc: 'A team member submits a brief — a customer insight, a product opportunity, a design direction. Weave ingests it, structures it into the living product model, and connects it to everything already known about the problem. No more context lost in Slack. No more briefs that arrive without history.',
+    agents: ['Intentor', 'Scout'],
     color: '#7F77DD',
   },
   {
     num: '02',
-    title: 'Executive Agent Routing',
-    short: 'The right Executive Agent picks up the work.',
-    desc: 'The Executive Creative Director, Executive PM, or Executive Developer agent evaluates the brief and accepts ownership. They decompose the work into discrete tasks and spin up the appropriate sub-agents for execution.',
-    agents: ['ECD Agent', 'EPM Agent', 'EDev Agent', 'Task Decomposer'],
+    title: 'The right agents pick up the work',
+    short: 'The right Executive Agent accepts ownership.',
+    desc: 'The Executive Creative Director, Executive PM, or Executive Developer agent evaluates the brief and accepts ownership. They decompose the work into discrete threads and activate the appropriate SAGE specialist agents — each one preserving context as it executes, not discarding it.',
+    agents: ['ECD Agent', 'EPM Agent', 'EDev Agent'],
     color: '#1D9E75',
   },
   {
     num: '03',
-    title: 'Sub-Agent Execution',
-    short: 'Specialist agents execute the work in parallel.',
-    desc: 'Sub-agents tackle their assigned tasks — Wireframe agents sketch layouts, Requirements agents draft acceptance criteria, Scaffold agents generate code structures. All work surfaces on the shared canvas.',
-    agents: ['Wireframe Agent', 'Visual Agent', 'Requirements Agent', 'Scaffold Agent', 'Copy Agent'],
+    title: 'Specialists execute — in parallel or sequence',
+    short: 'SAGE agents weave their threads into the model.',
+    desc: 'SAGE agents weave their threads into the model. Intentor structures design intent. Scout researches the competitive landscape. Echo generates behavioral personas. Sketch wireframes the flows. Every output lands on the shared canvas in real time — connected to the insight that caused it.',
+    agents: ['Intentor', 'Scout', 'Echo', 'Mapper', 'Composer', 'Sketch'],
     color: '#378ADD',
   },
   {
     num: '04',
-    title: 'Human Gate Review',
+    title: 'A human reviews before anything moves',
     short: 'Named humans review and approve at defined gates.',
-    desc: 'Before any output promotes to the next stage, a named human reviewer is notified. Maya reviews design output, Jordan reviews product specs, Alex reviews code. Each gate is logged, timestamped, and auditable.',
-    agents: ['Maya (Design Lead)', 'Jordan (PM)', 'Alex (Dev Lead)', 'Gate Notifier'],
+    desc: "Before any output promotes to the next stage, a named human reviewer is notified. They review the agent's work in full context — connected to the brief, the persona, the research, the decision history — and approve, reject, or redirect. Every gate is logged, timestamped, and auditable.",
+    agents: [],
     color: '#EF9F27',
+    humanGate: true,
   },
   {
     num: '05',
-    title: 'Cross-Team Sync',
-    short: 'Approved outputs sync across all three disciplines.',
-    desc: 'Once a human approves, Chorus automatically syncs the output to all affected teams. Design tokens flow to Dev. Approved specs land in Design. No more hand-off meetings. No more context lost between tools.',
-    agents: ['Sync Coordinator', 'Conflict Resolver', 'Notification Agent'],
+    title: 'Approved outputs strengthen the model',
+    short: 'Weave updates the living product model automatically.',
+    desc: 'Once a human approves, Weave updates the living product model. Design decisions connect to the research that informed them. Personas update across all connected flows. Requirements link back to the customer problems they solve. The thread is preserved. Nothing is lost.',
+    agents: [],
     color: '#7F77DD',
+    syncLayer: true,
   },
   {
     num: '06',
-    title: 'Promotion & Deploy',
-    short: 'Chris (Exec) signs off. Work ships.',
-    desc: 'The final gate belongs to the Executive stakeholder. Chris reviews the assembled output — design, requirements, and code aligned — and approves promotion. The work deploys with a full audit trail attached.',
-    agents: ['Chris (Exec)', 'Audit Logger', 'Deploy Trigger', 'Notification Agent'],
+    title: 'Sprint-ready. Every thread traceable.',
+    short: 'Executive stakeholder signs off. Work ships.',
+    desc: 'The final gate belongs to the executive stakeholder. They review the assembled output — design, requirements, and implementation notes aligned — and approve promotion. Sprinto bundles everything into prioritized sprint stories. Every ticket traces back to the customer insight that started the thread.',
+    agents: ['Sprinto', 'Builder'],
     color: '#1D9E75',
   },
 ]
@@ -55,26 +57,21 @@ const STEPS = [
 const ARCHS = [
   {
     title: 'Sequential Pipeline',
-    desc: 'Agents fire one after another. Output of each step feeds the next.',
+    desc: "Agents fire one after another, each output becoming the next agent's input. The thread builds continuously — no context dropped between steps.",
     svg: (
       <svg width="80" height="48" viewBox="0 0 80 48">
         {[0,1,2].map(i => (
           <g key={i}>
             <circle cx={12 + i * 28} cy="24" r="10" fill="none" stroke="var(--purple)" strokeWidth="1.5" opacity="0.7"/>
-            {i < 2 && <path d={`M${22 + i*28} 24 L${34 + i*28} 24`} stroke="var(--border-hover)" strokeWidth="1.5" markerEnd="url(#arr)"/>}
+            {i < 2 && <path d={`M${22 + i*28} 24 L${34 + i*28} 24`} stroke="var(--border-hover)" strokeWidth="1.5"/>}
           </g>
         ))}
-        <defs>
-          <marker id="arr" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
-            <path d="M0,0 L6,3 L0,6 Z" fill="var(--border-hover)"/>
-          </marker>
-        </defs>
       </svg>
     ),
   },
   {
     title: 'Parallel Execution',
-    desc: 'Multiple agents run simultaneously on different tasks.',
+    desc: 'Multiple agents run simultaneously on different aspects of the same problem. All threads converge back into the living product model.',
     svg: (
       <svg width="80" height="48" viewBox="0 0 80 48">
         <circle cx="12" cy="24" r="10" fill="none" stroke="var(--teal)" strokeWidth="1.5" opacity="0.7"/>
@@ -89,7 +86,7 @@ const ARCHS = [
   },
   {
     title: 'Router Agent',
-    desc: 'A central agent directs work to the right specialist.',
+    desc: 'A central agent evaluates the brief and directs each thread to the right specialist. Work always reaches the agent best equipped to handle it.',
     svg: (
       <svg width="80" height="48" viewBox="0 0 80 48">
         <circle cx="40" cy="24" r="10" fill="none" stroke="var(--blue)" strokeWidth="1.8" opacity="0.8"/>
@@ -106,13 +103,12 @@ const ARCHS = [
   },
   {
     title: 'Human-in-Loop Gates',
-    desc: 'Agents pause for human review at defined checkpoints.',
+    desc: 'Agents pause at defined checkpoints for human review. The most important decisions remain human. AI ensures those decisions are informed by complete context.',
     svg: (
       <svg width="80" height="48" viewBox="0 0 80 48">
         <circle cx="12" cy="24" r="9" fill="none" stroke="var(--purple)" strokeWidth="1.5" opacity="0.7"/>
         <path d="M21 24 L32 24" stroke="var(--border-hover)" strokeWidth="1.5"/>
         <rect x="32" y="14" width="20" height="20" rx="4" fill="none" stroke="var(--amber)" strokeWidth="1.8"/>
-        <path d="M42 24" stroke="var(--amber)" strokeWidth="2" strokeLinecap="round"/>
         <circle cx="42" cy="22" r="2" fill="var(--amber)" opacity="0.8"/>
         <path d="M52 24 L62 24" stroke="var(--border-hover)" strokeWidth="1.5"/>
         <circle cx="70" cy="24" r="9" fill="none" stroke="var(--teal)" strokeWidth="1.5" opacity="0.7"/>
@@ -121,7 +117,7 @@ const ARCHS = [
   },
   {
     title: 'Dynamic Sub-Agents',
-    desc: 'Agents spawn child agents based on work discovered at runtime.',
+    desc: 'Agents spawn specialist child agents based on work discovered at runtime. The system adapts to the complexity of the problem, not the other way around.',
     svg: (
       <svg width="80" height="48" viewBox="0 0 80 48">
         <circle cx="16" cy="24" r="10" fill="none" stroke="var(--blue)" strokeWidth="1.8" opacity="0.8"/>
@@ -151,9 +147,9 @@ export default function HowItWorks() {
       <section className="page-hero">
         <div className="container">
           <p className="section-label">Process</p>
-          <h1 className="section-title">From Brief to Approved<br />in Six Steps</h1>
+          <h1 className="section-title">From first insight to sprint-ready.<br />Nothing lost in between.</h1>
           <p className="section-sub mx-auto">
-            Every project follows the same governed pipeline. Agents do the work, humans approve at gates, and nothing ships without a signature.
+            Every project follows the same governed pipeline. SAGE agents do the work. Humans approve at gates. The living product model stays current for everyone.
           </p>
         </div>
       </section>
@@ -161,7 +157,6 @@ export default function HowItWorks() {
       <section className="section" style={{ paddingTop: 0 }}>
         <div className="container">
           <div className="hiw-layout">
-            {/* Step list */}
             <div className="step-list">
               {STEPS.map((s, i) => (
                 <button
@@ -179,29 +174,52 @@ export default function HowItWorks() {
               ))}
             </div>
 
-            {/* Detail panel */}
             <div className="step-detail">
               <div className="step-detail-num" style={{ color: `${step.color}20` }}>{step.num}</div>
               <h2 style={{ color: step.color }}>{step.title}</h2>
               <p>{step.desc}</p>
-              <p style={{ fontSize: 13, color: 'var(--text-3)', marginBottom: 12, marginTop: -20 }}>Agents involved</p>
-              <div className="step-agents">
-                {step.agents.map(a => (
-                  <span key={a} className="agent-tag">{a}</span>
-                ))}
-              </div>
+              {step.agents.length > 0 && (
+                <>
+                  <p style={{ fontSize: 13, color: 'var(--text-3)', marginBottom: 12, marginTop: -20 }}>Agents involved</p>
+                  <div className="step-agents">
+                    {step.agents.map(a => (
+                      <span key={a} className="agent-tag">{a}</span>
+                    ))}
+                  </div>
+                </>
+              )}
+              {step.humanGate && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 8 }}>
+                  <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'rgba(239,159,39,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#EF9F27" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+                    </svg>
+                  </div>
+                  <span style={{ fontSize: 14, color: '#EF9F27' }}>Human gate — no agents pass this point without approval</span>
+                </div>
+              )}
+              {step.syncLayer && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 8 }}>
+                  <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'rgba(127,119,221,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7F77DD" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/>
+                      <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+                    </svg>
+                  </div>
+                  <span style={{ fontSize: 14, color: 'var(--purple)' }}>Sync layer — the living product model updates automatically</span>
+                </div>
+              )}
             </div>
           </div>
         </div>
       </section>
 
-      {/* Agent Architectures */}
       <section className="section" style={{ borderTop: '1px solid var(--border)' }}>
         <div className="container">
           <p className="section-label">Architecture Patterns</p>
-          <h2 className="section-title">Five Agent Architectures</h2>
+          <h2 className="section-title">How Weave Orchestrates Intelligence</h2>
           <p className="section-sub" style={{ marginBottom: 48 }}>
-            Chorus orchestrates agents using proven patterns from multi-agent systems research, adapted for enterprise workflows.
+            Weave supports five orchestration patterns — applied automatically based on the work type. The system chooses the right pattern. Teams never have to.
           </p>
           <div className="arch-grid">
             {ARCHS.map((a, i) => (

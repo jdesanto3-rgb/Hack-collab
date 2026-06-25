@@ -22,7 +22,7 @@ const FEATURES = [
       </svg>
     ),
     title: 'Live Canvas Access',
-    desc: 'You\'ll get access to a live Chorus canvas with sample projects loaded — Design, Product, and Dev tracks running in parallel.',
+    desc: 'You\'ll get access to a live Weave canvas with sample projects loaded — Design, Product, and Dev tracks running in parallel.',
   },
   {
     color: '#1D9E75',
@@ -33,7 +33,7 @@ const FEATURES = [
       </svg>
     ),
     title: 'Agent Walkthrough',
-    desc: 'A Chorus team member will walk you through the ECD, EPM, and EDev agents — live, on a real brief, with real output.',
+    desc: 'A Weave team member will walk you through the ECD, EPM, and EDev agents — live, on a real brief, with real output.',
   },
   {
     color: '#378ADD',
@@ -49,7 +49,7 @@ const FEATURES = [
 ]
 
 const EXPECT = [
-  'A 30-minute structured demo call with a Chorus team member',
+  'A 30-minute structured demo call with a Weave team member',
   'Access to a sandbox environment to explore the canvas',
   'A follow-up with pricing and rollout options',
   'An intro to our implementation support team',
@@ -87,9 +87,9 @@ export default function Demo() {
       <section className="page-hero">
         <div className="container">
           <p className="section-label">Early Access</p>
-          <h1 className="section-title">See Chorus in Action</h1>
+          <h1 className="section-title">See Weave in Action</h1>
           <p className="section-sub mx-auto">
-            We're onboarding select teams now. Request a demo and we'll show you the full Chorus canvas — agents running, gates firing, output surfacing.
+            We're onboarding select teams now. Request a demo and we'll show you the full Weave canvas — agents running, gates firing, output surfacing.
           </p>
         </div>
       </section>

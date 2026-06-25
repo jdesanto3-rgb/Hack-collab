@@ -6,7 +6,7 @@ import Home from './pages/Home'
 import HowItWorks from './pages/HowItWorks'
 import TheSystem from './pages/TheSystem'
 import Agents from './pages/Agents'
-import WhyChorus from './pages/WhyChorus'
+import WhyWeave from './pages/WhyWeave'
 import Demo from './pages/Demo'
 
 function ScrollToTop() {
@@ -26,7 +26,7 @@ function AppRoutes() {
           <Route path="/how-it-works" element={<HowItWorks />} />
           <Route path="/the-system" element={<TheSystem />} />
           <Route path="/agents" element={<Agents />} />
-          <Route path="/why-chorus" element={<WhyChorus />} />
+          <Route path="/why-chorus" element={<WhyWeave />} />
           <Route path="/demo" element={<Demo />} />
         </Routes>
       </main>

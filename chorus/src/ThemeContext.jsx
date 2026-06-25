@@ -6,13 +6,13 @@ export function ThemeProvider({ children }) {
   const [theme, setTheme] = useState('obsidian')
 
   useEffect(() => {
-    const saved = localStorage.getItem('chorus-theme') || 'obsidian'
+    const saved = localStorage.getItem('weave-theme') || 'obsidian'
     setTheme(saved)
   }, [])
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme === 'obsidian' ? '' : theme)
-    localStorage.setItem('chorus-theme', theme)
+    localStorage.setItem('weave-theme', theme)
   }, [theme])
 
   return (

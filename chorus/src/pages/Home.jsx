@@ -31,28 +31,24 @@ function OrbitalCanvas() {
       const cx = w / 2, cy = w / 2
       ctx.clearRect(0, 0, w, w)
 
-      // Background subtle gradient
       const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, w * 0.5)
       grad.addColorStop(0, 'rgba(127,119,221,0.06)')
       grad.addColorStop(1, 'rgba(0,0,0,0)')
       ctx.fillStyle = grad
       ctx.fillRect(0, 0, w, w)
 
-      // Orbit ring
       ctx.beginPath()
       ctx.arc(cx, cy, w * 0.32, 0, Math.PI * 2)
       ctx.strokeStyle = 'rgba(255,255,255,0.06)'
       ctx.lineWidth = 1
       ctx.stroke()
 
-      // Outer orbit ring
       ctx.beginPath()
       ctx.arc(cx, cy, w * 0.44, 0, Math.PI * 2)
       ctx.strokeStyle = 'rgba(255,255,255,0.03)'
       ctx.lineWidth = 1
       ctx.stroke()
 
-      // Center node
       const centerPulse = 1 + Math.sin(t * 0.04) * 0.05
       const centerR = w * 0.075 * centerPulse
       const centerGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, centerR)
@@ -64,28 +60,24 @@ function OrbitalCanvas() {
       ctx.fillStyle = centerGrad
       ctx.fill()
 
-      // Center glow ring
       ctx.beginPath()
       ctx.arc(cx, cy, w * 0.068, 0, Math.PI * 2)
       ctx.strokeStyle = 'rgba(127,119,221,0.4)'
       ctx.lineWidth = 1.5
       ctx.stroke()
 
-      // Center label
       ctx.fillStyle = 'rgba(255,255,255,0.95)'
       ctx.font = `600 ${w * 0.028}px Syne, sans-serif`
       ctx.textAlign = 'center'
       ctx.textBaseline = 'middle'
-      ctx.fillText('Chorus', cx, cy)
+      ctx.fillText('Weave', cx, cy)
 
-      // Orbiting nodes
       nodes.forEach((node, i) => {
         const speed = 0.008 + i * 0.001
         const a = node.angle + t * speed
         const nx = cx + Math.cos(a) * w * node.radius
         const ny = cy + Math.sin(a) * w * node.radius
 
-        // Connection line
         const linePulse = 0.3 + Math.sin(t * 0.05 + i * 2) * 0.15
         ctx.beginPath()
         ctx.moveTo(cx, cy)
@@ -94,7 +86,6 @@ function OrbitalCanvas() {
         ctx.lineWidth = 1.5
         ctx.stroke()
 
-        // Node glow
         const nodeR = w * node.size
         const ng = ctx.createRadialGradient(nx, ny, 0, nx, ny, nodeR * 1.6)
         ng.addColorStop(0, `${node.color}44`)
@@ -104,21 +95,18 @@ function OrbitalCanvas() {
         ctx.fillStyle = ng
         ctx.fill()
 
-        // Node circle
         const pulse = 1 + Math.sin(t * 0.06 + i * 1.5) * 0.08
         ctx.beginPath()
         ctx.arc(nx, ny, nodeR * pulse, 0, Math.PI * 2)
         ctx.fillStyle = node.color
         ctx.fill()
 
-        // Node label
         ctx.fillStyle = 'rgba(255,255,255,0.9)'
         ctx.font = `600 ${w * 0.024}px Inter, sans-serif`
         ctx.textAlign = 'center'
         ctx.textBaseline = 'middle'
         ctx.fillText(node.label, nx, ny)
 
-        // Particle on orbit
         const pa = a + Math.PI * 0.3
         const px = cx + Math.cos(pa) * w * node.radius
         const py = cy + Math.sin(pa) * w * node.radius
@@ -141,7 +129,7 @@ function OrbitalCanvas() {
 
   return (
     <div className="hero-canvas-wrap">
-      <canvas ref={canvasRef} className="hero-canvas" aria-label="Chorus orbital diagram showing Design, Product, and Dev teams orbiting a central hub" />
+      <canvas ref={canvasRef} className="hero-canvas" aria-label="Weave canvas showing Design, Product, and Dev teams orbiting a central shared workspace" />
     </div>
   )
 }
@@ -150,44 +138,44 @@ const PROBLEMS = [
   {
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="3" y="11" width="18" height="11" rx="2"/>
-        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
       </svg>
     ),
     color: '#7F77DD',
     bg: 'rgba(127,119,221,0.12)',
-    title: 'AI is a Black Box',
-    body: 'Teams run agents in isolation. No one knows what ran, what failed, or what shipped. Decisions get made without context.',
+    title: 'Context gets lost at every handoff',
+    body: 'Every tool your team uses optimizes for output — screens, tickets, answers. None of them preserve the reasoning behind the output. Every handoff is a lossy compression of context.',
   },
   {
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>
+        <polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/>
+        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
       </svg>
     ),
     color: '#EF9F27',
     bg: 'rgba(239,159,39,0.12)',
-    title: 'Work is Fragmented',
-    body: 'Design is in Figma, requirements are in Notion, code is in GitHub. No single surface shows where the work actually stands.',
+    title: 'Teams manually resync instead of build',
+    body: "Every time something changes — a user insight, a business pivot, a failed experiment — the whole team stops to manually rebuild shared understanding from scratch. That's not collaboration. That's coordination tax.",
   },
   {
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
       </svg>
     ),
     color: '#378ADD',
     bg: 'rgba(55,138,221,0.12)',
-    title: 'No Governance',
-    body: 'When agents produce output, who approves? Who audits? There are no structured gates between agent work and production.',
+    title: 'AI makes the problem worse, not better',
+    body: 'Agents running in isolation produce outputs no one can trace back to a decision. Without the thread connecting insight to execution, AI accelerates the fragmentation instead of resolving it.',
   },
 ]
 
 const STATS = [
-  { value: '80%', label: 'Effort Reduction', color: '#7F77DD' },
-  { value: '3×', label: 'Faster Delivery', color: '#1D9E75' },
-  { value: '100%', label: 'Visibility', color: '#378ADD' },
-  { value: '0', label: 'Governance Gaps', color: '#EF9F27' },
+  { value: '80%', label: 'Reduction in context lost between handoffs', color: '#7F77DD' },
+  { value: '3×', label: 'Faster from customer insight to sprint-ready output', color: '#1D9E75' },
+  { value: '100%', label: 'Shared visibility across every team and agent', color: '#378ADD' },
+  { value: '0', label: 'Decisions disconnected from the customer problem that caused them', color: '#EF9F27' },
 ]
 
 const PILLARS = [
@@ -200,24 +188,22 @@ const PILLARS = [
     ),
     color: '#7F77DD',
     bg: 'rgba(127,119,221,0.12)',
-    title: 'The Canvas',
-    body: 'A shared workspace where every agent action, human decision, and approval is visible to Design, Product, and Dev in real time.',
+    title: 'The Living Model',
+    body: 'A shared workspace where every agent action, human decision, and approval is visible to Design, Product, and Dev in real time — around one living product model. Every artifact stays connected to the insight that caused it.',
   },
   {
     icon: (
       <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="12" cy="12" r="3"/>
-        <circle cx="12" cy="3" r="1.5"/>
-        <circle cx="12" cy="21" r="1.5"/>
-        <circle cx="3" cy="12" r="1.5"/>
-        <circle cx="21" cy="12" r="1.5"/>
+        <circle cx="12" cy="3" r="1.5"/><circle cx="12" cy="21" r="1.5"/>
+        <circle cx="3" cy="12" r="1.5"/><circle cx="21" cy="12" r="1.5"/>
         <path d="M12 6v3M12 15v3M6 12h3M15 12h3"/>
       </svg>
     ),
     color: '#1D9E75',
     bg: 'rgba(29,158,117,0.12)',
     title: 'Executive Agents',
-    body: 'Three governing agents — ECD, EPM, EDev — orchestrate sub-agents per discipline, enforce quality standards, and gate approvals.',
+    body: 'Three governing agents — ECD, EPM, EDev — orchestrate SAGE specialist agents, enforce quality standards, and gate approvals. Agents execute. Humans approve. The thread is always preserved.',
   },
   {
     icon: (
@@ -228,32 +214,28 @@ const PILLARS = [
     color: '#378ADD',
     bg: 'rgba(55,138,221,0.12)',
     title: 'Staged Workflow',
-    body: 'Nothing promotes without a gate. Brief → Execute → Review → Approve → Ship. Human judgment at every critical junction.',
+    body: 'Nothing promotes without a gate. Brief → Execute → Review → Approve → Ship. Human judgment at every critical junction, with a full audit trail and complete traceability attached.',
   },
 ]
 
 export default function Home() {
   return (
     <>
-      {/* HERO */}
       <section className="hero">
         <div className="container">
           <div className="hero-grid">
             <div className="animate-fade-up">
               <div className="hero-badge">
                 <span className="badge badge-purple">
-                  <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
-                    <circle cx="6" cy="6" r="4"/>
-                  </svg>
-                  The Shared Agentic Canvas
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><circle cx="6" cy="6" r="4"/></svg>
+                  Introducing Weave
                 </span>
               </div>
               <h1 className="hero-title">
-                AI Work,<br />
-                <span className="accent-purple">Finally Visible</span>
+                The workplace where your team and your AI <span className="accent-purple">never lose the thread.</span>
               </h1>
               <p className="hero-sub">
-                Chorus gives Design, Product, and Dev a single canvas where agents execute, humans approve, and nothing ships without governance.
+                Weave is the living product model where humans and AI agents collaborate around every customer insight, design decision, and line of code — so nothing is ever disconnected, and every decision is smarter than the last.
               </p>
               <div className="hero-actions">
                 <Link to="/demo" className="btn btn-primary btn-lg">Request Early Access</Link>
@@ -276,16 +258,14 @@ export default function Home() {
       <section className="section">
         <div className="container">
           <p className="section-label">The Problem</p>
-          <h2 className="section-title" style={{ maxWidth: 520 }}>AI work today is invisible and ungoverned</h2>
+          <h2 className="section-title" style={{ maxWidth: 560 }}>Your tools fragment the work. And the thinking behind it.</h2>
           <p className="section-sub" style={{ marginBottom: 48 }}>
-            Every team is using AI. No team is using it together. The result is fragmented work, missed context, and zero accountability.
+            A customer insight becomes a meeting note. A decision disappears in Slack. Research never reaches engineering. Design rationale gets buried in Figma. By launch, no one remembers why the product was built that way.
           </p>
           <div className="problem-grid">
             {PROBLEMS.map((p, i) => (
               <div key={i} className="problem-card animate-fade-up" style={{ animationDelay: `${i * 0.1}s` }}>
-                <div className="problem-icon" style={{ background: p.bg, color: p.color }}>
-                  {p.icon}
-                </div>
+                <div className="problem-icon" style={{ background: p.bg, color: p.color }}>{p.icon}</div>
                 <h3>{p.title}</h3>
                 <p>{p.body}</p>
               </div>
@@ -311,17 +291,15 @@ export default function Home() {
       {/* PILLARS */}
       <section className="section">
         <div className="container">
-          <p className="section-label">How Chorus Works</p>
-          <h2 className="section-title">Three pillars. One canvas.</h2>
+          <p className="section-label">How Weave Works</p>
+          <h2 className="section-title">One living model. Every thread connected.</h2>
           <p className="section-sub" style={{ marginBottom: 48 }}>
-            Chorus isn't another AI tool. It's the governance layer that makes AI work safe for enterprise teams.
+            Weave isn't a project board, a chat interface, or another AI copilot. It's the continuous product intelligence platform where your PM, designer, researcher, engineer, and a team of specialized AI agents all work from the same living model — so every decision stays connected to the customer need that caused it.
           </p>
           <div className="pillars-grid">
             {PILLARS.map((p, i) => (
               <div key={i} className="pillar-card">
-                <div className="pillar-icon" style={{ background: p.bg, color: p.color }}>
-                  {p.icon}
-                </div>
+                <div className="pillar-icon" style={{ background: p.bg, color: p.color }}>{p.icon}</div>
                 <h3>{p.title}</h3>
                 <p>{p.body}</p>
               </div>
@@ -335,7 +313,7 @@ export default function Home() {
         <div className="container" style={{ textAlign: 'center' }}>
           <h2 className="section-title" style={{ marginBottom: 16 }}>Ready to see it in action?</h2>
           <p className="section-sub mx-auto" style={{ marginBottom: 32 }}>
-            Join teams already using Chorus to govern their agentic workflows.
+            Join teams already using Weave to build together — humans and agents, on one living model.
           </p>
           <Link to="/demo" className="btn btn-primary btn-lg">Request Early Access</Link>
         </div>

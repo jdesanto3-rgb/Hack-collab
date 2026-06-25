@@ -13,7 +13,7 @@ const LINKS = [
   { to: '/how-it-works', label: 'How It Works' },
   { to: '/the-system', label: 'The System' },
   { to: '/agents', label: 'Agents' },
-  { to: '/why-chorus', label: 'Why Chorus' },
+  { to: '/why-chorus', label: 'Why Weave' },
 ]
 
 export default function Nav() {
@@ -49,7 +49,7 @@ export default function Nav() {
                 <circle cx="15" cy="9" r="2" fill="white" opacity="0.5"/>
               </svg>
             </div>
-            Chorus
+            Weave
           </Link>
 
           <ul className="nav-links">

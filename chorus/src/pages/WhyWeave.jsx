@@ -16,12 +16,7 @@ const PERSONAS = [
       'AI tools run independently — no one sees what was explored',
       'Approval happens over Slack with no audit trail',
       'Brand standards get bypassed when teams move fast',
-    ],
-    solved: [
-      'ECD Agent enforces brand standards on every output',
-      'Design tokens sync automatically to Dev',
-      'All explorations visible on the shared canvas',
-      'Maya\'s approvals are logged and timestamped',
+      'Design rationale gets buried in Figma — no one knows why a decision was made six weeks later',
     ],
   },
   {
@@ -36,15 +31,10 @@ const PERSONAS = [
     pains: [
       'Requirements get lost between Notion docs and engineering tickets',
       'No visibility into whether Design has started or completed work',
-      'AI-written specs have no governance — anyone can override',
+      'AI-written specs have no continuity — anyone can override',
       'Stakeholder sign-off is informal and untracked',
       'Cross-functional handoffs are manual and error-prone',
-    ],
-    solved: [
-      'EPM Agent structures requirements and tracks status',
-      'Full pipeline visibility from brief to deploy',
-      'Jordan\'s approvals are binding and auditable',
-      'Cross-team sync is automated, not manual',
+      'The thread between customer insight and shipped feature is invisible and untraceable',
     ],
   },
   {
@@ -62,64 +52,66 @@ const PERSONAS = [
       'AI-generated code has no review gate before it lands in repo',
       'No clear ownership when agents produce conflicting outputs',
       'Architecture decisions made in isolation',
-    ],
-    solved: [
-      'EDev Agent enforces architecture standards on all scaffold output',
-      'Alex\'s gate catches issues before implementation begins',
-      'Design tokens arrive pre-approved and ready to use',
-      'All agent-generated code surfaces on the shared canvas',
+      'Code gets built against requirements disconnected from the customer problem that caused them',
     ],
   },
 ]
 
+const CATEGORY_ROWS = [
+  { label: 'Optimizes for', figma: 'Screens', linear: 'Tasks', claude: 'Answers', weave: 'Product continuity', highlight: false },
+  { label: 'Primary object', figma: 'Frames', linear: 'Issues', claude: 'Conversation', weave: 'Living product model', highlight: false },
+  { label: 'AI role', figma: 'Copilot', linear: 'None', claude: 'Responder', weave: 'Specialist workforce', highlight: false },
+  { label: 'Memory', figma: 'File-level', linear: 'Project-level', claude: 'None', weave: 'Connected product graph', highlight: false },
+  { label: 'Preserves reasoning', figma: 'No', linear: 'No', claude: 'No', weave: 'Yes — always', highlight: true },
+]
+
 const COMPARE_ROWS = [
-  { aspect: 'Visibility', without: 'Each team works in their own tools. No shared view of progress.', with: 'Full canvas visibility for Design, Product, and Dev simultaneously.' },
-  { aspect: 'AI Governance', without: 'Agents run ad-hoc. Output is ungoverned and un-reviewed.', with: 'Every agent output passes through an Executive Agent and a Human Gate.' },
-  { aspect: 'Handoffs', without: 'Manual, asynchronous, and error-prone. Specs lost in translation.', with: 'Automatic sync. Design tokens, specs, and code arrive aligned.' },
-  { aspect: 'Audit Trail', without: 'No record of who approved what, or why.', with: 'Every gate event is logged: who approved, what state, when.' },
-  { aspect: 'Speed', without: 'Bottlenecked by meetings to align on AI output.', with: '3× faster from brief to deploy with parallel agent execution.' },
+  { aspect: 'Shared understanding', without: 'Context lost at every handoff. Teams manually resync.', with: 'One living product model. Every team and every agent works from the same thread.' },
+  { aspect: 'Decision traceability', without: 'No one knows why a decision was made.', with: 'Every decision connected to the insight, persona, and customer need behind it.' },
+  { aspect: 'AI continuity', without: 'Agents run in isolation. Output is ungoverned and untraceable.', with: 'Every agent output passes through an Executive Agent and a Human Gate.' },
+  { aspect: 'Handoffs', without: 'Manual, asynchronous, error-prone. Specs lost in translation.', with: 'Automatic. Design tokens, specs, and stories arrive aligned and connected.' },
+  { aspect: 'Speed', without: 'Bottlenecked by meetings to realign.', with: '3× faster from customer insight to sprint-ready output.' },
+  { aspect: 'Product memory', without: 'By launch, no one remembers why it was built that way.', with: 'Every feature traceable to the customer problem it was built to solve.' },
 ]
 
 const TESTIMONIALS = [
   {
-    quote: 'For the first time, our Design Lead and Dev Lead are looking at the same canvas. There\'s no more "I didn\'t see that design" — it\'s all there.',
+    quote: 'For the first time, our Design Lead and Dev Lead are looking at the same model. There\'s no more "I didn\'t see that research" — the thread is right there.',
     author: 'Alex T.',
     role: 'Head of Engineering, Series B SaaS',
   },
   {
-    quote: 'We were using six AI tools across three teams. Chorus is the first thing that made those tools feel like a single system.',
+    quote: 'We were using six AI tools across three teams. Weave is the first thing that kept the context connected instead of fragmenting it further.',
     author: 'Maya R.',
     role: 'Design Director, Enterprise Tech',
   },
   {
-    quote: 'The governance alone is worth it. Every stakeholder can see exactly what was approved and who signed off. Audit reviews used to take days.',
+    quote: 'The traceability alone is worth it. Every stakeholder can see exactly what decision was made, what evidence informed it, and who approved it.',
     author: 'Jordan K.',
     role: 'Senior Product Manager, Fintech',
   },
 ]
 
-export default function WhyChorus() {
+export default function WhyWeave() {
   return (
     <>
       <section className="page-hero">
         <div className="container">
-          <p className="section-label">The Case for Chorus</p>
-          <h1 className="section-title">Why Teams Choose Chorus</h1>
+          <p className="section-label">The Case for Weave</p>
+          <h1 className="section-title">Every tool knows a piece.<br />Weave knows the whole thread.</h1>
           <p className="section-sub mx-auto">
-            Every discipline has its own AI chaos. Chorus resolves all of them with a single governed canvas.
+            Figma knows what your product looks like. Jira knows what your team is doing. Claude knows what you asked. Weave knows what you're building, why every decision was made, and what changed.
           </p>
         </div>
       </section>
 
-      {/* Persona sections */}
+      {/* Persona pain points */}
       <section className="section" style={{ paddingTop: 0 }}>
         <div className="container">
           <div className="persona-grid">
             {PERSONAS.map((p, i) => (
               <div key={i} className="persona-card">
-                <div className="persona-icon" style={{ background: p.bg, color: p.color }}>
-                  {p.icon}
-                </div>
+                <div className="persona-icon" style={{ background: p.bg, color: p.color }}>{p.icon}</div>
                 <h3 style={{ color: p.color }}>{p.title}</h3>
                 <p style={{ fontSize: 12, color: 'var(--text-3)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 14 }}>Pain Points Solved</p>
                 <ul className="persona-pains">
@@ -140,21 +132,67 @@ export default function WhyChorus() {
         </div>
       </section>
 
-      {/* Comparison table */}
+      {/* Category section */}
+      <section className="section" style={{ borderTop: '1px solid var(--border)' }}>
+        <div className="container">
+          <p className="section-label">The Category</p>
+          <h2 className="section-title">A new category. A new kind of platform.</h2>
+          <p className="section-sub" style={{ marginBottom: 48 }}>
+            Every major discipline in software has a tool that optimizes its output. None of them preserve the thinking behind the output.
+          </p>
+
+          <div className="compare-wrap" style={{ marginBottom: 40 }}>
+            <table className="compare-table">
+              <thead>
+                <tr>
+                  <th style={{ width: 160 }}></th>
+                  <th>Figma</th>
+                  <th>Linear / Jira</th>
+                  <th>Claude</th>
+                  <th style={{ color: 'var(--purple)' }}>Weave</th>
+                </tr>
+              </thead>
+              <tbody>
+                {CATEGORY_ROWS.map((row, i) => (
+                  <tr key={i}>
+                    <td>{row.label}</td>
+                    <td style={{ color: 'var(--text-3)' }}>{row.figma}</td>
+                    <td style={{ color: 'var(--text-3)' }}>{row.linear}</td>
+                    <td style={{ color: 'var(--text-3)' }}>{row.claude}</td>
+                    <td style={{ color: row.highlight ? 'var(--purple)' : 'var(--teal)', fontWeight: row.highlight ? 700 : 500 }}>{row.weave}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div style={{
+            background: 'var(--bg-card)', border: '1px solid var(--border)',
+            borderRadius: 16, padding: '28px 32px',
+            borderLeft: '3px solid var(--purple)',
+          }}>
+            <p style={{ fontSize: 16, color: 'var(--text-2)', lineHeight: 1.75, fontStyle: 'italic' }}>
+              "Weave doesn't replace Figma, Jira, or Claude. It sits above them — preserving the thread that connects customer insight to shipped experience, and making sure that thread never breaks."
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Before / After */}
       <section className="section" style={{ borderTop: '1px solid var(--border)' }}>
         <div className="container">
           <p className="section-label">Before and After</p>
-          <h2 className="section-title">Without Chorus vs. With Chorus</h2>
+          <h2 className="section-title">Without Weave vs. With Weave</h2>
           <p className="section-sub" style={{ marginBottom: 48 }}>
-            The difference isn't just tools. It's a fundamental shift in how AI work is governed.
+            The difference isn't just tools. It's a fundamental shift in how teams stay connected to the customer problems they're solving.
           </p>
           <div className="compare-wrap">
             <table className="compare-table">
               <thead>
                 <tr>
                   <th>Dimension</th>
-                  <th style={{ color: 'var(--text-3)' }}>Without Chorus</th>
-                  <th style={{ color: 'var(--teal)' }}>With Chorus</th>
+                  <th style={{ color: 'var(--text-3)' }}>Without Weave</th>
+                  <th style={{ color: 'var(--teal)' }}>With Weave</th>
                 </tr>
               </thead>
               <tbody>
@@ -177,7 +215,7 @@ export default function WhyChorus() {
           <p className="section-label">Early Feedback</p>
           <h2 className="section-title">What teams are saying</h2>
           <p className="section-sub" style={{ marginBottom: 48 }}>
-            Chorus is in early access with select teams. Here's what they've told us.
+            Weave is in early access with select teams. Here's what they've told us.
           </p>
           <div className="testimonial-grid">
             {TESTIMONIALS.map((t, i) => (
