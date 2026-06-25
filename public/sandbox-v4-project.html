@@ -6,12 +6,12 @@
 <title>Weave — Project</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Sofia+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/tokens.css">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;overflow:hidden;font-family:'Sofia Sans',sans-serif;font-size:15px;color:var(--text);background:var(--bg-canvas)}
-button{font-family:'Sofia Sans',sans-serif;border:none;cursor:pointer}
+html,body{height:100%;overflow:hidden;font-family:'Inter',sans-serif;font-size:15px;color:var(--text);background:var(--bg-canvas)}
+button{font-family:'Inter',sans-serif;border:none;cursor:pointer}
 a{text-decoration:none;color:inherit}
 @keyframes ch-rise{from{transform:translateY(8px);opacity:0}to{transform:none;opacity:1}}
 @keyframes ch-pop{0%{transform:translateY(10px) scale(.975);opacity:0}60%{transform:translateY(-2px) scale(1.006)}100%{transform:none;opacity:1}}
@@ -35,9 +35,10 @@ header{height:64px;background:var(--surface);display:flex;align-items:center;pad
 .step-spine{display:flex;flex-direction:column;align-items:center;width:44px;flex:none}
 .step-dot{width:36px;height:36px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex:none;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;transition:all .15s}
 .step-line{width:2px;flex:1;min-height:14px;margin:3px 0;border-radius:2px}
-.step-card{flex:1;background:var(--surface);border-radius:16px;padding:20px;margin-bottom:12px;transition:all .15s}
+.step-card{flex:1;background:var(--surface);border-radius:16px;padding:20px;margin-bottom:12px;transition:all .15s;position:relative}
 .step-card:hover{transform:translateX(2px)}
 .step-card.active{background:color-mix(in srgb,var(--step-color,#2f5bea) 6%,var(--surface))}
+.step-card.active::before{content:'';position:absolute;inset:-1.5px;border-radius:inherit;background:conic-gradient(from var(--glow-angle),transparent 0%,transparent 74%,color-mix(in srgb,var(--brand) 40%,transparent) 82%,var(--brand) 88%,var(--brand-mid,#E8A820) 93%,var(--brand) 98%,transparent 100%);mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;padding:1.5px;animation:glow-rotate 2.5s linear infinite;pointer-events:none}
 .step-card.queued{opacity:.6}
 .open-editor-btn{display:inline-flex;align-items:center;gap:8px;padding:11px 22px;border-radius:11px;font-size:14px;font-weight:700;cursor:pointer;border:none;transition:all .15s;margin-top:12px}
 .ev-row{display:flex;gap:12px;padding:13px 0}
@@ -176,7 +177,7 @@ function renderHeader(){
   document.getElementById('hdr').innerHTML=`
     <a href="sandbox-v4-canvas.html" style="display:flex;align-items:center;gap:8px;padding:0 14px 0 0;border-right:1px solid ${T.border};margin-right:14px;cursor:pointer;color:${T.text2};transition:color .15s;white-space:nowrap" onmouseover="this.style.color='${T.text}'" onmouseout="this.style.color='${T.text2}'">
       <span style="font-size:16px">‹</span>
-      <span style="font-family:'Sofia Sans',sans-serif;font-size:19px">Weave</span>
+      <span style="font-family:'Inter',sans-serif;font-size:19px">Weave</span>
     </a>
     <span style="color:${T.text3}" class="breadcrumb-sep">›</span>
     <span style="font-size:13px;color:${T.text2}">Team Canvas</span>
@@ -200,7 +201,7 @@ function renderPipeline(){
       <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:16px">
         <div style="flex:1">
           <div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:1px;color:${PROJECT.accent};font-weight:600;margin-bottom:6px">${PROJECT.client} · PROJECT</div>
-          <div style="font-family:'Sofia Sans',sans-serif;font-size:26px;line-height:1.15;margin-bottom:8px">${PROJECT.name}</div>
+          <div style="font-family:'Playfair Display',Georgia,serif;font-size:26px;line-height:1.15;margin-bottom:8px">${PROJECT.name}</div>
           <div style="font-size:13px;color:${T.text2};line-height:1.5;margin-bottom:14px">${PROJECT.brief}</div>
         </div>
       </div>

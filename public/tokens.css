@@ -1,279 +1,258 @@
 /* ============================================================
-   Weave Design Tokens — CSS Custom Properties
-   Visual style: Minimal. Precise. Thread-connected.
+   Weave Design Tokens
+   Visual style: Editorial. Warm. Thread-connected.
    ============================================================ */
 
+/* ── ANIMATED GRADIENT BORDER ── */
+@property --glow-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes glow-rotate {
+  to { --glow-angle: 360deg; }
+}
+
+.glow-border {
+  position: relative;
+}
+
+.glow-border::before {
+  content: '';
+  position: absolute;
+  inset: -1.5px;
+  border-radius: inherit;
+  background: conic-gradient(
+    from var(--glow-angle),
+    transparent 0%,
+    transparent 74%,
+    color-mix(in srgb, var(--brand) 45%, transparent) 82%,
+    var(--brand) 88%,
+    var(--brand-mid) 93%,
+    var(--brand) 98%,
+    transparent 100%
+  );
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  padding: 1.5px;
+  animation: glow-rotate 2.5s linear infinite;
+  pointer-events: none;
+}
+
 :root {
-  /* --- Colors: Light mode --- */
-  --bg: #F3F3F3;
-  --surface: #FFFFFF;
-  --surface2: #EBEBEB;
-  --border: #DADADA;
-  --border2: #C6C6C6;
-  --text: #0C0C0C;
-  --text2: #606060;
-  --text3: #969696;
+  /* ── NEUTRALS — warm-tinted grays ── */
+  --bg:           #F4F0EB;
+  --surface:      #FDFAF5;
+  --surface2:     #EEE9E2;
+  --border:       #DAD5CC;
+  --border2:      #C8C2BA;
+  --text:         #201D1A;
+  --text2:        #5C5850;
+  --text3:        #9A9288;
+  --bg-canvas:    #EAE5DE;
+  --surface-warm: #F5F0E8;
 
-  /* Brand — Weave amber-gold */
-  --brand: #C07800;
+  /* ── PRIMARY — amber-gold ── */
+  --brand:       #C07800;
   --brand-light: #FFF3CC;
-  --brand-mid: #E8A820;
-  --brand-dark: #7A5000;
+  --brand-mid:   #E8A820;
 
-  /* Stone — neutral for secondary UI */
-  --stone: #606064;
-  --stone-light: #F2F2F2;
-  --stone-mid: #AAAAAA;
-
-  /* Weave thread gradient colors */
-  --thread-gold: #F0A800;
-  --thread-pink: #E87800;
-  --thread-purple: #3060CC;
-  --thread-gold-vivid: #F5B800;
-  --thread-pink-vivid: #E06000;
-  --thread-purple-vivid: #4080E8;
-
-  /* Accents */
-  --purple: #3060CC;
-  --purple-light: #E8EFFE;
-  --purple-mid: #7AA4E8;
-
-  --teal: #0B8F7A;
-  --teal-light: #E0F5F2;
-  --teal-mid: #4DCAB8;
-
-  --amber: #B07A0A;
-  --amber-light: #FEF3DC;
-  --amber-mid: #E8A820;
-
-  --red: #C4305A;
-  --red-light: #FDEEF4;
-
-  --npt: #1B4B6B;
-  --npt-light: #e8f0f6;
-
-  /* Canvas & workflow */
-  --bg-canvas: #E8E8E8;
-  --surface-warm: #F6F6F6;
-
-  /* Extended accents */
-  --blue: #2E5CE8;
-  --blue-light: #E8EFFE;
-  --green: #1A8A5A;
+  /* ── SEMANTIC ACCENTS ── */
+  --blue:        #2E5CE8;
+  --blue-light:  #E8EFFE;
+  --green:       #1A8A5A;
   --green-light: #E4F5ED;
+  --red:         #C4305A;
+  --red-light:   #FDEEF4;
+  --amber:       #B07A0A;
+  --amber-light: #FEF3DC;
+  --teal:        #0B8F7A;
+  --teal-light:  #E0F5F2;
+  --npt:         #1B4B6B;
+  --npt-light:   #E8F0F6;
 
-  /* --- Spacing --- */
-  --space-xs: 4px;
-  --space-sm: 8px;
-  --space-md: 12px;
-  --space-lg: 16px;
-  --space-xl: 24px;
+  /* ── COMPAT ALIASES (referenced by some readTokens calls) ── */
+  --purple:       #2E5CE8;
+  --purple-light: #E8EFFE;
+
+  /* ── SPACING ── */
+  --space-xs:  4px;
+  --space-sm:  8px;
+  --space-md:  12px;
+  --space-lg:  16px;
+  --space-xl:  24px;
   --space-2xl: 32px;
   --space-3xl: 48px;
 
-  /* --- Border Radius --- */
-  --radius-sm: 4px;
-  --radius: 6px;
-  --radius-lg: 8px;
+  /* ── BORDER RADIUS ── */
+  --radius-sm:   4px;
+  --radius:      6px;
+  --radius-lg:   8px;
   --radius-pill: 20px;
   --radius-full: 9999px;
 
-  /* --- Font Size --- */
-  --text-xs: 10px;
-  --text-sm: 11px;
-  --text-md: 12px;
+  /* ── TYPE SCALE ── */
+  --text-xs:   10px;
+  --text-sm:   11px;
+  --text-md:   12px;
   --text-base: 13px;
-  --text-lg: 14px;
-  --text-xl: 16px;
-  --text-2xl: 20px;
-  --text-3xl: 24px;
-  --text-4xl: 30px;
+  --text-lg:   14px;
+  --text-xl:   16px;
+  --text-2xl:  20px;
+  --text-3xl:  24px;
+  --text-4xl:  30px;
 
-  /* --- Font Weight --- */
-  --weight-normal: 400;
-  --weight-medium: 500;
+  /* ── FONT WEIGHT ── */
+  --weight-normal:   400;
+  --weight-medium:   500;
   --weight-semibold: 600;
-  --weight-bold: 700;
 
-  /* --- Font Families — all sans-serif --- */
-  --font-sans: 'Sofia Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-display: 'Sofia Sans', sans-serif;
-  --font-serif: 'Sofia Sans', sans-serif;
-  --font-mono: 'JetBrains Mono', 'Fira Mono', 'Courier New', monospace;
+  /* ── FONT FAMILIES ── */
+  --font-sans:    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-serif:   'Playfair Display', Georgia, serif;
+  --font-mono:    'JetBrains Mono', 'Fira Mono', 'Courier New', monospace;
 
-  /* --- Letter Spacing --- */
-  --tracking-tight: -0.02em;
-  --tracking-snug: -0.01em;
-  --tracking-normal: 0em;
-  --tracking-wide: 0.04em;
-  --tracking-wider: 0.08em;
-  --tracking-widest: 0.12em;
+  /* ── LETTER SPACING ── */
+  --tracking-display: -0.025em;
+  --tracking-tight:   -0.015em;
+  --tracking-snug:    -0.01em;
+  --tracking-normal:   0em;
+  --tracking-wide:     0.04em;
+  --tracking-wider:    0.08em;
+  --tracking-widest:   0.12em;
 
-  /* --- Shadows (soft, diffuse) --- */
-  --shadow-sm: 0 2px 8px rgba(10, 10, 10, 0.06), 0 1px 2px rgba(10, 10, 10, 0.04);
-  --shadow-md: 0 4px 20px rgba(10, 10, 10, 0.08), 0 1px 4px rgba(10, 10, 10, 0.04);
-  --shadow-lg: 0 8px 40px rgba(10, 10, 10, 0.10), 0 2px 8px rgba(10, 10, 10, 0.05);
+  /* ── SHADOWS ── */
+  --shadow-sm: 0 2px 8px rgba(32, 28, 24, 0.06), 0 1px 2px rgba(32, 28, 24, 0.04);
+  --shadow-md: 0 4px 20px rgba(32, 28, 24, 0.08), 0 1px 4px rgba(32, 28, 24, 0.04);
+  --shadow-lg: 0 8px 40px rgba(32, 28, 24, 0.10), 0 2px 8px rgba(32, 28, 24, 0.05);
 
-  /* --- Transitions --- */
+  /* ── TRANSITIONS ── */
   --transition-fast: 100ms ease;
-  --transition: 150ms ease;
+  --transition:      150ms ease;
   --transition-slow: 250ms ease;
 }
 
-/* --- Dark mode — near-black, minimal saturation + thread accents --- */
+/* ── DARK MODE (system) ── */
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #0C0C0D;
-    --surface: #131315;
-    --surface2: #1B1B1D;
-    --border: #272729;
-    --border2: #333335;
-    --text: #F0F0FF;
-    --text2: #9090B8;
-    --text3: #5858A0;
+    --bg:           #0D0C0A;
+    --surface:      #141210;
+    --surface2:     #1C1A17;
+    --border:       #2A2720;
+    --border2:      #363028;
+    --text:         #EDE8E3;
+    --text2:        #8C8680;
+    --text3:        #565248;
+    --bg-canvas:    #090807;
+    --surface-warm: #111008;
 
-    --brand: #F5B800;          /* thread gold — primary in dark */
+    --brand:       #F5B800;
     --brand-light: #201800;
-    --brand-mid: #A87800;
-    --brand-dark: #FFD04D;
+    --brand-mid:   #C08000;
 
-    --stone: #8080A0;
-    --stone-light: #141428;
-    --stone-mid: #4848A0;
-
-    --thread-gold: #F5B800;
-    --thread-pink: #E83E6C;
-    --thread-purple: #8B5CF6;
-
-    --purple: #8B5CF6;
-    --purple-light: #1A0A40;
-    --purple-mid: #5B2CB8;
-
-    --teal: #1ECCB6;
-    --teal-light: #021C18;
-    --teal-mid: #0B8F7A;
-
-    --amber: #F5B800;
-    --amber-light: #201800;
-    --amber-mid: #A87800;
-
-    --red: #E83E6C;
-    --red-light: #200818;
-
-    --npt: #4d9ed4;
-    --npt-light: #0e2535;
-
-    --bg-canvas: #080809;
-    --surface-warm: #101012;
-
-    --blue: #5580FF;
-    --blue-light: #080C28;
-    --green: #00E58A;
+    --blue:        #5580FF;
+    --blue-light:  #080C28;
+    --green:       #00E58A;
     --green-light: #001814;
+    --red:         #E83E6C;
+    --red-light:   #200818;
+    --amber:       #F5B800;
+    --amber-light: #201800;
+    --teal:        #1ECCB6;
+    --teal-light:  #021C18;
+    --npt:         #4D9ED4;
+    --npt-light:   #0E2535;
 
-    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.35), 0 1px 2px rgba(0, 0, 0, 0.25);
-    --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.45), 0 1px 4px rgba(0, 0, 0, 0.25);
-    --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.55), 0 2px 8px rgba(0, 0, 0, 0.30);
+    --purple:       #5580FF;
+    --purple-light: #080C28;
+
+    --shadow-sm: 0 2px 8px rgba(0,0,0,0.35), 0 1px 2px rgba(0,0,0,0.25);
+    --shadow-md: 0 4px 20px rgba(0,0,0,0.45), 0 1px 4px rgba(0,0,0,0.25);
+    --shadow-lg: 0 8px 40px rgba(0,0,0,0.55), 0 2px 8px rgba(0,0,0,0.30);
   }
 }
 
-/* --- Explicit dark theme (JS toggle) --- */
+/* ── DARK MODE (explicit JS toggle) ── */
 html[data-theme="dark"] {
-  --bg: #0C0C0D;
-  --surface: #131315;
-  --surface2: #1B1B1D;
-  --border: #272729;
-  --border2: #333335;
-  --text: #F0F0FF;
-  --text2: #9090B8;
-  --text3: #5858A0;
+  --bg:           #0D0C0A;
+  --surface:      #141210;
+  --surface2:     #1C1A17;
+  --border:       #2A2720;
+  --border2:      #363028;
+  --text:         #EDE8E3;
+  --text2:        #8C8680;
+  --text3:        #565248;
+  --bg-canvas:    #090807;
+  --surface-warm: #111008;
 
-  --brand: #F5B800;
+  --brand:       #F5B800;
   --brand-light: #201800;
-  --brand-mid: #A87800;
-  --brand-dark: #FFD04D;
+  --brand-mid:   #C08000;
 
-  --stone: #8080A0;
-  --stone-light: #141428;
-  --stone-mid: #4848A0;
-
-  --thread-gold: #F5B800;
-  --thread-pink: #E83E6C;
-  --thread-purple: #8B5CF6;
-
-  --purple: #8B5CF6;
-  --purple-light: #1A0A40;
-  --purple-mid: #5B2CB8;
-
-  --teal: #1ECCB6;
-  --teal-light: #021C18;
-  --teal-mid: #0B8F7A;
-
-  --amber: #F5B800;
-  --amber-light: #201800;
-  --amber-mid: #A87800;
-
-  --red: #E83E6C;
-  --red-light: #200818;
-
-  --npt: #4d9ed4;
-  --npt-light: #0e2535;
-
-  --bg-canvas: #080809;
-  --surface-warm: #101012;
-
-  --blue: #5580FF;
-  --blue-light: #080C28;
-  --green: #00E58A;
+  --blue:        #5580FF;
+  --blue-light:  #080C28;
+  --green:       #00E58A;
   --green-light: #001814;
+  --red:         #E83E6C;
+  --red-light:   #200818;
+  --amber:       #F5B800;
+  --amber-light: #201800;
+  --teal:        #1ECCB6;
+  --teal-light:  #021C18;
+  --npt:         #4D9ED4;
+  --npt-light:   #0E2535;
 
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.35), 0 1px 2px rgba(0, 0, 0, 0.25);
-  --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.45), 0 1px 4px rgba(0, 0, 0, 0.25);
-  --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.55), 0 2px 8px rgba(0, 0, 0, 0.30);
+  --purple:       #5580FF;
+  --purple-light: #080C28;
+
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.35), 0 1px 2px rgba(0,0,0,0.25);
+  --shadow-md: 0 4px 20px rgba(0,0,0,0.45), 0 1px 4px rgba(0,0,0,0.25);
+  --shadow-lg: 0 8px 40px rgba(0,0,0,0.55), 0 2px 8px rgba(0,0,0,0.30);
 }
 
-/* Force light when explicitly set */
+/* ── LIGHT MODE (explicit JS toggle) ── */
 html[data-theme="light"] {
-  --bg: #F3F3F3;
-  --surface: #FFFFFF;
-  --surface2: #EBEBEB;
-  --border: #DADADA;
-  --border2: #C6C6C6;
-  --text: #0C0C0C;
-  --text2: #606060;
-  --text3: #969696;
-  --brand: #C07800;
+  --bg:           #F4F0EB;
+  --surface:      #FDFAF5;
+  --surface2:     #EEE9E2;
+  --border:       #DAD5CC;
+  --border2:      #C8C2BA;
+  --text:         #201D1A;
+  --text2:        #5C5850;
+  --text3:        #9A9288;
+  --bg-canvas:    #EAE5DE;
+  --surface-warm: #F5F0E8;
+
+  --brand:       #C07800;
   --brand-light: #FFF3CC;
-  --brand-mid: #E8A820;
-  --brand-dark: #7A5000;
-  --stone: #606064;
-  --stone-light: #F2F2F2;
-  --stone-mid: #AAAAAA;
-  --purple: #3060CC;
-  --purple-light: #E8EFFE;
-  --purple-mid: #7AA4E8;
-  --teal: #0B8F7A;
-  --teal-light: #E0F5F2;
-  --teal-mid: #4DCAB8;
-  --amber: #B07A0A;
-  --amber-light: #FEF3DC;
-  --amber-mid: #E8A820;
-  --red: #C4305A;
-  --red-light: #FDEEF4;
-  --npt: #1B4B6B;
-  --npt-light: #e8f0f6;
-  --bg-canvas: #E8E8E8;
-  --surface-warm: #F6F6F6;
-  --blue: #2E5CE8;
-  --blue-light: #E8EFFE;
-  --green: #1A8A5A;
+  --brand-mid:   #E8A820;
+
+  --blue:        #2E5CE8;
+  --blue-light:  #E8EFFE;
+  --green:       #1A8A5A;
   --green-light: #E4F5ED;
-  --shadow-sm: 0 1px 3px rgba(10, 10, 20, 0.07);
-  --shadow-md: 0 2px 10px rgba(10, 10, 20, 0.09);
-  --shadow-lg: 0 4px 20px rgba(10, 10, 20, 0.12);
+  --red:         #C4305A;
+  --red-light:   #FDEEF4;
+  --amber:       #B07A0A;
+  --amber-light: #FEF3DC;
+  --teal:        #0B8F7A;
+  --teal-light:  #E0F5F2;
+  --npt:         #1B4B6B;
+  --npt-light:   #E8F0F6;
+
+  --purple:       #2E5CE8;
+  --purple-light: #E8EFFE;
+
+  --shadow-sm: 0 1px 3px rgba(32, 28, 24, 0.07);
+  --shadow-md: 0 2px 10px rgba(32, 28, 24, 0.09);
+  --shadow-lg: 0 4px 20px rgba(32, 28, 24, 0.12);
 }
 
-/* --- Global base styles --- */
+/* ── GLOBAL BASE ── */
 *, *::before, *::after {
   box-sizing: border-box;
 }
