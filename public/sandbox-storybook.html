@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weave DS — Storybook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/tokens.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;font-family:'Inter',sans-serif;font-size:14px;background:#1b1c1d;color:#fff}
+button,input,select{font-family:'Inter',sans-serif;cursor:pointer}
+input,select{outline:none}
+a{text-decoration:none;color:inherit}
+
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-thumb{background:#3a3b3c;border-radius:4px}
+::-webkit-scrollbar-track{background:transparent}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes toast-in{from{transform:translateY(8px);opacity:0}to{transform:none;opacity:1}}
+
+/* ── SHELL ── */
+#app{height:100vh;display:flex;overflow:hidden}
+
+/* ── SIDEBAR ── */
+#sidebar{
+  width:260px;flex:none;
+  background:#1b1c1d;
+  display:flex;flex-direction:column;
+  overflow:hidden;
+  border-right:1px solid #2e2f30;
+}
+.sb-logo-row{
+  display:flex;align-items:center;gap:10px;
+  padding:16px 14px 12px;
+  border-bottom:1px solid #2e2f30;
+  flex:none;
+}
+.sb-logo{
+  width:28px;height:28px;
+  background:#FF4785;border-radius:6px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;font-weight:800;color:#fff;
+  flex:none;font-style:italic;
+}
+.sb-title{
+  flex:1;
+  display:flex;flex-direction:column;gap:1px;
+}
+.sb-title-name{font-size:13px;font-weight:700;color:#fff}
+.sb-title-version{font-size:10px;color:#7a7b7c;font-family:'JetBrains Mono',monospace}
+
+.sb-search-wrap{padding:10px 12px 8px;flex:none}
+.sb-search{
+  width:100%;padding:6px 10px;
+  border-radius:5px;border:1px solid #2e2f30;
+  background:#252627;color:#ccc;
+  font-size:12px;transition:border .15s;
+}
+.sb-search:focus{border-color:#FF4785;color:#fff}
+.sb-search::placeholder{color:#5a5b5c}
+
+.sb-tree{flex:1;overflow-y:auto;padding:4px 0 8px}
+
+.tree-group{margin-bottom:2px}
+.tree-group-head{
+  display:flex;align-items:center;gap:6px;
+  padding:5px 14px;
+  font-size:10.5px;font-weight:700;
+  color:#7a7b7c;letter-spacing:.05em;
+  cursor:pointer;user-select:none;
+  transition:color .12s;
+}
+.tree-group-head:hover{color:#ccc}
+.tree-group-head .chevron{font-size:8px;color:#5a5b5c;transition:transform .15s}
+.tree-group-head.open .chevron{transform:rotate(90deg)}
+.tree-group-head .comp-icon-sm{
+  width:16px;height:16px;border-radius:4px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:7px;font-weight:700;color:#fff;flex:none;
+}
+
+.tree-stories{padding-left:0;display:none}
+.tree-stories.open{display:block}
+
+.tree-story{
+  display:flex;align-items:center;gap:8px;
+  padding:5px 14px 5px 34px;
+  font-size:12.5px;color:#9a9b9c;
+  cursor:pointer;transition:all .1s;
+  border-left:2px solid transparent;
+  position:relative;
+}
+.tree-story:hover{color:#e0e0e0;background:#252627}
+.tree-story.active{
+  color:#fff;background:#2a1a20;
+  border-left-color:#FF4785;
+}
+.tree-story .story-dot{
+  width:5px;height:5px;border-radius:50%;
+  background:#3a3b3c;flex:none;
+}
+.tree-story.active .story-dot{background:#FF4785}
+
+.sb-footer{
+  padding:12px 14px;
+  border-top:1px solid #2e2f30;
+  flex:none;
+}
+.back-link{
+  display:flex;align-items:center;gap:6px;
+  font-size:12px;color:#7a7b7c;
+  transition:color .15s;cursor:pointer;
+  text-decoration:none;
+}
+.back-link:hover{color:#FF4785}
+
+/* ── CENTER STAGE ── */
+#stage{
+  flex:1;min-width:0;
+  display:flex;flex-direction:column;
+  background:#f6f9fc;
+  overflow:hidden;
+}
+
+/* toolbar */
+#stage-toolbar{
+  height:44px;flex:none;
+  background:#fff;
+  border-bottom:1px solid #e8eaed;
+  display:flex;align-items:center;
+  padding:0 12px;gap:6px;
+  z-index:10;
+}
+.tb-btn{
+  height:28px;padding:0 10px;
+  border-radius:5px;border:1px solid #e0e2e5;
+  background:transparent;color:#444;
+  font-size:12px;display:flex;align-items:center;gap:5px;
+  transition:all .12s;white-space:nowrap;
+}
+.tb-btn:hover{background:#f0f2f5;border-color:#c8cace}
+.tb-btn.active{background:#eef2ff;border-color:#3b5bdb;color:#3b5bdb}
+.tb-sep{width:1px;height:20px;background:#e0e2e5;margin:0 2px}
+.tb-label{font-size:11.5px;color:#777;font-family:'JetBrains Mono',monospace}
+.story-breadcrumb{
+  display:flex;align-items:center;gap:5px;
+  font-size:12.5px;color:#666;
+  flex:1;overflow:hidden;
+}
+.story-breadcrumb .crumb-comp{font-weight:600;color:#222}
+.story-breadcrumb .crumb-sep{color:#bbb}
+.story-breadcrumb .crumb-story{color:#555}
+
+/* preview area */
+#preview-area{
+  flex:1;overflow:auto;
+  display:flex;align-items:flex-start;
+  justify-content:center;
+  padding:32px;
+  background:#f6f9fc;
+  background-image:
+    linear-gradient(rgba(0,0,0,.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,0,0,.04) 1px,transparent 1px);
+  background-size:20px 20px;
+}
+.preview-frame{
+  background:#fff;
+  box-shadow:0 2px 16px rgba(0,0,0,.1),0 0 0 1px rgba(0,0,0,.05);
+  border-radius:4px;
+  overflow:hidden;
+  position:relative;
+}
+.preview-frame.natural{display:inline-block}
+
+/* ── RIGHT PANEL ── */
+#right-panel{
+  width:300px;flex:none;
+  background:#fff;
+  border-left:1px solid #e8eaed;
+  display:flex;flex-direction:column;
+  overflow:hidden;
+}
+.rp-tabs{
+  display:flex;flex:none;
+  border-bottom:1px solid #e8eaed;
+}
+.rp-tab{
+  flex:1;height:40px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12.5px;font-weight:600;
+  color:#777;cursor:pointer;
+  border-bottom:2px solid transparent;
+  transition:all .15s;background:transparent;border:none;
+  border-bottom:2px solid transparent;
+}
+.rp-tab.active{color:#FF4785;border-bottom-color:#FF4785}
+.rp-tab:hover:not(.active){color:#333}
+.rp-body{flex:1;overflow-y:auto}
+
+/* controls panel */
+.ctrl-section{padding:16px}
+.ctrl-label{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;font-weight:700;
+  color:#aaa;letter-spacing:.06em;
+  margin-bottom:12px;
+}
+.ctrl-row{
+  display:flex;flex-direction:column;gap:4px;
+  margin-bottom:12px;
+}
+.ctrl-row-label{font-size:12px;font-weight:500;color:#444}
+.ctrl-input{
+  width:100%;padding:6px 9px;
+  border-radius:5px;border:1px solid #e0e2e5;
+  background:#fafafa;color:#222;
+  font-size:12px;font-family:'Inter',sans-serif;
+  transition:border .15s;
+}
+.ctrl-input:focus{border-color:#FF4785;outline:none;background:#fff}
+.ctrl-select{
+  width:100%;padding:6px 9px;
+  border-radius:5px;border:1px solid #e0e2e5;
+  background:#fafafa;color:#222;
+  font-size:12px;font-family:'Inter',sans-serif;
+  transition:border .15s;cursor:pointer;
+}
+.ctrl-select:focus{border-color:#FF4785;outline:none}
+.ctrl-checkbox-row{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:12px;
+}
+.ctrl-checkbox-label{font-size:12px;font-weight:500;color:#444}
+.ctrl-checkbox{
+  width:16px;height:16px;cursor:pointer;
+  accent-color:#FF4785;
+}
+
+/* story/code panel */
+.code-wrap{padding:16px}
+.code-block{
+  background:#1b1c1d;
+  border-radius:8px;
+  padding:14px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:11.5px;line-height:1.65;
+  color:#cdd3de;
+  overflow-x:auto;white-space:pre;
+  position:relative;
+}
+.code-header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:8px;
+}
+.code-lang{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;color:#aaa;
+}
+.copy-btn{
+  padding:4px 10px;border-radius:5px;
+  border:1px solid #e0e2e5;background:transparent;
+  color:#555;font-size:11px;
+  transition:all .12s;
+}
+.copy-btn:hover{background:#f0f2f5;color:#222}
+.code-footer{
+  margin-top:12px;padding:10px 12px;
+  background:#f6f9fc;border-radius:6px;
+  border:1px solid #e8eaed;
+}
+.code-footer a{
+  font-size:11.5px;color:#3b5bdb;
+  display:flex;align-items:center;gap:5px;
+}
+.code-footer a:hover{text-decoration:underline}
+
+/* token badge */
+.token-badge{
+  display:inline-flex;align-items:center;gap:4px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;color:#3b5bdb;
+  background:#eef2ff;border-radius:4px;
+  padding:1px 6px;
+}
+/* syntax hi */
+.kw{color:#ff79c6}
+.fn{color:#8be9fd}
+.str{color:#f1fa8c}
+.cmt{color:#6272a4}
+.attr{color:#50fa7b}
+.val{color:#bd93f9}
+
+/* toast */
+#toast-area{position:fixed;bottom:20px;right:20px;z-index:200;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast{
+  background:#fff;border:1px solid #e0e2e5;
+  border-radius:8px;padding:10px 14px;
+  box-shadow:0 4px 16px rgba(0,0,0,.12);
+  animation:toast-in .25s ease;
+  display:flex;align-items:center;gap:8px;
+  font-size:12.5px;color:#333;
+  pointer-events:all;
+}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ── SIDEBAR ── -->
+  <div id="sidebar">
+    <div class="sb-logo-row">
+      <div class="sb-logo">S</div>
+      <div class="sb-title">
+        <div class="sb-title-name">Weave DS</div>
+        <div class="sb-title-version">v4.2.1 · Storybook 8</div>
+      </div>
+    </div>
+
+    <div class="sb-search-wrap">
+      <input class="sb-search" id="sb-search" type="text" placeholder="Search stories…" oninput="filterStories(this.value)">
+    </div>
+
+    <div class="sb-tree" id="sb-tree"></div>
+
+    <div class="sb-footer">
+      <a class="back-link" href="sandbox-v4-design.html">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+          <path d="M7.5 2L3.5 6L7.5 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Back to Design
+      </a>
+    </div>
+  </div>
+
+  <!-- ── CENTER STAGE ── -->
+  <div id="stage">
+    <div id="stage-toolbar">
+      <div class="story-breadcrumb" id="breadcrumb">
+        <span class="crumb-comp" id="crumb-comp">NavBar</span>
+        <span class="crumb-sep">/</span>
+        <span class="crumb-story" id="crumb-story">Default</span>
+      </div>
+      <div class="tb-sep"></div>
+      <div style="display:flex;align-items:center;gap:4px">
+        <span class="tb-label">Zoom</span>
+        <button class="tb-btn" id="zoom-out" onclick="adjustZoom(-0.1)">−</button>
+        <span class="tb-label" id="zoom-label" style="min-width:38px;text-align:center">100%</span>
+        <button class="tb-btn" id="zoom-in" onclick="adjustZoom(0.1)">+</button>
+        <button class="tb-btn" onclick="resetZoom()">Reset</button>
+      </div>
+      <div class="tb-sep"></div>
+      <button class="tb-btn active" id="vp-desktop" onclick="setViewport('desktop')">
+        <svg width="13" height="12" viewBox="0 0 13 12" fill="none"><rect x="1" y="1" width="11" height="8" rx="1" stroke="currentColor" stroke-width="1.2"/><path d="M4 11h5M6.5 9v2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+        Desktop
+      </button>
+      <button class="tb-btn" id="vp-mobile" onclick="setViewport('mobile')">
+        <svg width="9" height="13" viewBox="0 0 9 13" fill="none"><rect x="1" y="1" width="7" height="11" rx="1.5" stroke="currentColor" stroke-width="1.2"/><circle cx="4.5" cy="10" r=".6" fill="currentColor"/></svg>
+        Mobile
+      </button>
+      <div class="tb-sep"></div>
+      <button class="tb-btn" id="darkmode-btn" onclick="toggleDark()">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1.5A5 5 0 1 0 11.5 6.5 5 5 0 0 1 6.5 1.5z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>
+        Dark
+      </button>
+      <button class="tb-btn" id="fullscreen-btn" onclick="toggleFullscreen()">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M1 4.5V1.5H4M9 1.5h3v3M1 8.5V11.5H4M9 11.5h3v-3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+        Full
+      </button>
+    </div>
+    <div id="preview-area">
+      <div class="preview-frame" id="preview-frame">
+        <div id="preview-inner"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── RIGHT PANEL ── -->
+  <div id="right-panel">
+    <div class="rp-tabs">
+      <button class="rp-tab active" id="tab-controls" onclick="setRightTab('controls')">Controls</button>
+      <button class="rp-tab" id="tab-story" onclick="setRightTab('story')">Story</button>
+    </div>
+    <div class="rp-body" id="rp-body"></div>
+  </div>
+
+</div>
+
+<div id="toast-area"></div>
+
+<script>
+// ── TOKENS ──────────────────────────────────────────────────────────────────
+function readTokens(){
+  const s=getComputedStyle(document.documentElement),g=v=>s.getPropertyValue(v).trim();
+  return{
+    bgCanvas:    g('--bg-canvas')   ||'#EAE5DE',
+    surface:     g('--surface')     ||'#FDFAF5',
+    surfaceWarm: g('--surface-warm')||'#F5F0E8',
+    surface2:    g('--surface2')    ||'#EEE9E2',
+    border:      g('--border')      ||'#DAD5CC',
+    border2:     g('--border2')     ||'#C8C2BA',
+    text:        g('--text')        ||'#201D1A',
+    text2:       g('--text2')       ||'#5C5850',
+    text3:       g('--text3')       ||'#9A9288',
+    brand:       g('--brand')       ||'#C07800',
+    brandLight:  g('--brand-light') ||'#FFF3CC',
+    brandMid:    g('--brand-mid')   ||'#E8A820',
+    blue:        g('--blue')        ||'#2E5CE8',
+    blueLight:   g('--blue-light')  ||'#E8EFFE',
+    green:       g('--green')       ||'#1A8A5A',
+    greenLight:  g('--green-light') ||'#E4F5ED',
+    red:         g('--red')         ||'#C4305A',
+    redLight:    g('--red-light')   ||'#FDEEF4',
+    amber:       g('--amber')       ||'#B07A0A',
+    amberLight:  g('--amber-light') ||'#FEF3DC',
+    teal:        g('--teal')        ||'#0B8F7A',
+    tealLight:   g('--teal-light')  ||'#E0F5F2',
+    shadowSm:    g('--shadow-sm')   ||'0 1px 3px rgba(32,28,24,.07)',
+    shadowMd:    g('--shadow-md')   ||'0 2px 10px rgba(32,28,24,.09)',
+    shadowLg:    g('--shadow-lg')   ||'0 4px 20px rgba(32,28,24,.12)',
+  };
+}
+let T=readTokens();
+
+// ── STORY DEFINITIONS ──────────────────────────────────────────────────────
+// Each story: { slug, comp, variant, label, props, controls }
+const STORIES=[
+  // NavBar
+  {
+    slug:'NavBar--Default', comp:'NavBar', variant:'default', label:'Default',
+    props:{brand:'Neura Nova'},
+    width:916, height:60, fullWidth:true,
+    controls:[
+      {key:'brand',label:'Brand Name',type:'text',default:'Neura Nova'},
+    ],
+    jsxImport:'@weave-ds/components/NavBar',
+  },
+  {
+    slug:'NavBar--Mobile', comp:'NavBar', variant:'mobile', label:'Mobile',
+    props:{brand:'Neura Nova'},
+    width:375, height:52, fullWidth:true,
+    controls:[
+      {key:'brand',label:'Brand Name',type:'text',default:'Neura Nova'},
+    ],
+    jsxImport:'@weave-ds/components/NavBar',
+  },
+
+  // HeroSection
+  {
+    slug:'HeroSection--Desktop', comp:'HeroSection', variant:'desktop', label:'Desktop',
+    props:{},
+    width:916, height:292, fullWidth:true,
+    controls:[],
+    jsxImport:'@weave-ds/components/HeroSection',
+  },
+  {
+    slug:'HeroSection--Mobile', comp:'HeroSection', variant:'mobile', label:'Mobile',
+    props:{},
+    width:375, height:256, fullWidth:true,
+    controls:[],
+    jsxImport:'@weave-ds/components/HeroSection',
+  },
+
+  // StatsBar
+  {
+    slug:'StatsBar--Default', comp:'StatsBar', variant:'default', label:'Default',
+    props:{stats:[{value:'98%',label:'Customer Score'},{value:'$180K',label:'Revenue Recovered'},{value:'87%',label:'Lead Automation'}]},
+    width:916, height:80, fullWidth:true,
+    controls:[],
+    jsxImport:'@weave-ds/components/StatsBar',
+  },
+  {
+    slug:'StatsBar--Mobile', comp:'StatsBar', variant:'mobile', label:'Mobile',
+    props:{stats:[{value:'98%',label:'CSAT'},{value:'$180K',label:'Revenue'},{value:'87%',label:'Automation'}]},
+    width:375, height:72, fullWidth:true,
+    controls:[],
+    jsxImport:'@weave-ds/components/StatsBar',
+  },
+
+  // FeatureCard
+  {
+    slug:'FeatureCard--Chat', comp:'FeatureCard', variant:'chat', label:'Chat',
+    props:{icon:'💬',title:'Real-time Chat',description:'Deploy conversational agents that resolve support tickets instantly — no human needed.',color:'#C07800'},
+    width:272, height:168, fullWidth:false,
+    controls:[
+      {key:'title',label:'Title',type:'text',default:'Real-time Chat'},
+      {key:'description',label:'Description',type:'text',default:'Deploy conversational agents that resolve support tickets instantly — no human needed.'},
+      {key:'icon',label:'Icon',type:'text',default:'💬'},
+      {key:'color',label:'Accent Color',type:'text',default:'#C07800'},
+    ],
+    jsxImport:'@weave-ds/components/FeatureCard',
+  },
+  {
+    slug:'FeatureCard--NoCode', comp:'FeatureCard', variant:'nocode', label:'NoCode',
+    props:{icon:'⚡',title:'No-Code Builder',description:'Build and launch AI agents visually in minutes — zero engineering resources required.',color:'#1A8A5A'},
+    width:272, height:168, fullWidth:false,
+    controls:[
+      {key:'title',label:'Title',type:'text',default:'No-Code Builder'},
+      {key:'description',label:'Description',type:'text',default:'Build and launch AI agents visually in minutes — zero engineering resources required.'},
+      {key:'icon',label:'Icon',type:'text',default:'⚡'},
+      {key:'color',label:'Accent Color',type:'text',default:'#1A8A5A'},
+    ],
+    jsxImport:'@weave-ds/components/FeatureCard',
+  },
+  {
+    slug:'FeatureCard--Voice', comp:'FeatureCard', variant:'voice', label:'Voice',
+    props:{icon:'🎙',title:'Voice AI Agent',description:'Natural language voice support with multilingual capability right out of the box.',color:'#2E5CE8'},
+    width:272, height:168, fullWidth:false,
+    controls:[
+      {key:'title',label:'Title',type:'text',default:'Voice AI Agent'},
+      {key:'description',label:'Description',type:'text',default:'Natural language voice support with multilingual capability right out of the box.'},
+      {key:'icon',label:'Icon',type:'text',default:'🎙'},
+      {key:'color',label:'Accent Color',type:'text',default:'#2E5CE8'},
+    ],
+    jsxImport:'@weave-ds/components/FeatureCard',
+  },
+
+  // PricingCard
+  {
+    slug:'PricingCard--Default', comp:'PricingCard', variant:'default', label:'Default',
+    props:{plan:'Growth',price:'$149',period:'/month',features:['Unlimited AI agents','10K conversations/mo','Voice & chat channels','Analytics dashboard','Priority support'],cta:'Get Started Free'},
+    width:380, height:208, fullWidth:false,
+    controls:[
+      {key:'plan',label:'Plan Name',type:'text',default:'Growth'},
+      {key:'price',label:'Price',type:'text',default:'$149'},
+      {key:'period',label:'Period',type:'text',default:'/month'},
+      {key:'cta',label:'CTA Label',type:'text',default:'Get Started Free'},
+      {key:'variant',label:'Variant',type:'select',options:['default','featured'],default:'default'},
+    ],
+    jsxImport:'@weave-ds/components/PricingCard',
+  },
+  {
+    slug:'PricingCard--Featured', comp:'PricingCard', variant:'featured', label:'Featured',
+    props:{plan:'Growth',price:'$149',period:'/month',features:['Unlimited AI agents','10K conversations/mo','Voice & chat channels','Analytics dashboard','Priority support'],cta:'Get Started Free'},
+    width:380, height:208, fullWidth:false,
+    controls:[
+      {key:'plan',label:'Plan Name',type:'text',default:'Growth'},
+      {key:'price',label:'Price',type:'text',default:'$149'},
+      {key:'period',label:'Period',type:'text',default:'/month'},
+      {key:'cta',label:'CTA Label',type:'text',default:'Get Started Free'},
+      {key:'variant',label:'Variant',type:'select',options:['default','featured'],default:'featured'},
+    ],
+    jsxImport:'@weave-ds/components/PricingCard',
+  },
+
+  // Typography
+  {
+    slug:'Typography--Heading', comp:'Typography', variant:'heading', label:'Heading',
+    props:{text:'Transform Business'},
+    width:640, height:320, fullWidth:false,
+    controls:[
+      {key:'text',label:'Text',type:'text',default:'Transform Business'},
+    ],
+    jsxImport:'@weave-ds/components/Typography',
+  },
+];
+
+const STORY_MAP={};
+STORIES.forEach(s=>{ STORY_MAP[s.slug]=s; });
+
+// group by comp
+const COMP_GROUPS={};
+STORIES.forEach(s=>{
+  if(!COMP_GROUPS[s.comp]) COMP_GROUPS[s.comp]=[];
+  COMP_GROUPS[s.comp].push(s);
+});
+
+const COMP_META={
+  NavBar:      {icon:'NB',color:'#2E5CE8'},
+  HeroSection: {icon:'HS',color:'#C07800'},
+  StatsBar:    {icon:'SB',color:'#1A8A5A'},
+  FeatureCard: {icon:'FC',color:'#6B52D1'},
+  PricingCard: {icon:'PC',color:'#C4305A'},
+  Typography:  {icon:'Tx',color:'#9A9288'},
+};
+
+// ── STATE ──────────────────────────────────────────────────────────────────
+const state={
+  storySlug: 'NavBar--Default',
+  viewport: 'desktop',  // 'desktop' | 'mobile'
+  zoom: 1,
+  darkMode: false,
+  rightTab: 'controls',
+  // per-story live props overrides
+  propsOverride: {},
+  // which groups are open
+  openGroups: Object.fromEntries(Object.keys(COMP_GROUPS).map(k=>[k,true])),
+  searchQ: '',
+};
+
+// ── URL ROUTING ────────────────────────────────────────────────────────────
+function parseSlug(){
+  const p=new URLSearchParams(window.location.search);
+  const s=p.get('story');
+  if(s && STORY_MAP[s]) state.storySlug=s;
+}
+
+function pushSlug(slug){
+  const url=new URL(window.location.href);
+  url.searchParams.set('story',slug);
+  history.pushState({story:slug},'',url.toString());
+}
+
+window.addEventListener('popstate',e=>{
+  if(e.state && e.state.story && STORY_MAP[e.state.story]){
+    state.storySlug=e.state.story;
+    state.propsOverride={};
+    renderAll();
+  }
+});
+
+// ── COMPONENT RENDERER ─────────────────────────────────────────────────────
+// Merges story base props with live overrides and renders HTML
+function renderCompHtml(comp){
+  // comp = { type, w, h, props, variant }
+  switch(comp.type){
+
+    case 'NavBar': {
+      const nm=comp.w<500;
+      return `<div style="width:100%;height:100%;background:${T.surface};display:flex;align-items:center;padding:0 ${nm?16:28}px;gap:${nm?0:20}px">
+        <div style="display:flex;align-items:center;gap:8px${nm?';flex:1':''}">
+          <div style="width:26px;height:26px;border-radius:7px;background:${T.brand};display:flex;align-items:center;justify-content:center;flex:none"><span style="font-size:11px;font-weight:800;color:#fff">N</span></div>
+          <span style="font-size:13px;font-weight:700;color:${T.text};letter-spacing:-.02em">${comp.props.brand||'Neura Nova'}</span>
+        </div>
+        ${nm?'':['Product','Solutions','Pricing','About'].map(l=>`<span style="font-size:12px;color:${T.text2};cursor:pointer">${l}</span>`).join('')}
+        <div style="flex:1"></div>
+        <div style="height:30px;padding:0 14px;border-radius:7px;background:${T.brand};display:flex;align-items:center;flex:none;cursor:pointer"><span style="font-size:11.5px;font-weight:600;color:#fff">${nm?'Start':'Get Started →'}</span></div>
+      </div>`;
+    }
+
+    case 'HeroSection': {
+      const hm=comp.w<500;
+      return `<div style="width:100%;height:100%;background:${T.surfaceWarm};display:flex;flex-direction:column;align-items:center;justify-content:center;padding:${hm?'28px 24px':'36px 80px'};text-align:center">
+        <div style="height:22px;padding:0 10px;border-radius:11px;border:1px solid ${T.brand}44;background:${T.brandLight};display:flex;align-items:center;margin-bottom:${hm?12:18}px">
+          <span style="font-size:9.5px;font-weight:600;color:${T.brand};letter-spacing:.05em">AI-POWERED PLATFORM</span>
+        </div>
+        <div style="font-family:'Playfair Display',Georgia,serif;font-size:${hm?26:40}px;font-weight:600;color:${T.text};line-height:1.1;letter-spacing:-.025em;margin-bottom:${hm?10:14}px">
+          Transform Business<br>with <em style="color:${T.brand};font-style:italic">Intelligent AI Agents</em>
+        </div>
+        <div style="font-size:${hm?12:13}px;color:${T.text2};line-height:1.5;max-width:${hm?300:400}px;margin-bottom:${hm?18:22}px">
+          Deploy autonomous agents for customer support, lead generation, and operations—24/7 without human oversight.
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:${hm?14:18}px;justify-content:center">
+          <div style="height:38px;padding:0 ${hm?16:22}px;border-radius:9px;background:${T.brand};display:flex;align-items:center;cursor:pointer"><span style="font-size:12.5px;font-weight:600;color:#fff">Start for Free →</span></div>
+          ${hm?'':`<div style="height:38px;padding:0 18px;border-radius:9px;border:1.5px solid ${T.border2};background:${T.surface};display:flex;align-items:center;cursor:pointer"><span style="font-size:12px;font-weight:500;color:${T.text2}">Watch Demo ▶</span></div>`}
+        </div>
+        <div style="font-size:${hm?10:11}px;color:${T.text3}">Trusted by <strong style="color:${T.text2}">10,000+</strong> businesses worldwide</div>
+      </div>`;
+    }
+
+    case 'StatsBar': {
+      const st=comp.props.stats||[{value:'98%',label:'Customer Score'},{value:'$180K',label:'Revenue Recovered'},{value:'87%',label:'Lead Automation'}];
+      const sm=comp.w<500;
+      return `<div style="width:100%;height:100%;background:${T.surface2};display:flex;align-items:center;justify-content:space-around;padding:0 ${sm?16:40}px">
+        ${st.map((s,i)=>`
+          ${i>0?`<div style="width:1px;height:36px;background:${T.border}"></div>`:''}
+          <div style="display:flex;flex-direction:column;align-items:center;gap:3px">
+            <div style="font-family:'Playfair Display',Georgia,serif;font-size:${sm?20:28}px;font-weight:600;color:${T.text};letter-spacing:-.02em">${s.value}</div>
+            <div style="font-size:${sm?9:10.5}px;color:${T.text3};white-space:nowrap">${s.label}</div>
+          </div>
+        `).join('')}
+      </div>`;
+    }
+
+    case 'FeatureCard': {
+      const fc=comp.props.color||T.brand;
+      return `<div style="width:100%;height:100%;background:${T.surface};border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:10px;box-shadow:${T.shadowMd}">
+        <div style="width:34px;height:34px;border-radius:9px;background:${fc}18;display:flex;align-items:center;justify-content:center;font-size:15px;flex:none">${comp.props.icon||'✦'}</div>
+        <div style="font-size:13px;font-weight:600;color:${T.text};letter-spacing:-.01em">${comp.props.title||'Feature'}</div>
+        <div style="font-size:11.5px;color:${T.text2};line-height:1.45;flex:1">${comp.props.description||''}</div>
+        <div style="display:flex;align-items:center;gap:3px;cursor:pointer"><span style="font-size:11px;font-weight:600;color:${fc}">Learn more</span><span style="font-size:11px;color:${fc}">→</span></div>
+      </div>`;
+    }
+
+    case 'PricingCard': {
+      const feats=comp.props.features||['Unlimited agents','10K conversations','Voice & chat','Analytics'];
+      const isFt=comp.variant==='featured';
+      return `<div style="width:100%;height:100%;background:${isFt?T.brand+'12':T.surface};border-radius:14px;${isFt?`border:1.5px solid ${T.brand}55;`:'border:1px solid '+T.border+';'}padding:24px;display:flex;flex-direction:column;gap:10px;box-shadow:${T.shadowMd}">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <span style="font-size:14px;font-weight:700;color:${T.text}">${comp.props.plan||'Growth'}</span>
+          ${isFt?`<span style="font-size:9.5px;font-weight:700;color:${T.brand};background:${T.brand}18;border-radius:5px;padding:2px 8px">MOST POPULAR</span>`:''}
+        </div>
+        <div style="display:flex;align-items:baseline;gap:4px">
+          <span style="font-family:'Playfair Display',Georgia,serif;font-size:36px;font-weight:600;color:${T.text};letter-spacing:-.03em">${comp.props.price||'$149'}</span>
+          <span style="font-size:12px;color:${T.text3}">${comp.props.period||'/month'}</span>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:6px;overflow:hidden">
+          ${feats.slice(0,4).map(f=>`<div style="display:flex;align-items:center;gap:7px"><span style="width:14px;height:14px;border-radius:50%;background:${T.brand}20;display:flex;align-items:center;justify-content:center;font-size:7px;color:${T.brand};flex:none">✓</span><span style="font-size:11.5px;color:${T.text2}">${f}</span></div>`).join('')}
+        </div>
+        <div style="height:38px;background:${T.brand};border-radius:9px;display:flex;align-items:center;justify-content:center;cursor:pointer"><span style="font-size:12.5px;font-weight:600;color:#fff">${comp.props.cta||'Get Started Free'}</span></div>
+      </div>`;
+    }
+
+    case 'Typography': {
+      const txt=comp.props.text||'Transform Business';
+      return `<div style="width:100%;height:100%;background:${T.surface};padding:32px;display:flex;flex-direction:column;gap:24px;overflow:auto">
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;color:${T.text3};letter-spacing:.06em;margin-bottom:8px">DISPLAY · 48px · Playfair Display 600</div>
+          <div style="font-family:'Playfair Display',Georgia,serif;font-size:48px;font-weight:600;color:${T.text};letter-spacing:-.03em;line-height:1.05">${txt}</div>
+        </div>
+        <div style="height:1px;background:${T.border}"></div>
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;color:${T.text3};letter-spacing:.06em;margin-bottom:8px">HEADING 1 · 36px · Playfair Display 600</div>
+          <div style="font-family:'Playfair Display',Georgia,serif;font-size:36px;font-weight:600;color:${T.text};letter-spacing:-.025em;line-height:1.1">${txt}</div>
+        </div>
+        <div style="height:1px;background:${T.border}"></div>
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;color:${T.text3};letter-spacing:.06em;margin-bottom:8px">HEADING 2 · 24px · Inter 600</div>
+          <div style="font-size:24px;font-weight:600;color:${T.text};letter-spacing:-.015em">${txt}</div>
+        </div>
+        <div style="height:1px;background:${T.border}"></div>
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;color:${T.text3};letter-spacing:.06em;margin-bottom:8px">BODY · 14px · Inter 400</div>
+          <div style="font-size:14px;color:${T.text2};line-height:1.6">The quick brown fox jumps over the lazy dog. Neura Nova deploys intelligent AI agents at scale.</div>
+        </div>
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;color:${T.text3};letter-spacing:.06em;margin-bottom:8px">LABEL · 11px · Inter 700 · UPPERCASE</div>
+          <div style="font-size:11px;font-weight:700;color:${T.text3};letter-spacing:.06em;text-transform:uppercase">AI-POWERED PLATFORM</div>
+        </div>
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;color:${T.text3};letter-spacing:.06em;margin-bottom:8px">MONO · 12px · JetBrains Mono</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:${T.text2}">--brand: #C07800  --text: #201D1A</div>
+        </div>
+      </div>`;
+    }
+
+    default:
+      return `<div style="width:100%;height:100%;background:${T.surface2};display:flex;align-items:center;justify-content:center;font-size:13px;color:${T.text3}">${comp.type}</div>`;
+  }
+}
+
+// ── SIDEBAR TREE ────────────────────────────────────────────────────────────
+function renderSidebar(){
+  const q=state.searchQ.toLowerCase();
+  const tree=document.getElementById('sb-tree');
+  let html='';
+
+  Object.entries(COMP_GROUPS).forEach(([compName,stories])=>{
+    const filtered=q?stories.filter(s=>
+      s.comp.toLowerCase().includes(q)||s.label.toLowerCase().includes(q)||s.slug.toLowerCase().includes(q)
+    ):stories;
+    if(!filtered.length) return;
+
+    const meta=COMP_META[compName]||{icon:'??',color:'#888'};
+    const isOpen=q?true:(state.openGroups[compName]!==false);
+
+    html+=`
+      <div class="tree-group">
+        <div class="tree-group-head${isOpen?' open':''}" onclick="toggleGroup('${compName}')">
+          <span class="chevron">▶</span>
+          <div class="comp-icon-sm" style="background:${meta.color}">${meta.icon}</div>
+          <span style="font-size:12.5px;font-weight:600;color:#ddd">${compName}</span>
+          <span style="margin-left:auto;font-size:10px;color:#555">${filtered.length}</span>
+        </div>
+        <div class="tree-stories${isOpen?' open':''}">
+          ${filtered.map(s=>`
+            <div class="tree-story${state.storySlug===s.slug?' active':''}"
+              onclick="loadStory('${s.slug}')">
+              <div class="story-dot"></div>
+              <span>${s.label}</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  });
+
+  tree.innerHTML=html;
+}
+
+function toggleGroup(name){
+  state.openGroups[name]=!state.openGroups[name];
+  renderSidebar();
+}
+
+function filterStories(q){
+  state.searchQ=q;
+  renderSidebar();
+}
+
+// ── PREVIEW RENDER ──────────────────────────────────────────────────────────
+function getActiveStory(){
+  return STORY_MAP[state.storySlug];
+}
+
+function getMergedProps(story){
+  return Object.assign({},story.props,state.propsOverride[story.slug]||{});
+}
+
+function renderPreview(){
+  const story=getActiveStory();
+  if(!story) return;
+
+  const overrides=state.propsOverride[story.slug]||{};
+  const mergedProps=getMergedProps(story);
+
+  // For variant overrides from controls
+  const variant=overrides.variant||story.variant;
+
+  // Determine effective w/h based on viewport if fullWidth
+  let w=story.width, h=story.height;
+  if(story.fullWidth && state.viewport==='mobile'){
+    // find mobile story for this comp
+    const mob=STORIES.find(s=>s.comp===story.comp&&(s.variant==='mobile'||s.slug.includes('Mobile')));
+    if(mob){w=mob.width;h=mob.height;}
+    else{w=375;}
+  } else if(story.fullWidth && state.viewport==='desktop'){
+    const desk=STORIES.find(s=>s.comp===story.comp&&(s.variant==='default'||s.variant==='desktop'||s.slug.includes('Desktop')));
+    if(desk){w=desk.width;h=desk.height;}
+  }
+
+  const frame=document.getElementById('preview-frame');
+  const inner=document.getElementById('preview-inner');
+
+  if(story.fullWidth){
+    frame.style.width=w+'px';
+    frame.style.height=h+'px';
+    frame.style.display='block';
+    frame.style.transform=`scale(${state.zoom})`;
+    frame.style.transformOrigin='top center';
+  } else {
+    frame.style.width=w+'px';
+    frame.style.height=h+'px';
+    frame.style.display='inline-block';
+    frame.style.transform=`scale(${state.zoom})`;
+    frame.style.transformOrigin='top center';
+  }
+
+  const comp={type:story.comp, w, h, props:mergedProps, variant};
+  inner.style.width=w+'px';
+  inner.style.height=h+'px';
+  inner.innerHTML=renderCompHtml(comp);
+}
+
+// ── BREADCRUMB ──────────────────────────────────────────────────────────────
+function renderBreadcrumb(){
+  const story=getActiveStory();
+  if(!story) return;
+  document.getElementById('crumb-comp').textContent=story.comp;
+  document.getElementById('crumb-story').textContent=story.label;
+}
+
+// ── RIGHT PANEL: CONTROLS ───────────────────────────────────────────────────
+function renderControls(){
+  const story=getActiveStory();
+  if(!story) return;
+  const overrides=state.propsOverride[story.slug]||{};
+  const mergedProps=getMergedProps(story);
+
+  if(!story.controls||story.controls.length===0){
+    document.getElementById('rp-body').innerHTML=`
+      <div class="ctrl-section">
+        <div class="ctrl-label">CONTROLS</div>
+        <div style="padding:20px 0;text-align:center;color:#aaa;font-size:12px">No controls for this story</div>
+      </div>
+    `;
+    return;
+  }
+
+  let html=`<div class="ctrl-section"><div class="ctrl-label">CONTROLS</div>`;
+
+  story.controls.forEach(ctrl=>{
+    const currentVal=overrides[ctrl.key]!==undefined?overrides[ctrl.key]:mergedProps[ctrl.key]!==undefined?mergedProps[ctrl.key]:ctrl.default;
+
+    if(ctrl.type==='text'){
+      html+=`
+        <div class="ctrl-row">
+          <div class="ctrl-row-label">${ctrl.label}</div>
+          <input class="ctrl-input" type="text" value="${escHtml(String(currentVal))}"
+            onchange="setOverride('${story.slug}','${ctrl.key}',this.value)" />
+        </div>
+      `;
+    } else if(ctrl.type==='boolean'){
+      html+=`
+        <div class="ctrl-checkbox-row">
+          <span class="ctrl-checkbox-label">${ctrl.label}</span>
+          <input class="ctrl-checkbox" type="checkbox" ${currentVal?'checked':''}
+            onchange="setOverride('${story.slug}','${ctrl.key}',this.checked)" />
+        </div>
+      `;
+    } else if(ctrl.type==='select'){
+      html+=`
+        <div class="ctrl-row">
+          <div class="ctrl-row-label">${ctrl.label}</div>
+          <select class="ctrl-select" onchange="setOverride('${story.slug}','${ctrl.key}',this.value)">
+            ${(ctrl.options||[]).map(o=>`<option value="${o}"${currentVal===o?' selected':''}>${o}</option>`).join('')}
+          </select>
+        </div>
+      `;
+    }
+  });
+
+  html+=`</div>`;
+
+  // Token bindings section
+  const tokenMap={
+    NavBar:      [{k:'background',v:'--surface',sw:T.surface},{k:'brand',v:'--brand',sw:T.brand},{k:'text',v:'--text',sw:T.text}],
+    HeroSection: [{k:'background',v:'--surface-warm',sw:T.surfaceWarm},{k:'headline',v:'--brand',sw:T.brand},{k:'text',v:'--text2',sw:T.text2}],
+    StatsBar:    [{k:'background',v:'--surface2',sw:T.surface2},{k:'value',v:'--text',sw:T.text},{k:'label',v:'--text3',sw:T.text3}],
+    FeatureCard: [{k:'background',v:'--surface',sw:T.surface},{k:'accent',v:'component prop',sw:null},{k:'text',v:'--text2',sw:T.text2}],
+    PricingCard: [{k:'background',v:'--brand (tinted)',sw:T.brand},{k:'price',v:'--text',sw:T.text},{k:'cta bg',v:'--brand',sw:T.brand}],
+    Typography:  [{k:'display font',v:'--font-display',sw:null},{k:'color',v:'--text',sw:T.text},{k:'secondary',v:'--text2',sw:T.text2}],
+  };
+  const binds=tokenMap[story.comp]||[];
+
+  html+=`
+    <div class="ctrl-section" style="border-top:1px solid #e8eaed;padding-top:14px">
+      <div class="ctrl-label">TOKEN BINDINGS</div>
+      ${binds.map(b=>`
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:9px">
+          ${b.sw?`<div style="width:12px;height:12px;border-radius:3px;background:${b.sw};border:1px solid rgba(0,0,0,.1);flex:none"></div>`:`<div style="width:12px;height:12px;border-radius:3px;border:1px dashed #ccc;flex:none"></div>`}
+          <span style="font-size:11.5px;color:#555;min-width:80px">${b.k}</span>
+          <span class="token-badge">${b.v}</span>
+        </div>
+      `).join('')}
+    </div>
+  `;
+
+  document.getElementById('rp-body').innerHTML=html;
+}
+
+// ── RIGHT PANEL: STORY/CODE ─────────────────────────────────────────────────
+function renderStoryCode(){
+  const story=getActiveStory();
+  if(!story) return;
+  const mergedProps=getMergedProps(story);
+
+  // Build JSX snippet
+  const propsLines=Object.entries(mergedProps)
+    .filter(([,v])=>!Array.isArray(v))
+    .map(([k,v])=>`  ${k}=${typeof v==='string'?`"${escHtml(v)}"`:v}`)
+    .join('\n');
+
+  const jsxCode=`import ${story.comp} from '${story.jsxImport}';\n\n<${story.comp}\n${propsLines}\n/>`;
+
+  const jsxHtml=jsxCode
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/import /g,'<span class="kw">import</span> ')
+    .replace(/from /g,'<span class="kw">from</span> ')
+    .replace(/(&#39;|")([@\w\/-]+)(&#39;|")/g,'<span class="str">$1$2$3</span>')
+    .replace(/\/\/.*/g,'<span class="cmt">$&</span>');
+
+  document.getElementById('rp-body').innerHTML=`
+    <div class="code-wrap">
+      <div class="code-header">
+        <span class="code-lang">JSX</span>
+        <button class="copy-btn" id="copy-btn" onclick="copyCode(${JSON.stringify(jsxCode).replace(/</g,'&lt;')})">Copy</button>
+      </div>
+      <pre class="code-block">${jsxHtml}</pre>
+      <div class="code-footer">
+        <a href="#" onclick="event.preventDefault();showToast('Source: src/components/${story.comp}/${story.comp}.stories.jsx','#2E5CE8')">
+          <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><rect x="1" y="1" width="9" height="9" rx="1" stroke="currentColor" stroke-width="1.1"/><path d="M4 4l4-4M8 0H6M8 0v2" stroke="currentColor" stroke-width="1.1"/></svg>
+          View source — ${story.comp}.stories.jsx
+        </a>
+      </div>
+    </div>
+  `;
+}
+
+// escape html for attribute values
+function escHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function copyCode(code){
+  // code may contain escaped entities, decode first
+  const txt=code;
+  navigator.clipboard.writeText(txt)
+    .then(()=>{ showToast('Copied to clipboard','#1A8A5A'); const b=document.getElementById('copy-btn');if(b){b.textContent='Copied!';setTimeout(()=>b.textContent='Copy',2000);} })
+    .catch(()=>showToast('Copy failed','#C4305A'));
+}
+
+// ── ACTIONS ─────────────────────────────────────────────────────────────────
+function loadStory(slug){
+  if(!STORY_MAP[slug]) return;
+  state.storySlug=slug;
+  state.propsOverride[slug]=state.propsOverride[slug]||{};
+  pushSlug(slug);
+  renderAll();
+}
+
+function setOverride(slug,key,val){
+  if(!state.propsOverride[slug]) state.propsOverride[slug]={};
+  // For variant overrides, we need to update story variant too
+  if(key==='variant'){
+    state.propsOverride[slug][key]=val;
+  } else {
+    state.propsOverride[slug][key]=val;
+  }
+  renderPreview();
+}
+
+function setRightTab(tab){
+  state.rightTab=tab;
+  document.getElementById('tab-controls').classList.toggle('active',tab==='controls');
+  document.getElementById('tab-story').classList.toggle('active',tab==='story');
+  if(tab==='controls') renderControls();
+  else renderStoryCode();
+}
+
+function setViewport(vp){
+  state.viewport=vp;
+  document.getElementById('vp-desktop').classList.toggle('active',vp==='desktop');
+  document.getElementById('vp-mobile').classList.toggle('active',vp==='mobile');
+  renderPreview();
+}
+
+let currentZoom=1;
+function adjustZoom(delta){
+  currentZoom=Math.max(0.25,Math.min(3,currentZoom+delta));
+  state.zoom=currentZoom;
+  document.getElementById('zoom-label').textContent=Math.round(currentZoom*100)+'%';
+  renderPreview();
+}
+function resetZoom(){
+  currentZoom=1;state.zoom=1;
+  document.getElementById('zoom-label').textContent='100%';
+  renderPreview();
+}
+
+let isDark=false;
+function toggleDark(){
+  isDark=!isDark;
+  document.documentElement.setAttribute('data-theme',isDark?'dark':'light');
+  document.getElementById('stage').style.background=isDark?'#1a1a1a':'#f6f9fc';
+  document.getElementById('preview-area').style.background=isDark?'#1a1a1a':'';
+  document.getElementById('darkmode-btn').classList.toggle('active',isDark);
+  T=readTokens();
+  renderPreview();
+}
+
+let isFullscreen=false;
+function toggleFullscreen(){
+  isFullscreen=!isFullscreen;
+  const rightPanel=document.getElementById('right-panel');
+  const sidebar=document.getElementById('sidebar');
+  rightPanel.style.display=isFullscreen?'none':'';
+  sidebar.style.display=isFullscreen?'none':'';
+  document.getElementById('fullscreen-btn').classList.toggle('active',isFullscreen);
+}
+
+// ── TOASTS ───────────────────────────────────────────────────────────────────
+function showToast(msg,color){
+  const area=document.getElementById('toast-area');
+  const id='t'+Date.now();
+  const t=document.createElement('div');
+  t.className='toast';t.id=id;
+  t.innerHTML=`<span style="width:7px;height:7px;border-radius:50%;background:${color};flex:none"></span><span>${msg}</span>`;
+  area.appendChild(t);
+  setTimeout(()=>{
+    const el=document.getElementById(id);
+    if(el){el.style.opacity='0';el.style.transform='translateY(6px)';el.style.transition='all .25s';setTimeout(()=>el.remove(),260);}
+  },2600);
+}
+
+// ── RENDER ALL ────────────────────────────────────────────────────────────────
+function renderAll(){
+  T=readTokens();
+  renderSidebar();
+  renderBreadcrumb();
+  renderPreview();
+  if(state.rightTab==='controls') renderControls();
+  else renderStoryCode();
+}
+
+// ── INIT ─────────────────────────────────────────────────────────────────────
+parseSlug();
+renderAll();
+</script>
+</body>
+</html>

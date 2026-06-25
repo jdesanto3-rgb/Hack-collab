@@ -258,6 +258,19 @@ const DS_SECTIONS=[
 const DS_MAP={};
 DS_SECTIONS.forEach(s=>s.components.forEach(c=>{DS_MAP[c.id]=c;}));
 
+// Neura Nova landing-page components — map to storybook stories
+['NavBar','HeroSection','StatsBar','FeatureCard','PricingCard','Typography'].forEach((t,i)=>{
+  const meta=[
+    {icon:'NB',color:'#6f57d4',story:'NavBar--Default',      file:'NavBar.jsx'},
+    {icon:'HS',color:'#C07800',story:'HeroSection--Desktop',  file:'HeroSection.jsx'},
+    {icon:'SB',color:'#1A8A5A',story:'StatsBar--Default',     file:'StatsBar.jsx'},
+    {icon:'FC',color:'#2E5CE8',story:'FeatureCard--Chat',     file:'FeatureCard.jsx'},
+    {icon:'PC',color:'#d4456b',story:'PricingCard--Featured', file:'PricingCard.jsx'},
+    {icon:'Tx',color:'#9C9890',story:'Typography--Heading',   file:'Typography.jsx'},
+  ][i];
+  DS_MAP[t]={id:t,...meta};
+});
+
 // ── CANVAS COMPONENTS (placed on artboard) ────────────────────────────────────
 // Each has: id, type, x, y, w, h, props, variant, size
 const DESKTOP_COMPONENTS=[
@@ -800,7 +813,7 @@ function renderRight(){
 
     <div class="rp-section">
       <div class="rp-label">STORYBOOK · axiom-ds</div>
-      <div class="sb-link" onclick="showToast('Opening ${ds.story} in Storybook…','${T.blue}')">
+      <div class="sb-link" onclick="window.open('sandbox-storybook.html?story=${encodeURIComponent(ds.story)}','_blank')">
         <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 2h8v8H2z" stroke="currentColor" stroke-width="1.2"/><path d="M5 5l4-4M9 1H7M9 1v2" stroke="currentColor" stroke-width="1.2"/></svg>
         ${ds.story}
       </div>
