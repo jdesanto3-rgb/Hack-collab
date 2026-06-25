@@ -37,7 +37,7 @@ header{height:58px;background:var(--surface);display:flex;align-items:center;pad
 .canvas-col-body{padding:10px 12px 12px;overflow-y:auto;display:flex;flex-direction:column;gap:10px}
 .canvas-card{background:var(--surface);border-radius:11px;padding:12px;cursor:pointer;animation:ch-rise .4s ease;transition:box-shadow .15s,transform .15s;box-shadow:var(--shadow-sm);position:relative}
 .canvas-card:hover{transform:translateY(-1px);box-shadow:var(--shadow-md)}
-.canvas-card::before{content:'';position:absolute;inset:-1.5px;border-radius:inherit;background:conic-gradient(from var(--glow-angle),transparent 0%,transparent 74%,color-mix(in srgb,var(--card-accent,var(--brand)) 45%,transparent) 82%,var(--card-accent,var(--brand)) 88%,var(--brand-mid) 93%,var(--card-accent,var(--brand)) 98%,transparent 100%);mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;padding:1.5px;animation:glow-rotate 2.5s linear infinite;pointer-events:none;opacity:0;transition:opacity .25s ease}
+.canvas-card::before{content:'';position:absolute;inset:-2px;border-radius:inherit;background:conic-gradient(from var(--glow-angle),transparent 0%,transparent 60%,color-mix(in srgb,var(--card-accent,var(--brand)) 65%,transparent) 76%,var(--card-accent,var(--brand)) 85%,var(--brand-mid) 91%,var(--card-accent,var(--brand)) 97%,transparent 100%);mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;padding:2px;animation:glow-rotate 2.5s linear infinite;pointer-events:none;opacity:0;transition:opacity .25s ease}
 .canvas-card:hover::before{opacity:1}
 .dir-card{background:var(--surface-warm);border-radius:13px;padding:15px;cursor:pointer;transition:opacity .2s;flex:1;min-width:210px}
 .dir-card:hover{box-shadow:0 3px 12px rgba(20,18,12,.09)}
@@ -982,7 +982,7 @@ function renderCanvasCard(card) {
     : card.agentColor;
   const cardAccent = card.tone || kindColor;
   return `
-    <div class="canvas-card" style="--card-accent:${cardAccent};background:linear-gradient(145deg,${TOKENS.surface} 40%,color-mix(in srgb,${cardAccent} 5%,${TOKENS.surface}) 100%);${freshStyle}" onclick="openDetail('${card.id}')">
+    <div class="canvas-card" style="--card-accent:${cardAccent};background:linear-gradient(145deg,${TOKENS.surface} 20%,color-mix(in srgb,${cardAccent} 10%,${TOKENS.surface}) 100%);${freshStyle}" onclick="openDetail('${card.id}')">
       <div style="display:flex;align-items:center;margin-bottom:8px">
         <span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:600;color:${kindColor};letter-spacing:.5px">${card.kindLabel}</span>
         <span style="font-size:11px;color:${TOKENS.text3};margin-left:auto">${card.time}</span>

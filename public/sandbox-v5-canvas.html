@@ -31,7 +31,7 @@ header{height:56px;background:linear-gradient(to bottom,var(--surface),color-mix
 .col-body{display:flex;flex-direction:column;gap:10px;overflow-y:auto;max-height:calc(100vh - 164px);padding:2px;padding-bottom:32px}
 .proj{background:var(--surface);border-radius:16px;cursor:pointer;animation:ch-rise .4s ease;transition:transform .2s,box-shadow .2s;display:flex;flex-direction:column;box-shadow:var(--shadow-sm);position:relative}
 .proj:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
-.proj::before{content:'';position:absolute;inset:-1.5px;border-radius:inherit;background:conic-gradient(from var(--glow-angle),transparent 0%,transparent 74%,color-mix(in srgb,var(--card-accent,var(--brand)) 45%,transparent) 82%,var(--card-accent,var(--brand)) 88%,var(--brand-mid) 93%,var(--card-accent,var(--brand)) 98%,transparent 100%);mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;padding:1.5px;animation:glow-rotate 2.5s linear infinite;pointer-events:none;opacity:0;transition:opacity .25s ease}
+.proj::before{content:'';position:absolute;inset:-2px;border-radius:inherit;background:conic-gradient(from var(--glow-angle),transparent 0%,transparent 60%,color-mix(in srgb,var(--card-accent,var(--brand)) 65%,transparent) 76%,var(--card-accent,var(--brand)) 85%,var(--brand-mid) 91%,var(--card-accent,var(--brand)) 97%,transparent 100%);mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;padding:2px;animation:glow-rotate 2.5s linear infinite;pointer-events:none;opacity:0;transition:opacity .25s ease}
 .proj:hover::before{opacity:1}
 .proj-inner{padding:16px;display:flex;flex-direction:column;gap:0}
 .proj-accent{display:none}
@@ -291,7 +291,7 @@ function renderCard(p){
   const featuredShadow=p.featured?`box-shadow:var(--shadow-lg);`:'';
 
   const card=`
-    <div class="proj" style="--card-accent:${p.accent};background:linear-gradient(145deg,${T.surface} 40%,color-mix(in srgb,${p.accent} 5%,${T.surface}) 100%);${featuredShadow}" onclick="${p.featured?`window.location.href='sandbox-v5-project.html'`:`void(0)`}">
+    <div class="proj" style="--card-accent:${p.accent};background:linear-gradient(145deg,${T.surface} 20%,color-mix(in srgb,${p.accent} 10%,${T.surface}) 100%);${featuredShadow}" onclick="${p.featured?`window.location.href='sandbox-v5-project.html'`:`void(0)`}">
       <div class="proj-inner">
         <div class="proj-client">
           <span style="width:5px;height:5px;border-radius:50%;background:${p.clientColor};flex:none"></span>
