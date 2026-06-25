@@ -29,8 +29,10 @@ header{height:64px;background:var(--surface);display:flex;align-items:center;pad
 .col{flex:none;width:316px;display:flex;flex-direction:column}
 .col-head{padding:0 2px 12px;display:flex;align-items:center;gap:9px}
 .col-body{display:flex;flex-direction:column;gap:14px;overflow-y:auto;max-height:calc(100vh - 172px);padding:2px;padding-bottom:36px}
-.proj{background:var(--surface);border-radius:16px;padding:20px;cursor:pointer;animation:ch-rise .4s ease;transition:transform .2s,box-shadow .2s;display:flex;flex-direction:column;gap:0;box-shadow:var(--shadow-sm)}
+.proj{background:var(--surface);border-radius:16px;padding:20px;cursor:pointer;animation:ch-rise .4s ease;transition:transform .2s,box-shadow .2s;display:flex;flex-direction:column;gap:0;box-shadow:var(--shadow-sm);position:relative}
 .proj:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+.proj::before{content:'';position:absolute;inset:-1.5px;border-radius:inherit;background:conic-gradient(from var(--glow-angle),transparent 0%,transparent 74%,color-mix(in srgb,var(--card-accent,var(--brand)) 45%,transparent) 82%,var(--card-accent,var(--brand)) 88%,var(--brand-mid) 93%,var(--card-accent,var(--brand)) 98%,transparent 100%);mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;padding:1.5px;animation:glow-rotate 2.5s linear infinite;pointer-events:none;opacity:0;transition:opacity .25s ease}
+.proj:hover::before{opacity:1}
 .proj-accent{display:none}
 .proj-client{display:inline-flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;letter-spacing:.5px;padding:3px 8px;border-radius:5px;margin-bottom:10px;background:var(--surface2);color:var(--text3)}
 .proj-name{font-family:'Playfair Display',Georgia,serif;font-size:19px;line-height:1.2;letter-spacing:-.02em;margin-bottom:7px}
@@ -278,7 +280,7 @@ function renderCard(p){
   }).join('');
   const progColor=p.progress>=90?T.green:p.progress>=50?T.blue:T.amber;
   return `
-    <a class="proj" href="sandbox-v4-project.html?project=${p.id}" style="display:flex;flex-direction:column">
+    <a class="proj" href="sandbox-v4-project.html?project=${p.id}" style="--card-accent:${p.accent};background:linear-gradient(145deg,${T.surface} 40%,color-mix(in srgb,${p.accent} 5%,${T.surface}) 100%);display:flex;flex-direction:column">
       <div class="proj-client">
         <span style="width:5px;height:5px;border-radius:50%;background:${p.clientColor};flex:none"></span>
         ${p.client}

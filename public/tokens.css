@@ -252,6 +252,15 @@ html[data-theme="light"] {
   --shadow-lg: 0 4px 20px rgba(32, 28, 24, 0.12);
 }
 
+/* ── DARK MODE HEADER EDGE ── */
+html[data-theme="dark"] header,
+html[data-theme="dark"] #toolbar {
+  border-bottom: 1px solid var(--border);
+}
+@media (prefers-color-scheme: dark) {
+  header, #toolbar { border-bottom: 1px solid var(--border); }
+}
+
 /* ── GLOBAL BASE ── */
 *, *::before, *::after {
   box-sizing: border-box;

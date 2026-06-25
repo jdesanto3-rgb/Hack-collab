@@ -29,8 +29,10 @@ header{height:56px;background:linear-gradient(to bottom,var(--surface),color-mix
 .col{flex:none;width:292px;display:flex;flex-direction:column}
 .col-head{padding:0 2px 10px;display:flex;align-items:center;gap:8px}
 .col-body{display:flex;flex-direction:column;gap:10px;overflow-y:auto;max-height:calc(100vh - 164px);padding:2px;padding-bottom:32px}
-.proj{background:var(--surface);border-radius:16px;cursor:pointer;animation:ch-rise .4s ease;transition:transform .2s,box-shadow .2s;display:flex;flex-direction:column;overflow:hidden;box-shadow:var(--shadow-sm)}
+.proj{background:var(--surface);border-radius:16px;cursor:pointer;animation:ch-rise .4s ease;transition:transform .2s,box-shadow .2s;display:flex;flex-direction:column;box-shadow:var(--shadow-sm);position:relative}
 .proj:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+.proj::before{content:'';position:absolute;inset:-1.5px;border-radius:inherit;background:conic-gradient(from var(--glow-angle),transparent 0%,transparent 74%,color-mix(in srgb,var(--card-accent,var(--brand)) 45%,transparent) 82%,var(--card-accent,var(--brand)) 88%,var(--brand-mid) 93%,var(--card-accent,var(--brand)) 98%,transparent 100%);mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;padding:1.5px;animation:glow-rotate 2.5s linear infinite;pointer-events:none;opacity:0;transition:opacity .25s ease}
+.proj:hover::before{opacity:1}
 .proj-inner{padding:16px;display:flex;flex-direction:column;gap:0}
 .proj-accent{display:none}
 .proj-client{display:inline-flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:500;letter-spacing:.5px;padding:3px 7px;border-radius:4px;margin-bottom:8px;background:var(--surface2);color:var(--text3)}
@@ -289,7 +291,7 @@ function renderCard(p){
   const featuredShadow=p.featured?`box-shadow:var(--shadow-lg);`:'';
 
   const card=`
-    <div class="proj" style="${featuredShadow}" onclick="${p.featured?`window.location.href='sandbox-v5-project.html'`:`void(0)`}">
+    <div class="proj" style="--card-accent:${p.accent};background:linear-gradient(145deg,${T.surface} 40%,color-mix(in srgb,${p.accent} 5%,${T.surface}) 100%);${featuredShadow}" onclick="${p.featured?`window.location.href='sandbox-v5-project.html'`:`void(0)`}">
       <div class="proj-inner">
         <div class="proj-client">
           <span style="width:5px;height:5px;border-radius:50%;background:${p.clientColor};flex:none"></span>
@@ -317,7 +319,7 @@ function renderCard(p){
 // ── AGENT ACTIVITY STRIP (featured card only) ─────────────────────────────────
 function renderActivityStrip(){
   return `
-    <div style="border-top:1px solid ${T.border};padding:12px 16px 14px;background:${T.surface2}">
+    <div style="border-top:1px solid ${T.border};padding:12px 16px 14px;background:${T.surface2};border-radius:0 0 16px 16px">
       <div style="display:flex;align-items:center;gap:6px;margin-bottom:9px">
         <span style="font-family:'JetBrains Mono',monospace;font-size:8.5px;font-weight:700;letter-spacing:.8px;color:${T.text3}">CURRENTLY ACTIVE</span>
         <span style="width:6px;height:6px;border-radius:50%;background:#22d366;animation:ch-pulse 1.8s ease-in-out infinite;flex:none"></span>
