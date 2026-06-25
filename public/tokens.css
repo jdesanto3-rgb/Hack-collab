@@ -140,78 +140,78 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --bg:           #0D0C0A;
-    --surface:      #141210;
-    --surface2:     #1C1A17;
-    --border:       #2A2720;
-    --border2:      #363028;
+    --surface:      #1C1914;
+    --surface2:     #262219;
+    --border:       #383028;
+    --border2:      #4A4038;
     --text:         #EDE8E3;
-    --text2:        #8C8680;
-    --text3:        #565248;
+    --text2:        #A09A92;
+    --text3:        #706860;
     --bg-canvas:    #090807;
-    --surface-warm: #111008;
+    --surface-warm: #181410;
 
     --brand:       #F5B800;
-    --brand-light: #201800;
-    --brand-mid:   #C08000;
+    --brand-light: #2E2200;
+    --brand-mid:   #D49400;
 
     --blue:        #5580FF;
-    --blue-light:  #080C28;
+    --blue-light:  #10183C;
     --green:       #00E58A;
-    --green-light: #001814;
+    --green-light: #00261E;
     --red:         #E83E6C;
-    --red-light:   #200818;
+    --red-light:   #300C26;
     --amber:       #F5B800;
-    --amber-light: #201800;
+    --amber-light: #2E2200;
     --teal:        #1ECCB6;
-    --teal-light:  #021C18;
+    --teal-light:  #062820;
     --npt:         #4D9ED4;
-    --npt-light:   #0E2535;
+    --npt-light:   #122E42;
 
     --purple:       #5580FF;
-    --purple-light: #080C28;
+    --purple-light: #10183C;
 
-    --shadow-sm: 0 2px 8px rgba(0,0,0,0.35), 0 1px 2px rgba(0,0,0,0.25);
-    --shadow-md: 0 4px 20px rgba(0,0,0,0.45), 0 1px 4px rgba(0,0,0,0.25);
-    --shadow-lg: 0 8px 40px rgba(0,0,0,0.55), 0 2px 8px rgba(0,0,0,0.30);
+    --shadow-sm: 0 2px 8px rgba(0,0,0,0.40), 0 1px 2px rgba(0,0,0,0.28);
+    --shadow-md: 0 4px 20px rgba(0,0,0,0.52), 0 1px 4px rgba(0,0,0,0.28);
+    --shadow-lg: 0 8px 40px rgba(0,0,0,0.62), 0 2px 8px rgba(0,0,0,0.34);
   }
 }
 
 /* ── DARK MODE (explicit JS toggle) ── */
 html[data-theme="dark"] {
   --bg:           #0D0C0A;
-  --surface:      #141210;
-  --surface2:     #1C1A17;
-  --border:       #2A2720;
-  --border2:      #363028;
+  --surface:      #1C1914;
+  --surface2:     #262219;
+  --border:       #383028;
+  --border2:      #4A4038;
   --text:         #EDE8E3;
-  --text2:        #8C8680;
-  --text3:        #565248;
+  --text2:        #A09A92;
+  --text3:        #706860;
   --bg-canvas:    #090807;
-  --surface-warm: #111008;
+  --surface-warm: #181410;
 
   --brand:       #F5B800;
-  --brand-light: #201800;
-  --brand-mid:   #C08000;
+  --brand-light: #2E2200;
+  --brand-mid:   #D49400;
 
   --blue:        #5580FF;
-  --blue-light:  #080C28;
+  --blue-light:  #10183C;
   --green:       #00E58A;
-  --green-light: #001814;
+  --green-light: #00261E;
   --red:         #E83E6C;
-  --red-light:   #200818;
+  --red-light:   #300C26;
   --amber:       #F5B800;
-  --amber-light: #201800;
+  --amber-light: #2E2200;
   --teal:        #1ECCB6;
-  --teal-light:  #021C18;
+  --teal-light:  #062820;
   --npt:         #4D9ED4;
-  --npt-light:   #0E2535;
+  --npt-light:   #122E42;
 
   --purple:       #5580FF;
-  --purple-light: #080C28;
+  --purple-light: #10183C;
 
-  --shadow-sm: 0 2px 8px rgba(0,0,0,0.35), 0 1px 2px rgba(0,0,0,0.25);
-  --shadow-md: 0 4px 20px rgba(0,0,0,0.45), 0 1px 4px rgba(0,0,0,0.25);
-  --shadow-lg: 0 8px 40px rgba(0,0,0,0.55), 0 2px 8px rgba(0,0,0,0.30);
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.40), 0 1px 2px rgba(0,0,0,0.28);
+  --shadow-md: 0 4px 20px rgba(0,0,0,0.52), 0 1px 4px rgba(0,0,0,0.28);
+  --shadow-lg: 0 8px 40px rgba(0,0,0,0.62), 0 2px 8px rgba(0,0,0,0.34);
 }
 
 /* ── LIGHT MODE (explicit JS toggle) ── */
