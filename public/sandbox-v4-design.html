@@ -360,6 +360,7 @@ const state={
   aiSuggestionDismissed:false,
   rightTab:'inspect',             // 'inspect' | 'code'
   addingId:null,
+  approvalDone:false,
 };
 
 function getSelected(){
@@ -530,6 +531,10 @@ function renderToolbar(){
       axiom-ds · Storybook
     </button>
     <div class="tb-sep"></div>
+    <div style="display:flex;align-items:center;gap:5px;background:#5551ff18;border:1px solid #5551ff44;border-radius:20px;padding:4px 11px;cursor:pointer" onclick="window.open('https://www.figma.com','_blank')" title="Open in Figma">
+      <svg width="10" height="14" viewBox="0 0 14 20" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="7" height="7" rx="3.5" fill="#F24E1E"/><rect x="7" y="0" width="7" height="7" rx="3.5" fill="#FF7262"/><rect x="0" y="7" width="7" height="7" rx="3.5" fill="#A259FF"/><rect x="0" y="14" width="7" height="7" rx="3.5" fill="#0ACF83"/><circle cx="10.5" cy="10.5" r="3.5" fill="#1ABCFE"/></svg>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:#8b88ff">Design Review</span>
+    </div>
     <button class="share-btn">Share</button>
     <button class="preview-btn" onclick="showPreview()">Preview ▶</button>
     <div class="tb-sep"></div>
@@ -774,6 +779,7 @@ function renderRight(){
         <div style="font-size:12.5px;font-weight:600">No selection</div>
         <div style="font-size:11.5px">Click a component on the canvas to inspect it</div>
       </div>
+      ${approvalSectionHtml()}
     `;
     return;
   }
@@ -816,6 +822,7 @@ function renderRight(){
           <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:${T.blue}">src/components/${sel.type}/${sel.type}.stories.jsx</div>
         </div>
       </div>
+      ${approvalSectionHtml()}
     `;
     return;
   }
@@ -903,6 +910,7 @@ function renderRight(){
       <div class="prop-row"><span class="prop-key">width</span><span class="prop-val">${sel.w}px</span></div>
       <div class="prop-row"><span class="prop-key">height</span><span class="prop-val">${sel.h}px</span></div>
     </div>
+    ${approvalSectionHtml()}
   `;
 }
 
@@ -980,6 +988,76 @@ function applyAiSuggestion(){
 }
 
 function undo(){showToast('Undo — no further history',T.text3);}
+
+// ── APPROVAL ──────────────────────────────────────────────────────────────────
+const FIGMA_SVG_SM=`<svg width="10" height="14" viewBox="0 0 14 20" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="7" height="7" rx="3.5" fill="#F24E1E"/><rect x="7" y="0" width="7" height="7" rx="3.5" fill="#FF7262"/><rect x="0" y="7" width="7" height="7" rx="3.5" fill="#A259FF"/><rect x="0" y="14" width="7" height="7" rx="3.5" fill="#0ACF83"/><circle cx="10.5" cy="10.5" r="3.5" fill="#1ABCFE"/></svg>`;
+
+function approveFigma(){
+  state.approvalDone=true;
+  renderRight();
+  showToast('Design approved — ready for engineering handoff',T.green);
+}
+
+function approvalSectionHtml(){
+  const done=state.approvalDone;
+  const COMMENTS=[
+    {n:'1',auth:'VD · Visual Designer',  bg:'#e05b8a',text:'Should the suggest chip use amber here or our new priority-blue token?',time:'40m',resolved:false},
+    {n:'2',auth:'Devon Park · QA Engineer',bg:'#2e8157',text:'Textarea height feels tight on mobile — needs at least 72px to show 3 lines.',time:'1h',resolved:false},
+    {n:'3',auth:'SC · Sarah Chen',         bg:'#6f57d4',text:'"Regression" pill confirmed as default per Jun 22 decision.',time:'2h',resolved:true},
+  ];
+  const HISTORY=[
+    {time:'2m ago', agent:'UX',color:'#d4456b',text:'Figma v4 shared for stakeholder review — 3 comments open'},
+    {time:'40m ago',agent:'VD',color:'#e05b8a',text:'Comment on PriorityChip color token in Figma v4'},
+    {time:'1h ago', agent:'DP',color:'#2e8157',text:'Comment on textarea height in Figma v4'},
+    {time:'2h ago', agent:'SC',color:'#6f57d4',text:'Uploaded Figma v4 — priority auto-suggest consolidated'},
+    {time:'Jun 22', agent:'UX',color:'#d4456b',text:'Severity field removed per team decision'},
+  ];
+  return `
+    <div style="border-top:1px solid ${T.border};padding:14px 16px 16px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.7px;color:${done?T.green:T.amber};margin-bottom:8px">${done?'✓ REVIEW COMPLETE':'WAITING APPROVAL'}</div>
+      <div style="background:${done?T.greenLight:T.amberLight};border:1px solid ${done?T.green+'33':T.amber+'33'};border-radius:10px;padding:11px;margin-bottom:14px">
+        <div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:${done?0:10}px">
+          <div style="width:22px;height:22px;border-radius:6px;background:#5551ff;display:flex;align-items:center;justify-content:center;flex:none">${FIGMA_SVG_SM}</div>
+          <div style="flex:1">
+            <div style="font-size:12px;font-weight:700;color:${T.text};margin-bottom:2px">Figma Design Review</div>
+            <div style="font-size:11px;color:${T.text2};line-height:1.4">${done?'Approved · ready for engineering handoff':'Neura Nova Landing Page v4 — 3 open comments'}</div>
+            <div style="margin-top:3px"><span style="font-size:10.5px;color:#8b88ff;cursor:pointer" onclick="window.open('https://www.figma.com','_blank')">Open in Figma →</span></div>
+          </div>
+        </div>
+        ${done?`<div style="font-size:11px;color:${T.green};font-weight:600;display:flex;align-items:center;gap:5px;padding-top:6px"><span>✓</span> Ready to hand off to engineering</div>`:`
+          <div style="margin-bottom:8px">
+            ${COMMENTS.filter(c=>!c.resolved).map(c=>`
+              <div style="display:flex;align-items:flex-start;gap:6px;padding:5px 0;border-bottom:1px solid ${T.amber}22">
+                <span style="font-family:'JetBrains Mono',monospace;font-size:8.5px;font-weight:700;color:#8b88ff;background:#5551ff18;border-radius:50%;width:15px;height:15px;display:flex;align-items:center;justify-content:center;flex:none;margin-top:1px">${c.n}</span>
+                <div style="flex:1">
+                  <div style="font-size:10px;font-weight:600;color:${T.text2}">${c.auth}</div>
+                  <div style="font-size:10.5px;color:${T.text2};line-height:1.35">${c.text}</div>
+                  <div style="font-size:9px;color:${T.text3};margin-top:1px">${c.time}</div>
+                </div>
+              </div>`).join('')}
+          </div>
+          <div style="display:flex;gap:7px">
+            <button onclick="approveFigma()" style="flex:1;padding:7px 0;border-radius:7px;background:#5551ff;color:#fff;font-size:12px;font-weight:700;border:none;cursor:pointer;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">Approve</button>
+            <button style="flex:1;padding:7px 0;border-radius:7px;background:transparent;color:${T.text};font-size:12px;font-weight:600;border:1.5px solid ${T.border2};cursor:pointer" onmouseover="this.style.borderColor='${T.text2}'" onmouseout="this.style.borderColor='${T.border2}'">Request Changes</button>
+          </div>
+        `}
+      </div>
+
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.7px;color:${T.text3};margin-bottom:8px">REVIEW HISTORY</div>
+      ${HISTORY.map((e,i)=>`
+        <div style="display:flex;gap:9px;padding:7px 0;border-bottom:1px solid ${T.border}${i===HISTORY.length-1?';border-bottom:none':''}">
+          <div style="display:flex;flex-direction:column;align-items:center;width:20px;flex:none">
+            <div style="width:20px;height:20px;border-radius:5px;background:${e.color};display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:7.5px;font-weight:700;color:#fff">${e.agent}</div>
+            ${i<HISTORY.length-1?`<div style="width:1.5px;flex:1;min-height:6px;background:${T.border};border-radius:2px;margin:2px 0"></div>`:''}
+          </div>
+          <div style="flex:1;padding-top:1px">
+            <div style="font-size:11.5px;color:${T.text2};line-height:1.35">${e.text}</div>
+            <div style="font-size:9.5px;color:${T.text3};margin-top:2px">${e.time}</div>
+          </div>
+        </div>`).join('')}
+    </div>
+  `;
+}
 
 // ── TOASTS ────────────────────────────────────────────────────────────────────
 let toastTimer=null;
