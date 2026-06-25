@@ -261,24 +261,22 @@ DS_SECTIONS.forEach(s=>s.components.forEach(c=>{DS_MAP[c.id]=c;}));
 // ── CANVAS COMPONENTS (placed on artboard) ────────────────────────────────────
 // Each has: id, type, x, y, w, h, props, variant, size
 const DESKTOP_COMPONENTS=[
-  {id:'app-header',  type:'AppHeader',      x:0,   y:0,   w:916, h:52,  props:{title:'Axiom QA — New Request',version:'v3'},          variant:'default',size:'md'},
-  {id:'prog-bar',    type:'ProgressBar',    x:0,   y:52,  w:916, h:5,   props:{value:33,color:'blue'},                                variant:'default',size:'md'},
-  {id:'step-label',  type:'Typography',     x:32,  y:74,  w:500, h:28,  props:{text:'Step 1 of 2 · Request details',variant:'label'}, variant:'label',  size:'md'},
-  {id:'revised-tag', type:'Badge',          x:752, y:74,  w:132, h:28,  props:{label:'✓ Revised',color:'green'},                      variant:'green',  size:'sm'},
-  {id:'name-input',  type:'Input',          x:32,  y:122, w:500, h:56,  props:{label:'Test Name',placeholder:'e.g. Login flow regression',required:true},variant:'default',size:'md'},
-  {id:'priority-suggest',type:'PrioritySuggest',x:32,y:194,w:500,h:72, props:{value:'High',auto:true,source:'Linked issue severity'}, variant:'success', size:'md'},
-  {id:'attach-input',type:'FileInput',      x:32,  y:282, w:500, h:64,  props:{label:'Attach files',optional:true},                   variant:'default',size:'md'},
-  {id:'submit-btn',  type:'Button',         x:32,  y:362, w:500, h:48,  props:{label:'Submit Test Request →',tone:'green'},            variant:'primary', size:'lg'},
-  {id:'ds-tag',      type:'Typography',     x:32,  y:428, w:500, h:22,  props:{text:'Axiom DS · persona-reviewed · v3',variant:'caption'},variant:'caption',size:'sm'},
+  {id:'d-nav',      type:'NavBar',      x:0,   y:0,   w:916, h:60,  props:{brand:'Neura Nova'},                                                                                                                                                                       variant:'default', size:'md'},
+  {id:'d-hero',     type:'HeroSection', x:0,   y:60,  w:916, h:292, props:{},                                                                                                                                                                                         variant:'default', size:'lg'},
+  {id:'d-stats',    type:'StatsBar',    x:0,   y:352, w:916, h:80,  props:{stats:[{value:'98%',label:'Customer Score'},{value:'$180K',label:'Revenue Recovered'},{value:'87%',label:'Lead Automation'}]},                                                              variant:'default', size:'md'},
+  {id:'d-fl',       type:'Typography',  x:32,  y:460, w:200, h:22,  props:{text:'CORE FEATURES',variant:'label'},                                                                                                                                                       variant:'label',   size:'sm'},
+  {id:'d-f1',       type:'FeatureCard', x:32,  y:490, w:272, h:168, props:{icon:'💬',title:'Real-time Chat',description:'Deploy conversational agents that resolve support tickets instantly — no human needed.',color:'#C07800'},                                      variant:'default', size:'md'},
+  {id:'d-f2',       type:'FeatureCard', x:320, y:490, w:272, h:168, props:{icon:'⚡',title:'No-Code Builder',description:'Build and launch AI agents visually in minutes — zero engineering resources required.',color:'#1A8A5A'},                                       variant:'default', size:'md'},
+  {id:'d-f3',       type:'FeatureCard', x:608, y:490, w:272, h:168, props:{icon:'🎙',title:'Voice AI Agent',description:'Natural language voice support with multilingual capability right out of the box.',color:'#2E5CE8'},                                            variant:'default', size:'md'},
+  {id:'d-pl',       type:'Typography',  x:32,  y:686, w:240, h:22,  props:{text:'TRANSPARENT PRICING',variant:'label'},                                                                                                                                                  variant:'label',   size:'sm'},
+  {id:'d-price',    type:'PricingCard', x:268, y:716, w:380, h:208, props:{plan:'Growth',price:'$149',period:'/month',features:['Unlimited AI agents','10K conversations/mo','Voice & chat channels','Analytics dashboard','Priority support'],cta:'Get Started Free'}, variant:'featured', size:'lg'},
 ];
 
 const MOBILE_COMPONENTS=[
-  {id:'m-header',    type:'AppHeader',      x:0,   y:0,   w:375, h:48,  props:{title:'Axiom QA',version:'v3'},                       variant:'default',size:'md'},
-  {id:'m-prog',      type:'ProgressBar',    x:0,   y:48,  w:375, h:4,   props:{value:33,color:'blue'},                               variant:'default',size:'sm'},
-  {id:'m-label',     type:'Typography',     x:16,  y:64,  w:343, h:24,  props:{text:'Step 1 of 2',variant:'label'},                  variant:'label',  size:'sm'},
-  {id:'m-input',     type:'Input',          x:16,  y:100, w:343, h:50,  props:{label:'Test Name',placeholder:'e.g. Login flow…',required:true},variant:'default',size:'sm'},
-  {id:'m-priority',  type:'PrioritySuggest',x:16,  y:164, w:343, h:64,  props:{value:'High',auto:true},                              variant:'success', size:'sm'},
-  {id:'m-btn',       type:'Button',         x:16,  y:244, w:343, h:44,  props:{label:'Submit →',tone:'green'},                       variant:'primary', size:'md'},
+  {id:'m-nav',   type:'NavBar',      x:0,  y:0,   w:375, h:52,  props:{brand:'Neura Nova'},                                                                                                                variant:'default', size:'sm'},
+  {id:'m-hero',  type:'HeroSection', x:0,  y:52,  w:375, h:256, props:{},                                                                                                                                  variant:'default', size:'sm'},
+  {id:'m-stats', type:'StatsBar',    x:0,  y:320, w:375, h:72,  props:{stats:[{value:'98%',label:'CSAT'},{value:'$180K',label:'Revenue'},{value:'87%',label:'Automation'}]},                               variant:'default', size:'sm'},
+  {id:'m-feat',  type:'FeatureCard', x:16, y:412, w:343, h:148, props:{icon:'💬',title:'Real-time Chat',description:'Resolve support tickets instantly with conversational AI — active 24/7.',color:'#C07800'}, variant:'default', size:'md'},
 ];
 
 // ── STATE ─────────────────────────────────────────────────────────────────────
@@ -366,6 +364,71 @@ function renderCompHtml(comp){
       return `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:${btnBg};border-radius:9px;cursor:pointer">
         <span style="font-size:13.5px;font-weight:700;color:#fff">${comp.props.label}</span>
       </div>`;
+    case 'NavBar': {
+      const nm=comp.w<500;
+      return `<div style="width:100%;height:100%;background:${T2.surface};display:flex;align-items:center;padding:0 ${nm?16:28}px;gap:${nm?0:20}px">
+        <div style="display:flex;align-items:center;gap:8px${nm?';flex:1':''}">
+          <div style="width:26px;height:26px;border-radius:7px;background:${T2.brand};display:flex;align-items:center;justify-content:center;flex:none"><span style="font-size:11px;font-weight:800;color:#fff">N</span></div>
+          <span style="font-size:13px;font-weight:700;color:${T2.text};letter-spacing:-.02em">${comp.props.brand||'Neura Nova'}</span>
+        </div>
+        ${nm?'':['Product','Solutions','Pricing','About'].map(l=>`<span style="font-size:12px;color:${T2.text2}">${l}</span>`).join('')}
+        <div style="flex:1"></div>
+        <div style="height:30px;padding:0 14px;border-radius:7px;background:${T2.brand};display:flex;align-items:center;flex:none"><span style="font-size:11.5px;font-weight:600;color:#fff">${nm?'Start':'Get Started →'}</span></div>
+      </div>`;
+    }
+    case 'HeroSection': {
+      const hm=comp.w<500;
+      return `<div style="width:100%;height:100%;background:${T2.surfaceWarm};display:flex;flex-direction:column;align-items:center;justify-content:center;padding:${hm?'28px 24px':'36px 80px'};text-align:center">
+        <div style="height:22px;padding:0 10px;border-radius:11px;border:1px solid ${T2.brand}44;background:${T2.brandLight};display:flex;align-items:center;margin-bottom:${hm?12:18}px">
+          <span style="font-size:9.5px;font-weight:600;color:${T2.brand};letter-spacing:.05em">AI-POWERED PLATFORM</span>
+        </div>
+        <div style="font-family:'Playfair Display',Georgia,serif;font-size:${hm?26:40}px;font-weight:600;color:${T2.text};line-height:1.1;letter-spacing:-.025em;margin-bottom:${hm?10:14}px">
+          Transform Business<br>with <em style="color:${T2.brand};font-style:italic">Intelligent AI Agents</em>
+        </div>
+        <div style="font-size:${hm?12:13}px;color:${T2.text2};line-height:1.5;max-width:${hm?300:400}px;margin-bottom:${hm?18:22}px">
+          Deploy autonomous agents for customer support, lead generation, and operations—24/7 without human oversight.
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:${hm?14:18}px;justify-content:center">
+          <div style="height:38px;padding:0 ${hm?16:22}px;border-radius:9px;background:${T2.brand};display:flex;align-items:center"><span style="font-size:12.5px;font-weight:600;color:#fff">Start for Free →</span></div>
+          ${hm?'':`<div style="height:38px;padding:0 18px;border-radius:9px;border:1.5px solid ${T2.border2};background:${T2.surface};display:flex;align-items:center"><span style="font-size:12px;font-weight:500;color:${T2.text2}">Watch Demo ▶</span></div>`}
+        </div>
+        <div style="font-size:${hm?10:11}px;color:${T2.text3}">Trusted by <strong style="color:${T2.text2}">10,000+</strong> businesses worldwide</div>
+      </div>`;
+    }
+    case 'FeatureCard': {
+      const fc=comp.props.color||T2.brand;
+      return `<div style="width:100%;height:100%;background:${T2.surface};border-radius:12px;padding:${comp.h<150?16:20}px;display:flex;flex-direction:column;gap:${comp.h<150?7:10}px">
+        <div style="width:34px;height:34px;border-radius:9px;background:${fc}18;display:flex;align-items:center;justify-content:center;font-size:15px;flex:none">${comp.props.icon||'✦'}</div>
+        <div style="font-size:13px;font-weight:600;color:${T2.text};letter-spacing:-.01em">${comp.props.title}</div>
+        <div style="font-size:11.5px;color:${T2.text2};line-height:1.45;flex:1">${comp.props.description}</div>
+        <div style="display:flex;align-items:center;gap:3px"><span style="font-size:11px;font-weight:600;color:${fc}">Learn more</span><span style="font-size:11px;color:${fc}">→</span></div>
+      </div>`;
+    }
+    case 'StatsBar': {
+      const st=comp.props.stats||[{value:'98%',label:'Customer Score'},{value:'$180K',label:'Revenue Recovered'},{value:'87%',label:'Lead Automation'}];
+      const sm=comp.w<500;
+      return `<div style="width:100%;height:100%;background:${T2.surface2};display:flex;align-items:center;justify-content:space-around;padding:0 ${sm?16:40}px">
+        ${st.map(s=>`<div style="display:flex;flex-direction:column;align-items:center;gap:3px"><div style="font-family:'Playfair Display',Georgia,serif;font-size:${sm?20:28}px;font-weight:600;color:${T2.text};letter-spacing:-.02em">${s.value}</div><div style="font-size:${sm?9:10.5}px;color:${T2.text3};white-space:nowrap">${s.label}</div></div>`).join(`<div style="width:1px;height:36px;background:${T2.border}"></div>`)}
+      </div>`;
+    }
+    case 'PricingCard': {
+      const feats=comp.props.features||['Unlimited agents','10K conversations','Voice & chat','Analytics'];
+      const isFt=comp.variant==='featured';
+      return `<div style="width:100%;height:100%;background:${isFt?T2.brand+'12':T2.surface};border-radius:14px;${isFt?`border:1.5px solid ${T2.brand}55;`:''}padding:24px;display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <span style="font-size:14px;font-weight:700;color:${T2.text}">${comp.props.plan||'Growth'}</span>
+          ${isFt?`<span style="font-size:9.5px;font-weight:700;color:${T2.brand};background:${T2.brand}18;border-radius:5px;padding:2px 8px">MOST POPULAR</span>`:''}
+        </div>
+        <div style="display:flex;align-items:baseline;gap:4px">
+          <span style="font-family:'Playfair Display',Georgia,serif;font-size:36px;font-weight:600;color:${T2.text};letter-spacing:-.03em">${comp.props.price||'$149'}</span>
+          <span style="font-size:12px;color:${T2.text3}">${comp.props.period||'/month'}</span>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:6px">
+          ${feats.slice(0,4).map(f=>`<div style="display:flex;align-items:center;gap:7px"><span style="width:14px;height:14px;border-radius:50%;background:${T2.brand}20;display:flex;align-items:center;justify-content:center;font-size:7px;color:${T2.brand};flex:none">✓</span><span style="font-size:11.5px;color:${T2.text2}">${f}</span></div>`).join('')}
+        </div>
+        <div style="height:38px;background:${T2.brand};border-radius:9px;display:flex;align-items:center;justify-content:center"><span style="font-size:12.5px;font-weight:600;color:#fff">${comp.props.cta||'Get Started Free'}</span></div>
+      </div>`;
+    }
     default:
       return `<div style="width:100%;height:100%;background:${T2.surface2};border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;color:${T2.text3}">${comp.type}</div>`;
   }
@@ -378,7 +441,7 @@ function renderToolbar(){
       <span style="font-size:15px">‹</span>
       <span style="font-family:'Inter',sans-serif;font-size:18px">Weave</span>
     </a>
-    <span style="font-size:11.5px;color:${T.text3}">Axiom — Test Request Intake</span>
+    <span style="font-size:11.5px;color:${T.text3}">Neura Nova — Landing Page</span>
     <span style="font-size:11.5px;color:${T.border2};margin:0 4px">›</span>
     <span style="font-size:11.5px;font-weight:600">Visual Design</span>
     <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:${T.red};background:${T.red}18;border-radius:4px;padding:2px 6px;margin-left:6px;display:flex;align-items:center;gap:4px"><span style="width:5px;height:5px;border-radius:50%;background:${T.red};animation:ch-pulse 1.4s infinite"></span>Active</span>
@@ -578,7 +641,7 @@ function renderCanvas(){
               <div style="width:18px;height:18px;border-radius:5px;background:#d4456b;display:flex;align-items:center;justify-content:center;font-size:7.5px;font-weight:700;color:#fff;font-family:'JetBrains Mono',monospace">VD</div>
               <span style="font-size:10.5px;font-weight:700;color:${T.text}">VD Agent suggests</span>
             </div>
-            <div style="font-size:11.5px;color:${T.text2};line-height:1.4">Match Submit CTA to the Approved state — use <span style="font-family:'JetBrains Mono',monospace;color:${T.green}">--green</span> to echo persona approval.</div>
+            <div style="font-size:11.5px;color:${T.text2};line-height:1.4">Hero CTA color matches <span style="font-family:'JetBrains Mono',monospace;color:${T.brand}">--brand</span>. Consider a lighter ghost variant for the secondary "Watch Demo" button.</div>
           </div>
         `:''}
       </div>
