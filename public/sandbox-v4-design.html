@@ -143,6 +143,60 @@ a{text-decoration:none;color:inherit}
 .preview-btn:hover{opacity:.85}
 .share-btn{padding:8px 16px;border-radius:9px;background:transparent;color:var(--text2);font-size:13px;font-weight:600;cursor:pointer;transition:all .15s}
 .share-btn:hover{background:var(--surface2)}
+
+/* ── PREVIEW OVERLAY ── */
+#preview-overlay{position:fixed;inset:0;z-index:9000;background:#fff;overflow-y:auto;display:none;font-family:'Inter',-apple-system,sans-serif;-webkit-font-smoothing:antialiased}
+#preview-overlay.active{display:block}
+#preview-exit{position:fixed;top:16px;right:20px;z-index:9001;display:flex;align-items:center;gap:7px;background:rgba(0,0,0,.72);backdrop-filter:blur(8px);color:#fff;border:none;border-radius:24px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;letter-spacing:-.01em;transition:background .15s}
+#preview-exit:hover{background:rgba(0,0,0,.88)}
+.nn-nav{background:#fff;border-bottom:1px solid #eee;position:sticky;top:0;z-index:100;display:flex;align-items:center;padding:0 48px;height:64px;gap:32px}
+.nn-nav-logo{display:flex;align-items:center;gap:10px}
+.nn-nav-logo-mark{width:32px;height:32px;border-radius:9px;background:#C07800;display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:14px}
+.nn-nav-links{display:flex;gap:28px;margin-left:8px}
+.nn-nav-links a{font-size:14px;color:#5C5850;text-decoration:none;transition:color .15s}
+.nn-nav-links a:hover{color:#201D1A}
+.nn-nav-cta{margin-left:auto;height:38px;padding:0 20px;border-radius:9px;background:#C07800;color:#fff;font-size:13.5px;font-weight:600;border:none;cursor:pointer;font-family:'Inter',sans-serif}
+.nn-hero{background:#F5F0E8;padding:96px 48px 80px;text-align:center;display:flex;flex-direction:column;align-items:center}
+.nn-hero-badge{height:26px;padding:0 14px;border-radius:13px;border:1px solid #C0780055;background:#FFF3CC;display:inline-flex;align-items:center;margin-bottom:22px;font-size:11px;font-weight:600;color:#C07800;letter-spacing:.06em}
+.nn-hero h1{font-family:'Playfair Display',Georgia,serif;font-size:58px;font-weight:600;color:#201D1A;line-height:1.08;letter-spacing:-.025em;max-width:720px;margin:0 0 20px}
+.nn-hero h1 em{color:#C07800;font-style:italic}
+.nn-hero p{font-size:16px;color:#5C5850;line-height:1.6;max-width:520px;margin:0 0 32px}
+.nn-hero-btns{display:flex;gap:14px;justify-content:center;margin-bottom:20px}
+.nn-hero-primary{height:48px;padding:0 28px;border-radius:11px;background:#C07800;color:#fff;font-size:14.5px;font-weight:600;border:none;cursor:pointer;font-family:'Inter',sans-serif}
+.nn-hero-secondary{height:48px;padding:0 24px;border-radius:11px;border:1.5px solid #C8C2BA;background:#fff;color:#5C5850;font-size:14px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif}
+.nn-hero-trust{font-size:13px;color:#9A9288}
+.nn-stats{background:#EEE9E2;display:flex;align-items:center;justify-content:center;gap:0;border-top:1px solid #DAD5CC;border-bottom:1px solid #DAD5CC}
+.nn-stat{flex:1;max-width:280px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:36px 20px;gap:6px}
+.nn-stat-val{font-family:'Playfair Display',Georgia,serif;font-size:40px;font-weight:600;color:#201D1A;letter-spacing:-.03em;line-height:1}
+.nn-stat-label{font-size:12px;color:#9A9288;letter-spacing:.04em}
+.nn-stat-div{width:1px;height:52px;background:#DAD5CC;align-self:center}
+.nn-features{padding:80px 48px;background:#FDFAF5}
+.nn-features-label{font-size:11px;font-weight:600;color:#9A9288;letter-spacing:.1em;margin-bottom:36px;text-align:center}
+.nn-feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:960px;margin:0 auto}
+.nn-feature-card{background:#fff;border:1px solid #DAD5CC;border-radius:16px;padding:28px;box-shadow:0 2px 8px rgba(32,28,24,.06),0 1px 2px rgba(32,28,24,.04);transition:transform .2s,box-shadow .2s}
+.nn-feature-card:hover{transform:translateY(-3px);box-shadow:0 8px 32px rgba(32,28,24,.1),0 2px 6px rgba(32,28,24,.06)}
+.nn-feature-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:16px}
+.nn-feature-card h3{font-size:16px;font-weight:600;color:#201D1A;margin:0 0 8px;letter-spacing:-.01em}
+.nn-feature-card p{font-size:14px;color:#5C5850;line-height:1.55;margin:0 0 16px}
+.nn-feature-more{font-size:13px;font-weight:600;display:flex;align-items:center;gap:4px}
+.nn-pricing{padding:80px 48px;background:#F5F0E8}
+.nn-pricing-label{font-size:11px;font-weight:600;color:#9A9288;letter-spacing:.1em;margin-bottom:12px;text-align:center}
+.nn-pricing h2{font-family:'Playfair Display',Georgia,serif;font-size:38px;font-weight:600;color:#201D1A;text-align:center;letter-spacing:-.02em;margin:0 0 48px}
+.nn-pricing-cards{display:flex;gap:20px;justify-content:center;max-width:900px;margin:0 auto}
+.nn-price-card{background:#fff;border:1px solid #DAD5CC;border-radius:18px;padding:32px;flex:1;max-width:280px}
+.nn-price-card.featured{background:#C0780010;border:1.5px solid #C0780044}
+.nn-price-plan{font-size:15px;font-weight:700;color:#201D1A;margin-bottom:4px}
+.nn-price-badge{display:inline-block;font-size:9.5px;font-weight:700;color:#C07800;background:#C0780018;border-radius:5px;padding:2px 9px;margin-bottom:12px}
+.nn-price-amount{display:flex;align-items:baseline;gap:4px;margin-bottom:20px}
+.nn-price-amount strong{font-family:'Playfair Display',Georgia,serif;font-size:44px;font-weight:600;color:#201D1A;letter-spacing:-.03em}
+.nn-price-amount span{font-size:14px;color:#9A9288}
+.nn-price-features{display:flex;flex-direction:column;gap:9px;margin-bottom:24px}
+.nn-price-feature{display:flex;align-items:center;gap:9px;font-size:13.5px;color:#5C5850}
+.nn-price-check{width:16px;height:16px;border-radius:50%;background:#C0780018;display:flex;align-items:center;justify-content:center;font-size:8px;color:#C07800;flex:none}
+.nn-price-cta{width:100%;height:42px;border-radius:9px;background:#C07800;color:#fff;font-size:13.5px;font-weight:600;border:none;cursor:pointer;font-family:'Inter',sans-serif}
+.nn-footer{background:#201D1A;padding:48px;display:flex;align-items:center;justify-content:space-between}
+.nn-footer-logo{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:700;color:#fff}
+.nn-footer p{font-size:13px;color:#706860;margin:0}
 .ds-connected{display:flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:600;padding:5px 10px;border-radius:6px;color:var(--green);background:var(--green-light,#e6f3ec);cursor:pointer;transition:all .15s}
 .ds-connected:hover{opacity:.85}
 
@@ -476,7 +530,7 @@ function renderToolbar(){
     </button>
     <div class="tb-sep"></div>
     <button class="share-btn">Share</button>
-    <button class="preview-btn" onclick="showToast('Opening preview…','#2f5bea')">Preview ▶</button>
+    <button class="preview-btn" onclick="showPreview()">Preview ▶</button>
     <div class="tb-sep"></div>
     <button onclick="toggleTheme()" style="width:32px;height:32px;border-radius:8px;background:${T.surface2};border:1px solid ${T.border};display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;color:${T.text2};flex:none" onmouseover="this.style.background='${T.border}'" onmouseout="this.style.background='${T.surface2}'">${isDark()?'☀︎':'◑'}</button>
   `;
@@ -976,6 +1030,20 @@ function scheduleAgentMessage(){
   },delay);
 }
 
+// ── PREVIEW ───────────────────────────────────────────────────────────────────
+function showPreview(){
+  document.getElementById('preview-overlay').classList.add('active');
+  document.documentElement.requestFullscreen?.();
+}
+function exitPreview(){
+  document.getElementById('preview-overlay').classList.remove('active');
+  if(document.fullscreenElement) document.exitFullscreen?.();
+}
+document.addEventListener('fullscreenchange',()=>{
+  if(!document.fullscreenElement) document.getElementById('preview-overlay').classList.remove('active');
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape') exitPreview();});
+
 // ── INIT ──────────────────────────────────────────────────────────────────────
 function render(){renderToolbar();renderLeft();renderCanvas();renderRight();}
 render();
@@ -984,5 +1052,126 @@ scheduleAgentMessage();
 // Initial toast after load
 setTimeout(()=>showToast('VD Agent active · v3 in progress',T.red),1200);
 </script>
+
+<!-- ── PREVIEW OVERLAY ────────────────────────────────────────────────────── -->
+<div id="preview-overlay">
+  <button id="preview-exit" onclick="exitPreview()">
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1l10 10M11 1L1 11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    Exit Preview
+  </button>
+
+  <!-- Nav -->
+  <nav class="nn-nav">
+    <div class="nn-nav-logo">
+      <div class="nn-nav-logo-mark">N</div>
+      <span style="font-size:15px;font-weight:700;color:#201D1A;letter-spacing:-.02em">Neura Nova</span>
+    </div>
+    <nav class="nn-nav-links">
+      <a href="#">Product</a>
+      <a href="#">Solutions</a>
+      <a href="#">Pricing</a>
+      <a href="#">About</a>
+    </nav>
+    <button class="nn-nav-cta">Get Started →</button>
+  </nav>
+
+  <!-- Hero -->
+  <section class="nn-hero">
+    <div class="nn-hero-badge">AI-POWERED PLATFORM</div>
+    <h1>Transform Business<br>with <em>Intelligent AI Agents</em></h1>
+    <p>Deploy autonomous agents for customer support, lead generation, and operations — 24/7 without human oversight.</p>
+    <div class="nn-hero-btns">
+      <button class="nn-hero-primary">Start for Free →</button>
+      <button class="nn-hero-secondary">Watch Demo ▶</button>
+    </div>
+    <div class="nn-hero-trust">Trusted by <strong style="color:#5C5850">10,000+</strong> businesses worldwide</div>
+  </section>
+
+  <!-- Stats -->
+  <section class="nn-stats">
+    <div class="nn-stat"><div class="nn-stat-val">98%</div><div class="nn-stat-label">CUSTOMER SCORE</div></div>
+    <div class="nn-stat-div"></div>
+    <div class="nn-stat"><div class="nn-stat-val">$180K</div><div class="nn-stat-label">REVENUE RECOVERED</div></div>
+    <div class="nn-stat-div"></div>
+    <div class="nn-stat"><div class="nn-stat-val">87%</div><div class="nn-stat-label">LEAD AUTOMATION</div></div>
+  </section>
+
+  <!-- Features -->
+  <section class="nn-features">
+    <div class="nn-features-label">CORE FEATURES</div>
+    <div class="nn-feature-grid">
+      <div class="nn-feature-card">
+        <div class="nn-feature-icon" style="background:#C0780018">💬</div>
+        <h3>Real-time Chat</h3>
+        <p>Deploy conversational agents that resolve support tickets instantly — no human needed.</p>
+        <div class="nn-feature-more" style="color:#C07800">Learn more <span>→</span></div>
+      </div>
+      <div class="nn-feature-card">
+        <div class="nn-feature-icon" style="background:#1A8A5A18">⚡</div>
+        <h3>No-Code Builder</h3>
+        <p>Build and launch AI agents visually in minutes — zero engineering resources required.</p>
+        <div class="nn-feature-more" style="color:#1A8A5A">Learn more <span>→</span></div>
+      </div>
+      <div class="nn-feature-card">
+        <div class="nn-feature-icon" style="background:#2E5CE818">🎙</div>
+        <h3>Voice AI Agent</h3>
+        <p>Natural language voice support with multilingual capability right out of the box.</p>
+        <div class="nn-feature-more" style="color:#2E5CE8">Learn more <span>→</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing -->
+  <section class="nn-pricing">
+    <div class="nn-pricing-label">TRANSPARENT PRICING</div>
+    <h2>Simple, honest pricing</h2>
+    <div class="nn-pricing-cards">
+      <div class="nn-price-card">
+        <div class="nn-price-plan">Starter</div>
+        <div class="nn-price-amount"><strong>$49</strong><span>/month</span></div>
+        <div class="nn-price-features">
+          <div class="nn-price-feature"><div class="nn-price-check">✓</div>3 AI agents</div>
+          <div class="nn-price-feature"><div class="nn-price-check">✓</div>2K conversations/mo</div>
+          <div class="nn-price-feature"><div class="nn-price-check">✓</div>Chat channel only</div>
+          <div class="nn-price-feature"><div class="nn-price-check">✓</div>Basic analytics</div>
+        </div>
+        <button class="nn-price-cta" style="background:transparent;border:1.5px solid #C07800;color:#C07800">Get Started</button>
+      </div>
+      <div class="nn-price-card featured">
+        <div class="nn-price-plan">Growth</div>
+        <div class="nn-price-badge">MOST POPULAR</div>
+        <div class="nn-price-amount"><strong>$149</strong><span>/month</span></div>
+        <div class="nn-price-features">
+          <div class="nn-price-feature"><div class="nn-price-check">✓</div>Unlimited AI agents</div>
+          <div class="nn-price-feature"><div class="nn-price-check">✓</div>10K conversations/mo</div>
+          <div class="nn-price-feature"><div class="nn-price-check">✓</div>Voice & chat channels</div>
+          <div class="nn-price-feature"><div class="nn-price-check">✓</div>Analytics dashboard</div>
+          <div class="nn-price-feature"><div class="nn-price-check">✓</div>Priority support</div>
+        </div>
+        <button class="nn-price-cta">Get Started Free</button>
+      </div>
+      <div class="nn-price-card">
+        <div class="nn-price-plan">Enterprise</div>
+        <div class="nn-price-amount"><strong style="font-size:32px">Custom</strong></div>
+        <div class="nn-price-features">
+          <div class="nn-price-feature"><div class="nn-price-check">✓</div>Unlimited everything</div>
+          <div class="nn-price-feature"><div class="nn-price-check">✓</div>SSO & SAML</div>
+          <div class="nn-price-feature"><div class="nn-price-check">✓</div>SLA guarantee</div>
+          <div class="nn-price-feature"><div class="nn-price-check">✓</div>Dedicated CSM</div>
+        </div>
+        <button class="nn-price-cta" style="background:transparent;border:1.5px solid #C07800;color:#C07800">Contact Sales</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="nn-footer">
+    <div class="nn-footer-logo">
+      <div class="nn-nav-logo-mark">N</div>
+      Neura Nova
+    </div>
+    <p>© 2026 Neura Nova, Inc. All rights reserved.</p>
+  </footer>
+</div>
 </body>
 </html>
