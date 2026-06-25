@@ -258,9 +258,10 @@ function renderLeftSidebar(){
       type.children.forEach(child=>{
         const isSelected=state.selectedSidebarItem===child;
         html+=`
-          <div class="obj-item${isSelected?' selected':''}" onclick="selectSidebarItem('${child.replace(/'/g,"\\'")}')" style="${isSelected?`color:${T.blue};background:${T.blue}14`:''}">
+          <div class="obj-item${isSelected?' selected':''}" onclick="${child==='Test Request Form'?`window.location.href='sandbox-v5-design.html'`:`selectSidebarItem('${child.replace(/'/g,"\\'")}')`}" style="${isSelected?`color:${T.blue};background:${T.blue}14`:''}">
             <span style="width:5px;height:5px;border-radius:50%;background:${isSelected?T.blue:T.border2};flex:none"></span>
             <span>${child}</span>
+            ${child==='Test Request Form'?`<span style="margin-left:auto;font-size:10px;color:${T.text3}">→</span>`:''}
           </div>
         `;
       });
@@ -351,10 +352,13 @@ function renderCenter(){
           <span style="width:6px;height:6px;border-radius:50%;background:#2e8157;animation:ch-pulse 2s ease-in-out infinite"></span>
           <span style="font-size:11.5px;color:${T.text2}">Active · Updated 2m ago</span>
         </div>
-        <div style="margin-left:auto;display:flex;align-items:center;gap:7px">
-          <span style="font-size:11.5px;color:${T.text3}">Owner</span>
-          <div style="width:26px;height:26px;border-radius:50%;background:#6f57d4;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff">SC</div>
-          <span style="font-size:12px;font-weight:600;color:${T.text2}">Sarah Chen</span>
+        <div style="margin-left:auto;display:flex;align-items:center;gap:10px">
+          <a href="sandbox-v5-design.html" style="display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;background:${T.brand};color:${T.bgCanvas};font-size:12.5px;font-weight:700;text-decoration:none;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">Open Design View →</a>
+          <div style="display:flex;align-items:center;gap:7px">
+            <span style="font-size:11.5px;color:${T.text3}">Owner</span>
+            <div style="width:26px;height:26px;border-radius:50%;background:#6f57d4;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff">SC</div>
+            <span style="font-size:12px;font-weight:600;color:${T.text2}">Sarah Chen</span>
+          </div>
         </div>
       </div>
       <div class="tab-bar">
