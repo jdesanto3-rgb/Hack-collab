@@ -236,7 +236,7 @@ function renderSubheader(){
     ${filters.map(f=>`
       <button class="pill${state.filter===f.k?' on':''}" onclick="state.filter='${f.k}';renderBoard()">${f.l}</button>
     `).join('')}
-    <button class="new-btn" onclick="alert('New Project wizard — coming in the next sprint!')">
+    <button class="new-btn" onclick="window.location.href='sandbox-v4-brief.html'">
       <span style="font-size:16px;line-height:1">+</span> New Project
     </button>
   `;
