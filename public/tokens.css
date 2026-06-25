@@ -16,7 +16,6 @@
 
 .glow-border {
   position: relative;
-  isolation: isolate;
 }
 
 /* Sharp rotating arc — the bright neon centerline */
@@ -47,27 +46,6 @@
   z-index: 1;
 }
 
-/* Diffuse outer glow — soft aura radiating beyond the border */
-.glow-border::after {
-  content: '';
-  position: absolute;
-  inset: -10px;
-  border-radius: inherit;
-  background: conic-gradient(
-    from var(--glow-angle),
-    transparent 0%,
-    transparent 55%,
-    color-mix(in srgb, var(--brand) 40%, transparent) 72%,
-    var(--brand) 84%,
-    color-mix(in srgb, var(--brand) 40%, transparent) 94%,
-    transparent 100%
-  );
-  filter: blur(14px);
-  opacity: 0.7;
-  animation: glow-rotate 1.8s linear infinite;
-  pointer-events: none;
-  z-index: -1;
-}
 
 :root {
   /* ── NEUTRALS — warm-tinted grays ── */
