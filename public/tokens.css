@@ -1,57 +1,66 @@
 /* ============================================================
-   Design Tokens — CSS Custom Properties
+   Weave Design Tokens — CSS Custom Properties
+   Visual style: Minimal. Precise. Thread-connected.
    ============================================================ */
 
 :root {
   /* --- Colors: Light mode --- */
-  --bg: #F0ECE5;
-  --surface: #FDFAF6;
-  --surface2: #E8E3D9;
-  --border: #D8D2C6;
-  --border2: #C4BCAF;
-  --text: #1C1914;
-  --text2: #6B6860;
-  --text3: #9C9890;
+  --bg: #F5F5F8;
+  --surface: #FFFFFF;
+  --surface2: #EDEDF2;
+  --border: #E0E0EA;
+  --border2: #CECEDA;
+  --text: #0A0A14;
+  --text2: #5A5A72;
+  --text3: #9494A8;
 
-  /* Brand — quiet luxury, warm near-black primary */
-  --brand: #1E1C18;        /* warm near-black — the primary ink color */
-  --brand-light: #EDEAE4;  /* very subtle warm tint for hover states */
-  --brand-mid: #9B8E83;    /* warm stone-gray for midtones */
-  --brand-dark: #0E0D0B;   /* very deep for pressed states */
+  /* Brand — Weave deep purple (center of the thread gradient) */
+  --brand: #5B35C8;
+  --brand-light: #EEE9FF;
+  --brand-mid: #9B80E8;
+  --brand-dark: #3D1FA8;
 
-  /* Stone accent — warm neutral for tags, chips, secondary UI */
-  --stone: #7A6A5C;
-  --stone-light: #F2EDE7;
-  --stone-mid: #C4B5A8;
+  /* Stone — warm neutral for secondary UI */
+  --stone: #6A6480;
+  --stone-light: #F0EEF8;
+  --stone-mid: #B0ACCC;
 
-  /* Accents — kept for components & agent colors */
-  --purple: #534AB7;
-  --purple-light: #EEEDFE;
-  --purple-mid: #AFA9EC;
+  /* Weave thread gradient colors */
+  --thread-gold: #D4920A;
+  --thread-pink: #D4296A;
+  --thread-purple: #5B35C8;
+  --thread-gold-vivid: #F5B800;
+  --thread-pink-vivid: #E83E6C;
+  --thread-purple-vivid: #8B5CF6;
 
-  --teal: #0F6E56;
-  --teal-light: #E1F5EE;
-  --teal-mid: #5DCAA5;
+  /* Accents */
+  --purple: #5B35C8;
+  --purple-light: #EEE9FF;
+  --purple-mid: #9B80E8;
 
-  --amber: #854F0B;
-  --amber-light: #FAEEDA;
-  --amber-mid: #EF9F27;
+  --teal: #0B8F7A;
+  --teal-light: #E0F5F2;
+  --teal-mid: #4DCAB8;
 
-  --red: #a32d2d;
-  --red-light: #fcebeb;
+  --amber: #B07A0A;
+  --amber-light: #FEF3DC;
+  --amber-mid: #E8A820;
+
+  --red: #C4305A;
+  --red-light: #FDEEF4;
 
   --npt: #1B4B6B;
   --npt-light: #e8f0f6;
 
   /* Canvas & workflow */
-  --bg-canvas: #ecebe5;
-  --surface-warm: #fffdf8;
+  --bg-canvas: #EEEEF4;
+  --surface-warm: #F8F8FC;
 
   /* Extended accents */
-  --blue: #2f5bea;
-  --blue-light: #e7eefe;
-  --green: #2e8157;
-  --green-light: #e6f3ec;
+  --blue: #2E5CE8;
+  --blue-light: #E8EFFE;
+  --green: #1A8A5A;
+  --green-light: #E4F5ED;
 
   /* --- Spacing --- */
   --space-xs: 4px;
@@ -86,9 +95,10 @@
   --weight-semibold: 600;
   --weight-bold: 700;
 
-  /* --- Font Families --- */
+  /* --- Font Families — all sans-serif --- */
   --font-sans: 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-serif: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+  --font-display: 'Space Grotesk', 'Hanken Grotesk', sans-serif;
+  --font-serif: 'Space Grotesk', 'Hanken Grotesk', sans-serif; /* no more serif — maps to display */
   --font-mono: 'JetBrains Mono', 'Fira Mono', 'Courier New', monospace;
 
   /* --- Letter Spacing --- */
@@ -100,9 +110,9 @@
   --tracking-widest: 0.12em;
 
   /* --- Shadows --- */
-  --shadow-sm: 0 1px 2px rgba(28, 25, 20, 0.06);
-  --shadow-md: 0 2px 8px rgba(28, 25, 20, 0.08);
-  --shadow-lg: 0 4px 16px rgba(28, 25, 20, 0.10);
+  --shadow-sm: 0 1px 3px rgba(10, 10, 20, 0.07);
+  --shadow-md: 0 2px 10px rgba(10, 10, 20, 0.09);
+  --shadow-lg: 0 4px 20px rgba(10, 10, 20, 0.12);
 
   /* --- Transitions --- */
   --transition-fast: 100ms ease;
@@ -110,145 +120,157 @@
   --transition-slow: 250ms ease;
 }
 
-/* --- Dark mode overrides --- */
+/* --- Dark mode — storyboard-matched: near-black + thread accents --- */
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #1C1914;
-    --surface: #252119;
-    --surface2: #2E2B23;
-    --border: #3C3830;
-    --border2: #4C4840;
-    --text: #EAE7E0;
-    --text2: #9C9890;
-    --text3: #6B6860;
+    --bg: #08080E;
+    --surface: #0E0E1C;
+    --surface2: #161628;
+    --border: #252540;
+    --border2: #32324E;
+    --text: #F0F0FF;
+    --text2: #9090B8;
+    --text3: #5858A0;
 
-    --brand: #EAE6DF;        /* inverted — near-white for dark bg */
-    --brand-light: #2A2720;
-    --brand-mid: #9B8E83;
-    --brand-dark: #F5F2EC;
+    --brand: #F5B800;          /* thread gold — primary in dark */
+    --brand-light: #201800;
+    --brand-mid: #A87800;
+    --brand-dark: #FFD04D;
 
-    --stone: #C4B5A8;
-    --stone-light: #2A2520;
-    --stone-mid: #7A6A5C;
+    --stone: #8080A0;
+    --stone-light: #141428;
+    --stone-mid: #4848A0;
 
-    --purple: #7F77DD;
-    --purple-light: #26215C;
-    --purple-mid: #3C3489;
+    --thread-gold: #F5B800;
+    --thread-pink: #E83E6C;
+    --thread-purple: #8B5CF6;
 
-    --teal: #1D9E75;
-    --teal-light: #04342C;
-    --teal-mid: #0F6E56;
+    --purple: #8B5CF6;
+    --purple-light: #1A0A40;
+    --purple-mid: #5B2CB8;
 
-    --amber: #EF9F27;
-    --amber-light: #412402;
-    --amber-mid: #854F0B;
+    --teal: #1ECCB6;
+    --teal-light: #021C18;
+    --teal-mid: #0B8F7A;
 
-    --red: #d94f4f;
-    --red-light: #3d1212;
+    --amber: #F5B800;
+    --amber-light: #201800;
+    --amber-mid: #A87800;
+
+    --red: #E83E6C;
+    --red-light: #200818;
 
     --npt: #4d9ed4;
     --npt-light: #0e2535;
 
-    --bg-canvas: #1a1916;
-    --surface-warm: #1e1d1a;
+    --bg-canvas: #050508;
+    --surface-warm: #0A0A16;
 
-    --blue: #6b8ef5;
-    --blue-light: #121c3a;
-    --green: #4aad7a;
-    --green-light: #0a2318;
+    --blue: #5580FF;
+    --blue-light: #080C28;
+    --green: #00E58A;
+    --green-light: #001814;
+
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.40);
+    --shadow-md: 0 2px 12px rgba(0, 0, 0, 0.50);
+    --shadow-lg: 0 4px 24px rgba(0, 0, 0, 0.60);
   }
 }
 
 /* --- Explicit dark theme (JS toggle) --- */
 html[data-theme="dark"] {
-  --bg: #1C1914;
-  --surface: #252119;
-  --surface2: #2E2B23;
-  --border: #3C3830;
-  --border2: #4C4840;
-  --text: #EAE7E0;
-  --text2: #9C9890;
-  --text3: #6B6860;
+  --bg: #08080E;
+  --surface: #0E0E1C;
+  --surface2: #161628;
+  --border: #252540;
+  --border2: #32324E;
+  --text: #F0F0FF;
+  --text2: #9090B8;
+  --text3: #5858A0;
 
-  --brand: #EAE6DF;
-  --brand-light: #2A2720;
-  --brand-mid: #9B8E83;
-  --brand-dark: #F5F2EC;
+  --brand: #F5B800;
+  --brand-light: #201800;
+  --brand-mid: #A87800;
+  --brand-dark: #FFD04D;
 
-  --stone: #C4B5A8;
-  --stone-light: #2A2520;
-  --stone-mid: #7A6A5C;
+  --stone: #8080A0;
+  --stone-light: #141428;
+  --stone-mid: #4848A0;
 
-  --purple: #7F77DD;
-  --purple-light: #26215C;
-  --purple-mid: #3C3489;
+  --thread-gold: #F5B800;
+  --thread-pink: #E83E6C;
+  --thread-purple: #8B5CF6;
 
-  --teal: #1D9E75;
-  --teal-light: #04342C;
-  --teal-mid: #0F6E56;
+  --purple: #8B5CF6;
+  --purple-light: #1A0A40;
+  --purple-mid: #5B2CB8;
 
-  --amber: #EF9F27;
-  --amber-light: #412402;
-  --amber-mid: #854F0B;
+  --teal: #1ECCB6;
+  --teal-light: #021C18;
+  --teal-mid: #0B8F7A;
 
-  --red: #d94f4f;
-  --red-light: #3d1212;
+  --amber: #F5B800;
+  --amber-light: #201800;
+  --amber-mid: #A87800;
+
+  --red: #E83E6C;
+  --red-light: #200818;
 
   --npt: #4d9ed4;
   --npt-light: #0e2535;
 
-  --bg-canvas: #1a1916;
-  --surface-warm: #1e1d1a;
+  --bg-canvas: #050508;
+  --surface-warm: #0A0A16;
 
-  --blue: #6b8ef5;
-  --blue-light: #121c3a;
-  --green: #4aad7a;
-  --green-light: #0a2318;
+  --blue: #5580FF;
+  --blue-light: #080C28;
+  --green: #00E58A;
+  --green-light: #001814;
 
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.20);
-  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.28);
-  --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.36);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.40);
+  --shadow-md: 0 2px 12px rgba(0, 0, 0, 0.50);
+  --shadow-lg: 0 4px 24px rgba(0, 0, 0, 0.60);
 }
 
 /* Force light when explicitly set */
 html[data-theme="light"] {
-  --bg: #F0ECE5;
-  --surface: #FDFAF6;
-  --surface2: #E8E3D9;
-  --border: #D8D2C6;
-  --border2: #C4BCAF;
-  --text: #1C1914;
-  --text2: #6B6860;
-  --text3: #9C9890;
-  --brand: #1E1C18;
-  --brand-light: #EDEAE4;
-  --brand-mid: #9B8E83;
-  --brand-dark: #0E0D0B;
-  --stone: #7A6A5C;
-  --stone-light: #F2EDE7;
-  --stone-mid: #C4B5A8;
-  --purple: #534AB7;
-  --purple-light: #EEEDFE;
-  --purple-mid: #AFA9EC;
-  --teal: #0F6E56;
-  --teal-light: #E1F5EE;
-  --teal-mid: #5DCAA5;
-  --amber: #854F0B;
-  --amber-light: #FAEEDA;
-  --amber-mid: #EF9F27;
-  --red: #a32d2d;
-  --red-light: #fcebeb;
+  --bg: #F5F5F8;
+  --surface: #FFFFFF;
+  --surface2: #EDEDF2;
+  --border: #E0E0EA;
+  --border2: #CECEDA;
+  --text: #0A0A14;
+  --text2: #5A5A72;
+  --text3: #9494A8;
+  --brand: #5B35C8;
+  --brand-light: #EEE9FF;
+  --brand-mid: #9B80E8;
+  --brand-dark: #3D1FA8;
+  --stone: #6A6480;
+  --stone-light: #F0EEF8;
+  --stone-mid: #B0ACCC;
+  --purple: #5B35C8;
+  --purple-light: #EEE9FF;
+  --purple-mid: #9B80E8;
+  --teal: #0B8F7A;
+  --teal-light: #E0F5F2;
+  --teal-mid: #4DCAB8;
+  --amber: #B07A0A;
+  --amber-light: #FEF3DC;
+  --amber-mid: #E8A820;
+  --red: #C4305A;
+  --red-light: #FDEEF4;
   --npt: #1B4B6B;
   --npt-light: #e8f0f6;
-  --bg-canvas: #ecebe5;
-  --surface-warm: #fffdf8;
-  --blue: #2f5bea;
-  --blue-light: #e7eefe;
-  --green: #2e8157;
-  --green-light: #e6f3ec;
-  --shadow-sm: 0 1px 2px rgba(28, 25, 20, 0.06);
-  --shadow-md: 0 2px 8px rgba(28, 25, 20, 0.08);
-  --shadow-lg: 0 4px 16px rgba(28, 25, 20, 0.10);
+  --bg-canvas: #EEEEF4;
+  --surface-warm: #F8F8FC;
+  --blue: #2E5CE8;
+  --blue-light: #E8EFFE;
+  --green: #1A8A5A;
+  --green-light: #E4F5ED;
+  --shadow-sm: 0 1px 3px rgba(10, 10, 20, 0.07);
+  --shadow-md: 0 2px 10px rgba(10, 10, 20, 0.09);
+  --shadow-lg: 0 4px 20px rgba(10, 10, 20, 0.12);
 }
 
 /* --- Global base styles --- */

@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Chorus — Project</title>
+<title>Weave — Project</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Instrument+Serif:ital,wght@0,400;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/tokens.css">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -176,7 +176,7 @@ function renderHeader(){
   document.getElementById('hdr').innerHTML=`
     <a href="sandbox-v4-canvas.html" style="display:flex;align-items:center;gap:8px;padding:0 14px 0 0;border-right:1px solid ${T.border};margin-right:14px;cursor:pointer;color:${T.text2};transition:color .15s;white-space:nowrap" onmouseover="this.style.color='${T.text}'" onmouseout="this.style.color='${T.text2}'">
       <span style="font-size:16px">‹</span>
-      <span style="font-family:'Instrument Serif',serif;font-size:19px">Chorus</span>
+      <span style="font-family:'Space Grotesk',sans-serif;font-size:19px">Weave</span>
     </a>
     <span style="color:${T.text3}" class="breadcrumb-sep">›</span>
     <span style="font-size:13px;color:${T.text2}">Team Canvas</span>
@@ -200,7 +200,7 @@ function renderPipeline(){
       <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:16px">
         <div style="flex:1">
           <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:${PROJECT.accent};font-weight:600;margin-bottom:6px">${PROJECT.client} · PROJECT</div>
-          <div style="font-family:'Instrument Serif',serif;font-size:26px;line-height:1.15;margin-bottom:8px">${PROJECT.name}</div>
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:26px;line-height:1.15;margin-bottom:8px">${PROJECT.name}</div>
           <div style="font-size:13px;color:${T.text2};line-height:1.5;margin-bottom:14px">${PROJECT.brief}</div>
         </div>
       </div>

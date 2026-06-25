@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Chorus — Axiom · Test Request Portal</title>
+<title>Weave — Axiom · Test Request Portal</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Instrument+Serif:ital,wght@0,400;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/tokens.css">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -202,7 +202,7 @@ const PROV_BY_KIND = {
   ],
 };
 
-const IDENTITY_NAMES = ['Chorus', 'Quorum', 'Atelier'];
+const IDENTITY_NAMES = ['Weave', 'Quorum', 'Atelier'];
 
 const state = {
   view: 'canvas',
@@ -892,20 +892,23 @@ function renderPhase5DesignReview() {
 
 // ─── HEADER ──────────────────────────────────────────────────────────────────
 
+const WEAVE_LOGO_SVG = `<svg viewBox="0 0 24 20" fill="none" xmlns="http://www.w3.org/2000/svg" width="28" height="23" style="display:block;flex:none">
+  <line x1="1" y1="10.8" x2="4.5" y2="10.8" stroke="#F5B800" stroke-width="1.6" stroke-linecap="round" opacity="0.5"/>
+  <line x1="19.5" y1="10.8" x2="23" y2="10.8" stroke="#8B5CF6" stroke-width="1.6" stroke-linecap="round" opacity="0.5"/>
+  <polyline points="7,17 12,8 17,17" stroke="#E83E6C" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <line x1="5.8" y1="10.8" x2="18.2" y2="10.8" stroke="#E83E6C" stroke-width="1.6" opacity="0.45"/>
+  <line x1="2.5" y1="2" x2="7" y2="17" stroke="#F5B800" stroke-width="2.4" stroke-linecap="round"/>
+  <line x1="17" y1="17" x2="21.5" y2="2" stroke="#8B5CF6" stroke-width="2.4" stroke-linecap="round"/>
+</svg>`;
+
 function renderHeader() {
   const name = IDENTITY_NAMES[state.identityIdx];
   const isCanvas = state.view === 'canvas';
   const isWork = state.view === 'workspace';
   document.getElementById('header').innerHTML = `
     <div style="display:flex;align-items:center;gap:9px;cursor:pointer" onclick="cycleIdentity()">
-      <div style="width:26px;height:26px;border-radius:7px;background:${TOKENS.text};display:flex;align-items:center;justify-content:center;flex:none">
-        <div style="display:flex;align-items:flex-end;gap:2px;height:13px">
-          <span style="width:2.5px;height:6px;background:#ffd166;border-radius:2px"></span>
-          <span style="width:2.5px;height:13px;background:${TOKENS.bgCanvas};border-radius:2px"></span>
-          <span style="width:2.5px;height:9px;background:#7aa2ff;border-radius:2px"></span>
-        </div>
-      </div>
-      <span style="font-family:'Instrument Serif',serif;font-size:23px;letter-spacing:.3px;line-height:1">${name}</span>
+      ${WEAVE_LOGO_SVG}
+      <span style="font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:600;letter-spacing:-.3px;line-height:1">${name}</span>
       <span style="font-size:9px;font-family:'JetBrains Mono',monospace;color:${TOKENS.text3};border:1px solid ${TOKENS.border};border-radius:4px;padding:2px 5px;letter-spacing:.5px">BETA</span>
     </div>
     <div style="width:1px;height:24px;background:${TOKENS.border};flex:none"></div>
@@ -945,7 +948,7 @@ function renderCanvas() {
     <div style="padding:20px 28px 16px;display:flex;align-items:center;flex:none;border-bottom:1px solid ${TOKENS.border};background:${TOKENS.surface}">
       <div>
         <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.2px;color:${TOKENS.text3};margin-bottom:5px">SHARED PROJECT CANVAS</div>
-        <div style="font-family:'Instrument Serif',serif;font-size:28px;line-height:1.1;color:${TOKENS.text}">All work in motion, in one governed view</div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:28px;line-height:1.1;color:${TOKENS.text}">All work in motion, in one governed view</div>
       </div>
       <div style="margin-left:auto;display:flex;align-items:center;gap:7px">
         <span style="width:6px;height:6px;border-radius:50%;background:#2f5bea;flex:none"></span>
@@ -1092,7 +1095,7 @@ function stageEyebrow(ph) {
   const agentColor = p.agent ? AGENT_MAP[p.agent].color : '#2f5bea';
   return `
     <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1.5px;color:${agentColor};font-weight:600">${p.eyebrow}</div>
-    <div style="font-family:'Instrument Serif',serif;font-size:33px;line-height:1.12;margin-top:6px;max-width:680px">${p.title}</div>
+    <div style="font-family:'Space Grotesk',sans-serif;font-size:33px;line-height:1.12;margin-top:6px;max-width:680px">${p.title}</div>
     <div style="font-size:14.5px;color:${TOKENS.text2};margin-top:10px;max-width:600px;line-height:1.55;margin-bottom:24px">${p.sub}</div>
   `;
 }
@@ -1660,7 +1663,7 @@ function renderDrawer() {
             </div>
             <button onclick="closeDetail()" style="background:transparent;border:1px solid ${TOKENS.border};border-radius:7px;padding:5px 10px;font-size:14px;color:${TOKENS.text2};cursor:pointer;flex:none">✕</button>
           </div>
-          <div style="font-family:'Instrument Serif',serif;font-size:24px;line-height:1.25;margin-bottom:12px">${card.title}</div>
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:24px;line-height:1.25;margin-bottom:12px">${card.title}</div>
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
             <div style="width:20px;height:20px;border-radius:5px;background:${card.agentColor};display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:#fff;flex:none">${card.agentShort}</div>
             <span style="font-size:12.5px;color:${TOKENS.text2}">Owned by ${card.agent}</span>
@@ -1904,7 +1907,7 @@ function renderPrototype() {
           <div style="flex:1;overflow-y:auto;display:flex;flex-direction:column">
             <div style="padding:16px 24px 0;flex:none">
               <div style="font-size:11px;color:${T.text3};margin-bottom:4px">Test Requests <span>›</span> <span style="color:${T.text2};font-weight:600">New Request</span></div>
-              <div style="font-size:20px;font-weight:700;color:${T.text};font-family:'Instrument Serif',serif">New Test Request</div>
+              <div style="font-size:20px;font-weight:700;color:${T.text};font-family:'Space Grotesk',sans-serif">New Test Request</div>
             </div>
             <div style="padding:18px 24px;flex:1">
               ${renderProtoPageContent(s, ctx.tone, isWire)}

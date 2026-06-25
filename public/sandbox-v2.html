@@ -6,7 +6,7 @@
 <title>Chorus — Design Team</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Instrument+Serif:ital,wght@0,400;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/tokens.css">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -89,7 +89,7 @@ function readTokens() {
     radius:      get('--radius')       || '6px',
     radiusLg:    get('--radius-lg')    || '8px',
     fontSans:    get('--font-sans')    || "'Hanken Grotesk', sans-serif",
-    fontSerif:   get('--font-serif')   || "'Instrument Serif', serif",
+    fontSerif:   get('--font-serif')   || "'Space Grotesk', serif",
     fontMono:    get('--font-mono')    || "'JetBrains Mono', monospace",
   };
 }
@@ -300,7 +300,7 @@ function renderHeader() {
           <span style="width:2.5px;height:9px;background:#7aa2ff;border-radius:2px"></span>
         </div>
       </div>
-      <span id="wordmark" style="font-family:'Instrument Serif',serif;font-size:23px;letter-spacing:.3px;line-height:1">${name}</span>
+      <span id="wordmark" style="font-family:'Space Grotesk',sans-serif;font-size:23px;letter-spacing:.3px;line-height:1">${name}</span>
       <span style="font-size:9px;font-family:'JetBrains Mono',monospace;color:${TOKENS.text3};border:1px solid ${TOKENS.border};border-radius:4px;padding:2px 5px;letter-spacing:.5px">BETA</span>
     </div>
     <div style="width:1px;height:24px;background:${TOKENS.border};flex:none"></div>
@@ -342,7 +342,7 @@ function renderCanvas() {
     <div style="padding:20px 28px 16px;display:flex;align-items:center;flex:none;border-bottom:1px solid ${TOKENS.border};background:${TOKENS.surface}">
       <div>
         <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.2px;color:${TOKENS.text3};margin-bottom:5px">SHARED PROJECT CANVAS</div>
-        <div style="font-family:'Instrument Serif',serif;font-size:28px;line-height:1.1;color:${TOKENS.text}">All work in motion, in one governed view</div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:28px;line-height:1.1;color:${TOKENS.text}">All work in motion, in one governed view</div>
       </div>
       <div style="margin-left:auto;display:flex;align-items:center;gap:7px">
         <span style="width:6px;height:6px;border-radius:50%;background:#2f5bea;flex:none"></span>
@@ -468,7 +468,7 @@ function stageEyebrow(ph) {
   const agentColor = p.agent ? AGENT_MAP[p.agent].color : '#2f5bea';
   return `
     <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1.5px;color:${agentColor};font-weight:600">${p.eyebrow}</div>
-    <div style="font-family:'Instrument Serif',serif;font-size:33px;line-height:1.12;margin-top:6px;max-width:680px">${p.title}</div>
+    <div style="font-family:'Space Grotesk',sans-serif;font-size:33px;line-height:1.12;margin-top:6px;max-width:680px">${p.title}</div>
     <div style="font-size:14.5px;color:${TOKENS.text2};margin-top:10px;max-width:600px;line-height:1.55;margin-bottom:24px">${p.sub}</div>
   `;
 }
@@ -844,7 +844,7 @@ function renderDrawer() {
             </div>
             <button onclick="closeDetail()" style="background:transparent;border:1px solid ${TOKENS.border};border-radius:7px;padding:5px 10px;font-size:14px;color:${TOKENS.text2};cursor:pointer;flex:none">✕</button>
           </div>
-          <div style="font-family:'Instrument Serif',serif;font-size:24px;line-height:1.25;margin-bottom:12px">${card.title}</div>
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:24px;line-height:1.25;margin-bottom:12px">${card.title}</div>
           <div style="display:flex;align-items:center;gap:8px">
             <div style="width:20px;height:20px;border-radius:5px;background:${card.agentColor};display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:#fff;flex:none">${card.agentShort}</div>
             <span style="font-size:12.5px;color:${TOKENS.text2}">Owned by ${card.agent}</span>
