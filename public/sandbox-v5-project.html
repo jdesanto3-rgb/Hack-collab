@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chorus v5 — Test Request Form</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Instrument+Serif:ital,wght@0,400;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/tokens.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;font-family:'Hanken Grotesk',sans-serif;font-size:14px;color:var(--text);background:var(--bg-canvas)}
+button{font-family:'Hanken Grotesk',sans-serif;border:none;cursor:pointer}
+a{text-decoration:none;color:inherit}
+
+@keyframes ch-rise{from{transform:translateY(8px);opacity:0}to{transform:none;opacity:1}}
+@keyframes ch-pop{0%{transform:translateY(10px) scale(.975);opacity:0}60%{transform:translateY(-2px) scale(1.006)}100%{transform:none;opacity:1}}
+@keyframes ch-pulse{0%,100%{opacity:.35;transform:scale(1)}50%{opacity:1;transform:scale(1.3)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse-ring{0%,100%{opacity:.5}50%{opacity:1}}
+
+::-webkit-scrollbar{width:7px;height:7px}
+::-webkit-scrollbar-thumb{background:var(--border2,#cfcabd);border-radius:8px;border:2px solid transparent;background-clip:padding-box}
+::-webkit-scrollbar-track{background:transparent}
+
+#app{height:100vh;display:flex;flex-direction:column;overflow:hidden}
+header{height:56px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:0;flex:none;z-index:10}
+#body{flex:1;min-height:0;display:flex;overflow:hidden}
+
+/* Left sidebar */
+.left-sidebar{width:248px;flex:none;border-right:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column;background:var(--surface)}
+
+/* Center */
+.center-col{flex:1;overflow-y:auto;display:flex;flex-direction:column;background:var(--bg-canvas)}
+
+/* Right sidebar */
+.right-sidebar{width:288px;flex:none;border-left:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column;background:var(--surface)}
+
+.breadcrumb-sep{font-size:13px;color:var(--text3);padding:0 6px}
+
+/* Object tree */
+.obj-section-header{display:flex;align-items:center;gap:6px;padding:6px 14px;cursor:pointer;user-select:none;transition:background .12s}
+.obj-section-header:hover{background:var(--surface2)}
+.obj-dot{width:8px;height:8px;border-radius:50%;flex:none}
+.obj-count{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;padding:1px 5px;border-radius:3px;opacity:.7}
+.obj-item{display:flex;align-items:center;gap:8px;padding:5px 14px 5px 32px;font-size:12.5px;cursor:pointer;transition:background .12s;border-radius:0}
+.obj-item:hover{background:var(--surface2)}
+.obj-item.selected{background:var(--blue,#2f5bea)18;color:var(--blue,#2f5bea);font-weight:600}
+
+/* Graph */
+.graph-container{position:relative;width:100%;height:440px;overflow:hidden}
+.graph-node{position:absolute;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;transform:translate(-50%,-50%);transition:all .15s}
+.graph-node .circle{border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-weight:700;color:#fff;transition:all .2s;flex:none}
+.graph-node .node-label{font-size:10px;text-align:center;max-width:72px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.graph-node:hover .circle{transform:scale(1.08)}
+
+/* Agent rows */
+.agent-row{display:flex;align-items:flex-start;gap:9px;padding:9px 0;border-bottom:1px solid var(--border)}
+.agent-row:last-child{border-bottom:none}
+.agent-badge{width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:8px;font-weight:700;color:#fff;flex:none;margin-top:1px}
+
+/* Decision cards */
+.decision-card{border-left:3px solid var(--border2);padding:7px 10px;margin-bottom:6px;border-radius:0 6px 6px 0;background:var(--surface2,#E8E3D9)30}
+
+/* Tabs */
+.tab-bar{display:flex;gap:0;border-bottom:1px solid var(--border)}
+.tab-item{padding:9px 18px;font-size:13px;font-weight:500;cursor:pointer;border-bottom:2px solid transparent;color:var(--text3);transition:all .15s;margin-bottom:-1px}
+.tab-item.active{color:var(--text);border-bottom-color:var(--blue,#2f5bea);font-weight:600}
+.tab-item:hover:not(.active){color:var(--text2)}
+
+/* Detail panel */
+.detail-panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;margin:12px 20px 0;animation:ch-rise .2s ease}
+
+/* Section divider in right rail */
+.rail-divider{height:1px;background:var(--border);margin:10px 0}
+.rail-section-title{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;letter-spacing:.8px;color:var(--text3);padding:10px 16px 6px;text-transform:uppercase}
+</style>
+</head>
+<body>
+<div id="app">
+  <header id="hdr"></header>
+  <div id="body">
+    <div class="left-sidebar" id="left-sidebar"></div>
+    <div class="center-col" id="center-col"></div>
+    <div class="right-sidebar" id="right-sidebar"></div>
+  </div>
+</div>
+<script>
+// ── TOKENS ────────────────────────────────────────────────────────────────────
+function readTokens(){
+  const s=getComputedStyle(document.documentElement),g=v=>s.getPropertyValue(v).trim();
+  return{
+    bgCanvas:g('--bg-canvas')||'#ecebe5',surface:g('--surface')||'#FDFAF6',
+    surfaceWarm:g('--surface-warm')||'#fffdf8',surface2:g('--surface2')||'#E8E3D9',
+    border:g('--border')||'#D8D2C6',border2:g('--border2')||'#C4BCAF',
+    text:g('--text')||'#1C1914',text2:g('--text2')||'#6B6860',text3:g('--text3')||'#9C9890',
+    brand:g('--brand')||'#1E1C18',
+    blue:g('--blue')||'#2f5bea',blueLight:g('--blue-light')||'#e7eefe',
+    green:g('--green')||'#2e8157',greenLight:g('--green-light')||'#e6f3ec',
+    purple:g('--purple')||'#6f57d4',purpleLight:g('--purple-light')||'#efebfb',
+    teal:g('--teal')||'#1f9d8f',tealLight:'#e0f3f2',
+    amber:g('--amber')||'#c2700f',amberLight:g('--amber-light')||'#faeeda',
+    red:g('--red')||'#d4456b',redLight:'#fce8ee',
+    shadowSm:g('--shadow-sm')||'0 1px 2px rgba(28,25,20,.06)',
+    shadowMd:g('--shadow-md')||'0 2px 8px rgba(28,25,20,.08)',
+    shadowLg:g('--shadow-lg')||'0 4px 16px rgba(28,25,20,.10)',
+  };
+}
+let T=readTokens();
+function isDark(){const a=document.documentElement.getAttribute('data-theme');if(a==='dark')return true;if(a==='light')return false;return window.matchMedia('(prefers-color-scheme:dark)').matches;}
+function toggleTheme(){document.documentElement.setAttribute('data-theme',isDark()?'light':'dark');T=readTokens();render();}
+
+// ── DATA ──────────────────────────────────────────────────────────────────────
+const OBJECT_TYPES=[
+  {id:'research',  label:'Research',     icon:'🔬', color:'#1f9d8f', count:17, children:[]},
+  {id:'opps',      label:'Opportunities',icon:'💡', color:'#c2700f', count:3,  children:[]},
+  {id:'personas',  label:'Personas',     icon:'👤', color:'#6f57d4', count:2,
+    children:['Devon Park — QA Engineer','Sarah Chen — QA Lead']},
+  {id:'journeys',  label:'Journeys',     icon:'🗺️', color:'#2f5bea', count:4,  children:[]},
+  {id:'reqs',      label:'Requirements', icon:'📋', color:'#4338ca', count:12, children:[]},
+  {id:'flows',     label:'Flows',        icon:'🌊', color:'#0ea5e9', count:6,  children:[]},
+  {id:'screens',   label:'Screens',      icon:'🖼️', color:'#d4456b', count:8,
+    children:['Request Dashboard','Test Request Form','Priority Review Queue','Submission Confirmation','+4 more']},
+  {id:'components',label:'Components',   icon:'🧩', color:'#2e8157', count:24, children:[]},
+  {id:'exps',      label:'Experiments',  icon:'🧪', color:'#ea580c', count:2,  children:[]},
+  {id:'metrics',   label:'Metrics',      icon:'📊', color:'#059669', count:4,  children:[]},
+  {id:'decisions', label:'Decisions',    icon:'📝', color:'#7A6A5C', count:7,  children:[]},
+];
+
+const GRAPH_NODES=[
+  {id:'research',  abbr:'RE', color:'#1f9d8f', label:'Research',    sub:'17 interviews', cx:.15, cy:.15, size:52},
+  {id:'persona',   abbr:'PE', color:'#6f57d4', label:'Devon Park',  sub:'QA Engineer',   cx:.46, cy:.08, size:52},
+  {id:'bizgoal',   abbr:'BG', color:'#c2700f', label:'Business Goal',sub:'Cut abandon 55%',cx:.78,cy:.15,size:52},
+  {id:'journey',   abbr:'JO', color:'#2f5bea', label:'Journey',     sub:'Submit flow',   cx:.08, cy:.50, size:52},
+  {id:'kpi',       abbr:'KP', color:'#4338ca', label:'KPI',         sub:'Completion Rate',cx:.85,cy:.50, size:52},
+  {id:'components',abbr:'CO', color:'#2e8157', label:'Components',  sub:'24 linked',     cx:.20, cy:.82, size:52},
+  {id:'experiment',abbr:'EX', color:'#ea580c', label:'Experiment',  sub:'A/B auto-suggest',cx:.50,cy:.83,size:52},
+  {id:'decision',  abbr:'DE', color:'#7A6A5C', label:'Decision',    sub:'Severity merged',cx:.78,cy:.80,size:52},
+];
+
+const CENTER_NODE={abbr:'SCR', color:'#d4456b', size:80, cx:.50, cy:.50};
+
+const AGENT_DETAILS={
+  research:{
+    title:'RESEARCH — Connected to this screen',
+    body:'17 interviews · 89 support tickets · 3 usability sessions',
+    signal:'"Priority vs Severity confusion" mentioned ×31',
+    updated:'Scout last updated: 2 hours ago',
+    color:'#1f9d8f',
+  },
+  persona:{
+    title:'PERSONA — Devon Park, QA Engineer',
+    body:'Primary persona for this screen. 3 direct feedback points on v2.',
+    signal:'Top pain: "I never know what priority level to pick"',
+    updated:'Synth last updated: 18 minutes ago',
+    color:'#6f57d4',
+  },
+  bizgoal:{
+    title:'BUSINESS GOAL — Reduce abandon rate',
+    body:'Abandon rate from 55% → under 20%. Completion time < 60s.',
+    signal:'This screen is the highest-abandon point in the funnel',
+    updated:'Strategy last updated: June 20',
+    color:'#c2700f',
+  },
+  journey:{
+    title:'JOURNEY — Test Request Submit Flow',
+    body:'6 steps total. This screen is step 2 of 6.',
+    signal:'Steps 2–3 account for 78% of all abandons',
+    updated:'UX last updated: 1 hour ago',
+    color:'#2f5bea',
+  },
+  kpi:{
+    title:'KPI — Completion Rate',
+    body:'Target: 80%+ completion of step 2. Current baseline: 45%.',
+    signal:'Auto-suggest on Priority field projected +22 pts',
+    updated:'Metrics last updated: 3 hours ago',
+    color:'#4338ca',
+  },
+  components:{
+    title:'COMPONENTS — 24 Linked',
+    body:'PriorityInput, SeveritySelect, FileAttach (optional), TextArea, StepNav.',
+    signal:'PriorityInput has 3 open accessibility findings',
+    updated:'QA last updated: 35 minutes ago',
+    color:'#2e8157',
+  },
+  experiment:{
+    title:'EXPERIMENT — Priority Auto-Suggest A/B',
+    body:'Running: Control (manual entry) vs Treatment (auto-suggest from title).',
+    signal:'Treatment shows 34% faster step completion in staging',
+    updated:'Synth last updated: 20 minutes ago',
+    color:'#ea580c',
+  },
+  decision:{
+    title:'DECISION — Severity Merged into Priority',
+    body:'Approved Jun 22. Severity field removed; Priority now 5-level with auto-suggest.',
+    signal:'Reduced step 2 from 8 fields to 4. Devon + Sarah signed off.',
+    updated:'Archived Jun 22',
+    color:'#7A6A5C',
+  },
+};
+
+const state={
+  selectedNode:'research',
+  activeTab:'graph',
+  sidebarSections:{screens:true},
+  selectedSidebarItem:'Test Request Form',
+};
+
+// ── RENDER ────────────────────────────────────────────────────────────────────
+function render(){
+  renderHeader();
+  renderLeftSidebar();
+  renderCenter();
+  renderRightSidebar();
+}
+
+function renderHeader(){
+  document.getElementById('hdr').innerHTML=`
+    <a href="sandbox-v5-canvas.html" style="display:flex;align-items:center;gap:8px;padding:0 14px 0 0;border-right:1px solid ${T.border};margin-right:14px;cursor:pointer;color:${T.text2};transition:color .15s;white-space:nowrap" onmouseover="this.style.color='${T.text}'" onmouseout="this.style.color='${T.text2}'">
+      <span style="font-size:16px">‹</span>
+      <span style="font-size:13px;font-weight:500">Team Canvas</span>
+    </a>
+    <span style="font-size:13px;color:${T.text3};padding:0 6px">›</span>
+    <span style="font-size:13px;color:${T.text2}">Axiom QA</span>
+    <span style="font-size:13px;color:${T.text3};padding:0 6px">›</span>
+    <span style="font-size:13px;font-weight:600;color:${T.text}">Test Request Intake</span>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:10px">
+      <div style="display:flex;align-items:center;gap:6px;background:${T.blueLight};border:1px solid ${T.blue}33;border-radius:20px;padding:4px 11px">
+        <div style="width:6px;height:6px;border-radius:50%;background:${T.blue}"></div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:${T.blue}">68%</span>
+      </div>
+      <button onclick="toggleTheme()" style="width:32px;height:32px;border-radius:8px;background:${T.surface2};border:1px solid ${T.border};display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;color:${T.text2}" onmouseover="this.style.background='${T.border}'" onmouseout="this.style.background='${T.surface2}'">${isDark()?'☀︎':'◑'}</button>
+      <div style="display:flex">
+        <div style="width:28px;height:28px;border-radius:50%;background:#d4456b;border:2px solid ${T.surface};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;z-index:4;margin-right:-7px">DP</div>
+        <div style="width:28px;height:28px;border-radius:50%;background:#2e8157;border:2px solid ${T.surface};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;z-index:3;margin-right:-7px">JL</div>
+        <div style="width:28px;height:28px;border-radius:50%;background:${T.border2};border:2px solid ${T.surface};display:flex;align-items:center;justify-content:center;font-size:9.5px;font-weight:700;color:${T.text2};z-index:1">+3</div>
+      </div>
+    </div>
+  `;
+}
+
+function renderLeftSidebar(){
+  let html=`<div style="font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;letter-spacing:.8px;color:${T.text3};padding:14px 16px 10px;text-transform:uppercase;border-bottom:1px solid ${T.border}">Experience Objects</div>`;
+
+  OBJECT_TYPES.forEach(type=>{
+    const isExpanded=state.sidebarSections[type.id];
+    const hasChildren=type.children.length>0;
+    html+=`
+      <div class="obj-section-header" onclick="toggleSection('${type.id}')">
+        <span style="font-size:13px">${type.icon}</span>
+        <span style="font-size:12.5px;font-weight:600;flex:1;color:${T.text}">${type.label}</span>
+        <span class="obj-count" style="background:${type.color}18;color:${type.color}">${type.count}</span>
+        ${hasChildren?`<span style="font-size:11px;color:${T.text3};margin-left:2px;transition:transform .2s;${isExpanded?'transform:rotate(90deg)':''}">›</span>`:''}
+      </div>
+    `;
+    if(isExpanded&&hasChildren){
+      type.children.forEach(child=>{
+        const isSelected=state.selectedSidebarItem===child;
+        html+=`
+          <div class="obj-item${isSelected?' selected':''}" onclick="selectSidebarItem('${child.replace(/'/g,"\\'")}')" style="${isSelected?`color:${T.blue};background:${T.blue}14`:''}">
+            <span style="width:5px;height:5px;border-radius:50%;background:${isSelected?T.blue:T.border2};flex:none"></span>
+            <span>${child}</span>
+          </div>
+        `;
+      });
+    }
+  });
+
+  html+=`
+    <div style="padding:16px;margin-top:auto;border-top:1px solid ${T.border}">
+      <button onclick="" style="width:100%;padding:9px;border-radius:8px;border:1.5px dashed ${T.border2};background:transparent;color:${T.text3};font-size:12.5px;font-weight:600;cursor:pointer;transition:all .15s" onmouseover="this.style.borderColor='${T.blue}';this.style.color='${T.blue}'" onmouseout="this.style.borderColor='${T.border2}';this.style.color='${T.text3}'">+ Add Object</button>
+    </div>
+  `;
+
+  document.getElementById('left-sidebar').innerHTML=html;
+}
+
+function toggleSection(id){
+  state.sidebarSections[id]=!state.sidebarSections[id];
+  renderLeftSidebar();
+}
+
+function selectSidebarItem(name){
+  state.selectedSidebarItem=name;
+  renderLeftSidebar();
+}
+
+function renderCenter(){
+  const GW=700, GH=440;
+  const detail=AGENT_DETAILS[state.selectedNode];
+
+  // Build SVG edges
+  const cx_c=CENTER_NODE.cx*GW;
+  const cy_c=CENTER_NODE.cy*GH;
+  let svgLines='';
+  GRAPH_NODES.forEach(n=>{
+    const nx=n.cx*GW, ny=n.cy*GH;
+    const selected=state.selectedNode===n.id;
+    svgLines+=`<line x1="${cx_c}" y1="${cy_c}" x2="${nx}" y2="${ny}" stroke="${n.color}" stroke-width="${selected?2:1.5}" stroke-opacity="${selected?.6:.25}" stroke-dasharray="${selected?'none':'none'}"/>`;
+  });
+
+  // Build peripheral nodes html
+  let nodesHtml='';
+  GRAPH_NODES.forEach(n=>{
+    const selected=state.selectedNode===n.id;
+    nodesHtml+=`
+      <div class="graph-node" style="left:${n.cx*100}%;top:${n.cy*100}%" onclick="selectNode('${n.id}')">
+        <div class="circle" style="width:${n.size}px;height:${n.size}px;background:${n.color};font-size:11px;box-shadow:${selected?`0 0 0 3px #fff, 0 0 0 5px ${n.color}`:`0 2px 8px ${n.color}33`}">
+          ${n.abbr}
+        </div>
+        <span class="node-label" style="color:${T.text2}">${n.label}</span>
+        <span style="font-size:9.5px;color:${T.text3};text-align:center;max-width:72px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${n.sub}</span>
+      </div>
+    `;
+  });
+
+  // Center node
+  nodesHtml+=`
+    <div class="graph-node" style="left:${CENTER_NODE.cx*100}%;top:${CENTER_NODE.cy*100}%">
+      <div class="circle" style="width:${CENTER_NODE.size}px;height:${CENTER_NODE.size}px;background:${CENTER_NODE.color};font-size:12px;font-weight:800;box-shadow:0 0 0 10px ${CENTER_NODE.color}1A, 0 4px 16px ${CENTER_NODE.color}44">
+        SCR
+      </div>
+    </div>
+  `;
+
+  let detailHtml='';
+  if(detail){
+    detailHtml=`
+      <div class="detail-panel" style="border-left:3px solid ${detail.color}">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.8px;color:${detail.color};margin-bottom:6px">${detail.title}</div>
+        <div style="font-size:13px;color:${T.text2};margin-bottom:8px">${detail.body}</div>
+        <div style="background:${detail.color}12;border-radius:7px;padding:8px 11px;margin-bottom:8px">
+          <div style="font-size:11.5px;font-weight:600;color:${T.text}">Key signal</div>
+          <div style="font-size:12px;color:${T.text2};margin-top:2px">${detail.signal}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:${T.text3}">
+          <span style="width:6px;height:6px;border-radius:50%;background:${detail.color};animation:ch-pulse 1.6s ease-in-out infinite;flex:none"></span>
+          ${detail.updated}
+        </div>
+      </div>
+    `;
+  }
+
+  document.getElementById('center-col').innerHTML=`
+    <div style="padding:20px 20px 0;border-bottom:1px solid ${T.border};background:${T.surface}">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.8px;background:#d4456b18;color:#d4456b;border-radius:4px;padding:3px 7px">SCREEN</span>
+        <h1 style="font-family:'Instrument Serif',serif;font-size:22px;font-weight:400;color:${T.text}">Test Request Form</h1>
+        <div style="display:flex;align-items:center;gap:5px;margin-left:4px">
+          <span style="width:6px;height:6px;border-radius:50%;background:#2e8157;animation:ch-pulse 2s ease-in-out infinite"></span>
+          <span style="font-size:11.5px;color:${T.text2}">Active · Updated 2m ago</span>
+        </div>
+        <div style="margin-left:auto;display:flex;align-items:center;gap:7px">
+          <span style="font-size:11.5px;color:${T.text3}">Owner</span>
+          <div style="width:26px;height:26px;border-radius:50%;background:#6f57d4;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff">SC</div>
+          <span style="font-size:12px;font-weight:600;color:${T.text2}">Sarah Chen</span>
+        </div>
+      </div>
+      <div class="tab-bar">
+        <div class="tab-item${state.activeTab==='graph'?' active':''}" onclick="state.activeTab='graph';renderCenter()">Graph</div>
+        <div class="tab-item${state.activeTab==='detail'?' active':''}" onclick="state.activeTab='detail';renderCenter()">Detail</div>
+        <div class="tab-item${state.activeTab==='history'?' active':''}" onclick="state.activeTab='history';renderCenter()">History</div>
+      </div>
+    </div>
+
+    ${state.activeTab==='graph'?`
+    <div style="padding:20px 20px 0">
+      <div class="graph-container" style="background:${T.surface};border:1px solid ${T.border};border-radius:16px;box-shadow:${T.shadowSm}">
+        <svg style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none" viewBox="0 0 ${GW} ${GH}" preserveAspectRatio="xMidYMid meet">
+          ${svgLines}
+        </svg>
+        ${nodesHtml}
+        <div style="position:absolute;bottom:10px;left:12px;font-family:'JetBrains Mono',monospace;font-size:8.5px;color:${T.text3};letter-spacing:.4px">LIVING EXPERIENCE GRAPH · Click any node to explore</div>
+      </div>
+      ${detailHtml}
+      <div style="height:24px"></div>
+    </div>
+    `:''}
+
+    ${state.activeTab==='detail'?`
+    <div style="padding:20px">
+      <div style="font-size:13px;color:${T.text2};line-height:1.6;margin-bottom:16px">The <strong>Test Request Form</strong> is step 2 of 6 in the Test Request Submit journey. It captures all structured metadata for a new QA test request, including priority, component scope, and description.</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="background:${T.surface};border:1px solid ${T.border};border-radius:10px;padding:14px">
+          <div style="font-size:11px;font-weight:700;color:${T.text3};margin-bottom:6px;letter-spacing:.3px">LINKED REQUIREMENTS (12)</div>
+          ${['Priority must auto-suggest from title','Severity field removed per Jun 22 decision','File attachment is optional','Step must complete in < 20s median'].map(r=>`<div style="font-size:12.5px;color:${T.text2};padding:4px 0;border-bottom:1px solid ${T.border};display:flex;align-items:center;gap:7px"><span style="color:#4338ca">●</span>${r}</div>`).join('')}
+        </div>
+      </div>
+    </div>
+    `:''}
+
+    ${state.activeTab==='history'?`
+    <div style="padding:20px">
+      <div style="display:flex;flex-direction:column;gap:0">
+        ${[
+          {time:'2m ago',  agent:'UX', color:'#d4456b', text:'Revised step 2 layout — form reduced to 4 fields'},
+          {time:'18m ago', agent:'QA', color:'#2e8157', text:'Accessibility check started on updated form components'},
+          {time:'2h ago',  agent:'SC', color:'#6f57d4', text:'Reviewed v3 — approved priority auto-suggest approach'},
+          {time:'Jun 22',  agent:'UX', color:'#d4456b', text:'Removed severity field per team decision'},
+          {time:'Jun 21',  agent:'UX', color:'#d4456b', text:'Shortened form from 8 fields to 4 — step 2 revised'},
+          {time:'Jun 20',  agent:'RE', color:'#1f9d8f', text:'Research brief connected — 17 interviews, 89 tickets'},
+        ].map((e,i)=>`
+          <div style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid ${T.border}${i===5?';border-bottom:none':''}">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:3px;width:28px;flex:none">
+              <div style="width:22px;height:22px;border-radius:6px;background:${e.color};display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:8px;font-weight:700;color:#fff">${e.agent}</div>
+              ${i<5?`<div style="width:2px;flex:1;min-height:10px;background:${T.border};border-radius:2px"></div>`:''}
+            </div>
+            <div style="flex:1;padding-top:2px">
+              <div style="font-size:12.5px;color:${T.text2};line-height:1.4">${e.text}</div>
+              <div style="font-size:10.5px;color:${T.text3};margin-top:3px">${e.time}</div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+    `:''}
+  `;
+}
+
+function selectNode(id){
+  state.selectedNode=id;
+  renderCenter();
+}
+
+function renderRightSidebar(){
+  const agents=[
+    {abbr:'SC', color:'#1f9d8f', name:'Scout',  task:'Scanning 89 new support tickets for priority signals'},
+    {abbr:'SY', color:'#c2700f', name:'Synth',  task:'Updating opportunity map with Scout findings'},
+    {abbr:'UX', color:'#d4456b', name:'UX',     task:'Revising step 2 form layout based on Devon feedback'},
+    {abbr:'QA', color:'#2e8157', name:'QA',     task:'Running accessibility check on updated components'},
+  ];
+
+  const decisions=[
+    {text:'Priority auto-suggest added to step 1', date:'Jun 23', owners:'UX + Sarah Chen'},
+    {text:'Severity field removed — consolidated into Priority', date:'Jun 22', owners:'UX + Devon Park'},
+    {text:'Step 2 shortened from 8 to 4 fields', date:'Jun 21', owners:'UX + Jordan Lee'},
+  ];
+
+  let html=`
+    <div class="rail-section-title" style="display:flex;align-items:center;gap:6px">
+      <span style="width:6px;height:6px;border-radius:50%;background:${T.green};animation:ch-pulse 1.6s ease-in-out infinite;flex:none"></span>
+      SAGE Agents
+    </div>
+
+    <div style="padding:0 14px 8px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;font-weight:600;letter-spacing:.5px;color:${T.green};margin-bottom:6px;display:flex;align-items:center;gap:5px">
+        <span style="width:5px;height:5px;border-radius:50%;background:${T.green};animation:ch-pulse 1.4s infinite;flex:none"></span>
+        CURRENTLY WORKING
+      </div>
+      ${agents.map(a=>`
+        <div class="agent-row">
+          <div class="agent-badge" style="background:${a.color}">${a.abbr}</div>
+          <div style="flex:1">
+            <div style="font-size:12px;font-weight:700;color:${T.text};margin-bottom:2px">${a.name}</div>
+            <div style="font-size:11.5px;color:${T.text2};line-height:1.4">${a.task}</div>
+          </div>
+          <div style="width:5px;height:5px;border-radius:50%;background:${a.color};flex:none;margin-top:5px;animation:ch-pulse 1.6s ease-in-out infinite"></div>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="rail-divider"></div>
+
+    <div style="padding:0 14px 8px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;font-weight:600;letter-spacing:.5px;color:${T.amber};margin-bottom:8px">WAITING APPROVAL</div>
+      <div style="background:${T.amberLight};border:1px solid ${T.amber}33;border-radius:10px;padding:11px">
+        <div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:10px">
+          <div class="agent-badge" style="background:#6f57d4">CD</div>
+          <div style="flex:1">
+            <div style="font-size:12px;font-weight:700;color:${T.text};margin-bottom:2px">Creative Director</div>
+            <div style="font-size:11.5px;color:${T.text2};line-height:1.4">v3 concept ready — priority auto-suggest consolidated</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:7px">
+          <button style="flex:1;padding:7px 0;border-radius:7px;background:${T.green};color:#fff;font-size:12px;font-weight:700;border:none;cursor:pointer;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">Approve</button>
+          <button style="flex:1;padding:7px 0;border-radius:7px;background:transparent;color:${T.text};font-size:12px;font-weight:600;border:1.5px solid ${T.border2};cursor:pointer;transition:all .15s" onmouseover="this.style.borderColor='${T.text2}'" onmouseout="this.style.borderColor='${T.border2}'">Review</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="rail-divider"></div>
+
+    <div style="padding:0 14px 4px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;font-weight:600;letter-spacing:.5px;color:${T.text3};margin-bottom:8px">RECENT DECISIONS</div>
+      ${decisions.map(d=>`
+        <div class="decision-card">
+          <div style="font-size:10px;color:${T.text3};margin-bottom:3px">${d.date}</div>
+          <div style="font-size:12.5px;color:${T.text};line-height:1.4;margin-bottom:3px">${d.text}</div>
+          <div style="font-size:10px;color:${T.text3}">${d.owners}</div>
+        </div>
+      `).join('')}
+      <a href="#" style="font-size:12px;color:${T.blue};font-weight:500;display:block;padding:8px 0;transition:opacity .15s" onmouseover="this.style.opacity='.7'" onmouseout="this.style.opacity='1'">View all decisions →</a>
+    </div>
+  `;
+
+  document.getElementById('right-sidebar').innerHTML=html;
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+render();
+</script>
+</body>
+</html>

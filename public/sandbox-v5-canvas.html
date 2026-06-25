@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chorus — Team Canvas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Instrument+Serif:ital,wght@0,400;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/tokens.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;font-family:'Hanken Grotesk',sans-serif;font-size:14px;color:var(--text);background:var(--bg-canvas)}
+button{font-family:'Hanken Grotesk',sans-serif;border:none;cursor:pointer}
+a{text-decoration:none;color:inherit}
+@keyframes ch-rise{from{transform:translateY(8px);opacity:0}to{transform:none;opacity:1}}
+@keyframes ch-pop{0%{transform:translateY(10px) scale(.975);opacity:0}60%{transform:translateY(-2px) scale(1.006)}100%{transform:none;opacity:1}}
+@keyframes ch-pulse{0%,100%{opacity:.35;transform:scale(1)}50%{opacity:1;transform:scale(1.3)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-thumb{background:var(--border2,#cfcabd);border-radius:8px;border:2px solid transparent;background-clip:padding-box}
+::-webkit-scrollbar-track{background:transparent}
+
+#app{height:100vh;display:flex;flex-direction:column;overflow:hidden}
+header{height:56px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:14px;flex:none;z-index:10}
+#subheader{height:48px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;gap:8px;flex:none}
+#body{flex:1;overflow:hidden}
+.board{height:100%;overflow-x:auto;overflow-y:hidden;padding:20px 24px 28px;display:flex;gap:16px;align-items:flex-start}
+.col{flex:none;width:292px;display:flex;flex-direction:column}
+.col-head{padding:0 2px 10px;display:flex;align-items:center;gap:8px}
+.col-body{display:flex;flex-direction:column;gap:10px;overflow-y:auto;max-height:calc(100vh - 164px);padding:2px;padding-bottom:32px}
+.proj{background:var(--surface);border:1px solid var(--border);border-radius:14px;cursor:pointer;box-shadow:var(--shadow-sm);animation:ch-rise .4s ease;transition:box-shadow .15s,transform .15s;display:flex;flex-direction:column;overflow:hidden}
+.proj:hover{box-shadow:var(--shadow-md);transform:translateY(-2px)}
+.proj-inner{padding:16px;display:flex;flex-direction:column;gap:0}
+.proj-accent{height:3px;flex:none}
+.proj-client{display:inline-flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;letter-spacing:.5px;padding:3px 7px;border-radius:4px;margin-bottom:8px}
+.proj-name{font-family:'Instrument Serif',serif;font-size:17px;line-height:1.25;margin-bottom:6px}
+.proj-brief{font-size:12px;color:var(--text2);line-height:1.45;margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.prog-bar{height:3px;border-radius:2px;background:var(--border);overflow:hidden;margin-bottom:10px}
+.prog-fill{height:100%;border-radius:2px}
+.obj-row{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text3);line-height:1.5;margin-bottom:10px;letter-spacing:.1px}
+.proj-agents{display:flex;align-items:center;margin-bottom:12px}
+.agent-dot{width:22px;height:22px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:8.5px;font-weight:700;color:#fff;flex:none;border:2px solid var(--surface);margin-right:-5px;position:relative}
+.proj-footer{display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--border);padding:10px 0 0}
+.open-btn{font-size:12px;font-weight:600;padding:5px 12px;border-radius:7px;background:var(--surface2);border:1px solid var(--border);color:var(--text2);transition:all .12s;cursor:pointer}
+.open-btn:hover{background:var(--brand);color:var(--bg-canvas);border-color:var(--brand)}
+.pill{padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text2);font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;white-space:nowrap}
+.pill.on{background:var(--brand);color:var(--bg-canvas);border-color:var(--brand)}
+.new-btn{padding:8px 16px;border-radius:9px;background:var(--brand);color:var(--bg-canvas);font-size:13px;font-weight:700;border:none;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:5px;margin-left:auto;transition:opacity .15s}
+.new-btn:hover{opacity:.85}
+.add-col{flex:none;width:260px;border:2px dashed var(--border2);border-radius:14px;display:flex;align-items:center;justify-content:center;cursor:pointer;min-height:80px;color:var(--text3);font-size:13px;gap:7px;transition:all .15s;padding:20px}
+.add-col:hover{border-color:var(--brand);color:var(--brand)}
+.live-dot{width:6px;height:6px;border-radius:50%;background:#2e8157;animation:ch-pulse 2s ease-in-out infinite;flex:none}
+.view-toggle{display:flex;border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.view-btn{padding:5px 13px;font-size:12px;font-weight:500;background:transparent;color:var(--text2);border:none;cursor:pointer;transition:all .15s}
+.view-btn.active{background:var(--surface2);color:var(--text);font-weight:600}
+.subh-sep{width:1px;height:22px;background:var(--border);flex:none}
+</style>
+</head>
+<body>
+<div id="app">
+  <header id="hdr"></header>
+  <div id="subheader"></div>
+  <div id="body"><div class="board" id="board"></div></div>
+</div>
+
+<script>
+// ── TOKENS ────────────────────────────────────────────────────────────────────
+function readTokens(){
+  const s=getComputedStyle(document.documentElement),g=v=>s.getPropertyValue(v).trim();
+  return{
+    bgCanvas:g('--bg-canvas')||'#ecebe5',surface:g('--surface')||'#FDFAF6',
+    surfaceWarm:g('--surface-warm')||'#fffdf8',surface2:g('--surface2')||'#E8E3D9',
+    border:g('--border')||'#D8D2C6',border2:g('--border2')||'#C4BCAF',
+    text:g('--text')||'#1C1914',text2:g('--text2')||'#6B6860',text3:g('--text3')||'#9C9890',
+    brand:g('--brand')||'#1E1C18',brandLight:g('--brand-light')||'#EDEAE4',
+    blue:g('--blue')||'#2f5bea',blueLight:g('--blue-light')||'#e7eefe',
+    green:g('--green')||'#2e8157',greenLight:g('--green-light')||'#e6f3ec',
+    purple:g('--purple')||'#6f57d4',purpleLight:g('--purple-light')||'#efebfb',
+    teal:g('--teal')||'#1f9d8f',tealLight:g('--teal-light')||'#e5f5f3',
+    amber:g('--amber')||'#c2700f',amberLight:g('--amber-light')||'#faeeda',
+    red:g('--red')||'#d4456b',redLight:g('--red-light')||'#fce8ef',
+    shadowSm:g('--shadow-sm')||'0 1px 2px rgba(28,25,20,.06)',
+    shadowMd:g('--shadow-md')||'0 2px 8px rgba(28,25,20,.08)',
+  };
+}
+let T=readTokens();
+function isDark(){const a=document.documentElement.getAttribute('data-theme');if(a==='dark')return true;if(a==='light')return false;return window.matchMedia('(prefers-color-scheme:dark)').matches;}
+function toggleTheme(){document.documentElement.setAttribute('data-theme',isDark()?'light':'dark');T=readTokens();render();}
+
+// ── DATA ──────────────────────────────────────────────────────────────────────
+const AGENTS={
+  RE:{key:'RE',color:'#1f9d8f',name:'Scout — Research Agent'},
+  ST:{key:'ST',color:'#c2700f',name:'Synth — Strategy Agent'},
+  WF:{key:'WF',color:'#6f57d4',name:'UX — Wireframe Agent'},
+  VD:{key:'VD',color:'#d4456b',name:'Viz — Visual Design Agent'},
+  PR:{key:'PR',color:'#2e8157',name:'PR — Persona Review Agent'},
+  EC:{key:'EC',color:'#2f5bea',name:'ECD — Creative Director'},
+};
+
+const PROJECTS=[
+  {
+    id:'chorus-designsystem',
+    name:'Chorus Design System v2',
+    client:'INTERNAL',
+    clientColor:'#1f9d8f',
+    accent:'#6f57d4',
+    phase:'briefing',
+    brief:'Evolve the Chorus token set — dark mode parity, responsive spacing scale, new component set.',
+    progress:9,
+    objects:'5 Research · 1 Opportunity · 12 Requirements',
+    agents:['RE'],
+    updated:'Just now',
+    featured:false,
+  },
+  {
+    id:'chorus-onboarding',
+    name:'Chorus — Onboarding Flow',
+    client:'INTERNAL',
+    clientColor:'#1f9d8f',
+    accent:'#1f9d8f',
+    phase:'concepting',
+    brief:'First-run experience for new workspace members — zero friction from invite to first project.',
+    progress:38,
+    objects:'12 Research · 4 Opportunities · 3 Personas · 6 Flows · 3 Wireframes',
+    agents:['RE','ST','WF'],
+    updated:'1h ago',
+    featured:false,
+  },
+  {
+    id:'axiom-dashboard',
+    name:'Axiom — Analytics Dashboard',
+    client:'AXIOM QA',
+    clientColor:'#2f5bea',
+    accent:'#c2700f',
+    phase:'concepting',
+    brief:'Executive metrics view — test velocity, coverage gaps, SLA drift — at a glance.',
+    progress:29,
+    objects:'8 Research · 2 Opportunities · 2 Personas · 4 Requirements',
+    agents:['RE','ST'],
+    updated:'3h ago',
+    featured:false,
+  },
+  {
+    id:'axiom-intake',
+    name:'Axiom — Test Request Intake',
+    client:'AXIOM QA',
+    clientColor:'#2f5bea',
+    accent:'#2f5bea',
+    phase:'review',
+    brief:'Redesign QA test request intake to cut 55% abandon rate and reduce triage time from 3.4 days to under 4 hours.',
+    progress:68,
+    objects:'17 Research · 3 Opportunities · 2 Personas · 4 Journeys · 12 Requirements · 6 Flows · 8 Screens · 24 Components · 2 Experiments · 7 Decisions',
+    agents:['RE','ST','WF','VD','PR'],
+    agentPulsing:'PR',
+    updated:'2m ago',
+    featured:true,
+  },
+  {
+    id:'axiom-migration',
+    name:'Jira → Axiom Migration UX',
+    client:'ENTERPRISE',
+    clientColor:'#6f57d4',
+    accent:'#2e8157',
+    phase:'approved',
+    brief:'Guided migration wizard for teams moving from Jira to Axiom. Import, map, validate in three steps.',
+    progress:91,
+    objects:'14 Research · 5 Opportunities · 4 Personas · 8 Journeys · 6 Flows · 12 Screens · 36 Components',
+    agents:['RE','ST','WF','VD','PR','EC'],
+    updated:'Yesterday',
+    featured:false,
+  },
+  {
+    id:'axiom-mobile',
+    name:'Axiom — Mobile App v1',
+    client:'AXIOM QA',
+    clientColor:'#2f5bea',
+    accent:'#2e8157',
+    phase:'live',
+    brief:'Native mobile companion for test request submission and triage notifications. iOS + Android.',
+    progress:100,
+    objects:'22 Research · 6 Opportunities · 3 Personas · 8 Journeys · 4 Flows · 18 Screens · 42 Components · 3 Experiments',
+    agents:['RE','ST','WF','VD','PR','EC'],
+    updated:'3d ago',
+    featured:false,
+  },
+];
+
+const COLS=[
+  {key:'briefing',  label:'Briefing',   dot:'#9C9890'},
+  {key:'concepting',label:'Concepting', dot:'#6f57d4'},
+  {key:'review',    label:'In Review',  dot:'#c2700f'},
+  {key:'approved',  label:'Approved',   dot:'#2e8157'},
+  {key:'live',      label:'Live',       dot:'#2f5bea'},
+];
+
+const FILTERS=[
+  {k:'all',       l:'All'},
+  {k:'active',    l:'Active'},
+  {k:'briefing',  l:'Briefing'},
+  {k:'concepting',l:'Concepting'},
+  {k:'review',    l:'Review'},
+  {k:'live',      l:'Live'},
+];
+
+const state={filter:'all'};
+
+// ── RENDER HEADER ─────────────────────────────────────────────────────────────
+function renderHeader(){
+  document.getElementById('hdr').innerHTML=`
+    <div style="display:flex;align-items:center;gap:9px">
+      <div style="width:28px;height:28px;border-radius:8px;background:${T.text};display:flex;align-items:center;justify-content:center;flex:none">
+        <div style="display:flex;align-items:flex-end;gap:2px;height:14px">
+          <span style="width:2.5px;height:6px;background:#ffd166;border-radius:2px"></span>
+          <span style="width:2.5px;height:14px;background:${T.bgCanvas};border-radius:2px"></span>
+          <span style="width:2.5px;height:9px;background:#7aa2ff;border-radius:2px"></span>
+        </div>
+      </div>
+      <a href="sandbox-v5-canvas.html" style="font-family:'Instrument Serif',serif;font-size:19px;letter-spacing:.3px;color:${T.text}">Chorus</a>
+    </div>
+    <div style="width:1px;height:22px;background:${T.border};flex:none"></div>
+    <span style="font-size:12.5px;color:${T.text2}">Team Canvas</span>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:10px">
+      <button onclick="toggleTheme()" style="width:32px;height:32px;border-radius:8px;background:${T.surface2};border:1px solid ${T.border};display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;color:${T.text2};transition:all .15s" onmouseover="this.style.background='${T.border}'" onmouseout="this.style.background='${T.surface2}'">${isDark()?'☀︎':'◑'}</button>
+      <div style="display:flex;align-items:center">
+        <div style="width:30px;height:30px;border-radius:50%;background:#d4456b;border:2px solid ${T.surface};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;z-index:3;margin-right:-8px" title="Devon Park">DP</div>
+        <div style="width:30px;height:30px;border-radius:50%;background:#2e8157;border:2px solid ${T.surface};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;z-index:2;margin-right:-8px" title="Jordan Lee">JL</div>
+        <div style="width:30px;height:30px;border-radius:50%;background:${T.border2};border:2px solid ${T.surface};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:${T.text2};z-index:1">+3</div>
+      </div>
+    </div>
+  `;
+}
+
+// ── RENDER SUBHEADER ──────────────────────────────────────────────────────────
+function renderSubheader(){
+  document.getElementById('subheader').innerHTML=`
+    ${FILTERS.map(f=>`
+      <button class="pill${state.filter===f.k?' on':''}" onclick="state.filter='${f.k}';renderBoard()">${f.l}</button>
+    `).join('')}
+    <div class="subh-sep" style="margin-left:4px"></div>
+    <div class="view-toggle">
+      <button class="view-btn" onclick="">List</button>
+      <button class="view-btn active" onclick="">Board</button>
+    </div>
+    <div class="subh-sep"></div>
+    <button class="new-btn" onclick="alert('New Project wizard — coming soon')">
+      <span style="font-size:16px;line-height:1">+</span> New Project
+    </button>
+  `;
+}
+
+// ── RENDER BOARD ──────────────────────────────────────────────────────────────
+function renderBoard(){
+  const el=document.getElementById('board');
+  const projects=PROJECTS.filter(p=>{
+    if(state.filter==='all') return true;
+    if(state.filter==='active') return ['concepting','review'].includes(p.phase);
+    return p.phase===state.filter;
+  });
+  el.innerHTML=COLS.map(col=>{
+    const cards=projects.filter(p=>p.phase===col.key);
+    return `
+      <div class="col">
+        <div class="col-head">
+          <span style="width:8px;height:8px;border-radius:50%;background:${col.dot};flex:none"></span>
+          <span style="font-size:13.5px;font-weight:600;flex:1">${col.label}</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:${T.text3}">${cards.length}</span>
+        </div>
+        <div style="height:2px;background:${col.dot};border-radius:2px;margin-bottom:12px;opacity:.3"></div>
+        <div class="col-body">
+          ${cards.length===0
+            ?`<div style="padding:28px 16px;text-align:center;font-size:12px;color:${T.text3};font-style:italic;border:1.5px dashed ${T.border};border-radius:12px">No projects here</div>`
+            :cards.map(p=>renderCard(p)).join('')
+          }
+        </div>
+      </div>
+    `;
+  }).join('')+`
+    <div class="add-col" onclick="alert('Add custom column — coming soon')">
+      <span style="font-size:22px;line-height:1;color:${T.border2}">+</span>
+      <span>Add column</span>
+    </div>
+  `;
+}
+
+// ── RENDER CARD ───────────────────────────────────────────────────────────────
+function renderCard(p){
+  const progColor=p.progress>=90?T.green:p.progress>=50?T.blue:T.amber;
+
+  const agentDots=p.agents.map(k=>{
+    const a=AGENTS[k];
+    const isPulsing=p.agentPulsing===k;
+    return `<div class="agent-dot" style="background:${a.color}" title="${a.name}">${k}${isPulsing?`<span style="position:absolute;top:-2px;right:-2px;width:5px;height:5px;border-radius:50%;background:#22d366;animation:ch-pulse 1.6s ease-in-out infinite;border:1.5px solid ${T.surface}"></span>`:''}</div>`;
+  }).join('');
+
+  const featuredBorder=p.featured?`box-shadow:0 0 0 2px ${p.accent},${T.shadowMd};`:'';
+
+  const card=`
+    <div class="proj" style="${featuredBorder}" onclick="${p.featured?`window.location.href='sandbox-v5-project.html'`:`void(0)`}">
+      <div class="proj-accent" style="background:${p.accent}"></div>
+      <div class="proj-inner">
+        <div class="proj-client" style="background:${p.clientColor}18;color:${p.clientColor}">
+          <span style="width:5px;height:5px;border-radius:50%;background:${p.clientColor};flex:none"></span>
+          ${p.client}
+        </div>
+        <div class="proj-name">${p.name}</div>
+        <div class="proj-brief">${p.brief}</div>
+        <div class="prog-bar"><div class="prog-fill" style="width:${p.progress}%;background:${progColor}"></div></div>
+        <div class="obj-row">${p.objects}</div>
+        <div class="proj-agents">
+          ${agentDots}
+          <span style="margin-left:${p.agents.length*4+10}px;font-size:11px;color:${T.text3}">${p.agents.length} agent${p.agents.length!==1?'s':''}</span>
+        </div>
+        <div class="proj-footer">
+          <span style="font-size:10px;color:${T.text3}">Updated ${p.updated}</span>
+          <button class="open-btn" onclick="event.stopPropagation();window.location.href='${p.featured?'sandbox-v5-project.html':'#'}'">Open Project →</button>
+        </div>
+      </div>
+      ${p.featured?renderActivityStrip():''}
+    </div>
+  `;
+  return card;
+}
+
+// ── AGENT ACTIVITY STRIP (featured card only) ─────────────────────────────────
+function renderActivityStrip(){
+  return `
+    <div style="border-top:1px solid ${T.blue}28;padding:12px 16px 14px;background:${T.blue}07">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:9px">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:8.5px;font-weight:700;letter-spacing:.8px;color:${T.text3}">CURRENTLY ACTIVE</span>
+        <span style="width:6px;height:6px;border-radius:50%;background:#22d366;animation:ch-pulse 1.8s ease-in-out infinite;flex:none"></span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:11px">
+        ${agentLine('RE','#1f9d8f','Scout','Analyzing 89 new support tickets...')}
+        ${agentLine('ST','#c2700f','Synth','Updating opportunity map...')}
+        ${agentLine('WF','#d4456b','UX','Revising step 2 of test request flow...')}
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:8.5px;font-weight:700;letter-spacing:.8px;color:${T.text3}">WAITING APPROVAL</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <div style="width:20px;height:20px;border-radius:6px;background:${T.text3};display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:8px;font-weight:700;color:#fff;flex:none">EC</div>
+        <span style="font-size:11.5px;color:${T.text2};font-style:italic;flex:1">Creative Director — v3 ready for review</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:8.5px;font-weight:700;color:${T.amber};background:${T.amberLight};padding:2px 6px;border-radius:4px;white-space:nowrap">APPROVAL</span>
+      </div>
+    </div>
+  `;
+}
+
+function agentLine(key,color,label,text){
+  return `
+    <div style="display:flex;align-items:center;gap:8px">
+      <div style="width:20px;height:20px;border-radius:6px;background:${color};display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:8px;font-weight:700;color:#fff;flex:none">${key}</div>
+      <span style="width:6px;height:6px;border-radius:50%;background:${color};animation:ch-pulse 2s ease-in-out infinite;flex:none;opacity:.8"></span>
+      <div style="flex:1;min-width:0">
+        <span style="font-size:11.5px;color:${color};font-weight:600">${label}</span>
+        <span style="font-size:11.5px;color:${T.text2}"> — ${text}</span>
+      </div>
+    </div>
+  `;
+}
+
+// ── RENDER ALL ────────────────────────────────────────────────────────────────
+function render(){renderHeader();renderSubheader();renderBoard();}
+render();
+</script>
+</body>
+</html>

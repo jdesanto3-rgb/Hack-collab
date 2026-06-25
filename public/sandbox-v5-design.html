@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chorus v5 — Test Request Form · Experience OS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Instrument+Serif:ital,wght@0,400;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/tokens.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;font-family:'Hanken Grotesk',sans-serif;font-size:13px;color:var(--text);background:var(--bg-canvas)}
+button,input,textarea{font-family:'Hanken Grotesk',sans-serif;border:none;cursor:pointer}
+input,textarea{outline:none}
+a{text-decoration:none;color:inherit}
+
+@keyframes ch-rise{from{transform:translateY(6px);opacity:0}to{transform:none;opacity:1}}
+@keyframes ch-pop{0%{transform:scale(.96);opacity:0}70%{transform:scale(1.02)}100%{transform:none;opacity:1}}
+@keyframes ch-pulse{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:1;transform:scale(1.4)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes cursor-move-vd{
+  0%  {transform:translate(188px,182px)}
+  20% {transform:translate(210px,196px)}
+  40% {transform:translate(195px,188px)}
+  60% {transform:translate(215px,198px)}
+  80% {transform:translate(192px,185px)}
+  100%{transform:translate(188px,182px)}
+}
+@keyframes cursor-move-dp{
+  0%  {transform:translate(130px,118px)}
+  30% {transform:translate(150px,126px)}
+  60% {transform:translate(135px,122px)}
+  100%{transform:translate(130px,118px)}
+}
+@keyframes toast-in{from{transform:translateY(12px);opacity:0}to{transform:none;opacity:1}}
+@keyframes agent-pulse{0%,100%{opacity:.5;transform:scale(1)}50%{opacity:1;transform:scale(1.3)}}
+
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:5px}
+::-webkit-scrollbar-track{background:transparent}
+
+/* ── SHELL ── */
+#app{height:100vh;display:flex;flex-direction:column;overflow:hidden}
+#toolbar{height:50px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 12px;gap:0;flex:none;z-index:20}
+#main{flex:1;min-height:0;display:flex;overflow:hidden}
+
+/* ── TOOLBAR PIECES ── */
+.tb-sep{width:1px;height:22px;background:var(--border);flex:none;margin:0 10px}
+.tb-back{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text2);cursor:pointer;padding:4px 8px;border-radius:6px;transition:all .12s;text-decoration:none}
+.tb-back:hover{background:var(--surface2);color:var(--text)}
+.tb-breadcrumb{font-size:12px;color:var(--text2);display:flex;align-items:center;gap:5px}
+.tb-breadcrumb span{color:var(--text3)}
+.tb-breadcrumb strong{color:var(--text);font-weight:600}
+.tb-center{flex:1;display:flex;align-items:center;justify-content:center;gap:10px}
+.ver-pill{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;padding:4px 9px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--text);display:flex;align-items:center;gap:5px;cursor:pointer;user-select:none}
+.ver-pill span{color:var(--text3);font-size:9px}
+.status-chip{padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600;background:#FEF3C7;color:#92400E;border:1px solid #FDE68A}
+html[data-theme="dark"] .status-chip{background:#3d2800;color:#f5c55a;border-color:#6b4400}
+.tb-right{display:flex;align-items:center;gap:8px}
+.share-btn{padding:6px 14px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text2);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s}
+.share-btn:hover{background:var(--surface2);color:var(--text)}
+.avatar-stack{display:flex;align-items:center}
+.avatar-stack .av{width:26px;height:26px;border-radius:50%;border:2px solid var(--surface);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;margin-left:-6px;cursor:pointer}
+.avatar-stack .av:first-child{margin-left:0}
+.av-more{background:var(--surface2);color:var(--text3);font-size:9px;font-weight:700}
+.theme-btn{width:30px;height:30px;border-radius:7px;background:transparent;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;color:var(--text2);transition:all .12s}
+.theme-btn:hover{background:var(--surface2);color:var(--text)}
+
+/* ── LEFT PANEL ── */
+#left{width:220px;flex:none;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+.lp-tabs{display:flex;border-bottom:1px solid var(--border);flex:none}
+.lp-tab{flex:1;height:36px;display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:600;cursor:pointer;color:var(--text3);border-bottom:2px solid transparent;transition:all .15s}
+.lp-tab.on{color:var(--text);border-bottom-color:var(--brand)}
+.lp-body{flex:1;overflow-y:auto;padding:8px 0}
+
+.layer-group{padding:0 6px;margin-bottom:2px}
+.layer-row{display:flex;align-items:center;gap:5px;padding:3px 8px;border-radius:5px;cursor:pointer;transition:background .1s;height:22px;position:relative}
+.layer-row:hover{background:var(--surface2)}
+.layer-row.selected{background:rgba(47,91,234,.1);border-left:2px solid #2f5bea;padding-left:6px}
+.layer-row.selected .lr-name{color:#2f5bea;font-weight:600}
+.lr-tri{font-size:9px;color:var(--text3);width:10px;flex:none;user-select:none}
+.lr-name{font-size:11.5px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1}
+.lr-badge{width:8px;height:8px;border-radius:2px;flex:none}
+.lr-dot{width:6px;height:6px;border-radius:50%;background:var(--border2);flex:none;margin-left:2px}
+.layer-indent{padding-left:16px}
+.layer-indent2{padding-left:28px}
+.layer-indent3{padding-left:40px}
+.assets-head{padding:10px 12px 6px;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:var(--text3);letter-spacing:.7px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--border);margin-top:4px}
+
+/* ── CANVAS ── */
+#canvas{flex:1;overflow:hidden;position:relative;background:var(--bg-canvas)}
+.canvas-bg{position:absolute;inset:0;background-image:radial-gradient(circle,var(--border) 1px,transparent 1px);background-size:24px 24px;opacity:.45}
+.canvas-viewport{position:absolute;inset:0;overflow:auto;display:flex;align-items:flex-start;justify-content:center;padding:40px 40px 60px}
+.canvas-inner{display:flex;flex-direction:column;align-items:center;gap:20px}
+
+/* Design frame */
+.design-frame{width:360px;background:#fff;border-radius:12px;box-shadow:0 4px 32px rgba(20,18,12,.18),0 1px 4px rgba(20,18,12,.09);overflow:hidden;position:relative;animation:ch-rise .5s ease both}
+.frame-bar{height:32px;background:#F4F2EF;display:flex;align-items:center;padding:0 12px;gap:8px;border-bottom:1px solid #E8E4DE}
+.frame-dot{width:10px;height:10px;border-radius:50%}
+.frame-url{flex:1;background:#E8E4DE;border-radius:5px;height:20px;display:flex;align-items:center;padding:0 9px;font-family:'JetBrains Mono',monospace;font-size:9px;color:#9C9890;margin:0 8px}
+.app-nav{background:#18253A;padding:0 16px;height:44px;display:flex;align-items:center;gap:20px}
+.app-logo{font-size:13px;font-weight:700;color:#fff;letter-spacing:-.01em}
+.app-logo span{color:#4EC9A0}
+.nav-item{font-size:11px;color:rgba(255,255,255,.55);font-weight:500;cursor:pointer}
+.nav-item.on{color:#fff}
+.page-body{padding:20px 18px 16px;background:#FAFAF9}
+.page-breadcrumb{font-size:10px;color:#9C9890;margin-bottom:12px;font-family:'JetBrains Mono',monospace}
+.page-h1{font-family:'Instrument Serif',serif;font-size:20px;color:#1C1914;margin-bottom:14px;line-height:1.2}
+.step-progress{display:flex;align-items:center;gap:0;margin-bottom:18px}
+.step-dot{display:flex;align-items:center;gap:6px;font-size:10px}
+.step-circle{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700}
+.step-circle.done{background:#2f5bea;color:#fff}
+.step-circle.cur{background:#1C1914;color:#fff}
+.step-circle.next{background:#E8E4DE;color:#9C9890}
+.step-label{font-size:10px;font-weight:500}
+.step-label.done{color:#2f5bea}
+.step-label.cur{color:#1C1914;font-weight:600}
+.step-label.next{color:#9C9890}
+.step-sep{width:24px;height:1px;background:#D8D2C6;margin:0 6px;flex:none}
+.form-field{margin-bottom:14px}
+.field-label{font-size:11px;font-weight:600;color:#5C5752;margin-bottom:5px}
+.field-input{width:100%;padding:8px 10px;border:1px solid #D8D2C6;border-radius:7px;font-size:12px;color:#1C1914;background:#fff;font-family:'Hanken Grotesk',sans-serif}
+.field-input.focus-sim{border-color:#2f5bea;box-shadow:0 0 0 2px rgba(47,91,234,.12)}
+.priority-chip{display:flex;align-items:flex-start;gap:7px;padding:8px 10px;border-radius:7px;background:#FEF3C7;border:1px solid #FDE68A;margin-top:6px}
+.pchip-icon{font-size:12px;flex:none;margin-top:1px}
+.pchip-text{font-size:10.5px;color:#92400E;line-height:1.4}
+.pchip-label{font-size:9px;font-family:'JetBrains Mono',monospace;font-weight:700;color:#B45309;display:block;margin-bottom:2px}
+.pchip-val{font-weight:700;color:#92400E}
+.field-textarea{width:100%;padding:8px 10px;border:1px solid #D8D2C6;border-radius:7px;font-size:11.5px;color:#1C1914;background:#fff;resize:none;font-family:'Hanken Grotesk',sans-serif;line-height:1.45;height:64px}
+.pills-row{display:flex;gap:6px;flex-wrap:wrap}
+.type-pill{padding:5px 11px;border-radius:20px;font-size:11px;font-weight:500;border:1px solid #D8D2C6;background:#fff;color:#6B6860;cursor:pointer}
+.type-pill.sel{background:#1C1914;color:#fff;border-color:#1C1914;font-weight:600}
+.form-footer{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;background:#fff;border-top:1px solid #E8E4DE}
+.foot-btn{padding:9px 18px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer}
+.foot-btn.back{background:#F4F2EF;color:#9C9890;border:1px solid #E8E4DE}
+.foot-btn.cont{background:#18253A;color:#fff;border:none}
+
+/* Live cursors on canvas */
+.live-cursor{position:absolute;pointer-events:none;z-index:10}
+.cursor-svg{filter:drop-shadow(0 1px 2px rgba(0,0,0,.25))}
+.cursor-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:10px;font-size:9.5px;font-weight:700;color:#fff;white-space:nowrap;margin-top:3px;margin-left:4px}
+
+/* Version tabs below frame */
+.version-tabs{display:flex;align-items:center;gap:6px}
+.ver-tab{padding:4px 12px;border-radius:20px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;cursor:pointer;color:var(--text3);border:1px solid var(--border);background:transparent;transition:all .15s}
+.ver-tab.on{background:var(--brand);color:var(--surface);border-color:var(--brand)}
+.ver-tab:hover:not(.on){background:var(--surface2);color:var(--text)}
+
+/* ── RIGHT PANEL — EXPERIENCE GRAPH ── */
+#right{width:308px;flex:none;background:var(--surface);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+.rp-header{padding:12px 14px 10px;border-bottom:1px solid var(--border);flex:none}
+.rp-title{display:flex;align-items:center;gap:7px;font-size:14px;font-weight:700;color:var(--text)}
+.rp-title-icon{width:22px;height:22px;border-radius:6px;background:linear-gradient(135deg,#2f5bea,#6f57d4);display:flex;align-items:center;justify-content:center;font-size:11px}
+.rp-subtitle{font-size:11px;color:var(--text2);margin-top:3px}
+.rp-body{flex:1;overflow-y:auto;overflow-x:hidden}
+.graph-section{padding:11px 14px 10px;border-bottom:1px solid var(--border)}
+.gs-type{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.9px;margin-bottom:8px;display:flex;align-items:center;gap:5px}
+.gs-icon{width:18px;height:18px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:#fff;flex:none}
+.gs-item{display:flex;gap:9px;align-items:flex-start}
+.gs-item-body{flex:1;min-width:0}
+.gs-name{font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px}
+.gs-detail{font-size:11px;color:var(--text2);margin-bottom:5px;line-height:1.4}
+.gs-chip{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:10px;font-size:10.5px;font-weight:600}
+.gs-quote{font-size:10.5px;font-style:italic;color:var(--text2);margin:3px 0}
+.gs-link{font-size:11px;font-weight:600;cursor:pointer;text-decoration:underline;display:inline-flex;align-items:center;gap:3px;margin-top:3px}
+.avatar-badge{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex:none}
+
+/* Progress bars */
+.prog-bar-track{height:5px;border-radius:5px;overflow:hidden;margin-top:4px}
+.prog-bar-fill{height:100%;border-radius:5px;transition:width .3s}
+
+/* Component chips */
+.comp-chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:2px}
+.comp-chip{padding:3px 8px;border-radius:5px;font-size:10.5px;font-weight:600;border:1px solid}
+
+/* Decision cards */
+.decision-card{border-left:2px solid var(--border2);padding:5px 8px;margin-bottom:6px;border-radius:0 4px 4px 0}
+.decision-card:last-child{margin-bottom:0}
+.dc-text{font-size:11.5px;color:var(--text);font-weight:500;margin-bottom:2px}
+.dc-meta{font-size:10px;color:var(--text3);font-family:'JetBrains Mono',monospace}
+
+/* Experiment chip */
+.exp-stat{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:10px;font-size:11px;font-weight:700;background:#dcfce7;color:#15803d;margin-top:5px}
+html[data-theme="dark"] .exp-stat{background:#0a2318;color:#4aad7a}
+
+/* Owner row */
+.owner-row{display:flex;align-items:center;gap:9px}
+.owner-info{flex:1}
+.owner-name{font-size:12px;font-weight:600;color:var(--text)}
+.owner-meta{font-size:10.5px;color:var(--text2)}
+
+/* Agents */
+.agents-list{display:flex;flex-direction:column;gap:7px}
+.agent-row{display:flex;align-items:center;gap:8px}
+.agent-dot{width:7px;height:7px;border-radius:50%;flex:none;animation:agent-pulse 2s ease-in-out infinite}
+.agent-badge{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:8.5px;font-weight:700;color:#fff;flex:none}
+.agent-info{flex:1}
+.agent-name{font-size:11.5px;font-weight:600;color:var(--text)}
+.agent-task{font-size:10.5px;color:var(--text2)}
+
+/* View full graph button */
+.view-graph-btn{display:block;margin:12px 14px;padding:9px 0;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text2);font-size:12px;font-weight:600;text-align:center;cursor:pointer;transition:all .15s;text-decoration:none}
+.view-graph-btn:hover{background:var(--brand);color:var(--surface);border-color:var(--brand)}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- TOOLBAR -->
+  <div id="toolbar">
+    <a class="tb-back" href="sandbox-v5-project.html">&#8249; Project</a>
+    <div class="tb-sep"></div>
+    <div class="tb-breadcrumb">
+      <span>Test Request Intake</span>
+      <span style="color:var(--text3)">›</span>
+      <span>Screens</span>
+      <span style="color:var(--text3)">›</span>
+      <strong>Test Request Form</strong>
+    </div>
+    <div class="tb-center">
+      <div class="ver-pill">v3 · Latest <span>▾</span></div>
+      <div class="status-chip">In Review</div>
+    </div>
+    <div class="tb-right">
+      <button class="share-btn">Share</button>
+      <div class="avatar-stack">
+        <div class="av" style="background:#e05b8a" title="VD">VD</div>
+        <div class="av" style="background:#2e8157" title="Devon Park">DP</div>
+        <div class="av av-more" title="+2 more">+2</div>
+      </div>
+      <button class="theme-btn" onclick="toggleTheme()" title="Toggle theme">◐</button>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div id="main">
+
+    <!-- LEFT PANEL -->
+    <div id="left">
+      <div class="lp-tabs">
+        <div class="lp-tab on">Layers</div>
+        <div class="lp-tab">Assets</div>
+        <div class="lp-tab">Pages</div>
+      </div>
+      <div class="lp-body" id="layer-tree"></div>
+    </div>
+
+    <!-- CANVAS -->
+    <div id="canvas">
+      <div class="canvas-bg"></div>
+      <div class="canvas-viewport">
+        <div class="canvas-inner">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3);margin-bottom:4px;letter-spacing:.04em">Test Request Form — v3</div>
+          <div class="design-frame" id="design-frame">
+            <!-- Browser bar -->
+            <div class="frame-bar">
+              <div class="frame-dot" style="background:#FF5F56"></div>
+              <div class="frame-dot" style="background:#FFBD2E"></div>
+              <div class="frame-dot" style="background:#27C93F"></div>
+              <div class="frame-url">axiom-qa.internal/requests/new</div>
+            </div>
+            <!-- App nav -->
+            <div class="app-nav">
+              <div class="app-logo">Axiom<span>QA</span></div>
+              <div class="nav-item on">Dashboard</div>
+              <div class="nav-item">Requests</div>
+              <div class="nav-item">Reports</div>
+              <div class="nav-item">Settings</div>
+            </div>
+            <!-- Page content -->
+            <div class="page-body">
+              <div class="page-breadcrumb">Test Requests › New Request</div>
+              <div class="page-h1">New Test Request</div>
+              <!-- Step progress -->
+              <div class="step-progress">
+                <div class="step-dot">
+                  <div class="step-circle done">✓</div>
+                  <span class="step-label done">Details</span>
+                </div>
+                <div class="step-sep"></div>
+                <div class="step-dot">
+                  <div class="step-circle cur">2</div>
+                  <span class="step-label cur">Environment</span>
+                </div>
+                <div class="step-sep"></div>
+                <div class="step-dot">
+                  <div class="step-circle next">3</div>
+                  <span class="step-label next">Review</span>
+                </div>
+              </div>
+              <!-- Summary field -->
+              <div class="form-field">
+                <div class="field-label">Summary</div>
+                <input class="field-input focus-sim" type="text" value="Login flow regression after auth refactor" readonly>
+                <div class="priority-chip">
+                  <div class="pchip-icon">⚡</div>
+                  <div class="pchip-text">
+                    <span class="pchip-label">SUGGESTED PRIORITY</span>
+                    <span class="pchip-val">High</span> · based on 'auth' keyword + 2 incidents
+                  </div>
+                </div>
+              </div>
+              <!-- Description -->
+              <div class="form-field">
+                <div class="field-label">Description</div>
+                <textarea class="field-textarea" readonly>After the OAuth2 refactor on June 20, users on mobile Safari are failing to complete the login flow. Repro rate ~40% on iOS 17. Affects production traffic.</textarea>
+              </div>
+              <!-- Request type -->
+              <div class="form-field">
+                <div class="field-label">Request Type</div>
+                <div class="pills-row">
+                  <div class="type-pill">Bug Report</div>
+                  <div class="type-pill">Feature Test</div>
+                  <div class="type-pill sel">Regression</div>
+                  <div class="type-pill">Security</div>
+                </div>
+              </div>
+            </div>
+            <!-- Footer -->
+            <div class="form-footer">
+              <button class="foot-btn back">Back</button>
+              <button class="foot-btn cont">Continue →</button>
+            </div>
+            <!-- Live cursors -->
+            <div class="live-cursor" style="animation:cursor-move-vd 8s ease-in-out infinite">
+              <svg class="cursor-svg" width="16" height="20" viewBox="0 0 16 20" fill="none">
+                <path d="M0 0L0 16L4.5 11.5L7 18L9 17L6.5 10L12 10L0 0Z" fill="#e05b8a" stroke="#fff" stroke-width="1"/>
+              </svg>
+              <div class="cursor-badge" style="background:#e05b8a">VD</div>
+            </div>
+            <div class="live-cursor" style="animation:cursor-move-dp 9s ease-in-out infinite 1s">
+              <svg class="cursor-svg" width="16" height="20" viewBox="0 0 16 20" fill="none">
+                <path d="M0 0L0 16L4.5 11.5L7 18L9 17L6.5 10L12 10L0 0Z" fill="#2e8157" stroke="#fff" stroke-width="1"/>
+              </svg>
+              <div class="cursor-badge" style="background:#2e8157">Devon Park</div>
+            </div>
+          </div>
+          <!-- Version selector -->
+          <div class="version-tabs" id="ver-tabs">
+            <button class="ver-tab" onclick="selectVer(this,'v1')">v1</button>
+            <button class="ver-tab" onclick="selectVer(this,'v2')">v2</button>
+            <button class="ver-tab on" onclick="selectVer(this,'v3')">v3</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT PANEL — EXPERIENCE GRAPH -->
+    <div id="right">
+      <div class="rp-header">
+        <div class="rp-title">
+          <div class="rp-title-icon">⬡</div>
+          Experience Graph
+        </div>
+        <div class="rp-subtitle">Everything connected to this screen</div>
+      </div>
+      <div class="rp-body" id="graph-body"></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ── TOKENS ────────────────────────────────────────────────────────────────────
+function readTokens(){
+  const s=getComputedStyle(document.documentElement),g=v=>s.getPropertyValue(v).trim();
+  return{
+    bgCanvas:g('--bg-canvas')||'#ecebe5',surface:g('--surface')||'#FDFAF6',
+    surface2:g('--surface2')||'#E8E3D9',border:g('--border')||'#D8D2C6',
+    border2:g('--border2')||'#C4BCAF',text:g('--text')||'#1C1914',
+    text2:g('--text2')||'#6B6860',text3:g('--text3')||'#9C9890',
+    brand:g('--brand')||'#1E1C18',brandLight:g('--brand-light')||'#EDEAE4',
+    blue:g('--blue')||'#2f5bea',blueLight:g('--blue-light')||'#e7eefe',
+    green:g('--green')||'#2e8157',greenLight:g('--green-light')||'#e6f3ec',
+    purple:g('--purple')||'#6f57d4',purpleLight:g('--purple-light')||'#efebfb',
+    teal:g('--teal')||'#1f9d8f',tealLight:g('--teal-light')||'#e0f3f1',
+    amber:g('--amber')||'#c2700f',amberLight:g('--amber-light')||'#faeeda',
+    red:g('--red')||'#a32d2d',stone:g('--stone')||'#7A6A5C',stoneLight:g('--stone-light')||'#F2EDE7',
+  };
+}
+let T=readTokens();
+function isDark(){const a=document.documentElement.getAttribute('data-theme');if(a==='dark')return true;if(a==='light')return false;return window.matchMedia('(prefers-color-scheme:dark)').matches;}
+function toggleTheme(){document.documentElement.setAttribute('data-theme',isDark()?'light':'dark');T=readTokens();renderAll();}
+
+// ── LAYER TREE ────────────────────────────────────────────────────────────────
+const LAYERS=[
+  {label:'Test Request Form — v3',indent:0,tri:true,selected:true,badge:null},
+  {label:'Step Progress',indent:1,tri:true,badge:'comp'},
+  {label:'StepDot · 1',indent:2,dot:true,badge:null},
+  {label:'StepDot · 2',indent:2,dot:true},
+  {label:'StepDot · 3',indent:2,dot:true},
+  {label:'Form Body',indent:1,tri:true},
+  {label:'Summary Field',indent:2,tri:true,active:true},
+  {label:'Label',indent:3,dot:true},
+  {label:'InputField',indent:3,dot:true},
+  {label:'PriorityChip',indent:3,dot:true,badge:'comp'},
+  {label:'Priority Suggest',indent:2,tri:true},
+  {label:'SuggestBadge',indent:3,dot:true,badge:'comp'},
+  {label:'ChangeLink',indent:3,dot:true},
+  {label:'Description Field',indent:2,tri:true},
+  {label:'RequestType Pills',indent:2,tri:true},
+  {label:'Footer',indent:1,tri:true},
+  {label:'BackButton',indent:2,dot:true},
+  {label:'ContinueButton',indent:2,dot:true},
+];
+
+function renderLayers(){
+  const tree=document.getElementById('layer-tree');
+  const indentClass=['','layer-indent','layer-indent2','layer-indent3'];
+  let html='<div style="padding:4px 0">';
+  LAYERS.forEach(l=>{
+    const selCls=l.selected?' selected':'';
+    const activeCls=l.active?' selected':'';
+    const cls=`layer-row ${indentClass[l.indent]||''}${selCls||activeCls}`;
+    const tri=l.tri?`<span class="lr-tri">▾</span>`:`<span class="lr-tri" style="color:transparent">·</span>`;
+    const dot=l.dot?`<span class="lr-dot"></span>`:'';
+    const badge=l.badge==='comp'?`<span class="lr-badge" style="background:#e05b8a;border-radius:2px"></span>`:'';
+    html+=`<div class="${cls}">${tri}${dot}<span class="lr-name">${l.label}</span>${badge}</div>`;
+  });
+  html+=`<div class="assets-head"><span>ASSETS</span><span style="color:var(--text3);font-size:11px">›</span></div>`;
+  html+='</div>';
+  tree.innerHTML=html;
+}
+
+// ── EXPERIENCE GRAPH ──────────────────────────────────────────────────────────
+function renderGraph(){
+  const body=document.getElementById('graph-body');
+  const dk=isDark();
+
+  const sections=[];
+
+  // PERSONA
+  sections.push(`
+    <div class="graph-section">
+      <div class="gs-type" style="color:#6f57d4">
+        <div class="gs-icon" style="background:#6f57d4">P</div>
+        PERSONA
+      </div>
+      <div class="gs-item">
+        <div class="avatar-badge" style="background:#e05b8a">DP</div>
+        <div class="gs-item-body">
+          <div class="gs-name">Devon Park · QA Engineer</div>
+          <div class="gs-quote">"Priority vs Severity is confusing me"</div>
+          <div>
+            <span class="gs-chip" style="background:${dk?'#26215C':'#EEEDFE'};color:#6f57d4;border:1px solid ${dk?'#3C3489':'#c4bef7'}">31 mentions in research</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  `);
+
+  // JOURNEY
+  sections.push(`
+    <div class="graph-section">
+      <div class="gs-type" style="color:#2f5bea">
+        <div class="gs-icon" style="background:#2f5bea">J</div>
+        JOURNEY
+      </div>
+      <div class="gs-item">
+        <div class="gs-icon" style="background:#2f5bea;width:28px;height:28px;border-radius:6px;font-size:10px">→</div>
+        <div class="gs-item-body">
+          <div class="gs-name">Test Request Submission Flow</div>
+          <div class="gs-detail">Step 2 of 4 · Drop-off here: <strong style="color:#a32d2d">55%</strong></div>
+          <div class="prog-bar-track" style="background:${dk?'#3C3830':'#F0ECE5'}">
+            <div class="prog-bar-fill" style="width:55%;background:#a32d2d"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `);
+
+  // BUSINESS GOAL
+  sections.push(`
+    <div class="graph-section">
+      <div class="gs-type" style="color:#c2700f">
+        <div class="gs-icon" style="background:#c2700f">G</div>
+        BUSINESS GOAL
+      </div>
+      <div class="gs-item">
+        <div class="gs-icon" style="background:#c2700f;width:28px;height:28px;border-radius:6px;font-size:11px">◎</div>
+        <div class="gs-item-body">
+          <div class="gs-name">Reduce request abandonment</div>
+          <div class="gs-detail">Target: 55% → under 20%</div>
+          <div class="prog-bar-track" style="background:${dk?'#3C3830':'#F0ECE5'}">
+            <div class="prog-bar-fill" style="width:68%;background:#c2700f"></div>
+          </div>
+          <div style="font-size:10px;color:var(--text3);margin-top:3px;font-family:'JetBrains Mono',monospace">68% toward goal</div>
+        </div>
+      </div>
+    </div>
+  `);
+
+  // KPI
+  sections.push(`
+    <div class="graph-section">
+      <div class="gs-type" style="color:#4338ca">
+        <div class="gs-icon" style="background:#4338ca">K</div>
+        KPI
+      </div>
+      <div class="gs-item">
+        <div class="gs-icon" style="background:#4338ca;width:28px;height:28px;border-radius:6px;font-size:9px">%</div>
+        <div class="gs-item-body">
+          <div class="gs-name">Form Completion Rate</div>
+          <div class="gs-detail">Current: <strong>45%</strong> · Target: <strong>80%</strong></div>
+          <div class="prog-bar-track" style="background:${dk?'#3C3830':'#F0ECE5'};height:6px;border-radius:6px">
+            <div class="prog-bar-fill" style="width:45%;background:#4338ca;height:6px"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:9.5px;color:var(--text3);font-family:'JetBrains Mono',monospace;margin-top:3px">
+            <span>45%</span><span>80%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  `);
+
+  // COMPONENTS
+  sections.push(`
+    <div class="graph-section">
+      <div class="gs-type" style="color:#2e8157">
+        <div class="gs-icon" style="background:#2e8157">C</div>
+        COMPONENTS
+      </div>
+      <div class="comp-chips">
+        ${['PriorityChip','FormField','StepProgress','Button','TextArea','AttachUpload'].map(c=>`
+          <span class="comp-chip" style="border-color:#2e8157;color:#2e8157;background:${dk?'#0a2318':'#e6f3ec'}">${c}</span>
+        `).join('')}
+      </div>
+    </div>
+  `);
+
+  // RESEARCH
+  sections.push(`
+    <div class="graph-section">
+      <div class="gs-type" style="color:#1f9d8f">
+        <div class="gs-icon" style="background:#1f9d8f">RE</div>
+        RESEARCH
+      </div>
+      <div class="gs-item">
+        <div class="gs-icon" style="background:#1f9d8f;width:28px;height:28px;border-radius:6px;font-size:9px;flex:none">17</div>
+        <div class="gs-item-body">
+          <div class="gs-name">17 Interviews · Scout synthesised Jun 23</div>
+          <div class="gs-detail">Key signal: <strong>"priority vs severity confusion"</strong> ×31</div>
+          <div class="gs-quote">"Why can't I just pick both?"</div>
+          <a class="gs-link" style="color:#1f9d8f" href="#">View brief →</a>
+        </div>
+      </div>
+    </div>
+  `);
+
+  // DECISIONS
+  sections.push(`
+    <div class="graph-section">
+      <div class="gs-type" style="color:#7A6A5C">
+        <div class="gs-icon" style="background:#7A6A5C">D</div>
+        DECISIONS
+      </div>
+      <div class="decision-card">
+        <div class="dc-text">Priority auto-suggest added</div>
+        <div class="dc-meta">Jun 23 · Sarah + UX</div>
+      </div>
+      <div class="decision-card">
+        <div class="dc-text">Severity field removed</div>
+        <div class="dc-meta">Jun 22 · Devon + UX</div>
+      </div>
+    </div>
+  `);
+
+  // EXPERIMENT
+  sections.push(`
+    <div class="graph-section">
+      <div class="gs-type" style="color:#ea580c">
+        <div class="gs-icon" style="background:#ea580c">EX</div>
+        EXPERIMENT
+      </div>
+      <div class="gs-item">
+        <div class="gs-icon" style="background:#ea580c;width:28px;height:28px;border-radius:6px;font-size:9px">AB</div>
+        <div class="gs-item-body">
+          <div class="gs-name">A/B Test #14 — Auto-suggest Priority</div>
+          <div class="gs-detail">Live · 1,240 sessions</div>
+          <div class="exp-stat">+23% completion ↑</div>
+        </div>
+      </div>
+    </div>
+  `);
+
+  // OWNER
+  sections.push(`
+    <div class="graph-section">
+      <div class="gs-type" style="color:var(--text2)">
+        <div class="gs-icon" style="background:#2f5bea">OW</div>
+        OWNER
+      </div>
+      <div class="owner-row">
+        <div class="avatar-badge" style="background:#2f5bea">SC</div>
+        <div class="owner-info">
+          <div class="owner-name">Sarah Chen · Product Designer</div>
+          <div class="owner-meta">Last edited 2 hours ago</div>
+        </div>
+      </div>
+    </div>
+  `);
+
+  // AGENTS ACTIVE
+  sections.push(`
+    <div class="graph-section">
+      <div class="gs-type" style="color:var(--text)">
+        <div class="gs-icon" style="background:var(--brand)">AI</div>
+        AGENTS ACTIVE
+      </div>
+      <div class="agents-list">
+        <div class="agent-row">
+          <div class="agent-dot" style="background:#1f9d8f;animation-delay:0s"></div>
+          <div class="agent-badge" style="background:#1f9d8f">SC</div>
+          <div class="agent-info">
+            <div class="agent-name">Scout</div>
+            <div class="agent-task">monitoring ticket signals</div>
+          </div>
+        </div>
+        <div class="agent-row">
+          <div class="agent-dot" style="background:#e05b8a;animation-delay:.7s"></div>
+          <div class="agent-badge" style="background:#e05b8a">UX</div>
+          <div class="agent-info">
+            <div class="agent-name">UX</div>
+            <div class="agent-task">revising based on Devon review</div>
+          </div>
+        </div>
+        <div class="agent-row">
+          <div class="agent-dot" style="background:#2e8157;animation-delay:1.4s"></div>
+          <div class="agent-badge" style="background:#2e8157">QA</div>
+          <div class="agent-info">
+            <div class="agent-name">QA</div>
+            <div class="agent-task">accessibility check</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `);
+
+  body.innerHTML=sections.join('')+`<a class="view-graph-btn" href="sandbox-v5-project.html">View full graph →</a>`;
+}
+
+// ── VERSION TABS ──────────────────────────────────────────────────────────────
+function selectVer(el, v){
+  document.querySelectorAll('.ver-tab').forEach(t=>t.classList.remove('on'));
+  el.classList.add('on');
+}
+
+// ── RENDER ALL ────────────────────────────────────────────────────────────────
+function renderAll(){
+  T=readTokens();
+  renderLayers();
+  renderGraph();
+}
+
+renderAll();
+</script>
+</body>
+</html>
