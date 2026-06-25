@@ -224,6 +224,15 @@ function openPrototype(cardId){setState({protoOpen:true,protoCard:cardId||null,p
 function closePrototype(){setState({protoOpen:false});}
 function protoNext(){if(state.protoScreen<2)setState({protoScreen:state.protoScreen+1});}
 function protoPrev(){if(state.protoScreen>0)setState({protoScreen:state.protoScreen-1});}
+function switchMockupScreen(n){
+  const inner=document.getElementById('mockup-inner');
+  if(!inner)return;
+  inner.style.transform='translateY(-'+(n*480)+'px)';
+  document.querySelectorAll('.mockup-dot').forEach((d,i)=>{
+    d.style.background=i===n?T.brand:T.border2;
+    d.style.transform=i===n?'scale(1.35)':'scale(1)';
+  });
+}
 function togglePipeline(){setState({pipelineOpen:!state.pipelineOpen});}
 function toggleFeed(){setState({feedOpen:!state.feedOpen});}
 function switchFeedTab(tab){setState({feedTab:tab});}
@@ -1000,59 +1009,93 @@ function stageContent(ph){
   const selDir=DIRECTIONS.find(d=>d.id===state.selectedDir)||DIRECTIONS[0];
   const selTone=selDir.tone;
   const hifiMockup=`
-    <div style="flex:none;width:280px;border-radius:16px;overflow:hidden;box-shadow:var(--shadow-lg);animation:ch-pop .5s ease backwards;border:1px solid ${T.border}">
+    <div style="flex:none;width:284px;border-radius:16px;overflow:hidden;box-shadow:var(--shadow-lg);animation:ch-pop .5s ease backwards;border:1px solid ${T.border}">
       <!-- NavBar -->
-      <div style="background:${T.surface};display:flex;align-items:center;padding:0 14px;height:44px;gap:8px;border-bottom:1px solid ${T.border}">
-        <div style="width:22px;height:22px;border-radius:6px;background:${T.brand};display:flex;align-items:center;justify-content:center;flex:none"><span style="font-size:10px;font-weight:800;color:#fff">N</span></div>
-        <span style="font-size:12px;font-weight:700;color:${T.text};letter-spacing:-.02em">Neura Nova</span>
-        <div style="flex:1"></div>
-        <div style="height:26px;padding:0 10px;border-radius:6px;background:${T.brand};display:flex;align-items:center"><span style="font-size:10px;font-weight:600;color:#fff">Start</span></div>
-      </div>
-      <!-- Hero -->
-      <div style="background:${T.surfaceWarm};padding:22px 18px;text-align:center;display:flex;flex-direction:column;align-items:center">
-        <div style="height:18px;padding:0 9px;border-radius:9px;border:1px solid ${T.brand}55;background:${T.brandLight};display:inline-flex;align-items:center;margin-bottom:10px">
-          <span style="font-size:8.5px;font-weight:600;color:${T.brand};letter-spacing:.05em">AI-POWERED PLATFORM</span>
+      <div style="background:${T.surface};display:flex;align-items:center;padding:0 13px;height:44px;gap:7px;border-bottom:1px solid ${T.border};flex:none">
+        <div style="width:22px;height:22px;border-radius:6px;background:${T.brand};flex:none"></div>
+        <span style="font-size:11.5px;font-weight:700;color:${T.text};letter-spacing:-.02em;flex:none">Neura Nova</span>
+        <div style="flex:1;display:flex;gap:10px;justify-content:center">
+          ${['Platform','Solutions','Pricing'].map(l=>`<span style="font-size:9px;color:${T.text3}">${l}</span>`).join('')}
         </div>
-        <div style="font-family:'Playfair Display',Georgia,serif;font-size:21px;font-weight:600;color:${T.text};line-height:1.15;letter-spacing:-.025em;margin-bottom:8px">Transform Business<br>with <em style="color:${T.brand};font-style:italic">Intelligent AI<br>Agents</em></div>
-        <div style="font-size:10.5px;color:${T.text2};line-height:1.5;margin-bottom:14px;max-width:220px">Deploy autonomous agents for customer support, lead generation, and operations—24/7.</div>
-        <div style="height:34px;padding:0 16px;border-radius:8px;background:${T.brand};display:inline-flex;align-items:center;margin-bottom:10px"><span style="font-size:11px;font-weight:600;color:#fff">Start for Free →</span></div>
-        <div style="font-size:9px;color:${T.text3}">Trusted by <strong style="color:${T.text2}">10,000+</strong> businesses worldwide</div>
+        <div style="height:26px;padding:0 10px;border-radius:13px;background:${T.brand};display:flex;align-items:center;flex:none"><span style="font-size:9px;font-weight:600;color:#fff">Request demo</span></div>
       </div>
-      <!-- Stats Bar -->
-      <div style="background:${T.surface2};display:flex;align-items:center;justify-content:space-around;padding:12px 10px;border-top:1px solid ${T.border};border-bottom:1px solid ${T.border}">
-        ${[['98%','CSAT'],['$180K','Revenue'],['87%','Automation']].map(([v,l])=>`<div style="display:flex;flex-direction:column;align-items:center;gap:2px"><div style="font-family:'Playfair Display',Georgia,serif;font-size:17px;font-weight:600;color:${T.text};letter-spacing:-.02em">${v}</div><div style="font-size:8px;color:${T.text3}">${l}</div></div>`).join(`<div style="width:1px;height:28px;background:${T.border}"></div>`)}
-      </div>
-      <!-- Feature Cards -->
-      <div style="background:${T.surface};padding:12px 12px 0">
-        <div style="font-size:8.5px;font-weight:600;color:${T.text3};letter-spacing:.06em;margin-bottom:8px">CORE FEATURES</div>
-        ${[['💬','Real-time Chat','Resolve support tickets instantly.','#C07800'],['⚡','No-Code Builder','Build AI agents visually in minutes.','#1A8A5A'],['🎙','Voice AI Agent','Multilingual voice support out of the box.','#2E5CE8']].map(([icon,title,desc,color])=>`
-          <div style="background:${T.surfaceWarm};border:1px solid ${T.border};border-radius:10px;padding:10px 12px;margin-bottom:8px;display:flex;gap:9px;align-items:flex-start">
-            <div style="width:26px;height:26px;border-radius:7px;background:${color}18;display:flex;align-items:center;justify-content:center;font-size:12px;flex:none">${icon}</div>
-            <div>
-              <div style="font-size:11px;font-weight:600;color:${T.text};letter-spacing:-.01em;margin-bottom:2px">${title}</div>
-              <div style="font-size:9.5px;color:${T.text2};line-height:1.4">${desc}</div>
+      <!-- Sliding viewport -->
+      <div style="height:480px;overflow:hidden;position:relative">
+        <div id="mockup-inner" style="transform:translateY(0);transition:transform .44s cubic-bezier(.4,0,.2,1);will-change:transform">
+          <!-- Screen 0: Hero -->
+          <div style="height:480px;background:${T.bgCanvas};display:flex;flex-direction:column;align-items:center;justify-content:center;padding:26px 18px;text-align:center;gap:11px;overflow:hidden">
+            <div style="padding:4px 12px;border-radius:12px;background:${T.brandLight};border:1px solid ${T.brand}30;display:inline-flex;align-items:center">
+              <span style="font-size:8.5px;font-weight:600;color:${T.brand}">✦ Now in Beta — Join 3,400 teams</span>
             </div>
-          </div>`).join('')}
-      </div>
-      <!-- Pricing teaser (cropped) -->
-      <div style="background:${T.surface};padding:0 12px 14px">
-        <div style="font-size:8.5px;font-weight:600;color:${T.text3};letter-spacing:.06em;margin-bottom:8px">TRANSPARENT PRICING</div>
-        <div style="background:${T.brand}10;border:1.5px solid ${T.brand}44;border-radius:12px;padding:14px">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-            <span style="font-size:12px;font-weight:700;color:${T.text}">Growth</span>
-            <span style="font-size:8px;font-weight:700;color:${T.brand};background:${T.brand}18;border-radius:4px;padding:2px 6px">MOST POPULAR</span>
+            <div style="font-family:'Playfair Display',Georgia,serif;font-size:21px;font-weight:700;color:${T.text};line-height:1.18;letter-spacing:-.025em">Intelligence that moves at the speed of design.</div>
+            <div style="font-size:10px;color:${T.text2};line-height:1.55;max-width:218px">Neura Nova brings real-time AI insight into every design decision — from brand audits to component health.</div>
+            <div style="display:flex;gap:8px;margin-top:2px">
+              <div style="height:33px;padding:0 15px;border-radius:17px;background:${T.brand};display:inline-flex;align-items:center"><span style="font-size:10px;font-weight:600;color:#fff">Start for free →</span></div>
+              <div style="height:33px;padding:0 13px;border-radius:17px;border:1px solid ${T.border2};display:inline-flex;align-items:center"><span style="font-size:10px;color:${T.text2}">Watch demo</span></div>
+            </div>
+            <!-- Stats bar -->
+            <div style="width:100%;margin-top:12px;background:${T.surface};border-radius:10px;padding:12px 6px;display:flex;justify-content:space-around;border:1px solid ${T.border}">
+              ${[['3,400+','Teams'],['$4.2B','Value'],['99.9%','Uptime'],['4.9★','Rating']].map(([v,l])=>`<div style="display:flex;flex-direction:column;align-items:center;gap:2px"><span style="font-family:'Playfair Display',Georgia,serif;font-size:14px;font-weight:700;color:${T.brand}">${v}</span><span style="font-size:7.5px;color:${T.text3}">${l}</span></div>`).join('')}
+            </div>
           </div>
-          <div style="display:flex;align-items:baseline;gap:3px;margin-bottom:10px">
-            <span style="font-family:'Playfair Display',Georgia,serif;font-size:28px;font-weight:600;color:${T.text};letter-spacing:-.03em">$149</span>
-            <span style="font-size:10px;color:${T.text3}">/month</span>
+          <!-- Screen 1: Features -->
+          <div style="height:480px;background:${T.surface2};padding:20px 14px;overflow:hidden">
+            <div style="text-align:center;margin-bottom:14px">
+              <div style="display:inline-block;padding:3px 11px;border-radius:10px;background:${T.brandLight};margin-bottom:7px"><span style="font-size:8px;font-weight:600;color:${T.brand}">Platform</span></div>
+              <div style="font-family:'Playfair Display',Georgia,serif;font-size:17px;font-weight:700;color:${T.text};line-height:1.2">Everything your design team needs</div>
+              <div style="font-size:9.5px;color:${T.text2};margin-top:4px;line-height:1.4">From token sync to AI review — design, ship, and iterate faster.</div>
+            </div>
+            ${[['#C07800','Real-time Token Sync','Push tokens from code to Figma instantly. Always in sync.'],['#2E5CE8','AI Design Review','Automated review against your brand guidelines before handoff.'],['#1A8A5A','Component Health','Track adoption and spot drift across your design system.']].map(([color,title,desc])=>`
+              <div style="background:${T.surface};border:1px solid ${T.border};border-radius:10px;padding:11px 12px;margin-bottom:8px;display:flex;gap:9px;align-items:flex-start;transition:box-shadow .15s" onmouseover="this.style.boxShadow='0 2px 10px ${T.border}'" onmouseout="this.style.boxShadow='none'">
+                <div style="width:27px;height:27px;border-radius:7px;background:${color}15;border:1px solid ${color}28;flex:none"></div>
+                <div>
+                  <div style="font-size:11px;font-weight:600;color:${T.text};margin-bottom:2px">${title}</div>
+                  <div style="font-size:9.5px;color:${T.text2};line-height:1.4">${desc}</div>
+                </div>
+              </div>`).join('')}
           </div>
-          <div style="height:32px;background:${T.brand};border-radius:8px;display:flex;align-items:center;justify-content:center"><span style="font-size:11px;font-weight:600;color:#fff">Get Started Free</span></div>
+          <!-- Screen 2: Pricing -->
+          <div style="height:480px;background:${T.bgCanvas};padding:20px 14px;overflow:hidden">
+            <div style="text-align:center;margin-bottom:14px">
+              <div style="display:inline-block;padding:3px 11px;border-radius:10px;background:${T.brandLight};margin-bottom:7px"><span style="font-size:8px;font-weight:600;color:${T.brand}">Pricing</span></div>
+              <div style="font-family:'Playfair Display',Georgia,serif;font-size:17px;font-weight:700;color:${T.text};line-height:1.2">Simple, transparent pricing</div>
+              <div style="font-size:9.5px;color:${T.text2};margin-top:4px">Start free. Scale when ready. No surprises.</div>
+            </div>
+            <!-- Free card -->
+            <div style="background:${T.surface};border:1px solid ${T.border};border-radius:12px;padding:13px 14px;margin-bottom:8px">
+              <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:3px">
+                <span style="font-size:9px;font-weight:700;color:${T.text3};letter-spacing:.8px">FREE</span>
+              </div>
+              <div style="font-family:'Playfair Display',Georgia,serif;font-size:22px;font-weight:700;color:${T.text}">$0<span style="font-size:11px;color:${T.text3};font-family:'Inter',sans-serif">/mo</span></div>
+              <div style="font-size:9px;color:${T.text2};margin-top:2px">5 files · 1 project · Basic token sync</div>
+            </div>
+            <!-- Pro card (featured) -->
+            <div style="border-radius:12px;overflow:hidden;border:2px solid ${T.brand};box-shadow:0 4px 18px ${T.brand}28">
+              <div style="background:${T.brand};padding:13px 14px 11px">
+                <div style="font-size:8.5px;font-weight:700;color:#FFF3CC;letter-spacing:.8px;margin-bottom:4px">PRO · MOST POPULAR</div>
+                <div style="display:flex;align-items:baseline;gap:2px">
+                  <span style="font-family:'Playfair Display',Georgia,serif;font-size:26px;font-weight:700;color:#fff">$49</span>
+                  <span style="font-size:10px;color:#FFF3CC">/mo</span>
+                </div>
+                <div style="font-size:9px;color:#FFF3CC;margin-top:2px">Unlimited files · AI review · Full DS library</div>
+              </div>
+              <div style="background:${T.surface};padding:11px 14px">
+                ${['Unlimited files & projects','Advanced token sync','AI design review','Priority support'].map(f=>`<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px;font-size:9.5px;color:${T.text}"><div style="width:5px;height:5px;border-radius:50%;background:#1A8A5A;flex:none"></div>${f}</div>`).join('')}
+                <div style="margin-top:9px;height:32px;background:${T.brand};border-radius:16px;display:flex;align-items:center;justify-content:center"><span style="font-size:10.5px;font-weight:700;color:#fff">Start Pro free →</span></div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <!-- Design page link -->
-      <div style="background:${T.surface2};border-top:1px solid ${T.border};padding:8px 14px;display:flex;align-items:center;justify-content:space-between">
-        <span style="font-size:9.5px;color:${T.text3}">Neura Nova · Landing Page</span>
-        <a href="sandbox-v4-design.html" style="font-size:9.5px;font-weight:600;color:${T.brand};text-decoration:none">Open in Design →</a>
+      <!-- Tab bar -->
+      <div style="background:${T.surface2};border-top:1px solid ${T.border};padding:7px 13px;display:flex;align-items:center;justify-content:space-between">
+        <span style="font-size:9px;color:${T.text3}">Neura Nova · Landing Page v3</span>
+        <div style="display:flex;gap:6px;align-items:center">
+          <button class="mockup-dot" onclick="switchMockupScreen(0)" style="width:7px;height:7px;border-radius:50%;background:${T.brand};border:none;cursor:pointer;padding:0;transition:all .2s;transform:scale(1.35)"></button>
+          <button class="mockup-dot" onclick="switchMockupScreen(1)" style="width:7px;height:7px;border-radius:50%;background:${T.border2};border:none;cursor:pointer;padding:0;transition:all .2s"></button>
+          <button class="mockup-dot" onclick="switchMockupScreen(2)" style="width:7px;height:7px;border-radius:50%;background:${T.border2};border:none;cursor:pointer;padding:0;transition:all .2s"></button>
+        </div>
+        <a href="sandbox-v4-design.html" style="font-size:9px;font-weight:600;color:${T.brand};text-decoration:none">Open in Design →</a>
       </div>
     </div>
   `;
@@ -1116,7 +1159,7 @@ function stageContent(ph){
             Concept is grounded in the brief, Neura Nova brand system is consistent, and persona feedback has been addressed. <strong>Promotion needs your sign-off.</strong>
           </div>
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
-            <a href="https://www.figma.com" target="_blank" style="display:flex;align-items:center;gap:5px;padding:6px 11px;border-radius:7px;background:#5551ff18;border:1px solid #5551ff33;text-decoration:none">
+            <a href="https://www.figma.com/design/d2H3zpRjg2LDWIGFxYJXE9/Weave-DS-%E2%80%94-V4-Design?node-id=9-2&t=zWfYZ8eRgaiCoKXp-4" target="_blank" style="display:flex;align-items:center;gap:5px;padding:6px 11px;border-radius:7px;background:#5551ff18;border:1px solid #5551ff33;text-decoration:none">
               <svg width="9" height="12" viewBox="0 0 14 20" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="7" height="7" rx="3.5" fill="#F24E1E"/><rect x="7" y="0" width="7" height="7" rx="3.5" fill="#FF7262"/><rect x="0" y="7" width="7" height="7" rx="3.5" fill="#A259FF"/><rect x="0" y="14" width="7" height="7" rx="3.5" fill="#0ACF83"/><circle cx="10.5" cy="10.5" r="3.5" fill="#1ABCFE"/></svg>
               <span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:#8b88ff">Open in Figma →</span>
             </a>
