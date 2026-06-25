@@ -1,4 +1,5 @@
 import Footer from '../components/Footer'
+import { useTheme } from '../ThemeContext'
 
 const PERSONAS = [
   {
@@ -92,8 +93,34 @@ const TESTIMONIALS = [
   },
 ]
 
+function outerFrame(isCanvas, isObsidian, content) {
+  if (isCanvas) return (
+    <div className="site-outer-frame">
+      <div className="frame-dot frame-dot--tl"></div>
+      <div className="frame-dot frame-dot--tr"></div>
+      <div className="frame-dot frame-dot--bl"></div>
+      <div className="frame-dot frame-dot--br"></div>
+      {content}
+    </div>
+  )
+  if (isObsidian) return (
+    <div className="site-outer-frame">
+      <div className="obs-frame-dot obs-frame-dot--tl"></div>
+      <div className="obs-frame-dot obs-frame-dot--tr"></div>
+      <div className="obs-frame-dot obs-frame-dot--bl"></div>
+      <div className="obs-frame-dot obs-frame-dot--br"></div>
+      {content}
+    </div>
+  )
+  return content
+}
+
 export default function WhyWeave() {
-  return (
+  const { theme } = useTheme()
+  const isCanvas = theme === 'canvas'
+  const isObsidian = theme === 'obsidian'
+
+  const content = (
     <>
       <section className="page-hero">
         <div className="container">
@@ -111,6 +138,8 @@ export default function WhyWeave() {
           <div className="persona-grid">
             {PERSONAS.map((p, i) => (
               <div key={i} className="persona-card">
+                {isCanvas && <div className="canvas-card-rail"><span className="rail-left">{`SYS.${String(i+1).padStart(2,'0')} // PERSONA`}</span><span className="rail-right">STATUS: MAPPED</span></div>}
+                {isObsidian && <div className="obs-card-rail"><span className="obs-rail-left">{`SYS.${String(i+1).padStart(2,'0')} // PERSONA`}</span><span className="obs-rail-right">STATUS: MAPPED</span></div>}
                 <div className="persona-icon" style={{ background: p.bg, color: p.color }}>{p.icon}</div>
                 <h3 style={{ color: p.color }}>{p.title}</h3>
                 <p style={{ fontSize: 12, color: 'var(--text-3)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 14 }}>Pain Points Solved</p>
@@ -191,7 +220,7 @@ export default function WhyWeave() {
               <thead>
                 <tr>
                   <th>Dimension</th>
-                  <th style={{ color: 'var(--text-3)' }}>Without Weave</th>
+                  <th style={{ color: 'var(--text-2)' }}>Without Weave</th>
                   <th style={{ color: 'var(--teal)' }}>With Weave</th>
                 </tr>
               </thead>
@@ -220,6 +249,8 @@ export default function WhyWeave() {
           <div className="testimonial-grid">
             {TESTIMONIALS.map((t, i) => (
               <div key={i} className="testimonial-card">
+                {isCanvas && <div className="canvas-card-rail"><span className="rail-left">{`SYS.${String(i+1).padStart(2,'0')} // SIGNAL`}</span><span className="rail-right">STATUS: VERIFIED</span></div>}
+                {isObsidian && <div className="obs-card-rail"><span className="obs-rail-left">{`SYS.${String(i+1).padStart(2,'0')} // SIGNAL`}</span><span className="obs-rail-right">STATUS: VERIFIED</span></div>}
                 <div style={{ color: 'var(--purple)', marginBottom: 16 }}>
                   <svg width="24" height="18" viewBox="0 0 24 18" fill="currentColor" opacity="0.6">
                     <path d="M0 18V10.8C0 4.8 4.32 1.2 12.96 0l1.44 2.4C10.08 3.36 7.68 5.04 7.2 7.2H10.8V18H0zm13.2 0V10.8C13.2 4.8 17.52 1.2 26.16 0l1.44 2.4C23.28 3.36 20.88 5.04 20.4 7.2H24V18H13.2z"/>
@@ -237,4 +268,6 @@ export default function WhyWeave() {
       <Footer />
     </>
   )
+
+  return outerFrame(isCanvas, isObsidian, content)
 }

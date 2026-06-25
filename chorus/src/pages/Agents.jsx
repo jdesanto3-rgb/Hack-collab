@@ -1,4 +1,5 @@
 import Footer from '../components/Footer'
+import { useTheme } from '../ThemeContext'
 
 const EXEC_AGENTS = [
   {
@@ -129,8 +130,34 @@ const SAGE_ICONS = {
   ),
 }
 
+function outerFrame(isCanvas, isObsidian, content) {
+  if (isCanvas) return (
+    <div className="site-outer-frame">
+      <div className="frame-dot frame-dot--tl"></div>
+      <div className="frame-dot frame-dot--tr"></div>
+      <div className="frame-dot frame-dot--bl"></div>
+      <div className="frame-dot frame-dot--br"></div>
+      {content}
+    </div>
+  )
+  if (isObsidian) return (
+    <div className="site-outer-frame">
+      <div className="obs-frame-dot obs-frame-dot--tl"></div>
+      <div className="obs-frame-dot obs-frame-dot--tr"></div>
+      <div className="obs-frame-dot obs-frame-dot--bl"></div>
+      <div className="obs-frame-dot obs-frame-dot--br"></div>
+      {content}
+    </div>
+  )
+  return content
+}
+
 export default function Agents() {
-  return (
+  const { theme } = useTheme()
+  const isCanvas = theme === 'canvas'
+  const isObsidian = theme === 'obsidian'
+
+  const content = (
     <>
       <section className="page-hero">
         <div className="container">
@@ -150,6 +177,8 @@ export default function Agents() {
           <div className="agents-grid">
             {EXEC_AGENTS.map((a, i) => (
               <div key={i} className="agent-card">
+                {isCanvas && <div className="canvas-card-rail"><span className="rail-left">{`SYS.${String(i+1).padStart(2,'0')} // EXEC`}</span><span className="rail-right">STATUS: LIVE</span></div>}
+                {isObsidian && <div className="obs-card-rail"><span className="obs-rail-left">{`SYS.${String(i+1).padStart(2,'0')} // EXEC`}</span><span className="obs-rail-right">STATUS: LIVE</span></div>}
                 <div className="agent-avatar" style={{ background: a.bg, color: a.color }}>{a.icon}</div>
                 <h3>{a.name}</h3>
                 <p className="agent-role">{a.role}</p>
@@ -181,6 +210,8 @@ export default function Agents() {
               <div className="agents-grid">
                 {group.agents.map((a, i) => (
                   <div key={i} className="agent-card">
+                    {isCanvas && <div className="canvas-card-rail"><span className="rail-left">{`SYS.${gi+1}.${String(i+1).padStart(2,'0')} // SAGE`}</span><span className="rail-right">STATUS: ACTIVE</span></div>}
+                    {isObsidian && <div className="obs-card-rail"><span className="obs-rail-left">{`SYS.${gi+1}.${String(i+1).padStart(2,'0')} // SAGE`}</span><span className="obs-rail-right">STATUS: ACTIVE</span></div>}
                     <div className="agent-avatar" style={{ background: group.color + '18', color: group.color }}>
                       {SAGE_ICONS.default}
                     </div>
@@ -239,4 +270,6 @@ export default function Agents() {
       <Footer />
     </>
   )
+
+  return outerFrame(isCanvas, isObsidian, content)
 }

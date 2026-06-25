@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Footer from '../components/Footer'
+import { useTheme } from '../ThemeContext'
 
 const ROLES = [
   'Select your role',
@@ -56,7 +57,32 @@ const EXPECT = [
   'A custom proposal based on your team structure',
 ]
 
+function outerFrame(isCanvas, isObsidian, content) {
+  if (isCanvas) return (
+    <div className="site-outer-frame">
+      <div className="frame-dot frame-dot--tl"></div>
+      <div className="frame-dot frame-dot--tr"></div>
+      <div className="frame-dot frame-dot--bl"></div>
+      <div className="frame-dot frame-dot--br"></div>
+      {content}
+    </div>
+  )
+  if (isObsidian) return (
+    <div className="site-outer-frame">
+      <div className="obs-frame-dot obs-frame-dot--tl"></div>
+      <div className="obs-frame-dot obs-frame-dot--tr"></div>
+      <div className="obs-frame-dot obs-frame-dot--bl"></div>
+      <div className="obs-frame-dot obs-frame-dot--br"></div>
+      {content}
+    </div>
+  )
+  return content
+}
+
 export default function Demo() {
+  const { theme } = useTheme()
+  const isCanvas = theme === 'canvas'
+  const isObsidian = theme === 'obsidian'
   const [submitted, setSubmitted] = useState(false)
   const [form, setForm] = useState({ name: '', email: '', company: '', role: '' })
   const [errors, setErrors] = useState({})
@@ -82,7 +108,7 @@ export default function Demo() {
     if (errors[field]) setErrors(er => ({ ...er, [field]: null }))
   }
 
-  return (
+  const content = (
     <>
       <section className="page-hero">
         <div className="container">
@@ -191,6 +217,8 @@ export default function Demo() {
               <div className="demo-features">
                 {FEATURES.map((f, i) => (
                   <div key={i} className="demo-feature">
+                    {isCanvas && <div className="canvas-card-rail"><span className="rail-left">{`SYS.${String(i+1).padStart(2,'0')} // FEATURE`}</span><span className="rail-right">STATUS: LIVE</span></div>}
+                    {isObsidian && <div className="obs-card-rail"><span className="obs-rail-left">{`SYS.${String(i+1).padStart(2,'0')} // FEATURE`}</span><span className="obs-rail-right">STATUS: LIVE</span></div>}
                     <div className="demo-feature-icon" style={{ background: f.bg, color: f.color }}>
                       {f.icon}
                     </div>
@@ -225,4 +253,6 @@ export default function Demo() {
       <Footer />
     </>
   )
+
+  return outerFrame(isCanvas, isObsidian, content)
 }

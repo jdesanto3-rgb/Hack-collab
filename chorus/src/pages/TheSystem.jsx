@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import Footer from '../components/Footer'
+import { useTheme } from '../ThemeContext'
 
 const NODE_DATA = {
   chorus: {
@@ -120,6 +121,9 @@ const EDGES = [
 ]
 
 export default function TheSystem() {
+  const { theme } = useTheme()
+  const isCanvas = theme === 'canvas'
+  const isObsidian = theme === 'obsidian'
   const canvasRef = useRef(null)
   const [selected, setSelected] = useState(NODE_DATA.chorus)
   const nodesRef = useRef([])
@@ -220,7 +224,7 @@ export default function TheSystem() {
     'SAGE Agent': '#378ADD',
   }
 
-  return (
+  const _content = (
     <>
       <section className="page-hero">
         <div className="container">
@@ -277,4 +281,24 @@ export default function TheSystem() {
       <Footer />
     </>
   )
+
+  if (isCanvas) return (
+    <div className="site-outer-frame">
+      <div className="frame-dot frame-dot--tl"></div>
+      <div className="frame-dot frame-dot--tr"></div>
+      <div className="frame-dot frame-dot--bl"></div>
+      <div className="frame-dot frame-dot--br"></div>
+      {_content}
+    </div>
+  )
+  if (isObsidian) return (
+    <div className="site-outer-frame">
+      <div className="obs-frame-dot obs-frame-dot--tl"></div>
+      <div className="obs-frame-dot obs-frame-dot--tr"></div>
+      <div className="obs-frame-dot obs-frame-dot--bl"></div>
+      <div className="obs-frame-dot obs-frame-dot--br"></div>
+      {_content}
+    </div>
+  )
+  return _content
 }

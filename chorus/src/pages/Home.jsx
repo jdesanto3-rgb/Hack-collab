@@ -1,6 +1,105 @@
 import { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import Footer from '../components/Footer'
+import { useTheme } from '../ThemeContext'
+
+function ObsGeoArt() {
+  return (
+    <div className="obs-geo-art" aria-hidden="true">
+      <div className="obs-geo-panel obs-geo-panel--coral">
+        <div className="obs-geo-rail">
+          <span>SYS.01 // TOPO_EVAL</span>
+          <span>COORDS: 34.05°N</span>
+        </div>
+        <div className="obs-geo-assembly">
+          <svg className="obs-geo-svg obs-geo-svg--bg" viewBox="0 0 100 100">
+            <polygon points="50,0 100,50 50,100 0,50" fill="#1A1A1A" />
+          </svg>
+          <div className="obs-geo-circle"></div>
+          <div className="obs-geo-square"></div>
+          <svg className="obs-geo-svg obs-geo-svg--wire" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="35.35" fill="none" stroke="#1A1A1A" strokeWidth="1.5" vectorEffect="non-scaling-stroke" opacity="0.4"/>
+            <rect x="25" y="25" width="50" height="50" fill="none" stroke="#F47C59" strokeWidth="0.5" vectorEffect="non-scaling-stroke" opacity="0.5"/>
+            <line x1="0" y1="0" x2="100" y2="100" stroke="#1A1A1A" strokeWidth="1" opacity="0.2"/>
+            <line x1="100" y1="0" x2="0" y2="100" stroke="#1A1A1A" strokeWidth="1" opacity="0.2"/>
+          </svg>
+          <div className="obs-geo-node obs-geo-node--l"></div>
+          <div className="obs-geo-node obs-geo-node--r"></div>
+          <div className="obs-geo-node obs-geo-node--t"></div>
+          <div className="obs-geo-node obs-geo-node--b"></div>
+        </div>
+      </div>
+      <div className="obs-geo-panel obs-geo-panel--blue">
+        <div className="obs-geo-rail">
+          <span>SYS.02 // LOGIC</span>
+          <span>STATUS: SECURE</span>
+        </div>
+        <div className="obs-geo-assembly">
+          <svg className="obs-geo-svg obs-geo-svg--bg" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="50" fill="#1A1A1A" />
+          </svg>
+          <div className="obs-geo-square obs-geo-square--blue"></div>
+          <div className="obs-geo-diamond"></div>
+          <svg className="obs-geo-svg obs-geo-svg--wire" viewBox="0 0 100 100">
+            <rect x="25" y="25" width="50" height="50" fill="none" stroke="#92CFF2" strokeWidth="0.5" vectorEffect="non-scaling-stroke" opacity="0.6"/>
+            <line x1="50" y1="14.6" x2="50" y2="85.4" stroke="#1A1A1A" strokeWidth="1" opacity="0.3"/>
+            <line x1="14.6" y1="50" x2="85.4" y2="50" stroke="#1A1A1A" strokeWidth="1" opacity="0.3"/>
+            <text x="50" y="54" textAnchor="middle" fontFamily="monospace" fontSize="8" fill="#92CFF2" opacity="0.8">+</text>
+          </svg>
+          <div className="obs-geo-node obs-geo-node--tl"></div>
+          <div className="obs-geo-node obs-geo-node--tr"></div>
+          <div className="obs-geo-node obs-geo-node--bl"></div>
+          <div className="obs-geo-node obs-geo-node--br"></div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function CanvasGeoArt() {
+  return (
+    <div className="canvas-geo-art" aria-hidden="true">
+      <div className="geo-panel geo-panel--coral">
+        <div className="geo-assembly">
+          <svg className="geo-svg geo-svg--bg" viewBox="0 0 100 100">
+            <polygon points="50,0 100,50 50,100 0,50" fill="#241208" />
+          </svg>
+          <div className="geo-circle"></div>
+          <div className="geo-square"></div>
+          <svg className="geo-svg geo-svg--wire" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="35.35" fill="none" stroke="#241208" strokeWidth="1.5" vectorEffect="non-scaling-stroke" opacity="0.4"/>
+            <rect x="25" y="25" width="50" height="50" fill="none" stroke="#F47C59" strokeWidth="0.5" vectorEffect="non-scaling-stroke" opacity="0.5"/>
+            <line x1="0" y1="0" x2="100" y2="100" stroke="#241208" strokeWidth="1" opacity="0.2"/>
+            <line x1="100" y1="0" x2="0" y2="100" stroke="#241208" strokeWidth="1" opacity="0.2"/>
+          </svg>
+          <div className="geo-node geo-node--l"></div>
+          <div className="geo-node geo-node--r"></div>
+          <div className="geo-node geo-node--t"></div>
+          <div className="geo-node geo-node--b"></div>
+        </div>
+      </div>
+      <div className="geo-panel geo-panel--blue">
+        <div className="geo-assembly">
+          <svg className="geo-svg geo-svg--bg" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="50" fill="#241208" />
+          </svg>
+          <div className="geo-square geo-square--blue"></div>
+          <div className="geo-diamond"></div>
+          <svg className="geo-svg geo-svg--wire" viewBox="0 0 100 100">
+            <rect x="25" y="25" width="50" height="50" fill="none" stroke="#92CFF2" strokeWidth="0.5" vectorEffect="non-scaling-stroke" opacity="0.6"/>
+            <line x1="50" y1="14.6" x2="50" y2="85.4" stroke="#241208" strokeWidth="1" opacity="0.3"/>
+            <line x1="14.6" y1="50" x2="85.4" y2="50" stroke="#241208" strokeWidth="1" opacity="0.3"/>
+            <text x="50" y="54" textAnchor="middle" fontFamily="monospace" fontSize="8" fill="#92CFF2" opacity="0.8">+</text>
+          </svg>
+          <div className="geo-node geo-node--tl"></div>
+          <div className="geo-node geo-node--tr"></div>
+          <div className="geo-node geo-node--bl"></div>
+          <div className="geo-node geo-node--br"></div>
+        </div>
+      </div>
+    </div>
+  )
+}
 
 function OrbitalCanvas() {
   const canvasRef = useRef(null)
@@ -218,8 +317,27 @@ const PILLARS = [
   },
 ]
 
+const PROBLEM_RAILS = [
+  { left: 'SYS.01 // CONTEXT', right: 'STATUS: FRAGMENTED' },
+  { left: 'SYS.02 // RESYNC',  right: 'STATUS: DELAYED' },
+  { left: 'SYS.03 // SIGNAL',  right: 'STATUS: LOST' },
+]
+
+const PILLAR_RAILS = [
+  { left: 'SYS.01 // MODEL',  right: 'STATUS: LIVE' },
+  { left: 'SYS.02 // AGENTS', right: 'STATUS: ACTIVE' },
+  { left: 'SYS.03 // GATES',  right: 'STATUS: SECURE' },
+]
+
 export default function Home() {
-  return (
+  const { theme } = useTheme()
+  const isCanvas = theme === 'canvas'
+  const isObsidian = theme === 'obsidian'
+
+  const isBlueprint = theme === 'blueprint'
+  const heroVisual = isCanvas ? <CanvasGeoArt /> : isObsidian ? <ObsGeoArt /> : isBlueprint ? null : <OrbitalCanvas />
+
+  const content = (
     <>
       <section className="hero">
         <div className="container">
@@ -248,7 +366,7 @@ export default function Home() {
               </div>
             </div>
             <div className="animate-fade-up animate-delay-2">
-              <OrbitalCanvas />
+              {heroVisual}
             </div>
           </div>
         </div>
@@ -265,6 +383,18 @@ export default function Home() {
           <div className="problem-grid">
             {PROBLEMS.map((p, i) => (
               <div key={i} className="problem-card animate-fade-up" style={{ animationDelay: `${i * 0.1}s` }}>
+                {isCanvas && (
+                  <div className="canvas-card-rail">
+                    <span className="rail-left">{PROBLEM_RAILS[i].left}</span>
+                    <span className="rail-right">{PROBLEM_RAILS[i].right}</span>
+                  </div>
+                )}
+                {isObsidian && (
+                  <div className="obs-card-rail">
+                    <span className="obs-rail-left">{PROBLEM_RAILS[i].left}</span>
+                    <span className="obs-rail-right">{PROBLEM_RAILS[i].right}</span>
+                  </div>
+                )}
                 <div className="problem-icon" style={{ background: p.bg, color: p.color }}>{p.icon}</div>
                 <h3>{p.title}</h3>
                 <p>{p.body}</p>
@@ -299,6 +429,18 @@ export default function Home() {
           <div className="pillars-grid">
             {PILLARS.map((p, i) => (
               <div key={i} className="pillar-card">
+                {isCanvas && (
+                  <div className="canvas-card-rail">
+                    <span className="rail-left">{PILLAR_RAILS[i].left}</span>
+                    <span className="rail-right">{PILLAR_RAILS[i].right}</span>
+                  </div>
+                )}
+                {isObsidian && (
+                  <div className="obs-card-rail">
+                    <span className="obs-rail-left">{PILLAR_RAILS[i].left}</span>
+                    <span className="obs-rail-right">{PILLAR_RAILS[i].right}</span>
+                  </div>
+                )}
                 <div className="pillar-icon" style={{ background: p.bg, color: p.color }}>{p.icon}</div>
                 <h3>{p.title}</h3>
                 <p>{p.body}</p>
@@ -322,4 +464,30 @@ export default function Home() {
       <Footer />
     </>
   )
+
+  if (isCanvas) {
+    return (
+      <div className="site-outer-frame">
+        <div className="frame-dot frame-dot--tl"></div>
+        <div className="frame-dot frame-dot--tr"></div>
+        <div className="frame-dot frame-dot--bl"></div>
+        <div className="frame-dot frame-dot--br"></div>
+        {content}
+      </div>
+    )
+  }
+
+  if (isObsidian) {
+    return (
+      <div className="site-outer-frame">
+        <div className="obs-frame-dot obs-frame-dot--tl"></div>
+        <div className="obs-frame-dot obs-frame-dot--tr"></div>
+        <div className="obs-frame-dot obs-frame-dot--bl"></div>
+        <div className="obs-frame-dot obs-frame-dot--br"></div>
+        {content}
+      </div>
+    )
+  }
+
+  return content
 }

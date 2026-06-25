@@ -18,8 +18,6 @@ const LINKS = [
 
 export default function Nav() {
   const { theme, setTheme } = useTheme()
-  const isDarkTheme = theme === 'obsidian' || theme === 'blueprint'
-  const toggleDarkLight = () => setTheme(isDarkTheme ? 'canvas' : 'obsidian')
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
 
@@ -69,14 +67,6 @@ export default function Nav() {
           </ul>
 
           <div className="nav-right">
-            <button
-              className="theme-mode-btn"
-              onClick={toggleDarkLight}
-              aria-label={isDarkTheme ? 'Switch to light mode' : 'Switch to dark mode'}
-              title={isDarkTheme ? 'Light mode' : 'Dark mode'}
-            >
-              {isDarkTheme ? '☀' : '◑'}
-            </button>
             <div className="theme-toggle" role="group" aria-label="Theme">
               {THEMES.map(t => (
                 <button

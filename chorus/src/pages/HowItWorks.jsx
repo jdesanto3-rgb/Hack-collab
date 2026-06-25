@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Footer from '../components/Footer'
+import { useTheme } from '../ThemeContext'
 
 const STEPS = [
   {
@@ -138,11 +139,36 @@ const ARCHS = [
   },
 ]
 
+function outerFrame(isCanvas, isObsidian, content) {
+  if (isCanvas) return (
+    <div className="site-outer-frame">
+      <div className="frame-dot frame-dot--tl"></div>
+      <div className="frame-dot frame-dot--tr"></div>
+      <div className="frame-dot frame-dot--bl"></div>
+      <div className="frame-dot frame-dot--br"></div>
+      {content}
+    </div>
+  )
+  if (isObsidian) return (
+    <div className="site-outer-frame">
+      <div className="obs-frame-dot obs-frame-dot--tl"></div>
+      <div className="obs-frame-dot obs-frame-dot--tr"></div>
+      <div className="obs-frame-dot obs-frame-dot--bl"></div>
+      <div className="obs-frame-dot obs-frame-dot--br"></div>
+      {content}
+    </div>
+  )
+  return content
+}
+
 export default function HowItWorks() {
   const [active, setActive] = useState(0)
   const step = STEPS[active]
+  const { theme } = useTheme()
+  const isCanvas = theme === 'canvas'
+  const isObsidian = theme === 'obsidian'
 
-  return (
+  const content = (
     <>
       <section className="page-hero">
         <div className="container">
@@ -224,6 +250,8 @@ export default function HowItWorks() {
           <div className="arch-grid">
             {ARCHS.map((a, i) => (
               <div key={i} className="arch-card">
+                {isCanvas && <div className="canvas-card-rail"><span className="rail-left">{`SYS.${String(i+1).padStart(2,'0')} // ARCH`}</span><span className="rail-right">STATUS: ACTIVE</span></div>}
+                {isObsidian && <div className="obs-card-rail"><span className="obs-rail-left">{`SYS.${String(i+1).padStart(2,'0')} // ARCH`}</span><span className="obs-rail-right">STATUS: ACTIVE</span></div>}
                 <div style={{ height: 48, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   {a.svg}
                 </div>
@@ -238,4 +266,6 @@ export default function HowItWorks() {
       <Footer />
     </>
   )
+
+  return outerFrame(isCanvas, isObsidian, content)
 }
