@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weave v6 — Test Request Form</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sofia+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/tokens.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;font-family:'Sofia Sans',sans-serif;font-size:14px;color:var(--text);background:var(--bg-canvas);background-image:radial-gradient(ellipse at 15% 25%, color-mix(in srgb,var(--brand) 4%,transparent) 0%,transparent 50%),radial-gradient(ellipse at 85% 75%, color-mix(in srgb,var(--amber) 3%,transparent) 0%,transparent 50%)}
+button{font-family:'Sofia Sans',sans-serif;border:none;cursor:pointer}
+a{text-decoration:none;color:inherit}
+
+@keyframes ch-rise{from{transform:translateY(8px);opacity:0}to{transform:none;opacity:1}}
+@keyframes ch-pop{0%{transform:translateY(10px) scale(.975);opacity:0}60%{transform:translateY(-2px) scale(1.006)}100%{transform:none;opacity:1}}
+@keyframes ch-pulse{0%,100%{opacity:.35;transform:scale(1)}50%{opacity:1;transform:scale(1.3)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse-ring{0%,100%{opacity:.5}50%{opacity:1}}
+@keyframes figma-cursor-a{0%{transform:translate(182px,144px)}25%{transform:translate(210px,168px)}50%{transform:translate(196px,155px)}75%{transform:translate(218px,140px)}100%{transform:translate(182px,144px)}}
+@keyframes figma-cursor-b{0%{transform:translate(140px,220px)}30%{transform:translate(158px,238px)}70%{transform:translate(145px,228px)}100%{transform:translate(140px,220px)}}
+@keyframes comment-pop{from{transform:scale(.85) translateY(6px);opacity:0}to{transform:none;opacity:1}}
+
+::-webkit-scrollbar{width:7px;height:7px}
+::-webkit-scrollbar-thumb{background:var(--border2,#cfcabd);border-radius:8px;border:2px solid transparent;background-clip:padding-box}
+::-webkit-scrollbar-track{background:transparent}
+
+#app{height:100vh;display:flex;flex-direction:column;overflow:hidden}
+header{height:56px;background:linear-gradient(to bottom,var(--surface),color-mix(in srgb,var(--surface) 92%,var(--bg-canvas)));border-bottom:1px solid color-mix(in srgb,var(--border) 80%,transparent);display:flex;align-items:center;padding:0 20px;gap:0;flex:none;z-index:10}
+#body{flex:1;min-height:0;display:flex;overflow:hidden}
+
+/* Left sidebar */
+.left-sidebar{width:248px;flex:none;border-right:1px solid color-mix(in srgb,var(--border) 75%,transparent);overflow-y:auto;display:flex;flex-direction:column;background:linear-gradient(to bottom,var(--surface),color-mix(in srgb,var(--surface) 88%,var(--bg-canvas)))}
+
+/* Center */
+.center-col{flex:1;overflow-y:auto;display:flex;flex-direction:column;background:var(--bg-canvas)}
+
+/* Right sidebar */
+.right-sidebar{width:288px;flex:none;border-left:1px solid color-mix(in srgb,var(--border) 75%,transparent);overflow-y:auto;display:flex;flex-direction:column;background:linear-gradient(to bottom,var(--surface),color-mix(in srgb,var(--surface) 88%,var(--bg-canvas)))}
+
+/* Object tree */
+.obj-section-header{display:flex;align-items:center;gap:6px;padding:6px 14px;cursor:pointer;user-select:none;transition:background .12s}
+.obj-section-header:hover{background:var(--surface2)}
+.obj-count{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;padding:1px 5px;border-radius:3px;opacity:.7}
+.obj-item{display:flex;align-items:center;gap:8px;padding:5px 14px 5px 32px;font-size:12.5px;cursor:pointer;transition:background .12s}
+.obj-item:hover{background:var(--surface2)}
+.obj-item.selected{background:var(--blue,#2f5bea)18;color:var(--blue,#2f5bea);font-weight:600}
+
+/* Graph */
+.graph-container{position:relative;width:100%;height:440px;overflow:hidden}
+.graph-node{position:absolute;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;transform:translate(-50%,-50%);transition:all .15s}
+.graph-node .circle{border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-weight:700;color:#fff;transition:all .2s;flex:none}
+.graph-node .node-label{font-size:10px;text-align:center;max-width:72px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.graph-node:hover .circle{transform:scale(1.08)}
+
+/* Agent rows */
+.agent-row{display:flex;align-items:flex-start;gap:9px;padding:9px 0;border-bottom:1px solid var(--border)}
+.agent-row:last-child{border-bottom:none}
+.agent-badge{width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:8px;font-weight:700;color:#fff;flex:none;margin-top:1px}
+
+/* Decision cards */
+.decision-card{border-left:3px solid var(--border2);padding:7px 10px;margin-bottom:6px;border-radius:0 6px 6px 0;background:var(--surface2,#E8E3D9)30}
+
+/* Tabs */
+.tab-bar{display:flex;gap:0;border-bottom:1px solid var(--border)}
+.tab-item{padding:9px 18px;font-size:13px;font-weight:500;cursor:pointer;border-bottom:2px solid transparent;color:var(--text3);transition:all .15s;margin-bottom:-1px;display:flex;align-items:center;gap:5px}
+.tab-item.active{color:var(--text);border-bottom-color:var(--blue,#2f5bea);font-weight:600}
+.tab-item:hover:not(.active){color:var(--text2)}
+
+/* Detail panel */
+.detail-panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;margin:12px 20px 0;animation:ch-rise .2s ease}
+
+/* Section divider in right rail */
+.rail-divider{height:1px;background:var(--border);margin:10px 0}
+.rail-section-title{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;letter-spacing:.8px;color:var(--text3);padding:10px 16px 6px;text-transform:uppercase}
+
+/* ── FIGMA DESIGN VIEW ── */
+.figma-wrap{margin:20px;border-radius:14px;overflow:hidden;border:1px solid var(--border);box-shadow:0 4px 24px rgba(20,18,12,.10);animation:ch-rise .25s ease}
+.figma-bar{height:44px;background:#1e1e1e;display:flex;align-items:center;padding:0 14px;gap:10px;flex:none}
+.figma-logo{display:flex;align-items:center;gap:7px}
+.figma-logo svg{flex:none}
+.figma-file-name{font-size:12px;font-weight:600;color:#ffffffcc;font-family:'Sofia Sans',sans-serif}
+.figma-breadcrumb{font-size:11px;color:#ffffff55;font-family:'Sofia Sans',sans-serif}
+.figma-bar-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+.figma-share-btn{padding:5px 13px;border-radius:6px;background:#5551ff;color:#fff;font-size:11.5px;font-weight:600;border:none;cursor:pointer;transition:opacity .15s}
+.figma-share-btn:hover{opacity:.85}
+.figma-avatar{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;border:2px solid #1e1e1e}
+
+.figma-toolbar{height:36px;background:#2c2c2c;border-bottom:1px solid #3a3a3a;display:flex;align-items:center;padding:0 12px;gap:12px;flex:none}
+.figma-tool{width:26px;height:26px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:12px;color:#ffffffaa;cursor:pointer;transition:background .12s}
+.figma-tool:hover,.figma-tool.on{background:#5551ff30;color:#8b88ff}
+.figma-tool-sep{width:1px;height:16px;background:#3a3a3a;flex:none}
+.figma-zoom{font-family:'JetBrains Mono',monospace;font-size:10px;color:#ffffff55;margin-left:auto}
+
+.figma-body{display:flex;height:520px}
+.figma-layers{width:200px;flex:none;background:#1e1e1e;border-right:1px solid #2e2e2e;overflow-y:auto}
+.figma-layer-head{padding:8px 12px;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.6px;color:#ffffff44;border-bottom:1px solid #2e2e2e}
+.figma-layer-item{display:flex;align-items:center;gap:6px;padding:4px 12px;cursor:pointer;transition:background .1s;color:#ffffffaa;font-size:11px}
+.figma-layer-item:hover{background:#2e2e2e}
+.figma-layer-item.sel{background:#5551ff22;color:#8b88ff}
+.figma-layer-icon{font-size:10px;flex:none;width:14px;text-align:center}
+.figma-layer-indent{padding-left:24px}
+.figma-layer-indent2{padding-left:36px}
+
+.figma-canvas{flex:1;background:#2c2c2c;overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center}
+.figma-canvas-bg{position:absolute;inset:0;background-image:radial-gradient(circle,#3a3a3a 1px,transparent 1px);background-size:20px 20px;opacity:.6}
+
+.figma-frame-wrap{position:relative;z-index:1}
+.figma-frame-label{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:#ffffff55;margin-bottom:6px;text-align:left}
+.figma-frame{width:360px;background:#FAFAF9;border-radius:4px;overflow:visible;box-shadow:0 8px 40px rgba(0,0,0,.5);position:relative}
+.figma-frame-inner{overflow:hidden;border-radius:4px}
+
+/* Mock app in Figma */
+.fig-app-nav{background:#18253A;padding:0 16px;height:42px;display:flex;align-items:center;gap:18px}
+.fig-logo{font-size:13px;font-weight:700;color:#fff}
+.fig-logo span{color:#4EC9A0}
+.fig-nav{font-size:11px;color:rgba(255,255,255,.5)}
+.fig-nav.on{color:#fff}
+.fig-page{padding:18px 18px 14px;background:#FAFAF9}
+.fig-bc{font-size:10px;color:#9C9890;margin-bottom:10px;font-family:'JetBrains Mono',monospace}
+.fig-h1{font-size:18px;color:#1C1914;margin-bottom:12px;font-weight:400}
+.fig-steps{display:flex;align-items:center;gap:0;margin-bottom:16px}
+.fig-step{display:flex;align-items:center;gap:5px}
+.fig-step-circle{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8.5px;font-weight:700}
+.fig-step-sep{width:22px;height:1px;background:#D8D2C6;margin:0 5px}
+.fig-field{margin-bottom:12px}
+.fig-label{font-size:10.5px;font-weight:600;color:#5C5752;margin-bottom:4px}
+.fig-input{width:100%;padding:7px 9px;border:1px solid #D8D2C6;border-radius:6px;font-size:11.5px;color:#1C1914;background:#fff;font-family:'Sofia Sans',sans-serif}
+.fig-input.active{border-color:#2f5bea;box-shadow:0 0 0 2px rgba(47,91,234,.12)}
+.fig-suggest{display:flex;align-items:flex-start;gap:6px;padding:7px 9px;border-radius:6px;background:#FEF3C7;border:1px solid #FDE68A;margin-top:5px}
+.fig-suggest-label{font-size:8.5px;font-family:'JetBrains Mono',monospace;font-weight:700;color:#B45309;display:block;margin-bottom:1px}
+.fig-suggest-val{font-size:10px;color:#92400E}
+.fig-pills{display:flex;gap:5px;flex-wrap:wrap}
+.fig-pill{padding:4px 10px;border-radius:20px;font-size:10.5px;font-weight:500;border:1px solid #D8D2C6;background:#fff;color:#6B6860}
+.fig-pill.sel{background:#1C1914;color:#fff;border-color:#1C1914}
+.fig-footer{display:flex;align-items:center;justify-content:space-between;padding:10px 18px;background:#fff;border-top:1px solid #E8E4DE}
+.fig-btn-back{padding:8px 16px;border-radius:7px;font-size:11.5px;font-weight:600;background:#F4F2EF;color:#9C9890;border:1px solid #E8E4DE}
+.fig-btn-cont{padding:8px 16px;border-radius:7px;font-size:11.5px;font-weight:700;background:#18253A;color:#fff;border:none}
+
+/* Figma live cursors */
+.figma-cursor{position:absolute;pointer-events:none;z-index:20}
+.figma-cursor svg{filter:drop-shadow(0 1px 3px rgba(0,0,0,.4))}
+.figma-cursor-label{display:inline-flex;align-items:center;padding:2px 7px;border-radius:8px;font-size:9px;font-weight:700;color:#fff;white-space:nowrap;margin-top:2px;margin-left:3px}
+
+/* Comment pins */
+.figma-comment{position:absolute;cursor:pointer;z-index:15;animation:comment-pop .25s ease both}
+.comment-pin{width:22px;height:22px;border-radius:50% 50% 50% 0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;transform:rotate(-45deg)}
+.comment-pin-inner{transform:rotate(45deg);font-size:9px}
+.comment-bubble{position:absolute;left:26px;top:-6px;background:#1e1e1e;border-radius:8px;padding:7px 10px;min-width:180px;max-width:220px;pointer-events:none;animation:comment-pop .2s ease .1s both;opacity:0;animation-fill-mode:both}
+.comment-bubble::before{content:'';position:absolute;left:-5px;top:10px;width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:5px solid #1e1e1e}
+.figma-comment:hover .comment-bubble{opacity:1}
+.cb-author{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:#8b88ff;margin-bottom:3px}
+.cb-text{font-size:11px;color:#ffffffcc;line-height:1.4}
+.cb-time{font-size:9.5px;color:#ffffff44;margin-top:3px}
+
+/* Figma right inspect */
+.figma-inspect{width:224px;flex:none;background:#1e1e1e;border-left:1px solid #2e2e2e;overflow-y:auto}
+.inspect-head{padding:9px 12px;border-bottom:1px solid #2e2e2e;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.6px;color:#ffffff44}
+.inspect-section{padding:10px 12px;border-bottom:1px solid #2e2e2e}
+.inspect-label{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:#ffffff33;letter-spacing:.5px;margin-bottom:6px}
+.inspect-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.inspect-key{font-size:10.5px;color:#ffffff66}
+.inspect-val{font-family:'JetBrains Mono',monospace;font-size:10px;color:#ffffffbb}
+.inspect-color{width:12px;height:12px;border-radius:3px;flex:none}
+
+/* Review banner */
+.review-banner{margin:0 20px 0;padding:12px 16px;background:linear-gradient(135deg,#5551ff18,#8b88ff0c);border:1px solid #5551ff44;border-radius:12px;display:flex;align-items:center;gap:12px;animation:ch-rise .2s ease .1s both}
+.figma-icon-sm{width:28px;height:28px;border-radius:7px;background:#5551ff;display:flex;align-items:center;justify-content:center;flex:none}
+</style>
+</head>
+<body>
+<div id="app">
+  <header id="hdr"></header>
+  <div id="body">
+    <div class="left-sidebar" id="left-sidebar"></div>
+    <div class="center-col" id="center-col"></div>
+    <div class="right-sidebar" id="right-sidebar"></div>
+  </div>
+</div>
+<script>
+// ── TOKENS ────────────────────────────────────────────────────────────────────
+function readTokens(){
+  const s=getComputedStyle(document.documentElement),g=v=>s.getPropertyValue(v).trim();
+  return{
+    bgCanvas:g('--bg-canvas')||'#ecebe5',surface:g('--surface')||'#FDFAF6',
+    surfaceWarm:g('--surface-warm')||'#fffdf8',surface2:g('--surface2')||'#E8E3D9',
+    border:g('--border')||'#D8D2C6',border2:g('--border2')||'#C4BCAF',
+    text:g('--text')||'#1C1914',text2:g('--text2')||'#6B6860',text3:g('--text3')||'#9C9890',
+    brand:g('--brand')||'#1E1C18',
+    blue:g('--blue')||'#2f5bea',blueLight:g('--blue-light')||'#e7eefe',
+    green:g('--green')||'#2e8157',greenLight:g('--green-light')||'#e6f3ec',
+    purple:g('--purple')||'#6f57d4',purpleLight:g('--purple-light')||'#efebfb',
+    teal:g('--teal')||'#1f9d8f',tealLight:'#e0f3f2',
+    amber:g('--amber')||'#c2700f',amberLight:g('--amber-light')||'#faeeda',
+    red:g('--red')||'#d4456b',redLight:'#fce8ee',
+    shadowSm:g('--shadow-sm')||'0 1px 2px rgba(28,25,20,.06)',
+    shadowMd:g('--shadow-md')||'0 2px 8px rgba(28,25,20,.08)',
+    shadowLg:g('--shadow-lg')||'0 4px 16px rgba(28,25,20,.10)',
+  };
+}
+let T=readTokens();
+function isDark(){const a=document.documentElement.getAttribute('data-theme');if(a==='dark')return true;if(a==='light')return false;return window.matchMedia('(prefers-color-scheme:dark)').matches;}
+function toggleTheme(){document.documentElement.setAttribute('data-theme',isDark()?'light':'dark');T=readTokens();render();}
+
+// ── DATA ──────────────────────────────────────────────────────────────────────
+const OBJECT_TYPES=[
+  {id:'research',  label:'Research',     icon:'🔬', color:'#1f9d8f', count:17, children:[]},
+  {id:'opps',      label:'Opportunities',icon:'💡', color:'#c2700f', count:3,  children:[]},
+  {id:'personas',  label:'Personas',     icon:'👤', color:'#6f57d4', count:2,
+    children:['Devon Park — QA Engineer','Sarah Chen — QA Lead']},
+  {id:'journeys',  label:'Journeys',     icon:'🗺️', color:'#2f5bea', count:4,  children:[]},
+  {id:'reqs',      label:'Requirements', icon:'📋', color:'#4338ca', count:12, children:[]},
+  {id:'flows',     label:'Flows',        icon:'🌊', color:'#0ea5e9', count:6,  children:[]},
+  {id:'screens',   label:'Screens',      icon:'🖼️', color:'#d4456b', count:8,
+    children:['Request Dashboard','Test Request Form','Priority Review Queue','Submission Confirmation','+4 more']},
+  {id:'components',label:'Components',   icon:'🧩', color:'#2e8157', count:24, children:[]},
+  {id:'exps',      label:'Experiments',  icon:'🧪', color:'#ea580c', count:2,  children:[]},
+  {id:'metrics',   label:'Metrics',      icon:'📊', color:'#059669', count:4,  children:[]},
+  {id:'decisions', label:'Decisions',    icon:'📝', color:'#7A6A5C', count:7,  children:[]},
+];
+
+const GRAPH_NODES=[
+  {id:'research',  abbr:'RE', color:'#1f9d8f', label:'Research',    sub:'17 interviews', cx:.15, cy:.15, size:52},
+  {id:'persona',   abbr:'PE', color:'#6f57d4', label:'Devon Park',  sub:'QA Engineer',   cx:.46, cy:.08, size:52},
+  {id:'bizgoal',   abbr:'BG', color:'#c2700f', label:'Business Goal',sub:'Cut abandon 55%',cx:.78,cy:.15,size:52},
+  {id:'journey',   abbr:'JO', color:'#2f5bea', label:'Journey',     sub:'Submit flow',   cx:.08, cy:.50, size:52},
+  {id:'kpi',       abbr:'KP', color:'#4338ca', label:'KPI',         sub:'Completion Rate',cx:.85,cy:.50, size:52},
+  {id:'components',abbr:'CO', color:'#2e8157', label:'Components',  sub:'24 linked',     cx:.20, cy:.82, size:52},
+  {id:'experiment',abbr:'EX', color:'#ea580c', label:'Experiment',  sub:'A/B auto-suggest',cx:.50,cy:.83,size:52},
+  {id:'decision',  abbr:'DE', color:'#7A6A5C', label:'Decision',    sub:'Severity merged',cx:.78,cy:.80,size:52},
+];
+
+const CENTER_NODE={abbr:'SCR', color:'#d4456b', size:80, cx:.50, cy:.50};
+
+const AGENT_DETAILS={
+  research:{title:'RESEARCH — Connected to this screen',body:'17 interviews · 89 support tickets · 3 usability sessions',signal:'"Priority vs Severity confusion" mentioned ×31',updated:'Scout last updated: 2 hours ago',color:'#1f9d8f'},
+  persona:{title:'PERSONA — Devon Park, QA Engineer',body:'Primary persona for this screen. 3 direct feedback points on v2.',signal:'Top pain: "I never know what priority level to pick"',updated:'Synth last updated: 18 minutes ago',color:'#6f57d4'},
+  bizgoal:{title:'BUSINESS GOAL — Reduce abandon rate',body:'Abandon rate from 55% → under 20%. Completion time < 60s.',signal:'This screen is the highest-abandon point in the funnel',updated:'Strategy last updated: June 20',color:'#c2700f'},
+  journey:{title:'JOURNEY — Test Request Submit Flow',body:'6 steps total. This screen is step 2 of 6.',signal:'Steps 2–3 account for 78% of all abandons',updated:'UX last updated: 1 hour ago',color:'#2f5bea'},
+  kpi:{title:'KPI — Completion Rate',body:'Target: 80%+ completion of step 2. Current baseline: 45%.',signal:'Auto-suggest on Priority field projected +22 pts',updated:'Metrics last updated: 3 hours ago',color:'#4338ca'},
+  components:{title:'COMPONENTS — 24 Linked',body:'PriorityInput, SeveritySelect, FileAttach (optional), TextArea, StepNav.',signal:'PriorityInput has 3 open accessibility findings',updated:'QA last updated: 35 minutes ago',color:'#2e8157'},
+  experiment:{title:'EXPERIMENT — Priority Auto-Suggest A/B',body:'Running: Control (manual entry) vs Treatment (auto-suggest from title).',signal:'Treatment shows 34% faster step completion in staging',updated:'Synth last updated: 20 minutes ago',color:'#ea580c'},
+  decision:{title:'DECISION — Severity Merged into Priority',body:'Approved Jun 22. Severity field removed; Priority now 5-level with auto-suggest.',signal:'Reduced step 2 from 8 fields to 4. Devon + Sarah signed off.',updated:'Archived Jun 22',color:'#7A6A5C'},
+};
+
+const state={
+  selectedNode:'research',
+  activeTab:'design',
+  sidebarSections:{screens:true},
+  selectedSidebarItem:'Test Request Form',
+  figmaReviewDone:false,
+};
+
+// ── RENDER ────────────────────────────────────────────────────────────────────
+function render(){
+  renderHeader();
+  renderLeftSidebar();
+  renderCenter();
+  renderRightSidebar();
+}
+
+const WEAVE_LOGO_SVG=`<svg viewBox="220 255 1200 530" fill="none" xmlns="http://www.w3.org/2000/svg" width="41" height="18" style="display:block;flex:none"><defs><linearGradient id="wvg" x1="240" y1="520" x2="1360" y2="520" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#F45F9B"/><stop offset="0.26" stop-color="#F47C7A"/><stop offset="0.52" stop-color="#F59A63"/><stop offset="0.74" stop-color="#F4B258"/><stop offset="1" stop-color="#F7C744"/></linearGradient><filter id="wvf" x="-20%" y="-30%" width="140%" height="160%" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="8" result="b"/><feColorMatrix in="b" values="1 0 0 0 0.95  0 1 0 0 0.45  0 0 1 0 0.25  0 0 0 0.55 0" result="g"/><feGaussianBlur in="SourceGraphic" stdDeviation="2.2" result="b2"/><feMerge><feMergeNode in="g"/><feMergeNode in="b2"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M 270 630 C 365 590,455 725,560 600 C 665 475,560 330,478 346 C 365 368,445 640,642 670 C 782 692,785 405,650 445 C 780 325,845 445,930 600 C 1018 760,1258 574,1075 360 C 985 285,900 458,980 595 C 1044 705,1136 664,1205 626 C 1268 592,1340 602,1390 630" fill="none" stroke="url(#wvg)" stroke-width="42" stroke-linecap="round" stroke-linejoin="round" opacity="0.18" filter="url(#wvf)"/><path d="M 270 630 C 365 590,455 725,560 600 C 665 475,560 330,478 346 C 365 368,445 640,642 670 C 782 692,785 405,650 445 C 780 325,845 445,930 600 C 1018 760,1258 574,1075 360 C 985 285,900 458,980 595 C 1044 705,1136 664,1205 626 C 1268 592,1340 602,1390 630" fill="none" stroke="url(#wvg)" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" filter="url(#wvf)"/><path d="M 706 385 C 805 305,865 442,930 600" fill="none" stroke="var(--surface)" stroke-width="26" stroke-linecap="round" opacity="0.92"/><path d="M 706 385 C 805 305,865 442,930 600" fill="none" stroke="url(#wvg)" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" filter="url(#wvf)"/><path d="M 560 600 C 665 475,560 330,478 346" fill="none" stroke="var(--surface)" stroke-width="24" stroke-linecap="round" opacity="0.90"/><path d="M 560 600 C 665 475,560 330,478 346" fill="none" stroke="url(#wvg)" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" filter="url(#wvf)"/></svg>`;
+
+const FIGMA_SVG=`<svg width="14" height="20" viewBox="0 0 14 20" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="7" height="7" rx="3.5" fill="#F24E1E"/><rect x="7" y="0" width="7" height="7" rx="3.5" fill="#FF7262"/><rect x="0" y="7" width="7" height="7" rx="3.5" fill="#A259FF"/><rect x="0" y="14" width="7" height="7" rx="3.5" fill="#0ACF83"/><circle cx="10.5" cy="10.5" r="3.5" fill="#1ABCFE"/></svg>`;
+
+function renderHeader(){
+  document.getElementById('hdr').innerHTML=`
+    <a href="sandbox-v5-canvas.html" style="display:flex;align-items:center;gap:7px;padding:0 14px 0 0;border-right:1px solid ${T.border};margin-right:14px;cursor:pointer;color:${T.text2};transition:color .15s;white-space:nowrap;text-decoration:none" onmouseover="this.style.color='${T.text}'" onmouseout="this.style.color='${T.text2}'">
+      ${WEAVE_LOGO_SVG}
+      <span style="font-size:13px;font-weight:500">Team Canvas</span>
+    </a>
+    <span style="font-size:13px;color:${T.text3};padding:0 6px">›</span>
+    <span style="font-size:13px;color:${T.text2}">Axiom QA</span>
+    <span style="font-size:13px;color:${T.text3};padding:0 6px">›</span>
+    <span style="font-size:13px;font-weight:600;color:${T.text}">Test Request Intake</span>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:10px">
+      <div style="display:flex;align-items:center;gap:5px;background:#5551ff18;border:1px solid #5551ff44;border-radius:20px;padding:4px 10px">
+        ${FIGMA_SVG}
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:700;color:#8b88ff">Design Review</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;background:${T.blueLight};border:1px solid ${T.blue}33;border-radius:20px;padding:4px 11px">
+        <div style="width:6px;height:6px;border-radius:50%;background:${T.blue}"></div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:${T.blue}">68%</span>
+      </div>
+      <button onclick="toggleTheme()" style="width:32px;height:32px;border-radius:8px;background:${T.surface2};border:1px solid ${T.border};display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;color:${T.text2}" onmouseover="this.style.background='${T.border}'" onmouseout="this.style.background='${T.surface2}'">${isDark()?'☀︎':'◑'}</button>
+      <div style="display:flex">
+        <div style="width:28px;height:28px;border-radius:50%;background:#d4456b;border:2px solid ${T.surface};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;z-index:4;margin-right:-7px">DP</div>
+        <div style="width:28px;height:28px;border-radius:50%;background:#2e8157;border:2px solid ${T.surface};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;z-index:3;margin-right:-7px">JL</div>
+        <div style="width:28px;height:28px;border-radius:50%;background:${T.border2};border:2px solid ${T.surface};display:flex;align-items:center;justify-content:center;font-size:9.5px;font-weight:700;color:${T.text2};z-index:1">+3</div>
+      </div>
+    </div>
+  `;
+}
+
+function renderLeftSidebar(){
+  let html=`<div style="font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;letter-spacing:.8px;color:${T.text3};padding:14px 16px 10px;text-transform:uppercase;border-bottom:1px solid ${T.border}">Experience Objects</div>`;
+
+  OBJECT_TYPES.forEach(type=>{
+    const isExpanded=state.sidebarSections[type.id];
+    const hasChildren=type.children.length>0;
+    html+=`
+      <div class="obj-section-header" onclick="toggleSection('${type.id}')">
+        <span style="font-size:13px">${type.icon}</span>
+        <span style="font-size:12.5px;font-weight:600;flex:1;color:${T.text}">${type.label}</span>
+        <span class="obj-count" style="background:${type.color}18;color:${type.color}">${type.count}</span>
+        ${hasChildren?`<span style="font-size:11px;color:${T.text3};margin-left:2px;${isExpanded?'transform:rotate(90deg);display:inline-block':''}">›</span>`:''}
+      </div>
+    `;
+    if(isExpanded&&hasChildren){
+      type.children.forEach(child=>{
+        const isSelected=state.selectedSidebarItem===child;
+        html+=`
+          <div class="obj-item${isSelected?' selected':''}" onclick="${child==='Test Request Form'?`selectSidebarItem('${child.replace(/'/g,"\\'")}')`:`selectSidebarItem('${child.replace(/'/g,"\\'")}')`}" style="${isSelected?`color:${T.blue};background:${T.blue}14`:''}">
+            <span style="width:5px;height:5px;border-radius:50%;background:${isSelected?T.blue:T.border2};flex:none"></span>
+            <span>${child}</span>
+            ${child==='Test Request Form'?`<span style="margin-left:auto;display:flex;align-items:center;gap:3px"><svg width="8" height="11" viewBox="0 0 14 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="opacity:.6"><rect x="0" y="0" width="7" height="7" rx="3.5" fill="#F24E1E"/><rect x="7" y="0" width="7" height="7" rx="3.5" fill="#FF7262"/><rect x="0" y="7" width="7" height="7" rx="3.5" fill="#A259FF"/><rect x="0" y="14" width="7" height="7" rx="3.5" fill="#0ACF83"/><circle cx="10.5" cy="10.5" r="3.5" fill="#1ABCFE"/></svg></span>`:''}
+          </div>
+        `;
+      });
+    }
+  });
+
+  html+=`
+    <div style="padding:16px;margin-top:auto;border-top:1px solid ${T.border}">
+      <button style="width:100%;padding:9px;border-radius:8px;border:1.5px dashed ${T.border2};background:transparent;color:${T.text3};font-size:12.5px;font-weight:600;cursor:pointer;transition:all .15s" onmouseover="this.style.borderColor='${T.blue}';this.style.color='${T.blue}'" onmouseout="this.style.borderColor='${T.border2}';this.style.color='${T.text3}'">+ Add Object</button>
+    </div>
+  `;
+
+  document.getElementById('left-sidebar').innerHTML=html;
+}
+
+function toggleSection(id){
+  state.sidebarSections[id]=!state.sidebarSections[id];
+  renderLeftSidebar();
+}
+
+function selectSidebarItem(name){
+  state.selectedSidebarItem=name;
+  renderLeftSidebar();
+}
+
+// ── FIGMA DESIGN TAB ──────────────────────────────────────────────────────────
+function renderFigmaView(){
+  return `
+    <div class="review-banner">
+      <div class="figma-icon-sm">${FIGMA_SVG}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:13px;font-weight:700;color:${T.text}">Axiom QA — Test Request Form <span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:#8b88ff;background:#5551ff18;border:1px solid #5551ff33;border-radius:4px;padding:1px 6px;margin-left:4px">v4 · Ready for review</span></div>
+        <div style="font-size:11.5px;color:${T.text2};margin-top:2px">Sarah Chen shared this design for stakeholder review · <span style="color:#8b88ff;cursor:pointer" onclick="window.open('https://www.figma.com','_blank')">Open in Figma →</span></div>
+      </div>
+      <div style="display:flex;gap:7px;flex:none">
+        <button onclick="approveFigma()" style="padding:7px 15px;border-radius:7px;background:${state.figmaReviewDone?T.green:'#5551ff'};color:#fff;font-size:12px;font-weight:700;border:none;cursor:pointer;transition:all .2s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">${state.figmaReviewDone?'✓ Approved':'Approve'}</button>
+        <button style="padding:7px 15px;border-radius:7px;background:transparent;color:${T.text};font-size:12px;font-weight:600;border:1.5px solid ${T.border2};cursor:pointer" onmouseover="this.style.borderColor='${T.text2}'" onmouseout="this.style.borderColor='${T.border2}'">Request Changes</button>
+      </div>
+    </div>
+
+    <div class="figma-wrap">
+      <!-- Figma title bar -->
+      <div class="figma-bar">
+        <div class="figma-logo">
+          ${FIGMA_SVG}
+        </div>
+        <div style="display:flex;flex-direction:column;margin-left:4px">
+          <div class="figma-file-name">Axiom QA — Test Request Form</div>
+          <div class="figma-breadcrumb">Weave DS / v4 Screens / Test Request Form</div>
+        </div>
+        <div class="figma-bar-right">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#ffffff55">3 reviewers</div>
+          <div style="display:flex">
+            <div class="figma-avatar" style="background:#e05b8a;margin-left:0">VD</div>
+            <div class="figma-avatar" style="background:#2e8157">DP</div>
+            <div class="figma-avatar" style="background:#5551ff">SC</div>
+          </div>
+          <button class="figma-share-btn">Share</button>
+        </div>
+      </div>
+
+      <!-- Figma toolbar -->
+      <div class="figma-toolbar">
+        <div class="figma-tool on">↖</div>
+        <div class="figma-tool">⬡</div>
+        <div class="figma-tool-sep"></div>
+        <div class="figma-tool">✎</div>
+        <div class="figma-tool">○</div>
+        <div class="figma-tool">▭</div>
+        <div class="figma-tool-sep"></div>
+        <div class="figma-tool">💬</div>
+        <div class="figma-zoom">100%</div>
+      </div>
+
+      <!-- Figma body -->
+      <div class="figma-body">
+
+        <!-- Layer panel -->
+        <div class="figma-layers">
+          <div class="figma-layer-head">LAYERS</div>
+          <div style="padding:4px 0">
+            ${[
+              {label:'Test Request Form — v4', indent:0, icon:'⬡', sel:true},
+              {label:'Page Header', indent:1, icon:'▭'},
+              {label:'Step Progress', indent:1, icon:'▭'},
+              {label:'Form Body', indent:1, icon:'▭'},
+              {label:'Summary Field', indent:2, icon:'▭', active:true},
+              {label:'Label', indent:3, icon:'T'},
+              {label:'InputField', indent:3, icon:'▭'},
+              {label:'PriorityChip', indent:3, icon:'◈'},
+              {label:'Description Field', indent:2, icon:'▭'},
+              {label:'Type Pills', indent:2, icon:'▭'},
+              {label:'Form Footer', indent:1, icon:'▭'},
+            ].map(l=>`
+              <div class="figma-layer-item${l.sel?' sel':''}${l.active?' sel':''}" style="padding-left:${12+l.indent*12}px">
+                <span class="figma-layer-icon">${l.icon}</span>
+                <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${l.label}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <!-- Canvas -->
+        <div class="figma-canvas">
+          <div class="figma-canvas-bg"></div>
+          <div class="figma-frame-wrap">
+            <div class="figma-frame-label">Test Request Form / Step 2 of 4</div>
+            <div class="figma-frame" id="figma-frame">
+              <div class="figma-frame-inner">
+                <!-- App nav -->
+                <div class="fig-app-nav">
+                  <div class="fig-logo">Axiom<span>QA</span></div>
+                  <div class="fig-nav on">Dashboard</div>
+                  <div class="fig-nav">Requests</div>
+                  <div class="fig-nav">Reports</div>
+                </div>
+                <!-- Page -->
+                <div class="fig-page">
+                  <div class="fig-bc">Test Requests › New Request</div>
+                  <div class="fig-h1">New Test Request</div>
+                  <!-- Steps -->
+                  <div class="fig-steps">
+                    <div class="fig-step">
+                      <div class="fig-step-circle" style="background:#2f5bea;color:#fff">✓</div>
+                      <span style="font-size:10px;font-weight:500;color:#2f5bea;margin-left:4px">Details</span>
+                    </div>
+                    <div class="fig-step-sep"></div>
+                    <div class="fig-step">
+                      <div class="fig-step-circle" style="background:#1C1914;color:#fff">2</div>
+                      <span style="font-size:10px;font-weight:600;color:#1C1914;margin-left:4px">Environment</span>
+                    </div>
+                    <div class="fig-step-sep"></div>
+                    <div class="fig-step">
+                      <div class="fig-step-circle" style="background:#E8E4DE;color:#9C9890">3</div>
+                      <span style="font-size:10px;color:#9C9890;margin-left:4px">Review</span>
+                    </div>
+                  </div>
+                  <!-- Summary -->
+                  <div class="fig-field">
+                    <div class="fig-label">Summary</div>
+                    <input class="fig-input active" type="text" value="Login flow regression after auth refactor" readonly>
+                    <div class="fig-suggest">
+                      <span style="font-size:11px;flex:none;margin-top:1px">⚡</span>
+                      <div>
+                        <span class="fig-suggest-label">SUGGESTED PRIORITY</span>
+                        <span class="fig-suggest-val"><strong>High</strong> · based on 'auth' + 2 incidents</span>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Description -->
+                  <div class="fig-field">
+                    <div class="fig-label">Description</div>
+                    <textarea class="fig-input" style="height:56px;resize:none;font-size:11px;line-height:1.4" readonly>After the OAuth2 refactor on June 20, users on mobile Safari are failing to complete login. Repro rate ~40% on iOS 17.</textarea>
+                  </div>
+                  <!-- Type -->
+                  <div class="fig-field">
+                    <div class="fig-label">Request Type</div>
+                    <div class="fig-pills">
+                      <div class="fig-pill">Bug Report</div>
+                      <div class="fig-pill">Feature Test</div>
+                      <div class="fig-pill sel">Regression</div>
+                      <div class="fig-pill">Security</div>
+                    </div>
+                  </div>
+                </div>
+                <!-- Footer -->
+                <div class="fig-footer">
+                  <button class="fig-btn-back">Back</button>
+                  <button class="fig-btn-cont">Continue →</button>
+                </div>
+              </div>
+
+              <!-- Live cursors -->
+              <div class="figma-cursor" style="animation:figma-cursor-a 10s ease-in-out infinite;pointer-events:none">
+                <svg width="14" height="18" viewBox="0 0 16 20" fill="none" class="cursor-svg">
+                  <path d="M0 0L0 16L4.5 11.5L7 18L9 17L6.5 10L12 10L0 0Z" fill="#e05b8a" stroke="#fff" stroke-width="1"/>
+                </svg>
+                <div class="figma-cursor-label" style="background:#e05b8a;font-family:'JetBrains Mono',monospace;font-size:8.5px">VD</div>
+              </div>
+              <div class="figma-cursor" style="animation:figma-cursor-b 12s ease-in-out infinite 1.5s;pointer-events:none">
+                <svg width="14" height="18" viewBox="0 0 16 20" fill="none" class="cursor-svg">
+                  <path d="M0 0L0 16L4.5 11.5L7 18L9 17L6.5 10L12 10L0 0Z" fill="#2e8157" stroke="#fff" stroke-width="1"/>
+                </svg>
+                <div class="figma-cursor-label" style="background:#2e8157;font-family:'JetBrains Mono',monospace;font-size:8.5px">Devon Park</div>
+              </div>
+
+              <!-- Comment pins -->
+              <div class="figma-comment" style="top:130px;left:210px">
+                <div class="comment-pin" style="background:#8b88ff">
+                  <span class="comment-pin-inner">1</span>
+                </div>
+                <div class="comment-bubble">
+                  <div class="cb-author">VD · Visual Designer</div>
+                  <div class="cb-text">Should the suggest chip use amber here or our new priority-blue token?</div>
+                  <div class="cb-time">40 min ago · 2 replies</div>
+                </div>
+              </div>
+              <div class="figma-comment" style="top:224px;left:120px">
+                <div class="comment-pin" style="background:#ea580c">
+                  <span class="comment-pin-inner">2</span>
+                </div>
+                <div class="comment-bubble">
+                  <div class="cb-author">Devon Park · QA Engineer</div>
+                  <div class="cb-text">Textarea height feels tight on mobile — needs at least 72px to show 3 lines comfortably.</div>
+                  <div class="cb-time">1 hour ago · 1 reply</div>
+                </div>
+              </div>
+              <div class="figma-comment" style="top:302px;left:260px">
+                <div class="comment-pin" style="background:#1f9d8f">
+                  <span class="comment-pin-inner">3</span>
+                </div>
+                <div class="comment-bubble" style="left:auto;right:26px;top:-6px">
+                  <div class="comment-bubble" style="position:static;background:transparent;padding:0;min-width:0">
+                    <div class="cb-author">SC · Sarah Chen</div>
+                    <div class="cb-text">"Regression" pill — confirmed as default selection per Jun 22 decision.</div>
+                    <div class="cb-time">2 hours ago · Resolved ✓</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Inspect panel -->
+        <div class="figma-inspect">
+          <div class="inspect-head">INSPECT</div>
+          <div class="inspect-section">
+            <div class="inspect-label">FRAME</div>
+            <div class="inspect-row"><span class="inspect-key">W</span><span class="inspect-val">360</span></div>
+            <div class="inspect-row"><span class="inspect-key">H</span><span class="inspect-val">auto</span></div>
+            <div class="inspect-row"><span class="inspect-key">Padding</span><span class="inspect-val">18</span></div>
+          </div>
+          <div class="inspect-section">
+            <div class="inspect-label">FILL</div>
+            <div class="inspect-row">
+              <div class="inspect-color" style="background:#FAFAF9"></div>
+              <span class="inspect-val">#FAFAF9</span>
+            </div>
+          </div>
+          <div class="inspect-section">
+            <div class="inspect-label">TYPOGRAPHY</div>
+            <div class="inspect-row"><span class="inspect-key">Font</span><span class="inspect-val">Sofia Sans</span></div>
+            <div class="inspect-row"><span class="inspect-key">Size</span><span class="inspect-val">11.5</span></div>
+            <div class="inspect-row"><span class="inspect-key">Weight</span><span class="inspect-val">400</span></div>
+          </div>
+          <div class="inspect-section">
+            <div class="inspect-label">COMPONENT</div>
+            <div style="font-size:10.5px;color:#8b88ff;cursor:pointer;margin-top:2px">PriorityChip ↗</div>
+            <div style="font-size:10px;color:#ffffff44;margin-top:4px">from Weave DS · v4.2.1</div>
+          </div>
+          <div class="inspect-section">
+            <div class="inspect-label">COMMENTS (3)</div>
+            ${[
+              {n:'VD', bg:'#e05b8a', text:'Suggest chip color?', t:'40m'},
+              {n:'DP', bg:'#2e8157', text:'Textarea height', t:'1h'},
+              {n:'SC', bg:'#5551ff', text:'Regression default ✓', t:'2h'},
+            ].map(c=>`
+              <div style="display:flex;align-items:flex-start;gap:6px;padding:5px 0;border-bottom:1px solid #2e2e2e">
+                <div style="width:18px;height:18px;border-radius:50%;background:${c.bg};display:flex;align-items:center;justify-content:center;font-size:7.5px;font-weight:700;color:#fff;flex:none">${c.n}</div>
+                <div style="flex:1">
+                  <div style="font-size:10px;color:#ffffffaa">${c.text}</div>
+                  <div style="font-size:9px;color:#ffffff44;font-family:'JetBrains Mono',monospace">${c.t}</div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div style="height:24px"></div>
+  `;
+}
+
+function renderCenter(){
+  const GW=700, GH=440;
+  const detail=AGENT_DETAILS[state.selectedNode];
+
+  // SVG edges
+  const cx_c=CENTER_NODE.cx*GW, cy_c=CENTER_NODE.cy*GH;
+  let svgLines='';
+  GRAPH_NODES.forEach(n=>{
+    const nx=n.cx*GW, ny=n.cy*GH;
+    const selected=state.selectedNode===n.id;
+    svgLines+=`<line x1="${cx_c}" y1="${cy_c}" x2="${nx}" y2="${ny}" stroke="${n.color}" stroke-width="${selected?2:1.5}" stroke-opacity="${selected?.6:.25}"/>`;
+  });
+
+  // Peripheral nodes
+  let nodesHtml='';
+  GRAPH_NODES.forEach(n=>{
+    const selected=state.selectedNode===n.id;
+    nodesHtml+=`
+      <div class="graph-node" style="left:${n.cx*100}%;top:${n.cy*100}%" onclick="selectNode('${n.id}')">
+        <div class="circle" style="width:${n.size}px;height:${n.size}px;background:${n.color};font-size:11px;box-shadow:${selected?`0 0 0 3px #fff, 0 0 0 5px ${n.color}`:`0 2px 8px ${n.color}33`}">
+          ${n.abbr}
+        </div>
+        <span class="node-label" style="color:${T.text2}">${n.label}</span>
+        <span style="font-size:9.5px;color:${T.text3};text-align:center;max-width:72px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${n.sub}</span>
+      </div>
+    `;
+  });
+
+  nodesHtml+=`
+    <div class="graph-node" style="left:${CENTER_NODE.cx*100}%;top:${CENTER_NODE.cy*100}%">
+      <div class="circle" style="width:${CENTER_NODE.size}px;height:${CENTER_NODE.size}px;background:${CENTER_NODE.color};font-size:12px;font-weight:800;box-shadow:0 0 0 10px ${CENTER_NODE.color}1A, 0 4px 16px ${CENTER_NODE.color}44">
+        SCR
+      </div>
+    </div>
+  `;
+
+  let detailHtml='';
+  if(detail){
+    detailHtml=`
+      <div class="detail-panel" style="border-left:3px solid ${detail.color}">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.8px;color:${detail.color};margin-bottom:6px">${detail.title}</div>
+        <div style="font-size:13px;color:${T.text2};margin-bottom:8px">${detail.body}</div>
+        <div style="background:${detail.color}12;border-radius:7px;padding:8px 11px;margin-bottom:8px">
+          <div style="font-size:11.5px;font-weight:600;color:${T.text}">Key signal</div>
+          <div style="font-size:12px;color:${T.text2};margin-top:2px">${detail.signal}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:${T.text3}">
+          <span style="width:6px;height:6px;border-radius:50%;background:${detail.color};animation:ch-pulse 1.6s ease-in-out infinite;flex:none"></span>
+          ${detail.updated}
+        </div>
+      </div>
+    `;
+  }
+
+  document.getElementById('center-col').innerHTML=`
+    <div style="padding:20px 20px 0;border-bottom:1px solid ${T.border};background:${T.surface}">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.8px;background:#d4456b18;color:#d4456b;border-radius:4px;padding:3px 7px">SCREEN</span>
+        <h1 style="font-family:'Sofia Sans',sans-serif;font-size:22px;font-weight:400;color:${T.text}">Test Request Form</h1>
+        <div style="display:flex;align-items:center;gap:5px;margin-left:4px">
+          <span style="width:6px;height:6px;border-radius:50%;background:#2e8157;animation:ch-pulse 2s ease-in-out infinite"></span>
+          <span style="font-size:11.5px;color:${T.text2}">Active · Updated 2m ago</span>
+        </div>
+        <div style="margin-left:auto;display:flex;align-items:center;gap:10px">
+          <div style="display:flex;align-items:center;gap:7px">
+            <span style="font-size:11.5px;color:${T.text3}">Owner</span>
+            <div style="width:26px;height:26px;border-radius:50%;background:#6f57d4;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff">SC</div>
+            <span style="font-size:12px;font-weight:600;color:${T.text2}">Sarah Chen</span>
+          </div>
+        </div>
+      </div>
+      <div class="tab-bar">
+        <div class="tab-item${state.activeTab==='design'?' active':''}" onclick="state.activeTab='design';renderCenter()">
+          <svg width="10" height="14" viewBox="0 0 14 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="opacity:${state.activeTab==='design'?1:.5}"><rect x="0" y="0" width="7" height="7" rx="3.5" fill="#F24E1E"/><rect x="7" y="0" width="7" height="7" rx="3.5" fill="#FF7262"/><rect x="0" y="7" width="7" height="7" rx="3.5" fill="#A259FF"/><rect x="0" y="14" width="7" height="7" rx="3.5" fill="#0ACF83"/><circle cx="10.5" cy="10.5" r="3.5" fill="#1ABCFE"/></svg>
+          Design
+          <span style="font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;padding:1px 6px;border-radius:10px;background:${state.figmaReviewDone?T.greenLight:'#5551ff18'};color:${state.figmaReviewDone?T.green:'#8b88ff'};border:1px solid ${state.figmaReviewDone?T.green+'44':'#5551ff33'}">${state.figmaReviewDone?'✓':'3 comments'}</span>
+        </div>
+        <div class="tab-item${state.activeTab==='graph'?' active':''}" onclick="state.activeTab='graph';renderCenter()">Graph</div>
+        <div class="tab-item${state.activeTab==='detail'?' active':''}" onclick="state.activeTab='detail';renderCenter()">Detail</div>
+        <div class="tab-item${state.activeTab==='history'?' active':''}" onclick="state.activeTab='history';renderCenter()">History</div>
+      </div>
+    </div>
+
+    ${state.activeTab==='design'?renderFigmaView():''}
+
+    ${state.activeTab==='graph'?`
+    <div style="padding:20px 20px 0">
+      <div class="graph-container" style="background:${T.surface};border:1px solid ${T.border};border-radius:16px;box-shadow:${T.shadowSm}">
+        <svg style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none" viewBox="0 0 ${GW} ${GH}" preserveAspectRatio="xMidYMid meet">
+          ${svgLines}
+        </svg>
+        ${nodesHtml}
+        <div style="position:absolute;bottom:10px;left:12px;font-family:'JetBrains Mono',monospace;font-size:8.5px;color:${T.text3};letter-spacing:.4px">LIVING EXPERIENCE GRAPH · Click any node to explore</div>
+      </div>
+      ${detailHtml}
+      <div style="height:24px"></div>
+    </div>
+    `:''}
+
+    ${state.activeTab==='detail'?`
+    <div style="padding:20px">
+      <div style="font-size:13px;color:${T.text2};line-height:1.6;margin-bottom:16px">The <strong>Test Request Form</strong> is step 2 of 6 in the Test Request Submit journey. It captures all structured metadata for a new QA test request, including priority, component scope, and description.</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="background:${T.surface};border:1px solid ${T.border};border-radius:10px;padding:14px">
+          <div style="font-size:11px;font-weight:700;color:${T.text3};margin-bottom:6px;letter-spacing:.3px">LINKED REQUIREMENTS (12)</div>
+          ${['Priority must auto-suggest from title','Severity field removed per Jun 22 decision','File attachment is optional','Step must complete in < 20s median'].map(r=>`<div style="font-size:12.5px;color:${T.text2};padding:4px 0;border-bottom:1px solid ${T.border};display:flex;align-items:center;gap:7px"><span style="color:#4338ca">●</span>${r}</div>`).join('')}
+        </div>
+      </div>
+    </div>
+    `:''}
+
+    ${state.activeTab==='history'?`
+    <div style="padding:20px">
+      <div style="display:flex;flex-direction:column;gap:0">
+        ${[
+          {time:'2m ago',  agent:'UX', color:'#d4456b', text:'Figma v4 shared for stakeholder review — 3 comments open'},
+          {time:'40m ago', agent:'VD', color:'#e05b8a', text:'Comment on PriorityChip color token in Figma v4'},
+          {time:'1h ago',  agent:'DP', color:'#2e8157', text:'Comment on textarea height in Figma v4'},
+          {time:'2h ago',  agent:'SC', color:'#6f57d4', text:'Uploaded Figma v4 — priority auto-suggest consolidated'},
+          {time:'Jun 22',  agent:'UX', color:'#d4456b', text:'Removed severity field per team decision'},
+          {time:'Jun 21',  agent:'UX', color:'#d4456b', text:'Shortened form from 8 fields to 4 — step 2 revised'},
+        ].map((e,i)=>`
+          <div style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid ${T.border}${i===5?';border-bottom:none':''}">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:3px;width:28px;flex:none">
+              <div style="width:22px;height:22px;border-radius:6px;background:${e.color};display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:8px;font-weight:700;color:#fff">${e.agent}</div>
+              ${i<5?`<div style="width:2px;flex:1;min-height:10px;background:${T.border};border-radius:2px"></div>`:''}
+            </div>
+            <div style="flex:1;padding-top:2px">
+              <div style="font-size:12.5px;color:${T.text2};line-height:1.4">${e.text}</div>
+              <div style="font-size:10.5px;color:${T.text3};margin-top:3px">${e.time}</div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+    `:''}
+  `;
+}
+
+function selectNode(id){state.selectedNode=id;renderCenter();}
+
+function approveFigma(){
+  state.figmaReviewDone=true;
+  render();
+}
+
+function renderRightSidebar(){
+  const agents=[
+    {abbr:'SC', color:'#1f9d8f', name:'Scout',  task:'Scanning 89 new support tickets for priority signals'},
+    {abbr:'SY', color:'#c2700f', name:'Synth',  task:'Updating opportunity map with Scout findings'},
+    {abbr:'UX', color:'#d4456b', name:'UX',     task:'Responding to Figma comments — PriorityChip token'},
+    {abbr:'QA', color:'#2e8157', name:'QA',     task:'Running accessibility check on v4 design specs'},
+  ];
+
+  const decisions=[
+    {text:'Priority auto-suggest added to step 1', date:'Jun 23', owners:'UX + Sarah Chen'},
+    {text:'Severity field removed — consolidated into Priority', date:'Jun 22', owners:'UX + Devon Park'},
+    {text:'Step 2 shortened from 8 to 4 fields', date:'Jun 21', owners:'UX + Jordan Lee'},
+  ];
+
+  let html=`
+    <div class="rail-section-title" style="display:flex;align-items:center;gap:6px">
+      <span style="width:6px;height:6px;border-radius:50%;background:${T.green};animation:ch-pulse 1.6s ease-in-out infinite;flex:none"></span>
+      SAGE Agents
+    </div>
+
+    <div style="padding:0 14px 8px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;font-weight:600;letter-spacing:.5px;color:${T.green};margin-bottom:6px;display:flex;align-items:center;gap:5px">
+        <span style="width:5px;height:5px;border-radius:50%;background:${T.green};animation:ch-pulse 1.4s infinite;flex:none"></span>
+        CURRENTLY WORKING
+      </div>
+      ${agents.map(a=>`
+        <div class="agent-row">
+          <div class="agent-badge" style="background:${a.color}">${a.abbr}</div>
+          <div style="flex:1">
+            <div style="font-size:12px;font-weight:700;color:${T.text};margin-bottom:2px">${a.name}</div>
+            <div style="font-size:11.5px;color:${T.text2};line-height:1.4">${a.task}</div>
+          </div>
+          <div style="width:5px;height:5px;border-radius:50%;background:${a.color};flex:none;margin-top:5px;animation:ch-pulse 1.6s ease-in-out infinite"></div>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="rail-divider"></div>
+
+    <div style="padding:0 14px 8px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;font-weight:600;letter-spacing:.5px;color:${state.figmaReviewDone?T.green:T.amber};margin-bottom:8px">${state.figmaReviewDone?'✓ REVIEW COMPLETE':'WAITING APPROVAL'}</div>
+      <div style="background:${state.figmaReviewDone?T.greenLight:T.amberLight};border:1px solid ${state.figmaReviewDone?T.green+'33':T.amber+'33'};border-radius:10px;padding:11px">
+        <div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:10px">
+          <div style="width:22px;height:22px;border-radius:6px;background:#5551ff;display:flex;align-items:center;justify-content:center;flex:none">
+            ${FIGMA_SVG.replace('width="14" height="20"','width="10" height="14"')}
+          </div>
+          <div style="flex:1">
+            <div style="font-size:12px;font-weight:700;color:${T.text};margin-bottom:2px">Figma Design Review</div>
+            <div style="font-size:11px;color:${T.text2};line-height:1.4">${state.figmaReviewDone?'Approved by you · Jun 24':'Test Request Form v4 — 3 open comments'}</div>
+          </div>
+        </div>
+        ${state.figmaReviewDone?`
+          <div style="font-size:11px;color:${T.green};font-weight:600;display:flex;align-items:center;gap:5px">
+            <span>✓</span> Ready to hand off to engineering
+          </div>
+        `:`
+          <div style="margin-bottom:8px">
+            ${[
+              {n:'1', text:'Suggest chip color token?', author:'VD', time:'40m'},
+              {n:'2', text:'Textarea height on mobile', author:'Devon', time:'1h'},
+            ].map(c=>`
+              <div style="display:flex;align-items:center;gap:7px;padding:4px 0;border-bottom:1px solid ${T.amber}22">
+                <span style="font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:#8b88ff;background:#5551ff18;border-radius:50%;width:16px;height:16px;display:flex;align-items:center;justify-content:center;flex:none">${c.n}</span>
+                <span style="font-size:11px;color:${T.text2};flex:1">${c.text}</span>
+                <span style="font-size:9.5px;color:${T.text3}">${c.time}</span>
+              </div>
+            `).join('')}
+          </div>
+          <div style="display:flex;gap:7px">
+            <button onclick="approveFigma()" style="flex:1;padding:7px 0;border-radius:7px;background:#5551ff;color:#fff;font-size:12px;font-weight:700;border:none;cursor:pointer;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">Approve</button>
+            <button onclick="state.activeTab='design';renderCenter()" style="flex:1;padding:7px 0;border-radius:7px;background:transparent;color:${T.text};font-size:12px;font-weight:600;border:1.5px solid ${T.border2};cursor:pointer" onmouseover="this.style.borderColor='${T.text2}'" onmouseout="this.style.borderColor='${T.border2}'">Review</button>
+          </div>
+        `}
+      </div>
+    </div>
+
+    <div class="rail-divider"></div>
+
+    <div style="padding:0 14px 4px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;font-weight:600;letter-spacing:.5px;color:${T.text3};margin-bottom:8px">RECENT DECISIONS</div>
+      ${decisions.map(d=>`
+        <div class="decision-card">
+          <div style="font-size:10px;color:${T.text3};margin-bottom:3px">${d.date}</div>
+          <div style="font-size:12.5px;color:${T.text};line-height:1.4;margin-bottom:3px">${d.text}</div>
+          <div style="font-size:10px;color:${T.text3}">${d.owners}</div>
+        </div>
+      `).join('')}
+      <a href="#" style="font-size:12px;color:${T.blue};font-weight:500;display:block;padding:8px 0;transition:opacity .15s" onmouseover="this.style.opacity='.7'" onmouseout="this.style.opacity='1'">View all decisions →</a>
+    </div>
+  `;
+
+  document.getElementById('right-sidebar').innerHTML=html;
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+render();
+</script>
+</body>
+</html>
