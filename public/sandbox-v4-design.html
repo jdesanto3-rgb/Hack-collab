@@ -146,58 +146,94 @@ a{text-decoration:none;color:inherit}
 .share-btn:hover{background:var(--surface2)}
 
 /* ── PREVIEW OVERLAY ── */
-#preview-overlay{position:fixed;inset:0;z-index:9000;background:#fff;overflow-y:auto;display:none;font-family:'Inter',-apple-system,sans-serif;-webkit-font-smoothing:antialiased}
+/* ── PREVIEW OVERLAY ── */
+#preview-overlay{position:fixed;inset:0;z-index:9000;background:#f5f5f5;overflow-y:auto;display:none;font-family:'Inter',-apple-system,sans-serif;-webkit-font-smoothing:antialiased}
 #preview-overlay.active{display:block}
-#preview-exit{position:fixed;top:16px;right:20px;z-index:9001;display:flex;align-items:center;gap:7px;background:rgba(0,0,0,.72);backdrop-filter:blur(8px);color:#fff;border:none;border-radius:24px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;letter-spacing:-.01em;transition:background .15s}
-#preview-exit:hover{background:rgba(0,0,0,.88)}
-.nn-nav{background:#fff;border-bottom:1px solid #eee;position:sticky;top:0;z-index:100;display:flex;align-items:center;padding:0 48px;height:64px;gap:32px}
+html[data-theme="dark"] #preview-overlay{background:var(--bg)}
+#preview-chrome{position:fixed;top:16px;right:20px;z-index:9001;display:flex;align-items:center;gap:8px}
+.preview-chrome-btn{display:flex;align-items:center;gap:6px;background:rgba(0,0,0,.72);backdrop-filter:blur(8px);color:#fff;border:1px solid rgba(255,255,255,.14);border-radius:24px;padding:8px 15px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;letter-spacing:-.01em;transition:background .15s}
+.preview-chrome-btn:hover{background:rgba(0,0,0,.9)}
+/* Nav */
+.nn-nav{background:#fff;border-bottom:1px solid #e8e8e8;position:sticky;top:0;z-index:100;display:flex;align-items:center;padding:0 48px;height:64px;gap:32px}
+html[data-theme="dark"] .nn-nav{background:var(--surface);border-bottom-color:var(--border)}
 .nn-nav-logo{display:flex;align-items:center;gap:10px}
-.nn-nav-logo-mark{width:32px;height:32px;border-radius:9px;background:#C07800;display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:14px}
+.nn-nav-logo-mark{width:32px;height:32px;border-radius:9px;background:var(--brand);flex:none}
 .nn-nav-links{display:flex;gap:28px;margin-left:8px}
-.nn-nav-links a{font-size:14px;color:#5C5850;text-decoration:none;transition:color .15s}
-.nn-nav-links a:hover{color:#201D1A}
-.nn-nav-cta{margin-left:auto;height:38px;padding:0 20px;border-radius:9px;background:#C07800;color:#fff;font-size:13.5px;font-weight:600;border:none;cursor:pointer;font-family:'Inter',sans-serif}
-.nn-hero{background:#F5F0E8;padding:96px 48px 80px;text-align:center;display:flex;flex-direction:column;align-items:center}
-.nn-hero-badge{height:26px;padding:0 14px;border-radius:13px;border:1px solid #C0780055;background:#FFF3CC;display:inline-flex;align-items:center;margin-bottom:22px;font-size:11px;font-weight:600;color:#C07800;letter-spacing:.06em}
-.nn-hero h1{font-family:'Playfair Display',Georgia,serif;font-size:58px;font-weight:600;color:#201D1A;line-height:1.08;letter-spacing:-.025em;max-width:720px;margin:0 0 20px}
-.nn-hero h1 em{color:#C07800;font-style:italic}
-.nn-hero p{font-size:16px;color:#5C5850;line-height:1.6;max-width:520px;margin:0 0 32px}
-.nn-hero-btns{display:flex;gap:14px;justify-content:center;margin-bottom:20px}
-.nn-hero-primary{height:48px;padding:0 28px;border-radius:11px;background:#C07800;color:#fff;font-size:14.5px;font-weight:600;border:none;cursor:pointer;font-family:'Inter',sans-serif}
-.nn-hero-secondary{height:48px;padding:0 24px;border-radius:11px;border:1.5px solid #C8C2BA;background:#fff;color:#5C5850;font-size:14px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif}
-.nn-hero-trust{font-size:13px;color:#9A9288}
-.nn-stats{background:#EEE9E2;display:flex;align-items:center;justify-content:center;gap:0;border-top:1px solid #DAD5CC;border-bottom:1px solid #DAD5CC}
-.nn-stat{flex:1;max-width:280px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:36px 20px;gap:6px}
-.nn-stat-val{font-family:'Playfair Display',Georgia,serif;font-size:40px;font-weight:600;color:#201D1A;letter-spacing:-.03em;line-height:1}
-.nn-stat-label{font-size:12px;color:#9A9288;letter-spacing:.04em}
-.nn-stat-div{width:1px;height:52px;background:#DAD5CC;align-self:center}
-.nn-features{padding:80px 48px;background:#FDFAF5}
-.nn-features-label{font-size:11px;font-weight:600;color:#9A9288;letter-spacing:.1em;margin-bottom:36px;text-align:center}
-.nn-feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:960px;margin:0 auto}
-.nn-feature-card{background:#fff;border:1px solid #DAD5CC;border-radius:16px;padding:28px;box-shadow:0 2px 8px rgba(32,28,24,.06),0 1px 2px rgba(32,28,24,.04);transition:transform .2s,box-shadow .2s}
-.nn-feature-card:hover{transform:translateY(-3px);box-shadow:0 8px 32px rgba(32,28,24,.1),0 2px 6px rgba(32,28,24,.06)}
-.nn-feature-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:16px}
-.nn-feature-card h3{font-size:16px;font-weight:600;color:#201D1A;margin:0 0 8px;letter-spacing:-.01em}
-.nn-feature-card p{font-size:14px;color:#5C5850;line-height:1.55;margin:0 0 16px}
+.nn-nav-links a{font-size:14px;color:var(--text2);text-decoration:none;transition:color .15s}
+.nn-nav-links a:hover{color:var(--text)}
+.nn-nav-cta{margin-left:auto;height:38px;padding:0 20px;border-radius:19px;background:var(--brand);color:#fff;font-size:13.5px;font-weight:600;border:none;cursor:pointer;font-family:'Inter',sans-serif}
+/* Hero — neutral bg, no warm tint */
+.nn-hero{background:#f5f5f5;padding:100px 48px 84px;text-align:center;display:flex;flex-direction:column;align-items:center}
+html[data-theme="dark"] .nn-hero{background:var(--bg)}
+.nn-hero-badge{height:26px;padding:0 14px;border-radius:13px;border:1px solid var(--brand);background:var(--brand-light);display:inline-flex;align-items:center;margin-bottom:24px;font-size:11px;font-weight:600;color:var(--brand);letter-spacing:.04em}
+.nn-hero h1{font-family:'Playfair Display',Georgia,serif;font-size:58px;font-weight:700;color:var(--text);line-height:1.1;letter-spacing:-.025em;max-width:780px;margin:0 0 20px}
+.nn-hero p{font-size:17px;color:var(--text2);line-height:1.65;max-width:560px;margin:0 0 32px}
+.nn-hero-btns{display:flex;gap:14px;justify-content:center}
+.nn-hero-primary{height:50px;padding:0 30px;border-radius:25px;background:var(--brand);color:#fff;font-size:15px;font-weight:600;border:none;cursor:pointer;font-family:'Inter',sans-serif}
+.nn-hero-secondary{height:50px;padding:0 26px;border-radius:25px;border:1.5px solid #c8c8c8;background:transparent;color:var(--text2);font-size:15px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif}
+html[data-theme="dark"] .nn-hero-secondary{border-color:var(--border2)}
+/* Stats — neutral */
+.nn-stats{background:#eeeeee;display:flex;align-items:center;justify-content:center;border-top:1px solid #e0e0e0;border-bottom:1px solid #e0e0e0}
+html[data-theme="dark"] .nn-stats{background:var(--surface2);border-top-color:var(--border);border-bottom-color:var(--border)}
+.nn-stat{flex:1;max-width:300px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;gap:7px}
+.nn-stat-val{font-family:'Playfair Display',Georgia,serif;font-size:42px;font-weight:700;color:var(--brand);letter-spacing:-.03em;line-height:1}
+.nn-stat-label{font-size:12px;color:var(--text3);letter-spacing:.06em}
+.nn-stat-div{width:1px;height:52px;background:#dedede;align-self:center}
+html[data-theme="dark"] .nn-stat-div{background:var(--border)}
+/* Features — very slightly darker neutral */
+.nn-features{padding:88px 48px;background:#f0f0f0}
+html[data-theme="dark"] .nn-features{background:var(--surface2)}
+.nn-features-header{text-align:center;margin-bottom:52px}
+.nn-features-eyebrow{display:inline-block;padding:5px 14px;border-radius:14px;background:var(--brand-light);color:var(--brand);font-size:11px;font-weight:600;margin-bottom:14px;letter-spacing:.05em}
+.nn-features-h2{font-family:'Playfair Display',Georgia,serif;font-size:40px;font-weight:700;color:var(--text);letter-spacing:-.02em;margin:0 0 14px}
+.nn-features-sub{font-size:16px;color:var(--text2);max-width:520px;margin:0 auto;line-height:1.6}
+.nn-feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;max-width:980px;margin:0 auto}
+.nn-feature-card{background:#ffffff;border:1px solid #e4e4e4;border-radius:16px;padding:30px;box-shadow:0 1px 4px rgba(0,0,0,.06);transition:transform .22s,box-shadow .22s}
+html[data-theme="dark"] .nn-feature-card{background:var(--surface);border-color:var(--border)}
+.nn-feature-card:hover{transform:translateY(-3px);box-shadow:0 0 0 1px var(--brand),0 0 14px color-mix(in srgb,var(--brand) 50%,transparent),0 0 36px color-mix(in srgb,var(--brand) 22%,transparent),0 8px 28px rgba(0,0,0,.18)}
+.nn-feature-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:18px}
+.nn-feature-card h3{font-size:16px;font-weight:700;color:var(--text);margin:0 0 9px;letter-spacing:-.01em}
+.nn-feature-card p{font-size:14px;color:var(--text2);line-height:1.6;margin:0 0 18px}
 .nn-feature-more{font-size:13px;font-weight:600;display:flex;align-items:center;gap:4px}
-.nn-pricing{padding:80px 48px;background:#F5F0E8}
-.nn-pricing-label{font-size:11px;font-weight:600;color:#9A9288;letter-spacing:.1em;margin-bottom:12px;text-align:center}
-.nn-pricing h2{font-family:'Playfair Display',Georgia,serif;font-size:38px;font-weight:600;color:#201D1A;text-align:center;letter-spacing:-.02em;margin:0 0 48px}
-.nn-pricing-cards{display:flex;gap:20px;justify-content:center;max-width:900px;margin:0 auto}
-.nn-price-card{background:#fff;border:1px solid #DAD5CC;border-radius:18px;padding:32px;flex:1;max-width:280px}
-.nn-price-card.featured{background:#C0780010;border:1.5px solid #C0780044}
-.nn-price-plan{font-size:15px;font-weight:700;color:#201D1A;margin-bottom:4px}
-.nn-price-badge{display:inline-block;font-size:9.5px;font-weight:700;color:#C07800;background:#C0780018;border-radius:5px;padding:2px 9px;margin-bottom:12px}
-.nn-price-amount{display:flex;align-items:baseline;gap:4px;margin-bottom:20px}
-.nn-price-amount strong{font-family:'Playfair Display',Georgia,serif;font-size:44px;font-weight:600;color:#201D1A;letter-spacing:-.03em}
-.nn-price-amount span{font-size:14px;color:#9A9288}
-.nn-price-features{display:flex;flex-direction:column;gap:9px;margin-bottom:24px}
-.nn-price-feature{display:flex;align-items:center;gap:9px;font-size:13.5px;color:#5C5850}
-.nn-price-check{width:16px;height:16px;border-radius:50%;background:#C0780018;display:flex;align-items:center;justify-content:center;font-size:8px;color:#C07800;flex:none}
-.nn-price-cta{width:100%;height:42px;border-radius:9px;background:#C07800;color:#fff;font-size:13.5px;font-weight:600;border:none;cursor:pointer;font-family:'Inter',sans-serif}
-.nn-footer{background:#201D1A;padding:48px;display:flex;align-items:center;justify-content:space-between}
-.nn-footer-logo{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:700;color:#fff}
+/* Pricing — same neutral as hero */
+.nn-pricing{padding:88px 48px;background:#f5f5f5}
+html[data-theme="dark"] .nn-pricing{background:var(--bg)}
+.nn-pricing-eyebrow{display:block;font-size:11px;font-weight:600;color:var(--brand);letter-spacing:.08em;margin-bottom:14px;text-align:center}
+.nn-pricing h2{font-family:'Playfair Display',Georgia,serif;font-size:40px;font-weight:700;color:var(--text);text-align:center;letter-spacing:-.02em;margin:0 0 10px}
+.nn-pricing-sub{font-size:16px;color:var(--text2);text-align:center;margin:0 0 52px}
+.nn-pricing-cards{display:flex;gap:22px;justify-content:center;max-width:920px;margin:0 auto}
+.nn-price-card{background:#ffffff;border:1px solid #e4e4e4;border-radius:18px;overflow:hidden;flex:1;max-width:288px}
+html[data-theme="dark"] .nn-price-card{background:var(--surface);border-color:var(--border)}
+.nn-price-card.featured{border:2px solid var(--brand)}
+.nn-price-head{padding:26px 28px 22px}
+.nn-price-card:not(.featured) .nn-price-head{background:#f3f3f3}
+html[data-theme="dark"] .nn-price-card:not(.featured) .nn-price-head{background:var(--surface-warm)}
+.nn-price-card.featured .nn-price-head{background:var(--brand)}
+.nn-price-body{padding:22px 28px 28px}
+.nn-price-plan{font-size:10px;font-weight:700;letter-spacing:1.4px;margin-bottom:10px;color:var(--text3)}
+.nn-price-card.featured .nn-price-plan{color:#FFF0E0}
+.nn-price-badge{display:inline-block;font-size:9px;font-weight:700;color:var(--brand);background:var(--brand-light);border-radius:4px;padding:2px 8px;margin-bottom:10px}
+.nn-price-card.featured .nn-price-badge{color:#FFF0E0;background:rgba(0,0,0,.18)}
+.nn-price-amount{display:flex;align-items:baseline;gap:3px;margin-bottom:6px}
+.nn-price-amount strong{font-family:'Playfair Display',Georgia,serif;font-size:46px;font-weight:700;color:var(--text);letter-spacing:-.04em}
+.nn-price-card.featured .nn-price-amount strong{color:#fff}
+.nn-price-amount span{font-size:14px;color:var(--text3)}
+.nn-price-card.featured .nn-price-amount span{color:#FFF0E0}
+.nn-price-desc{font-size:13px;color:var(--text2);line-height:1.45}
+.nn-price-card.featured .nn-price-desc{color:#FFF0E0}
+.nn-price-features{display:flex;flex-direction:column;gap:10px;margin-bottom:24px}
+.nn-price-feature{display:flex;align-items:center;gap:9px;font-size:13.5px;color:var(--text2)}
+.nn-price-check{width:8px;height:8px;border-radius:50%;background:var(--green);flex:none}
+.nn-price-cta{width:100%;height:44px;border-radius:22px;background:var(--brand);color:#fff;font-size:13.5px;font-weight:700;border:none;cursor:pointer;font-family:'Inter',sans-serif;transition:opacity .15s}
+.nn-price-cta:hover{opacity:.88}
+/* Footer */
+.nn-footer{background:#1a1714;padding:48px;display:flex;align-items:center;justify-content:space-between}
+html[data-theme="dark"] .nn-footer{background:#080706}
+.nn-footer-logo{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:700;color:#e8e3de}
 .nn-footer p{font-size:13px;color:#706860;margin:0}
+.nn-footer-links{display:flex;gap:24px}
+.nn-footer-links a{font-size:13px;color:#706860;text-decoration:none;transition:color .15s}
+.nn-footer-links a:hover{color:#a09890}
 .ds-connected{display:flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:600;padding:5px 10px;border-radius:6px;color:var(--green);background:var(--green-light,#e6f3ec);cursor:pointer;transition:all .15s}
 .ds-connected:hover{opacity:.85}
 
@@ -317,7 +353,7 @@ DS_SECTIONS.forEach(s=>s.components.forEach(c=>{DS_MAP[c.id]=c;}));
 ['NavBar','HeroSection','StatsBar','FeatureCard','PricingCard','Typography'].forEach((t,i)=>{
   const meta=[
     {icon:'NB',color:'#6f57d4',story:'NavBar--Default',      file:'NavBar.jsx'},
-    {icon:'HS',color:'#C07800',story:'HeroSection--Desktop',  file:'HeroSection.jsx'},
+    {icon:'HS',color:'#D96000',story:'HeroSection--Desktop',  file:'HeroSection.jsx'},
     {icon:'SB',color:'#1A8A5A',story:'StatsBar--Default',     file:'StatsBar.jsx'},
     {icon:'FC',color:'#2E5CE8',story:'FeatureCard--Chat',     file:'FeatureCard.jsx'},
     {icon:'PC',color:'#d4456b',story:'PricingCard--Featured', file:'PricingCard.jsx'},
@@ -333,7 +369,7 @@ const DESKTOP_COMPONENTS=[
   {id:'d-hero',     type:'HeroSection', x:0,   y:60,  w:916, h:292, props:{},                                                                                                                                                                                         variant:'default', size:'lg'},
   {id:'d-stats',    type:'StatsBar',    x:0,   y:352, w:916, h:80,  props:{stats:[{value:'98%',label:'Customer Score'},{value:'$180K',label:'Revenue Recovered'},{value:'87%',label:'Lead Automation'}]},                                                              variant:'default', size:'md'},
   {id:'d-fl',       type:'Typography',  x:32,  y:460, w:200, h:22,  props:{text:'CORE FEATURES',variant:'label'},                                                                                                                                                       variant:'label',   size:'sm'},
-  {id:'d-f1',       type:'FeatureCard', x:32,  y:490, w:272, h:168, props:{icon:'💬',title:'Real-time Chat',description:'Deploy conversational agents that resolve support tickets instantly — no human needed.',color:'#C07800'},                                      variant:'default', size:'md'},
+  {id:'d-f1',       type:'FeatureCard', x:32,  y:490, w:272, h:168, props:{icon:'💬',title:'Real-time Chat',description:'Deploy conversational agents that resolve support tickets instantly — no human needed.',color:'#D96000'},                                      variant:'default', size:'md'},
   {id:'d-f2',       type:'FeatureCard', x:320, y:490, w:272, h:168, props:{icon:'⚡',title:'No-Code Builder',description:'Build and launch AI agents visually in minutes — zero engineering resources required.',color:'#1A8A5A'},                                       variant:'default', size:'md'},
   {id:'d-f3',       type:'FeatureCard', x:608, y:490, w:272, h:168, props:{icon:'🎙',title:'Voice AI Agent',description:'Natural language voice support with multilingual capability right out of the box.',color:'#2E5CE8'},                                            variant:'default', size:'md'},
   {id:'d-pl',       type:'Typography',  x:32,  y:686, w:240, h:22,  props:{text:'TRANSPARENT PRICING',variant:'label'},                                                                                                                                                  variant:'label',   size:'sm'},
@@ -344,7 +380,7 @@ const MOBILE_COMPONENTS=[
   {id:'m-nav',   type:'NavBar',      x:0,  y:0,   w:375, h:52,  props:{brand:'Neura Nova'},                                                                                                                variant:'default', size:'sm'},
   {id:'m-hero',  type:'HeroSection', x:0,  y:52,  w:375, h:256, props:{},                                                                                                                                  variant:'default', size:'sm'},
   {id:'m-stats', type:'StatsBar',    x:0,  y:320, w:375, h:72,  props:{stats:[{value:'98%',label:'CSAT'},{value:'$180K',label:'Revenue'},{value:'87%',label:'Automation'}]},                               variant:'default', size:'sm'},
-  {id:'m-feat',  type:'FeatureCard', x:16, y:412, w:343, h:148, props:{icon:'💬',title:'Real-time Chat',description:'Resolve support tickets instantly with conversational AI — active 24/7.',color:'#C07800'}, variant:'default', size:'md'},
+  {id:'m-feat',  type:'FeatureCard', x:16, y:412, w:343, h:148, props:{icon:'💬',title:'Real-time Chat',description:'Resolve support tickets instantly with conversational AI — active 24/7.',color:'#D96000'}, variant:'default', size:'md'},
 ];
 
 // ── STATE ─────────────────────────────────────────────────────────────────────
@@ -1112,11 +1148,17 @@ function scheduleAgentMessage(){
 // ── PREVIEW ───────────────────────────────────────────────────────────────────
 function showPreview(){
   document.getElementById('preview-overlay').classList.add('active');
+  _syncPreviewThemeBtn();
   document.documentElement.requestFullscreen?.();
 }
 function exitPreview(){
   document.getElementById('preview-overlay').classList.remove('active');
   if(document.fullscreenElement) document.exitFullscreen?.();
+}
+function togglePreviewTheme(){toggleTheme();_syncPreviewThemeBtn();}
+function _syncPreviewThemeBtn(){
+  const btn=document.getElementById('preview-theme-btn');
+  if(btn) btn.textContent=isDark()?'☀ Light':'◑ Dark';
 }
 document.addEventListener('fullscreenchange',()=>{
   if(!document.fullscreenElement) document.getElementById('preview-overlay').classList.remove('active');
@@ -1134,111 +1176,140 @@ setTimeout(()=>showToast('VD Agent active · v3 in progress',T.red),1200);
 
 <!-- ── PREVIEW OVERLAY ────────────────────────────────────────────────────── -->
 <div id="preview-overlay">
-  <button id="preview-exit" onclick="exitPreview()">
-    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1l10 10M11 1L1 11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-    Exit Preview
-  </button>
+  <div id="preview-chrome">
+    <button id="preview-theme-btn" class="preview-chrome-btn" onclick="togglePreviewTheme()">◑ Dark</button>
+    <button class="preview-chrome-btn" onclick="exitPreview()">
+      <svg width="11" height="11" viewBox="0 0 11 11" fill="none" style="margin-right:4px"><path d="M1 1l9 9M10 1L1 10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Exit
+    </button>
+  </div>
 
   <!-- Nav -->
   <nav class="nn-nav">
     <div class="nn-nav-logo">
-      <div class="nn-nav-logo-mark">N</div>
-      <span style="font-size:15px;font-weight:700;color:#201D1A;letter-spacing:-.02em">Neura Nova</span>
+      <div class="nn-nav-logo-mark"></div>
+      <span style="font-size:15px;font-weight:700;color:var(--text);letter-spacing:-.02em">Neura Nova</span>
     </div>
-    <nav class="nn-nav-links">
+    <div class="nn-nav-links">
       <a href="#">Product</a>
       <a href="#">Solutions</a>
       <a href="#">Pricing</a>
       <a href="#">About</a>
-    </nav>
+    </div>
     <button class="nn-nav-cta">Get Started →</button>
   </nav>
 
   <!-- Hero -->
   <section class="nn-hero">
-    <div class="nn-hero-badge">AI-POWERED PLATFORM</div>
-    <h1>Transform Business<br>with <em>Intelligent AI Agents</em></h1>
-    <p>Deploy autonomous agents for customer support, lead generation, and operations — 24/7 without human oversight.</p>
+    <div class="nn-hero-badge">✦ NOW IN BETA — JOIN 3,400 TEAMS</div>
+    <h1>Intelligence that moves at the<br><em style="font-style:italic">speed of design.</em></h1>
+    <p>Weave connects your tokens, components, and agents into a single source of truth — so your design system ships faster, stays consistent, and scales without chaos.</p>
     <div class="nn-hero-btns">
-      <button class="nn-hero-primary">Start for Free →</button>
-      <button class="nn-hero-secondary">Watch Demo ▶</button>
+      <button class="nn-hero-primary">Start Free Trial →</button>
+      <button class="nn-hero-secondary">Watch Demo</button>
     </div>
-    <div class="nn-hero-trust">Trusted by <strong style="color:#5C5850">10,000+</strong> businesses worldwide</div>
   </section>
 
   <!-- Stats -->
   <section class="nn-stats">
-    <div class="nn-stat"><div class="nn-stat-val">98%</div><div class="nn-stat-label">CUSTOMER SCORE</div></div>
+    <div class="nn-stat"><div class="nn-stat-val">3,400+</div><div class="nn-stat-label">TEAMS</div></div>
     <div class="nn-stat-div"></div>
-    <div class="nn-stat"><div class="nn-stat-val">$180K</div><div class="nn-stat-label">REVENUE RECOVERED</div></div>
+    <div class="nn-stat"><div class="nn-stat-val">$4.2B</div><div class="nn-stat-label">VALUE MANAGED</div></div>
     <div class="nn-stat-div"></div>
-    <div class="nn-stat"><div class="nn-stat-val">87%</div><div class="nn-stat-label">LEAD AUTOMATION</div></div>
+    <div class="nn-stat"><div class="nn-stat-val">99.9%</div><div class="nn-stat-label">UPTIME</div></div>
+    <div class="nn-stat-div"></div>
+    <div class="nn-stat"><div class="nn-stat-val">4.9★</div><div class="nn-stat-label">RATING</div></div>
   </section>
 
   <!-- Features -->
   <section class="nn-features">
-    <div class="nn-features-label">CORE FEATURES</div>
+    <div class="nn-features-header">
+      <div class="nn-features-eyebrow">CORE CAPABILITIES</div>
+      <div class="nn-features-h2">Everything your design system needs</div>
+      <div class="nn-features-sub">One platform to sync, review, and ship — from token to code.</div>
+    </div>
     <div class="nn-feature-grid">
       <div class="nn-feature-card">
-        <div class="nn-feature-icon" style="background:#C0780018">💬</div>
-        <h3>Real-time Chat</h3>
-        <p>Deploy conversational agents that resolve support tickets instantly — no human needed.</p>
-        <div class="nn-feature-more" style="color:#C07800">Learn more <span>→</span></div>
+        <div class="nn-feature-icon" style="background:color-mix(in srgb,var(--brand) 12%,transparent)">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2v4M10 14v4M2 10h4M14 10h4" stroke="var(--brand)" stroke-width="2" stroke-linecap="round"/><circle cx="10" cy="10" r="3" stroke="var(--brand)" stroke-width="2"/></svg>
+        </div>
+        <h3>Real-time Token Sync</h3>
+        <p>Tokens update live across Figma and code. No more copy-paste, no drift, no handoff email chains.</p>
+        <div class="nn-feature-more" style="color:var(--brand)">Explore sync →</div>
       </div>
       <div class="nn-feature-card">
-        <div class="nn-feature-icon" style="background:#1A8A5A18">⚡</div>
-        <h3>No-Code Builder</h3>
-        <p>Build and launch AI agents visually in minutes — zero engineering resources required.</p>
-        <div class="nn-feature-more" style="color:#1A8A5A">Learn more <span>→</span></div>
+        <div class="nn-feature-icon" style="background:#2E5CE820">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="14" height="14" rx="3" stroke="#2E5CE8" stroke-width="2"/><path d="M7 10l2.5 2.5L13 7.5" stroke="#2E5CE8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h3>AI Design Review</h3>
+        <p>Automated checks catch spacing errors, contrast failures, and token misuse before they hit production.</p>
+        <div class="nn-feature-more" style="color:#2E5CE8">See it in action →</div>
       </div>
       <div class="nn-feature-card">
-        <div class="nn-feature-icon" style="background:#2E5CE818">🎙</div>
-        <h3>Voice AI Agent</h3>
-        <p>Natural language voice support with multilingual capability right out of the box.</p>
-        <div class="nn-feature-more" style="color:#2E5CE8">Learn more <span>→</span></div>
+        <div class="nn-feature-icon" style="background:#1A8A5A20">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 17A7 7 0 1 0 10 3a7 7 0 0 0 0 14Z" stroke="#1A8A5A" stroke-width="2"/><path d="M10 7v3l2 2" stroke="#1A8A5A" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <h3>Component Health</h3>
+        <p>Live coverage reports show which components are adopted, stale, or diverging — with one-click fixes.</p>
+        <div class="nn-feature-more" style="color:#1A8A5A">View health →</div>
       </div>
     </div>
   </section>
 
   <!-- Pricing -->
   <section class="nn-pricing">
-    <div class="nn-pricing-label">TRANSPARENT PRICING</div>
-    <h2>Simple, honest pricing</h2>
+    <span class="nn-pricing-eyebrow">SIMPLE PRICING</span>
+    <h2>Scale as you grow</h2>
+    <p class="nn-pricing-sub">From solo designers to enterprise teams — pick the plan that fits.</p>
     <div class="nn-pricing-cards">
       <div class="nn-price-card">
-        <div class="nn-price-plan">Starter</div>
-        <div class="nn-price-amount"><strong>$49</strong><span>/month</span></div>
-        <div class="nn-price-features">
-          <div class="nn-price-feature"><div class="nn-price-check">✓</div>3 AI agents</div>
-          <div class="nn-price-feature"><div class="nn-price-check">✓</div>2K conversations/mo</div>
-          <div class="nn-price-feature"><div class="nn-price-check">✓</div>Chat channel only</div>
-          <div class="nn-price-feature"><div class="nn-price-check">✓</div>Basic analytics</div>
+        <div class="nn-price-head">
+          <div class="nn-price-plan">STARTER</div>
+          <div class="nn-price-amount"><strong>$19</strong><span>/mo</span></div>
+          <div class="nn-price-desc">For individual designers and small projects.</div>
         </div>
-        <button class="nn-price-cta" style="background:transparent;border:1.5px solid #C07800;color:#C07800">Get Started</button>
+        <div class="nn-price-body">
+          <div class="nn-price-features">
+            <div class="nn-price-feature"><div class="nn-price-check"></div>1 design system</div>
+            <div class="nn-price-feature"><div class="nn-price-check"></div>Token sync</div>
+            <div class="nn-price-feature"><div class="nn-price-check"></div>Basic AI review</div>
+            <div class="nn-price-feature"><div class="nn-price-check"></div>Community support</div>
+          </div>
+          <button class="nn-price-cta" style="background:transparent;border:1.5px solid var(--brand);color:var(--brand)">Get Started</button>
+        </div>
       </div>
       <div class="nn-price-card featured">
-        <div class="nn-price-plan">Growth</div>
-        <div class="nn-price-badge">MOST POPULAR</div>
-        <div class="nn-price-amount"><strong>$149</strong><span>/month</span></div>
-        <div class="nn-price-features">
-          <div class="nn-price-feature"><div class="nn-price-check">✓</div>Unlimited AI agents</div>
-          <div class="nn-price-feature"><div class="nn-price-check">✓</div>10K conversations/mo</div>
-          <div class="nn-price-feature"><div class="nn-price-check">✓</div>Voice & chat channels</div>
-          <div class="nn-price-feature"><div class="nn-price-check">✓</div>Analytics dashboard</div>
-          <div class="nn-price-feature"><div class="nn-price-check">✓</div>Priority support</div>
+        <div class="nn-price-head">
+          <div class="nn-price-plan">PRO</div>
+          <div class="nn-price-badge">MOST POPULAR</div>
+          <div class="nn-price-amount"><strong>$49</strong><span>/mo</span></div>
+          <div class="nn-price-desc">For growing teams shipping at speed.</div>
         </div>
-        <button class="nn-price-cta">Get Started Free</button>
+        <div class="nn-price-body">
+          <div class="nn-price-features">
+            <div class="nn-price-feature"><div class="nn-price-check"></div>Unlimited systems</div>
+            <div class="nn-price-feature"><div class="nn-price-check"></div>Real-time sync</div>
+            <div class="nn-price-feature"><div class="nn-price-check"></div>Full AI review suite</div>
+            <div class="nn-price-feature"><div class="nn-price-check"></div>Component health</div>
+            <div class="nn-price-feature"><div class="nn-price-check"></div>Priority support</div>
+          </div>
+          <button class="nn-price-cta">Start Free Trial</button>
+        </div>
       </div>
       <div class="nn-price-card">
-        <div class="nn-price-plan">Enterprise</div>
-        <div class="nn-price-amount"><strong style="font-size:32px">Custom</strong></div>
-        <div class="nn-price-features">
-          <div class="nn-price-feature"><div class="nn-price-check">✓</div>Unlimited everything</div>
-          <div class="nn-price-feature"><div class="nn-price-check">✓</div>SSO & SAML</div>
-          <div class="nn-price-feature"><div class="nn-price-check">✓</div>SLA guarantee</div>
-          <div class="nn-price-feature"><div class="nn-price-check">✓</div>Dedicated CSM</div>
+        <div class="nn-price-head">
+          <div class="nn-price-plan">ENTERPRISE</div>
+          <div class="nn-price-amount"><strong style="font-size:36px;letter-spacing:-.03em">Custom</strong></div>
+          <div class="nn-price-desc">For large orgs with advanced security needs.</div>
         </div>
-        <button class="nn-price-cta" style="background:transparent;border:1.5px solid #C07800;color:#C07800">Contact Sales</button>
+        <div class="nn-price-body">
+          <div class="nn-price-features">
+            <div class="nn-price-feature"><div class="nn-price-check"></div>Everything in Pro</div>
+            <div class="nn-price-feature"><div class="nn-price-check"></div>SSO &amp; SAML</div>
+            <div class="nn-price-feature"><div class="nn-price-check"></div>SLA guarantee</div>
+            <div class="nn-price-feature"><div class="nn-price-check"></div>Dedicated CSM</div>
+          </div>
+          <button class="nn-price-cta" style="background:transparent;border:1.5px solid var(--brand);color:var(--brand)">Contact Sales</button>
+        </div>
       </div>
     </div>
   </section>
@@ -1246,10 +1317,15 @@ setTimeout(()=>showToast('VD Agent active · v3 in progress',T.red),1200);
   <!-- Footer -->
   <footer class="nn-footer">
     <div class="nn-footer-logo">
-      <div class="nn-nav-logo-mark">N</div>
+      <div class="nn-nav-logo-mark"></div>
       Neura Nova
     </div>
-    <p>© 2026 Neura Nova, Inc. All rights reserved.</p>
+    <div class="nn-footer-links">
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+      <a href="#">Status</a>
+    </div>
+    <p>© 2026 Neura Nova, Inc.</p>
   </footer>
 </div>
 </body>

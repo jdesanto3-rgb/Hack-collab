@@ -16,8 +16,10 @@
 
 .glow-border {
   position: relative;
+  isolation: isolate;
 }
 
+/* Sharp rotating arc — the bright neon centerline */
 .glow-border::before {
   content: '';
   position: absolute;
@@ -26,11 +28,13 @@
   background: conic-gradient(
     from var(--glow-angle),
     transparent 0%,
-    transparent 74%,
-    color-mix(in srgb, var(--brand) 45%, transparent) 82%,
-    var(--brand) 88%,
-    var(--brand-mid) 93%,
-    var(--brand) 98%,
+    transparent 55%,
+    color-mix(in srgb, var(--brand) 20%, transparent) 62%,
+    color-mix(in srgb, var(--brand) 75%, transparent) 74%,
+    var(--brand) 84%,
+    var(--brand-mid) 90%,
+    var(--brand) 96%,
+    color-mix(in srgb, var(--brand) 25%, transparent) 98.5%,
     transparent 100%
   );
   mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
@@ -38,8 +42,31 @@
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   padding: 1.5px;
-  animation: glow-rotate 2.5s linear infinite;
+  animation: glow-rotate 1.8s linear infinite;
   pointer-events: none;
+  z-index: 1;
+}
+
+/* Diffuse outer glow — soft aura radiating beyond the border */
+.glow-border::after {
+  content: '';
+  position: absolute;
+  inset: -10px;
+  border-radius: inherit;
+  background: conic-gradient(
+    from var(--glow-angle),
+    transparent 0%,
+    transparent 55%,
+    color-mix(in srgb, var(--brand) 40%, transparent) 72%,
+    var(--brand) 84%,
+    color-mix(in srgb, var(--brand) 40%, transparent) 94%,
+    transparent 100%
+  );
+  filter: blur(14px);
+  opacity: 0.7;
+  animation: glow-rotate 1.8s linear infinite;
+  pointer-events: none;
+  z-index: -1;
 }
 
 :root {
@@ -55,10 +82,11 @@
   --bg-canvas:    #EAE5DE;
   --surface-warm: #F5F0E8;
 
-  /* ── PRIMARY — amber-gold ── */
-  --brand:       #C07800;
-  --brand-light: #FFF3CC;
-  --brand-mid:   #E8A820;
+  /* ── PRIMARY — neon orange ── */
+  --brand:       #D96000;
+  --brand-light: #FFF0E0;
+  --brand-mid:   #EE7A00;
+  --brand-glow:  rgba(217, 96, 0, 0.22);
 
   /* ── SEMANTIC ACCENTS ── */
   --blue:        #2E5CE8;
@@ -150,9 +178,10 @@
     --bg-canvas:    #090807;
     --surface-warm: #181410;
 
-    --brand:       #F5B800;
-    --brand-light: #2E2200;
-    --brand-mid:   #D49400;
+    --brand:       #FF9200;
+    --brand-light: #221200;
+    --brand-mid:   #FF6E00;
+    --brand-glow:  rgba(255, 146, 0, 0.38);
 
     --blue:        #5580FF;
     --blue-light:  #10183C;
@@ -160,8 +189,8 @@
     --green-light: #00261E;
     --red:         #E83E6C;
     --red-light:   #300C26;
-    --amber:       #F5B800;
-    --amber-light: #2E2200;
+    --amber:       #FF9200;
+    --amber-light: #221200;
     --teal:        #1ECCB6;
     --teal-light:  #062820;
     --npt:         #4D9ED4;
@@ -189,9 +218,10 @@ html[data-theme="dark"] {
   --bg-canvas:    #090807;
   --surface-warm: #181410;
 
-  --brand:       #F5B800;
-  --brand-light: #2E2200;
-  --brand-mid:   #D49400;
+  --brand:       #FF9200;
+  --brand-light: #221200;
+  --brand-mid:   #FF6E00;
+  --brand-glow:  rgba(255, 146, 0, 0.38);
 
   --blue:        #5580FF;
   --blue-light:  #10183C;
@@ -199,8 +229,8 @@ html[data-theme="dark"] {
   --green-light: #00261E;
   --red:         #E83E6C;
   --red-light:   #300C26;
-  --amber:       #F5B800;
-  --amber-light: #2E2200;
+  --amber:       #FF9200;
+  --amber-light: #221200;
   --teal:        #1ECCB6;
   --teal-light:  #062820;
   --npt:         #4D9ED4;
@@ -227,9 +257,10 @@ html[data-theme="light"] {
   --bg-canvas:    #EAE5DE;
   --surface-warm: #F5F0E8;
 
-  --brand:       #C07800;
-  --brand-light: #FFF3CC;
-  --brand-mid:   #E8A820;
+  --brand:       #D96000;
+  --brand-light: #FFF0E0;
+  --brand-mid:   #EE7A00;
+  --brand-glow:  rgba(217, 96, 0, 0.22);
 
   --blue:        #2E5CE8;
   --blue-light:  #E8EFFE;
@@ -237,8 +268,8 @@ html[data-theme="light"] {
   --green-light: #E4F5ED;
   --red:         #C4305A;
   --red-light:   #FDEEF4;
-  --amber:       #B07A0A;
-  --amber-light: #FEF3DC;
+  --amber:       #B06800;
+  --amber-light: #FEF0DC;
   --teal:        #0B8F7A;
   --teal-light:  #E0F5F2;
   --npt:         #1B4B6B;
