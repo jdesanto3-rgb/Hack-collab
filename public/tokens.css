@@ -10,33 +10,33 @@
   --surface2: #EBEBEB;
   --border: #DADADA;
   --border2: #C6C6C6;
-  --text: #0A0A14;
-  --text2: #5A5A72;
-  --text3: #9494A8;
+  --text: #0C0C0C;
+  --text2: #606060;
+  --text3: #969696;
 
-  /* Brand — Weave deep purple (center of the thread gradient) */
-  --brand: #5B35C8;
-  --brand-light: #EEE9FF;
-  --brand-mid: #9B80E8;
-  --brand-dark: #3D1FA8;
+  /* Brand — Weave amber-gold */
+  --brand: #C07800;
+  --brand-light: #FFF3CC;
+  --brand-mid: #E8A820;
+  --brand-dark: #7A5000;
 
-  /* Stone — warm neutral for secondary UI */
-  --stone: #6A6480;
-  --stone-light: #F0EEF8;
-  --stone-mid: #B0ACCC;
+  /* Stone — neutral for secondary UI */
+  --stone: #606064;
+  --stone-light: #F2F2F2;
+  --stone-mid: #AAAAAA;
 
   /* Weave thread gradient colors */
-  --thread-gold: #D4920A;
-  --thread-pink: #D4296A;
-  --thread-purple: #5B35C8;
+  --thread-gold: #F0A800;
+  --thread-pink: #E87800;
+  --thread-purple: #3060CC;
   --thread-gold-vivid: #F5B800;
-  --thread-pink-vivid: #E83E6C;
-  --thread-purple-vivid: #8B5CF6;
+  --thread-pink-vivid: #E06000;
+  --thread-purple-vivid: #4080E8;
 
   /* Accents */
-  --purple: #5B35C8;
-  --purple-light: #EEE9FF;
-  --purple-mid: #9B80E8;
+  --purple: #3060CC;
+  --purple-light: #E8EFFE;
+  --purple-mid: #7AA4E8;
 
   --teal: #0B8F7A;
   --teal-light: #E0F5F2;
@@ -239,19 +239,19 @@ html[data-theme="light"] {
   --surface2: #EBEBEB;
   --border: #DADADA;
   --border2: #C6C6C6;
-  --text: #0A0A14;
-  --text2: #5A5A72;
-  --text3: #9494A8;
-  --brand: #5B35C8;
-  --brand-light: #EEE9FF;
-  --brand-mid: #9B80E8;
-  --brand-dark: #3D1FA8;
-  --stone: #6A6480;
-  --stone-light: #F0EEF8;
-  --stone-mid: #B0ACCC;
-  --purple: #5B35C8;
-  --purple-light: #EEE9FF;
-  --purple-mid: #9B80E8;
+  --text: #0C0C0C;
+  --text2: #606060;
+  --text3: #969696;
+  --brand: #C07800;
+  --brand-light: #FFF3CC;
+  --brand-mid: #E8A820;
+  --brand-dark: #7A5000;
+  --stone: #606064;
+  --stone-light: #F2F2F2;
+  --stone-mid: #AAAAAA;
+  --purple: #3060CC;
+  --purple-light: #E8EFFE;
+  --purple-mid: #7AA4E8;
   --teal: #0B8F7A;
   --teal-light: #E0F5F2;
   --teal-mid: #4DCAB8;
