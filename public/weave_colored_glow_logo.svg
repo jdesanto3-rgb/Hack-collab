@@ -1,0 +1,78 @@
+<svg width="1600" height="1200" viewBox="0 0 1600 1200" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">WEAVE minimalist vector logo with soft gradient glow</title>
+  <desc id="desc">A minimalist vector WEAVE logo with an interwoven continuous line mark, soft pink to gold gradient, subtle glow, and spaced wordmark.</desc>
+  <defs>
+    <linearGradient id="weaveGradient" x1="240" y1="520" x2="1360" y2="520" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#F45F9B"/>
+      <stop offset="0.26" stop-color="#F47C7A"/>
+      <stop offset="0.52" stop-color="#F59A63"/>
+      <stop offset="0.74" stop-color="#F4B258"/>
+      <stop offset="1" stop-color="#F7C744"/>
+    </linearGradient>
+
+    <linearGradient id="textGradient" x1="470" y1="785" x2="1130" y2="785" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#8B6559"/>
+      <stop offset="0.5" stop-color="#A47B65"/>
+      <stop offset="1" stop-color="#7A5B52"/>
+    </linearGradient>
+
+    <filter id="softGlow" x="-35%" y="-55%" width="170%" height="210%" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="8" result="blur1"/>
+      <feColorMatrix in="blur1" type="matrix" values="1 0 0 0 0.95  0 1 0 0 0.45  0 0 1 0 0.25  0 0 0 0.55 0" result="warmGlow"/>
+      <feGaussianBlur in="SourceGraphic" stdDeviation="2.2" result="blur2"/>
+      <feMerge>
+        <feMergeNode in="warmGlow"/>
+        <feMergeNode in="blur2"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <filter id="textGlow" x="-25%" y="-45%" width="150%" height="190%" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="2.6" result="textBlur"/>
+      <feColorMatrix in="textBlur" type="matrix" values="1 0 0 0 0.75  0 1 0 0 0.52  0 0 1 0 0.38  0 0 0 0.30 0" result="textWarmGlow"/>
+      <feMerge>
+        <feMergeNode in="textWarmGlow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1600" height="1200" fill="#FFFFFF"/>
+
+  <!-- Soft ambient glow behind the vector stroke -->
+  <path d="M 270 630 C 365 590, 455 725, 560 600
+           C 665 475, 560 330, 478 346
+           C 365 368, 445 640, 642 670
+           C 782 692, 785 405, 650 445
+           C 780 325, 845 445, 930 600
+           C 1018 760, 1258 574, 1075 360
+           C 985 285, 900 458, 980 595
+           C 1044 705, 1136 664, 1205 626
+           C 1268 592, 1340 602, 1390 630"
+        fill="none" stroke="url(#weaveGradient)" stroke-width="42" stroke-linecap="round" stroke-linejoin="round" opacity="0.18" filter="url(#softGlow)"/>
+
+  <!-- Main minimalist woven line -->
+  <path d="M 270 630 C 365 590, 455 725, 560 600
+           C 665 475, 560 330, 478 346
+           C 365 368, 445 640, 642 670
+           C 782 692, 785 405, 650 445
+           C 780 325, 845 445, 930 600
+           C 1018 760, 1258 574, 1075 360
+           C 985 285, 900 458, 980 595
+           C 1044 705, 1136 664, 1205 626
+           C 1268 592, 1340 602, 1390 630"
+        fill="none" stroke="url(#weaveGradient)" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" filter="url(#softGlow)"/>
+
+  <!-- Small masked crossover accents to suggest interweaving -->
+  <path d="M 706 385 C 805 305, 865 442, 930 600" fill="none" stroke="#FFFFFF" stroke-width="26" stroke-linecap="round" opacity="0.92"/>
+  <path d="M 706 385 C 805 305, 865 442, 930 600" fill="none" stroke="url(#weaveGradient)" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" filter="url(#softGlow)"/>
+
+  <path d="M 560 600 C 665 475, 560 330, 478 346" fill="none" stroke="#FFFFFF" stroke-width="24" stroke-linecap="round" opacity="0.90"/>
+  <path d="M 560 600 C 665 475, 560 330, 478 346" fill="none" stroke="url(#weaveGradient)" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" filter="url(#softGlow)"/>
+
+  <!-- Wordmark -->
+  <text x="800" y="815" text-anchor="middle"
+        font-family="Avenir Next, Montserrat, Helvetica Neue, Arial, sans-serif"
+        font-size="106" font-weight="300" letter-spacing="42"
+        fill="url(#textGradient)" filter="url(#textGlow)">WEAVE</text>
+</svg>
