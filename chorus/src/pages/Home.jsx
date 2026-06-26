@@ -337,6 +337,283 @@ const PILLAR_RAILS = [
   { left: 'SYS.03 // GATES',  right: 'STATUS: SECURE' },
 ]
 
+function BlueprintGeoArt() {
+  const containerRef = useRef(null)
+
+  useEffect(() => {
+    const host = containerRef.current
+    if (!host) return
+
+    const canvas = document.createElement('canvas')
+    canvas.id = 'blueprint-canvas'
+    host.appendChild(canvas)
+
+    const gl = canvas.getContext('webgl', { alpha: true, antialias: true, premultipliedAlpha: false })
+    if (!gl) { canvas.remove(); return }
+
+    const vertexSource = `
+      attribute vec2 a_position;
+      attribute float a_alpha;
+      attribute float a_intensity;
+      uniform vec2 u_resolution;
+      varying float v_alpha;
+      varying float v_intensity;
+      void main() {
+        vec2 zeroToOne = a_position / u_resolution;
+        vec2 clipSpace = zeroToOne * 2.0 - 1.0;
+        gl_Position = vec4(clipSpace * vec2(1.0, -1.0), 0.0, 1.0);
+        v_alpha = a_alpha;
+        v_intensity = a_intensity;
+      }
+    `
+    const fragmentSource = `
+      precision mediump float;
+      varying float v_alpha;
+      varying float v_intensity;
+      void main() {
+        vec3 cold = vec3(0.52, 0.66, 0.78);
+        vec3 white = vec3(1.0, 1.0, 1.0);
+        vec3 color = mix(cold, white, clamp(v_intensity, 0.0, 1.0));
+        gl_FragColor = vec4(color, v_alpha);
+      }
+    `
+    const pointVertexSource = `
+      attribute vec2 a_position;
+      attribute float a_size;
+      attribute float a_alpha;
+      uniform vec2 u_resolution;
+      varying float v_alpha;
+      void main() {
+        vec2 zeroToOne = a_position / u_resolution;
+        vec2 clipSpace = zeroToOne * 2.0 - 1.0;
+        gl_Position = vec4(clipSpace * vec2(1.0, -1.0), 0.0, 1.0);
+        gl_PointSize = a_size;
+        v_alpha = a_alpha;
+      }
+    `
+    const pointFragmentSource = `
+      precision mediump float;
+      varying float v_alpha;
+      void main() {
+        vec2 c = gl_PointCoord - vec2(0.5);
+        float d = length(c);
+        float core = smoothstep(0.5, 0.0, d);
+        float halo = smoothstep(0.5, 0.18, d) * 0.42;
+        vec3 color = mix(vec3(0.56, 0.70, 0.84), vec3(1.0), core);
+        gl_FragColor = vec4(color, (core + halo) * v_alpha);
+      }
+    `
+
+    function makeShader(type, source) {
+      const s = gl.createShader(type)
+      gl.shaderSource(s, source)
+      gl.compileShader(s)
+      return s
+    }
+    function makeProgram(vs, fs) {
+      const p = gl.createProgram()
+      gl.attachShader(p, makeShader(gl.VERTEX_SHADER, vs))
+      gl.attachShader(p, makeShader(gl.FRAGMENT_SHADER, fs))
+      gl.linkProgram(p)
+      return p
+    }
+
+    const stripProgram = makeProgram(vertexSource, fragmentSource)
+    const pointProgram = makeProgram(pointVertexSource, pointFragmentSource)
+    const stripBuffer = gl.createBuffer()
+    const pointBuffer = gl.createBuffer()
+
+    const stripPos       = gl.getAttribLocation(stripProgram, 'a_position')
+    const stripAlpha     = gl.getAttribLocation(stripProgram, 'a_alpha')
+    const stripIntensity = gl.getAttribLocation(stripProgram, 'a_intensity')
+    const stripRes       = gl.getUniformLocation(stripProgram, 'u_resolution')
+    const pointPos       = gl.getAttribLocation(pointProgram, 'a_position')
+    const pointSize      = gl.getAttribLocation(pointProgram, 'a_size')
+    const pointAlpha     = gl.getAttribLocation(pointProgram, 'a_alpha')
+    const pointRes       = gl.getUniformLocation(pointProgram, 'u_resolution')
+
+    let W = 1, H = 1, ratio = 1
+
+    function resize() {
+      const rect = host.getBoundingClientRect()
+      ratio = Math.min(window.devicePixelRatio || 1, 2)
+      W = Math.max(1, Math.floor(rect.width * ratio))
+      H = Math.max(1, Math.floor(rect.height * ratio))
+      canvas.width = W
+      canvas.height = H
+      gl.viewport(0, 0, W, H)
+    }
+    window.addEventListener('resize', resize, { passive: true })
+    resize()
+
+    function verticalCurve(t, lane, time) {
+      const wave = Math.sin(t * Math.PI * 2.0 + time * 0.28) * 0.012
+      return [
+        W * (0.835 - 0.265 * Math.sin(t * Math.PI * 0.92) + 0.078 * Math.sin(t * Math.PI * 2.18 + 0.66) + wave),
+        H * (-0.18 + 1.36 * t)
+      ]
+    }
+    function lowerCurve(t, lane, time) {
+      return [
+        W * (0.27 + 0.84 * t),
+        H * (0.825 - 0.305 * Math.sin(Math.PI * t) + 0.052 * Math.sin(Math.PI * 2.0 * t + 1.2 + time * 0.18))
+      ]
+    }
+    function loopCurve(t, lane, time) {
+      const a = t * Math.PI * 2.0
+      const cx = W * 0.555, cy = H * 0.565
+      const rx = W * 0.205, ry = H * 0.108
+      const rot = -0.22
+      const px = Math.cos(a) * rx
+      const py = Math.sin(a) * ry
+      const wobble = Math.sin(a * 3.0 + time * 0.25) * H * 0.004
+      return [
+        cx + px * Math.cos(rot) - (py + wobble) * Math.sin(rot),
+        cy + px * Math.sin(rot) + (py + wobble) * Math.cos(rot)
+      ]
+    }
+    function bottomCurve(t, lane, time) {
+      return [
+        W * (0.505 + 0.63 * t),
+        H * (1.03 - 0.145 * Math.sin(Math.PI * t) + 0.025 * Math.sin(Math.PI * 2.0 * t + time * 0.16))
+      ]
+    }
+
+    function starLine(cx, cy, length, angle, thickness, alpha, data) {
+      const nx = Math.cos(angle), ny = Math.sin(angle)
+      const px = -ny * thickness * 0.5, py = nx * thickness * 0.5
+      const x1 = cx - nx * length * 0.5, y1 = cy - ny * length * 0.5
+      const x2 = cx + nx * length * 0.5, y2 = cy + ny * length * 0.5
+      data.push(x1+px, y1+py, alpha, 1, x1-px, y1-py, alpha, 1, x2+px, y2+py, 0, 1, x2-px, y2-py, 0, 1)
+    }
+
+    function buildStrip(curve, lanes, segments, spacing, thickness, alpha, intensity, time, data, closed) {
+      for (let l = -lanes; l <= lanes; l++) {
+        const lane = l * spacing * ratio
+        const points = []
+        for (let i = 0; i <= segments; i++) points.push(curve(i / segments, l, time))
+        const lp = []
+        for (let i = 0; i <= segments; i++) {
+          const prev = points[Math.max(0, i-1)]
+          const next = points[Math.min(segments, i+1)]
+          let dx = next[0]-prev[0], dy = next[1]-prev[1]
+          const len = Math.hypot(dx, dy) || 1
+          dx /= len; dy /= len
+          lp.push([points[i][0] + (-dy)*lane, points[i][1] + dx*lane, -dy, dx])
+        }
+        for (let i = 0; i <= segments; i++) {
+          const t = i / segments
+          const p = lp[i]
+          const taper = closed ? 1 : Math.min(1, Math.min(t, 1-t) * 5.2)
+          const shimmer = 0.78 + Math.sin(t*9+l*0.7+time*0.5) * 0.22
+          const a = alpha * taper * shimmer
+          const b = intensity + Math.max(0, l) * 0.016
+          const half = thickness * ratio * (0.84 + Math.abs(l) * 0.018)
+          data.push(p[0]+p[2]*half, p[1]+p[3]*half, a, b)
+          data.push(p[0]-p[2]*half, p[1]-p[3]*half, a, b)
+        }
+        data.push(NaN, NaN, 0, 0, NaN, NaN, 0, 0)
+      }
+    }
+
+    function buildPoints(time, data) {
+      const moving = [
+        { curve: verticalCurve, t: (time*0.045+0.18)%1, lane:-4, size:19, alpha:0.95 },
+        { curve: verticalCurve, t: (time*0.035+0.44)%1, lane:3,  size:15, alpha:0.78 },
+        { curve: verticalCurve, t: (time*0.052+0.73)%1, lane:6,  size:12, alpha:0.7  },
+        { curve: lowerCurve,    t: (time*0.033+0.22)%1, lane:-5, size:9,  alpha:0.52 },
+        { curve: lowerCurve,    t: (time*0.028+0.64)%1, lane:2,  size:11, alpha:0.58 },
+        { curve: loopCurve,     t: (time*0.026+0.12)%1, lane:-2, size:13, alpha:0.88 },
+        { curve: loopCurve,     t: (time*0.031+0.53)%1, lane:5,  size:10, alpha:0.72 },
+        { curve: bottomCurve,   t: (time*0.02+0.36)%1,  lane:3,  size:8,  alpha:0.46 },
+        { curve: bottomCurve,   t: (time*0.023+0.76)%1, lane:-4, size:9,  alpha:0.5  },
+      ]
+      for (const item of moving) {
+        const p = item.curve(item.t, item.lane, time)
+        const d = item.curve(Math.min(1, item.t+0.01), item.lane, time)
+        const dx = d[0]-p[0], dy = d[1]-p[1]
+        const len = Math.hypot(dx, dy) || 1
+        data.push(p[0]+(-dy/len)*item.lane*10*ratio, p[1]+(dx/len)*item.lane*10*ratio, item.size*ratio, item.alpha)
+      }
+      const fixed = [
+        [0.69,0.29,8,0.64],[0.715,0.365,12,0.74],[0.783,0.482,7,0.48],
+        [0.485,0.825,13,0.78],[0.522,0.814,8,0.58],[0.548,0.77,6,0.5],
+        [0.935,0.57,7,0.55],[0.89,0.848,6,0.45],[0.626,0.418,5,0.42]
+      ]
+      for (const f of fixed) {
+        const pulse = 0.76 + Math.sin(time*1.2+f[0]*12) * 0.24
+        data.push(W*f[0], H*f[1], f[2]*ratio*pulse, f[3])
+      }
+    }
+
+    let raf
+    function render(now) {
+      const time = now * 0.001
+      gl.clearColor(0,0,0,0)
+      gl.clear(gl.COLOR_BUFFER_BIT)
+      gl.enable(gl.BLEND)
+      gl.blendFunc(gl.SRC_ALPHA, gl.ONE)
+
+      const stripData = []
+      buildStrip(lowerCurve,    7, 150, 7.1, 1.2,  0.18, 0.62, time, stripData, false)
+      buildStrip(bottomCurve,   7, 120, 7.0, 1.1,  0.13, 0.58, time, stripData, false)
+      buildStrip(loopCurve,     6, 168, 8.1, 1.25, 0.22, 0.68, time, stripData, true)
+      buildStrip(verticalCurve, 5, 170, 9.8, 6.2,  0.16, 0.74, time, stripData, false)
+      buildStrip(verticalCurve, 5, 170, 9.8, 2.25, 0.94, 1.0,  time, stripData, false)
+      starLine(W*0.742, H*0.235, W*0.12,  -2.5,  1.0*ratio, 0.5,  stripData)
+      starLine(W*0.708, H*0.71,  W*0.105,  1.12, 1.0*ratio, 0.43, stripData)
+      starLine(W*0.905, H*0.518, W*0.085, -0.92, 1.0*ratio, 0.32, stripData)
+
+      gl.useProgram(stripProgram)
+      gl.uniform2f(stripRes, W, H)
+      gl.bindBuffer(gl.ARRAY_BUFFER, stripBuffer)
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(stripData), gl.DYNAMIC_DRAW)
+      gl.enableVertexAttribArray(stripPos)
+      gl.enableVertexAttribArray(stripAlpha)
+      gl.enableVertexAttribArray(stripIntensity)
+      gl.vertexAttribPointer(stripPos,       2, gl.FLOAT, false, 16, 0)
+      gl.vertexAttribPointer(stripAlpha,     1, gl.FLOAT, false, 16, 8)
+      gl.vertexAttribPointer(stripIntensity, 1, gl.FLOAT, false, 16, 12)
+
+      let start = 0
+      for (let i = 0; i < stripData.length/4; i++) {
+        if (Number.isNaN(stripData[i*4])) {
+          const count = i - start
+          if (count > 2) gl.drawArrays(gl.TRIANGLE_STRIP, start, count)
+          start = i + 2; i++
+        }
+      }
+      const rem = stripData.length/4 - start
+      if (rem > 2) gl.drawArrays(gl.TRIANGLE_STRIP, start, rem)
+
+      const pointData = []
+      buildPoints(time, pointData)
+      gl.useProgram(pointProgram)
+      gl.uniform2f(pointRes, W, H)
+      gl.bindBuffer(gl.ARRAY_BUFFER, pointBuffer)
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(pointData), gl.DYNAMIC_DRAW)
+      gl.enableVertexAttribArray(pointPos)
+      gl.enableVertexAttribArray(pointSize)
+      gl.enableVertexAttribArray(pointAlpha)
+      gl.vertexAttribPointer(pointPos,   2, gl.FLOAT, false, 16, 0)
+      gl.vertexAttribPointer(pointSize,  1, gl.FLOAT, false, 16, 8)
+      gl.vertexAttribPointer(pointAlpha, 1, gl.FLOAT, false, 16, 12)
+      gl.drawArrays(gl.POINTS, 0, pointData.length/4)
+
+      raf = requestAnimationFrame(render)
+    }
+    raf = requestAnimationFrame(render)
+
+    return () => {
+      cancelAnimationFrame(raf)
+      window.removeEventListener('resize', resize)
+      canvas.remove()
+    }
+  }, [])
+
+  return <div ref={containerRef} className="bp-canvas-host" aria-hidden="true" style={{position:'absolute',inset:0,pointerEvents:'none',zIndex:0}} />
+}
+
 export default function Home() {
   const { theme } = useTheme()
   const isCanvas = theme === 'canvas'
@@ -410,6 +687,7 @@ export default function Home() {
   const content = (
     <>
       <section className="hero">
+        {isBlueprint && <BlueprintGeoArt />}
         <div className="container">
           <div className="hero-grid">
             <div className="animate-fade-up">
