@@ -495,17 +495,132 @@ img { max-width: 100%; display: block; }
 /* =============================================
    THE SYSTEM
    ============================================= */
-.system-layout { display: grid; grid-template-columns: 1fr 300px; gap: 24px; align-items: start; }
-.system-canvas-wrap { background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; }
-.system-canvas { display: block; width: 100%; }
-.system-sidebar { background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 28px; position: sticky; top: calc(var(--nav-h) + 24px); }
-.system-sidebar h3 { font-size: 18px; margin-bottom: 8px; }
-.node-type-badge { display: inline-block; padding: 4px 12px; border-radius: 100px; font-size: 11px; font-weight: 600; margin-bottom: 14px; }
-.system-sidebar p { font-size: 14px; color: var(--text-2); line-height: 1.7; margin-bottom: 16px; }
-.node-caps { display: flex; flex-direction: column; gap: 8px; }
-.node-cap { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-2); }
-.node-cap-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
-.system-hint { text-align: center; font-size: 13px; color: var(--text-3); padding: 16px; font-style: italic; }
+.system-map-host * { box-sizing: border-box; margin: 0; padding: 0; }
+.system-map-host {
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+  background: #F7F6F2;
+  color: #1C1C1A;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 600px;
+  border-radius: 16px;
+  overflow: hidden;
+}
+.sm-header {
+  padding: 26px 48px 12px;
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+.sm-header h2 {
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.4px;
+  color: #1C1C1A;
+  flex-shrink: 0;
+}
+#sm-breadcrumb {
+  display: flex; align-items: center; gap: 8px;
+  margin-left: 14px; overflow: hidden;
+  max-width: 0; opacity: 0;
+  transition: max-width 0.4s ease, opacity 0.3s ease;
+}
+#sm-breadcrumb.show { max-width: 300px; opacity: 1; }
+.sm-bc-sep { font-size: 16px; color: #C8C6BC; font-weight: 300; }
+#sm-bc-disc {
+  font-size: 13px; font-weight: 500; color: #9C9A92;
+  cursor: pointer; transition: color 0.15s;
+}
+#sm-bc-disc:hover { color: #1C1C1A; }
+#sm-diagram-wrap { flex: 1; padding: 0 32px; position: relative; }
+#sm-diagram {
+  width: 100%; height: auto; display: block;
+  border-radius: 20px; background: #fff;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05), 0 12px 40px rgba(0,0,0,0.06);
+  overflow: hidden;
+}
+#sm-back-btn {
+  position: absolute; top: 20px; left: 50%;
+  transform: translateX(-50%);
+  background: white; border: 1.5px solid #E0DED8;
+  border-radius: 100px; padding: 8px 18px 8px 14px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+  font-size: 12.5px; font-weight: 500; color: #5A5956;
+  cursor: pointer;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.09);
+  opacity: 0; pointer-events: none;
+  transition: background 0.15s, color 0.15s, border-color 0.2s;
+  display: flex; align-items: center; gap: 6px;
+  white-space: nowrap; z-index: 10;
+}
+#sm-back-btn:hover { background: #FAFAF8; color: #1C1C1A; }
+.sm-vc { cursor: pointer; }
+.sm-node { cursor: pointer; }
+.sm-node.dim { opacity: 0.1; }
+.sm-disc-edge.dim { opacity: 0.04; }
+@keyframes sm-flow { to { stroke-dashoffset: -80; } }
+.sm-edge-flow { animation: sm-flow 4s linear infinite; }
+#sm-panel {
+  position: fixed; bottom: 32px; right: 32px;
+  width: 292px; background: #fff; border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04);
+  border: 1px solid rgba(0,0,0,0.06);
+  z-index: 200; transition: box-shadow 0.28s ease;
+}
+#sm-panel.active {
+  box-shadow: 0 24px 64px rgba(0,0,0,0.13), 0 4px 16px rgba(0,0,0,0.06);
+}
+#sm-panel-default { padding: 20px 20px 18px; }
+#sm-panel-default .sm-hint-title {
+  font-size: 13px; font-weight: 600; color: #1C1C1A; margin-bottom: 6px;
+}
+#sm-panel-default .sm-hint-body {
+  font-size: 12px; line-height: 1.65; color: #9C9A92;
+}
+#sm-panel-node { display: none; }
+#sm-panel.active #sm-panel-default { display: none; }
+#sm-panel.active #sm-panel-node    { display: block; }
+.sm-panel-top {
+  padding: 20px 20px 14px; border-bottom: 1px solid #F0EFEB;
+}
+.sm-panel-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 10px; font-weight: 600; letter-spacing: 0.07em;
+  text-transform: uppercase; padding: 3px 8px;
+  border-radius: 100px; margin-bottom: 10px;
+}
+.sm-panel-badge-dot { width: 6px; height: 6px; border-radius: 50%; }
+.sm-panel-name {
+  font-size: 17px; font-weight: 600; letter-spacing: -0.3px;
+  color: #1C1C1A; margin-bottom: 3px;
+}
+.sm-panel-role { font-size: 12px; color: #9C9A92; }
+.sm-panel-body {
+  padding: 16px 20px 22px; font-size: 13px;
+  line-height: 1.68; color: #5A5956;
+}
+.sm-panel-close {
+  position: absolute; top: 14px; right: 14px;
+  width: 22px; height: 22px;
+  background: #F3F2ED; border: none; border-radius: 50%;
+  cursor: pointer; color: #9C9A92; font-size: 13px;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s, opacity 0.2s;
+  opacity: 0; pointer-events: none;
+}
+#sm-panel.active .sm-panel-close { opacity: 1; pointer-events: auto; }
+.sm-panel-close:hover { background: #E8E6DF; color: #5A5956; }
+#sm-legend {
+  display: flex; gap: 22px; flex-wrap: wrap;
+  padding: 14px 48px 28px;
+}
+.sm-leg {
+  display: flex; align-items: center; gap: 7px;
+  font-size: 11px; color: #9C9A92;
+}
+.sm-leg-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 
 /* =============================================
    AGENTS PAGE
@@ -583,8 +698,6 @@ img { max-width: 100%; display: block; }
    ============================================= */
 @media (max-width: 1024px) {
   .arch-grid { grid-template-columns: repeat(3, 1fr); }
-  .system-layout { grid-template-columns: 1fr; }
-  .system-sidebar { position: static; }
 }
 
 @media (max-width: 768px) {
@@ -743,7 +856,6 @@ img { max-width: 100%; display: block; }
    ============================================= */
 
 /* Outer container: frame accent squares at exact corners */
-[data-theme=""] .system-canvas-wrap,
 [data-theme=""] .step-detail,
 [data-theme=""] .demo-form,
 [data-theme=""] .arch-card {
