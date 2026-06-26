@@ -279,10 +279,10 @@ const PROBLEMS = [
 ]
 
 const STATS = [
-  { value: '80%', label: 'Reduction in context lost between handoffs', color: '#7F77DD' },
+  { value: '80%', label: 'Less time spent realigning on decisions already made', color: '#7F77DD' },
   { value: '3×', label: 'Faster from customer insight to sprint-ready output', color: '#1D9E75' },
-  { value: '100%', label: 'Shared visibility across every team and agent', color: '#378ADD' },
-  { value: '0', label: 'Decisions disconnected from the customer problem that caused them', color: '#EF9F27' },
+  { value: '100%', label: 'Of your product decisions connected to the customer need behind them', color: '#378ADD' },
+  { value: '0', label: 'Threads lost between idea and outcome', color: '#EF9F27' },
 ]
 
 const PILLARS = [
@@ -792,6 +792,12 @@ export default function Home() {
       {/* STATS */}
       <section className="section-sm">
         <div className="container">
+          <div className="stats-subhead">
+            <p className="stats-subhead-line">Every decision traceable.</p>
+            <p className="stats-subhead-line">Every insight preserved.</p>
+            <p className="stats-subhead-line">Every agent in context.</p>
+            <p className="stats-subhead-line">Every human in control.</p>
+          </div>
           <div className="stats-row">
             {STATS.map((s, i) => (
               <div key={i} className="stat-item">
