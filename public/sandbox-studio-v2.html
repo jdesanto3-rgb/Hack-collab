@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Weave Studio v2 — Neura Nova</title>
+<link rel="icon" href="/weave_colored_glow_logo.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/tokens.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;font-family:'Inter',sans-serif;font-size:14px;color:var(--text);background:var(--bg-canvas)}
+button{font-family:'Inter',sans-serif;cursor:pointer;border:none}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-thumb{background:var(--border2,#ccc);border-radius:8px;border:2px solid transparent;background-clip:padding-box}
+::-webkit-scrollbar-track{background:transparent}
+
+@keyframes ch-rise{from{transform:translateY(9px);opacity:0}to{transform:none;opacity:1}}
+@keyframes ch-pop{0%{transform:translateY(10px) scale(.975);opacity:0}60%{transform:translateY(-2px) scale(1.006)}100%{transform:none;opacity:1}}
+@keyframes ch-pulse{0%,100%{opacity:.35;transform:scale(1)}50%{opacity:1;transform:scale(1.25)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* LAYOUT */
+#app{height:100vh;display:flex;flex-direction:column;overflow:hidden}
+#toolbar{height:52px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 16px;gap:8px;flex:none;z-index:20}
+#body{flex:1;min-height:0;display:flex;overflow:hidden}
+.pipeline-rail{width:252px;flex:none;background:var(--surface2);border-right:1px solid var(--border);padding:20px 16px;display:flex;flex-direction:column;overflow-y:auto;transition:width .2s}
+.pipeline-rail.collapsed{width:0;padding:0;overflow:hidden}
+.stage{flex:1;padding:28px 36px;overflow-y:auto;display:flex;flex-direction:column}
+.feed-rail{width:288px;flex:none;background:var(--surface2);border-left:1px solid var(--border);display:flex;flex-direction:column;transition:width .2s;overflow:hidden}
+.feed-rail.collapsed{width:0}
+
+/* TOOLBAR */
+.tb-logo{width:28px;height:28px;border-radius:8px;background:var(--brand);flex:none}
+.tb-name{font-family:'Playfair Display',serif;font-size:17px;font-weight:600;letter-spacing:-.3px}
+.tb-crumb{font-size:12.5px;color:var(--text3)}
+.tb-sep{width:1px;height:18px;background:var(--border);flex:none;margin:0 4px}
+.mode-tabs{display:flex;gap:1px;background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:3px}
+.mode-tab{padding:5px 13px;border-radius:6px;font-size:12px;font-weight:600;color:var(--text2);background:transparent;transition:all .15s;white-space:nowrap}
+.mode-tab.active{background:var(--surface);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.tb-space{flex:1}
+.tb-btn{display:flex;align-items:center;gap:5px;padding:6px 12px;border-radius:8px;border:1px solid var(--border);background:transparent;font-size:12.5px;font-weight:600;color:var(--text2);transition:all .15s}
+.tb-btn:hover{background:var(--surface);color:var(--text)}
+.tb-primary{background:var(--brand);color:#fff;border-color:var(--brand)}
+.tb-primary:hover{opacity:.88;color:#fff}
+.tb-primary:disabled{opacity:.45;cursor:default}
+.tb-avatar{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex:none}
+
+/* PIPELINE */
+.pipe-hdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px}
+.pipe-title{font-size:14px;font-weight:700;margin-bottom:2px}
+.pipe-sub{font-size:11px;color:var(--text3)}
+
+/* STAGE */
+.stage-eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1.5px;font-weight:600;margin-bottom:6px}
+.stage-h1{font-family:'Playfair Display',Georgia,serif;font-size:30px;line-height:1.15;letter-spacing:-.02em;margin-bottom:10px;max-width:640px}
+.stage-lead{font-size:14px;color:var(--text2);line-height:1.55;max-width:580px;margin-bottom:22px}
+.stage-advance{margin-top:24px}
+
+.editable-card{background:var(--surface-warm,var(--surface));border:1px solid var(--border);border-radius:14px;padding:20px;animation:ch-pop .5s ease backwards}
+.card-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.card-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:var(--text3);font-weight:600}
+.edit-btn{font-size:11px;padding:4px 10px;border-radius:6px;background:transparent;color:var(--text3);cursor:pointer;transition:all .15s}
+.edit-btn:hover{background:var(--surface2);color:var(--text)}
+
+.dir-card{background:var(--surface-warm,var(--surface));border-radius:13px;padding:15px;cursor:pointer;transition:all .2s;flex:1;min-width:210px;border:2px solid transparent}
+.dir-card:hover{border-color:var(--border2)}
+
+/* CANVAS CARDS */
+.canvas-card{background:var(--surface);border-radius:11px;padding:12px;cursor:pointer;animation:ch-rise .4s ease;transition:box-shadow .22s,transform .22s;box-shadow:var(--shadow-sm);position:relative}
+.canvas-card:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,0,0,.35)}
+.canvas-card::before{content:'';position:absolute;inset:-2px;border-radius:inherit;background:conic-gradient(from var(--glow-angle),transparent 0%,transparent 52%,color-mix(in srgb,var(--brand) 20%,transparent) 60%,color-mix(in srgb,var(--brand) 78%,transparent) 73%,var(--brand) 84%,var(--brand-mid) 90%,var(--brand) 96%,color-mix(in srgb,var(--brand) 28%,transparent) 98.5%,transparent 100%);mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;padding:2px;animation:glow-rotate 1.6s linear infinite;pointer-events:none;opacity:0;transition:opacity .2s ease}
+.canvas-card:hover::before{opacity:1}
+
+/* REF CARDS */
+.ref-card{flex:none;width:140px;background:var(--surface);border-radius:10px;overflow:hidden;cursor:pointer;transition:box-shadow .15s;border:1px solid var(--border)}
+.ref-thumb{height:72px;overflow:hidden;border-bottom:1px solid var(--border)}
+.ref-meta{padding:7px 9px}
+.ref-source{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;letter-spacing:.5px}
+.ref-label{font-size:11px;font-weight:600;margin-top:2px;line-height:1.3;color:var(--text)}
+
+/* FEED RAIL */
+.feed-tabs{display:flex;border-bottom:1px solid var(--border);flex:none;background:var(--surface)}
+.feed-tab{flex:1;padding:10px 4px;font-size:11.5px;font-weight:600;color:var(--text3);background:transparent;cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:4px;white-space:nowrap}
+.feed-tab.active{color:var(--brand);border-bottom-color:var(--brand)}
+.feed-body{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:8px}
+
+.event-row{display:flex;align-items:flex-start;gap:8px;animation:ch-rise .3s ease}
+.event-badge{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:#fff;flex:none}
+.event-text{font-size:12px;color:var(--text2);line-height:1.45;flex:1}
+.event-tag{font-size:9px;font-weight:700;padding:2px 5px;border-radius:3px;flex:none;align-self:flex-start}
+.chat-bubble{border-radius:10px;padding:10px 12px;max-width:220px;font-size:12.5px;line-height:1.45;animation:ch-rise .3s ease}
+.chat-ai{background:var(--surface);border:1px solid var(--border);border-radius:10px 10px 10px 3px;color:var(--text);align-self:flex-start}
+.chat-user{background:var(--brand);color:#fff;align-self:flex-end;border-radius:10px 10px 3px 10px}
+.typing-dots{display:flex;gap:4px;padding:10px 14px;background:var(--surface);border:1px solid var(--border);border-radius:10px;width:fit-content}
+.typing-dot{width:5px;height:5px;border-radius:50%;background:var(--text3);animation:ch-pulse .9s infinite}
+
+/* CANVAS TAB */
+.canvas-col{margin-bottom:16px}
+.canvas-col-hdr{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.08em;color:var(--text3);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+
+/* SITEMAP */
+.sm-wrap{position:relative;padding:40px;min-width:1060px;min-height:410px}
+.sm-node{position:absolute;width:118px;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;padding:10px 8px 8px;cursor:pointer;transition:border-color .15s,box-shadow .15s;text-align:center;user-select:none}
+.sm-node:hover{border-color:var(--brand);box-shadow:0 0 0 3px color-mix(in srgb,var(--brand) 15%,transparent)}
+.sm-node.sm-active{border-color:var(--brand);background:color-mix(in srgb,var(--brand) 6%,var(--surface))}
+.sm-icon{font-size:15px;margin-bottom:3px}
+.sm-label{font-size:11px;font-weight:600;color:var(--text);line-height:1.2}
+.sm-type{font-size:9px;color:var(--text3);margin-top:2px;font-family:'JetBrains Mono',monospace;font-weight:600}
+
+/* STYLE GUIDE */
+.sg{padding:36px 40px 60px;max-width:900px}
+.sg-sec{margin-bottom:44px}
+.sg-title{font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--text3);padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:18px;text-transform:uppercase}
+.sg-sub{font-size:11px;font-weight:700;color:var(--text2);margin:16px 0 8px}
+.sg-row{display:flex;flex-wrap:wrap;gap:10px}
+.swatch{border-radius:9px;overflow:hidden;border:1px solid rgba(0,0,0,.06);min-width:88px}
+.swatch-col{height:52px}
+.swatch-info{padding:7px 9px;background:var(--surface)}
+.sw-name{font-size:10px;font-weight:600;color:var(--text)}
+.sw-val{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text3)}
+.type-row{margin-bottom:18px;padding-bottom:18px;border-bottom:1px solid var(--border)}
+.type-row:last-child{border-bottom:none;margin-bottom:0}
+.type-lbl{font-size:9.5px;font-weight:700;letter-spacing:.06em;color:var(--text3);margin-bottom:5px;display:flex;align-items:baseline;gap:10px}
+.comp-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:12px}
+
+/* PREVIEW */
+#prev-overlay{position:fixed;inset:0;z-index:9000;background:#f5f5f5;overflow-y:auto;display:none;font-family:'Inter',-apple-system,sans-serif}
+html[data-theme="dark"] #prev-overlay{background:var(--bg)}
+#prev-overlay.on{display:block}
+#prev-chrome{position:fixed;top:16px;right:20px;z-index:9001;display:flex;gap:8px}
+.prev-btn{display:flex;align-items:center;gap:5px;background:rgba(0,0,0,.72);backdrop-filter:blur(8px);color:#fff;border:1px solid rgba(255,255,255,.14);border-radius:24px;padding:8px 15px;font-size:12.5px;font-weight:600;cursor:pointer;transition:background .15s}
+.prev-btn:hover{background:rgba(0,0,0,.9)}
+/* nn-* used by preview overlay */
+.nn-nav{background:#fff;border-bottom:1px solid #e8e8e8;position:sticky;top:0;z-index:10;display:flex;align-items:center;padding:0 48px;height:64px;gap:32px}
+html[data-theme="dark"] .nn-nav{background:var(--surface);border-bottom-color:var(--border)}
+.nn-logo-mark{width:32px;height:32px;border-radius:9px;background:var(--brand);flex:none}
+.nn-nav-links{display:flex;gap:28px;margin-left:8px}
+.nn-nav-links a{font-size:14px;color:var(--text2);text-decoration:none}
+.nn-cta{margin-left:auto;height:38px;padding:0 20px;border-radius:19px;background:var(--brand);color:#fff;font-size:13.5px;font-weight:600;font-family:'Inter',sans-serif}
+.nn-hero{background:#f5f5f5;padding:80px 48px 64px;text-align:center;display:flex;flex-direction:column;align-items:center}
+html[data-theme="dark"] .nn-hero{background:var(--bg)}
+.nn-badge{height:26px;padding:0 14px;border-radius:13px;border:1px solid var(--brand);background:var(--brand-light);display:inline-flex;align-items:center;margin-bottom:20px;font-size:11px;font-weight:600;color:var(--brand);letter-spacing:.04em}
+.nn-h1{font-family:'Playfair Display',Georgia,serif;font-size:52px;font-weight:700;color:var(--text);line-height:1.1;letter-spacing:-.025em;max-width:700px;margin:0 0 18px}
+.nn-lead{font-size:16px;color:var(--text2);line-height:1.65;max-width:520px;margin:0 0 28px}
+.nn-btns{display:flex;gap:12px}
+.nn-btn1{height:48px;padding:0 28px;border-radius:24px;background:var(--brand);color:#fff;font-size:14px;font-weight:600;font-family:'Inter',sans-serif}
+.nn-btn2{height:48px;padding:0 24px;border-radius:24px;border:1.5px solid #c8c8c8;background:transparent;color:var(--text2);font-size:14px;font-family:'Inter',sans-serif}
+html[data-theme="dark"] .nn-btn2{border-color:var(--border2)}
+.nn-stats{background:#eee;display:flex;align-items:center;justify-content:center;border-top:1px solid #e0e0e0;border-bottom:1px solid #e0e0e0}
+html[data-theme="dark"] .nn-stats{background:var(--surface2);border-color:var(--border)}
+.nn-stat{flex:1;max-width:240px;display:flex;flex-direction:column;align-items:center;padding:32px 16px;gap:5px}
+.nn-stat-val{font-family:'Playfair Display',Georgia,serif;font-size:38px;font-weight:700;color:var(--brand);letter-spacing:-.03em;line-height:1}
+.nn-stat-lbl{font-size:11px;color:var(--text3);letter-spacing:.06em}
+.nn-stat-div{width:1px;height:48px;background:#d8d8d8;align-self:center}
+html[data-theme="dark"] .nn-stat-div{background:var(--border)}
+.nn-feat{padding:72px 48px;background:#f0f0f0}
+html[data-theme="dark"] .nn-feat{background:var(--surface2)}
+.nn-feat-hdr{text-align:center;margin-bottom:44px}
+.nn-eyebrow{display:inline-block;padding:5px 14px;border-radius:14px;background:var(--brand-light);color:var(--brand);font-size:11px;font-weight:600;margin-bottom:12px;letter-spacing:.05em}
+.nn-h2{font-family:'Playfair Display',Georgia,serif;font-size:36px;font-weight:700;color:var(--text);letter-spacing:-.02em;margin:0 0 12px}
+.nn-feat-sub{font-size:15px;color:var(--text2);max-width:480px;margin:0 auto;line-height:1.6}
+.nn-feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;max-width:860px;margin:0 auto}
+.nn-feat-card{background:#fff;border:1px solid #e4e4e4;border-radius:14px;padding:24px}
+html[data-theme="dark"] .nn-feat-card{background:var(--surface);border-color:var(--border)}
+.nn-feat-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:14px}
+.nn-feat-card h3{font-size:15px;font-weight:700;color:var(--text);margin:0 0 8px}
+.nn-feat-card p{font-size:13px;color:var(--text2);line-height:1.55;margin:0}
+.nn-price{padding:72px 48px;background:#f5f5f5}
+html[data-theme="dark"] .nn-price{background:var(--bg)}
+.nn-price-ey{display:block;font-size:11px;font-weight:600;color:var(--brand);letter-spacing:.08em;margin-bottom:12px;text-align:center}
+.nn-price h2{font-family:'Playfair Display',Georgia,serif;font-size:36px;font-weight:700;color:var(--text);text-align:center;letter-spacing:-.02em;margin:0 0 8px}
+.nn-price-sub{font-size:15px;color:var(--text2);text-align:center;margin:0 0 44px}
+.nn-price-cards{display:flex;gap:18px;justify-content:center;max-width:820px;margin:0 auto}
+.nn-pc{background:#fff;border:1px solid #e4e4e4;border-radius:16px;overflow:hidden;flex:1;max-width:260px}
+html[data-theme="dark"] .nn-pc{background:var(--surface);border-color:var(--border)}
+.nn-pc.ft{border:2px solid var(--brand)}
+.nn-pc-head{padding:22px 24px 18px}
+.nn-pc:not(.ft) .nn-pc-head{background:#f3f3f3}
+html[data-theme="dark"] .nn-pc:not(.ft) .nn-pc-head{background:var(--surface2)}
+.nn-pc.ft .nn-pc-head{background:var(--brand)}
+.nn-pc-body{padding:18px 24px 24px}
+.nn-pc-plan{font-size:9px;font-weight:700;letter-spacing:1.4px;margin-bottom:8px;color:var(--text3)}
+.nn-pc.ft .nn-pc-plan{color:#FFF0E0}
+.nn-pc-badge{display:inline-block;font-size:9px;font-weight:700;color:var(--brand);background:var(--brand-light);border-radius:4px;padding:2px 7px;margin-bottom:8px}
+.nn-pc.ft .nn-pc-badge{color:#FFF0E0;background:rgba(0,0,0,.18)}
+.nn-pc-amt{display:flex;align-items:baseline;gap:3px;margin-bottom:5px}
+.nn-pc-amt strong{font-family:'Playfair Display',Georgia,serif;font-size:40px;font-weight:700;color:var(--text);letter-spacing:-.04em}
+.nn-pc.ft .nn-pc-amt strong{color:#fff}
+.nn-pc-amt span{font-size:13px;color:var(--text3)}
+.nn-pc.ft .nn-pc-amt span{color:#FFF0E0}
+.nn-pc-desc{font-size:12px;color:var(--text2);line-height:1.4}
+.nn-pc.ft .nn-pc-desc{color:#FFF0E0}
+.nn-pc-feats{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
+.nn-pc-feat{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--text2)}
+.nn-pc-chk{width:7px;height:7px;border-radius:50%;background:var(--green);flex:none}
+.nn-pc-cta{width:100%;height:40px;border-radius:20px;background:var(--brand);color:#fff;font-size:13px;font-weight:700;font-family:'Inter',sans-serif}
+.nn-footer{background:#1a1714;padding:40px 48px;display:flex;align-items:center;justify-content:space-between}
+html[data-theme="dark"] .nn-footer{background:#080706}
+.nn-footer-logo{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:700;color:#e8e3de}
+.nn-footer p{font-size:12px;color:#706860;margin:0}
+.nn-flinks{display:flex;gap:20px}
+.nn-flinks a{font-size:12px;color:#706860;text-decoration:none}
+</style>
+</head>
+<body>
+<div id="app">
+  <header id="toolbar"></header>
+  <div id="body">
+    <aside class="pipeline-rail" id="pipeline-rail"></aside>
+    <div class="stage" id="stage"></div>
+    <aside class="feed-rail" id="feed-rail"></aside>
+  </div>
+</div>
+
+<div id="prev-overlay">
+  <div id="prev-chrome">
+    <button id="prev-theme-btn" class="prev-btn" onclick="togglePrevTheme()">◑ Dark</button>
+    <button class="prev-btn" onclick="closePreview()"><svg width="11" height="11" viewBox="0 0 11 11" fill="none" style="margin-right:3px"><path d="M1 1l9 9M10 1L1 10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Exit</button>
+  </div>
+  <nav class="nn-nav"><div style="display:flex;align-items:center;gap:10px"><div class="nn-logo-mark"></div><span style="font-size:15px;font-weight:700;color:var(--text);letter-spacing:-.02em">Neura Nova</span></div><div class="nn-nav-links"><a href="#">Product</a><a href="#">Solutions</a><a href="#">Pricing</a><a href="#">About</a></div><button class="nn-cta">Get Started →</button></nav>
+  <section class="nn-hero"><div class="nn-badge">✦ NOW IN BETA — JOIN 3,400 TEAMS</div><h1 class="nn-h1">Intelligence that moves at the<br><em style="font-style:italic">speed of design.</em></h1><p class="nn-lead">Weave connects your tokens, components, and agents into a single source of truth — so your design system ships faster, stays consistent, and scales without chaos.</p><div class="nn-btns"><button class="nn-btn1">Start Free Trial →</button><button class="nn-btn2">Watch Demo</button></div></section>
+  <section class="nn-stats"><div class="nn-stat"><div class="nn-stat-val">3,400+</div><div class="nn-stat-lbl">TEAMS</div></div><div class="nn-stat-div"></div><div class="nn-stat"><div class="nn-stat-val">$4.2B</div><div class="nn-stat-lbl">VALUE MANAGED</div></div><div class="nn-stat-div"></div><div class="nn-stat"><div class="nn-stat-val">99.9%</div><div class="nn-stat-lbl">UPTIME</div></div><div class="nn-stat-div"></div><div class="nn-stat"><div class="nn-stat-val">4.9★</div><div class="nn-stat-lbl">RATING</div></div></section>
+  <section class="nn-feat"><div class="nn-feat-hdr"><div class="nn-eyebrow">CORE CAPABILITIES</div><div class="nn-h2">Everything your design system needs</div><p class="nn-feat-sub">One platform to sync, review, and ship — from token to code.</p></div><div class="nn-feat-grid"><div class="nn-feat-card"><div class="nn-feat-icon" style="background:color-mix(in srgb,var(--brand) 12%,transparent)"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2v4M10 14v4M2 10h4M14 10h4" stroke="var(--brand)" stroke-width="2" stroke-linecap="round"/><circle cx="10" cy="10" r="3" stroke="var(--brand)" stroke-width="2"/></svg></div><h3>Real-time Token Sync</h3><p>Tokens update live across Figma and code — no copy-paste, no drift.</p></div><div class="nn-feat-card"><div class="nn-feat-icon" style="background:#2E5CE820"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="14" height="14" rx="3" stroke="#2E5CE8" stroke-width="2"/><path d="M7 10l2.5 2.5L13 7.5" stroke="#2E5CE8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h3>AI Design Review</h3><p>Automated checks catch spacing errors, contrast failures, and token misuse.</p></div><div class="nn-feat-card"><div class="nn-feat-icon" style="background:#1A8A5A20"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 17A7 7 0 1 0 10 3a7 7 0 0 0 0 14Z" stroke="#1A8A5A" stroke-width="2"/><path d="M10 7v3l2 2" stroke="#1A8A5A" stroke-width="2" stroke-linecap="round"/></svg></div><h3>Component Health</h3><p>Live reports show which components are adopted, stale, or diverging.</p></div></div></section>
+  <section class="nn-price"><span class="nn-price-ey">SIMPLE PRICING</span><h2>Scale as you grow</h2><p class="nn-price-sub">From solo designers to enterprise teams — pick the plan that fits.</p><div class="nn-price-cards"><div class="nn-pc"><div class="nn-pc-head"><div class="nn-pc-plan">STARTER</div><div class="nn-pc-amt"><strong>$19</strong><span>/mo</span></div><div class="nn-pc-desc">For individual designers and small projects.</div></div><div class="nn-pc-body"><div class="nn-pc-feats"><div class="nn-pc-feat"><div class="nn-pc-chk"></div>1 design system</div><div class="nn-pc-feat"><div class="nn-pc-chk"></div>Token sync</div><div class="nn-pc-feat"><div class="nn-pc-chk"></div>Basic AI review</div></div><button class="nn-pc-cta" style="background:transparent;border:1.5px solid var(--brand);color:var(--brand)">Get Started</button></div></div><div class="nn-pc ft"><div class="nn-pc-head"><div class="nn-pc-plan">PRO</div><div class="nn-pc-badge">MOST POPULAR</div><div class="nn-pc-amt"><strong>$49</strong><span>/mo</span></div><div class="nn-pc-desc">For growing teams shipping at speed.</div></div><div class="nn-pc-body"><div class="nn-pc-feats"><div class="nn-pc-feat"><div class="nn-pc-chk"></div>Unlimited systems</div><div class="nn-pc-feat"><div class="nn-pc-chk"></div>Real-time sync</div><div class="nn-pc-feat"><div class="nn-pc-chk"></div>Full AI review suite</div><div class="nn-pc-feat"><div class="nn-pc-chk"></div>Priority support</div></div><button class="nn-pc-cta">Start Free Trial</button></div></div><div class="nn-pc"><div class="nn-pc-head"><div class="nn-pc-plan">ENTERPRISE</div><div class="nn-pc-amt"><strong style="font-size:32px;letter-spacing:-.03em">Custom</strong></div><div class="nn-pc-desc">For large orgs with advanced security needs.</div></div><div class="nn-pc-body"><div class="nn-pc-feats"><div class="nn-pc-feat"><div class="nn-pc-chk"></div>Everything in Pro</div><div class="nn-pc-feat"><div class="nn-pc-chk"></div>SSO &amp; SAML</div><div class="nn-pc-feat"><div class="nn-pc-chk"></div>SLA guarantee</div></div><button class="nn-pc-cta" style="background:transparent;border:1.5px solid var(--brand);color:var(--brand)">Contact Sales</button></div></div></div></section>
+  <footer class="nn-footer"><div class="nn-footer-logo"><div class="nn-logo-mark"></div>Neura Nova</div><div class="nn-flinks"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Status</a></div><p>© 2026 Neura Nova, Inc.</p></footer>
+</div>
+
+<script>
+// ── STATE ──────────────────────────────────────────────────────────────────────
+let state={
+  mode:'pipeline',  // pipeline | sitemap | styleguide
+  phase:0,
+  selectedDir:null,
+  feedTab:'activity',
+  events:[],
+  chatMessages:[],
+  chatTyping:false,
+  designVersion:2,
+  v3Created:false,
+  creatingVersion:false,
+  pipelineOpen:true,
+  feedOpen:true,
+  smPage:'home',
+};
+
+function readT(){
+  const cs=getComputedStyle(document.documentElement),g=v=>cs.getPropertyValue(v).trim();
+  return{
+    brand:g('--brand')||'#D96000',brandMid:g('--brand-mid')||'#EE7A00',
+    brandLight:g('--brand-light')||'#FFF0E0',
+    surface:g('--surface')||'#FDFAF5',surfaceWarm:g('--surface-warm')||'#FFFDF8',
+    surface2:g('--surface2')||'#EEE9E2',bgCanvas:g('--bg-canvas')||'#E8E3DB',
+    border:g('--border')||'#DAD5CC',border2:g('--border2')||'#C4BCAF',
+    text:g('--text')||'#1C1914',text2:g('--text2')||'#6B6860',text3:g('--text3')||'#9C9890',
+    brand:g('--brand')||'#D96000',blue:g('--blue')||'#2f5bea',
+    green:g('--green')||'#2e8157',greenLight:g('--green-light')||'#e6f3ec',
+    amber:g('--amber')||'#FF9200',amberLight:g('--amber-light')||'#faeeda',
+    purple:g('--purple')||'#6f57d4',red:g('--red')||'#d4456b',
+    teal:g('--teal')||'#1f9d8f',
+    shadowSm:g('--shadow-sm')||'0 1px 2px rgba(28,25,20,.06)',
+    shadowLg:g('--shadow-lg')||'0 4px 16px rgba(28,25,20,.10)',
+  };
+}
+let T=readT();
+function isDark(){return document.documentElement.getAttribute('data-theme')==='dark';}
+function setState(u){Object.assign(state,u);render();}
+
+// ── DATA ───────────────────────────────────────────────────────────────────────
+const AGENTS=[
+  {key:'research',name:'Research Agent',    short:'RE',color:'#1f9d8f'},
+  {key:'strategy',name:'Strategy Agent',    short:'ST',color:'#c2700f'},
+  {key:'wireframe',name:'Wireframe Agent',  short:'WF',color:'#6f57d4'},
+  {key:'visual',  name:'Visual Design Agent',short:'VD',color:'#d4456b'},
+  {key:'persona', name:'Persona Review Agent',short:'PR',color:'#2e8157'},
+  {key:'ecd',     name:'ECD Agent',          short:'EC',color:'#2f5bea'},
+];
+const AGENT_MAP=Object.fromEntries(AGENTS.map(a=>[a.key,a]));
+
+const PHASES=[
+  {agent:null,      eyebrow:'INTAKE',                    title:'A new brief just landed',             sub:'The Research Agent picks it up and synthesizes context from five project sources.'},
+  {agent:'research',eyebrow:'RESEARCH AGENT',            title:'Research Brief',                      sub:'Five inputs synthesized into the signal that matters for Neura Nova\'s landing page.'},
+  {agent:'strategy',eyebrow:'STRATEGY AGENT',            title:'Design Brief',                        sub:'Goals, persona, and constraints — with the Neura Nova brand system wired in.'},
+  {agent:'wireframe',eyebrow:'WIREFRAME AGENT · PARALLEL',title:'Three directions, generated at once',sub:'The Wireframe Agent ran three explorations in parallel. A human picks the direction.'},
+  {agent:'visual',  eyebrow:'VISUAL DESIGN AGENT',       title:'Hi-fi concept',                       sub:'The Visual Design Agent applied the Neura Nova brand system to the chosen direction.'},
+  {agent:'persona', eyebrow:'PERSONA REVIEW AGENT',      title:'Hi-fi concept — in review',           sub:'Compare design versions, respond to persona feedback from Maya Chen, and create revisions.'},
+  {agent:'ecd',     eyebrow:'ECD AGENT · GATE',          title:'Executive Creative Director gate',    sub:'The ECD reviews feedback and concept, then a human confirms the promotion.'},
+  {agent:'ecd',     eyebrow:'PROMOTED',                  title:'Promoted to the Shared Canvas',       sub:'Traceable from brief to approved — now visible to the whole team.'},
+];
+
+const PHASE_BTNS=[
+  'Start the flow','Continue','Continue',
+  'Select a direction to continue','Run persona review',
+  'Send to ECD review','Approve & promote to canvas','Flow complete',
+];
+
+const PHASE_EVENTS={
+  1:[{a:'research',t:'Synthesized 5 inputs into a Research Brief for Neura Nova landing page',tag:''}],
+  2:[{a:'strategy',t:'Converted brief → Design Brief (goals · persona · brand system)',tag:''},{a:'ecd',t:'Flagged Design Brief ready for concepting',tag:'gate'}],
+  3:[{a:'wireframe',t:'Spawned 3 directions in parallel · all Exploring',tag:'parallel'}],
+  4:[{a:'visual',t:'Applied Neura Nova brand system to selected direction',tag:''}],
+  5:[{a:'persona',t:'Returned structured feedback vs. persona "Maya Chen"',tag:''}],
+  6:[{a:'ecd',t:'Reviewed persona feedback — concept meets the bar',tag:''}],
+  7:[{a:'ecd',t:'Approved & promoted to Shared Canvas',tag:'promote'}],
+};
+
+const DIRECTIONS=[
+  {id:'A',name:'Hero-first scroll',   desc:'Full-bleed hero with animated neural network visual, single CTA above the fold.',tone:'#6f57d4'},
+  {id:'B',name:'Feature grid reveal', desc:'Immediate value props in a responsive grid — product screenshots drive the narrative.',tone:'#2f5bea'},
+  {id:'C',name:'Conversational demo', desc:'Interactive "try it now" prompt in the hero — users experience the product before signing up.',tone:'#1f9d8f'},
+];
+
+const CANVAS_CARDS={
+  exploring:[
+    {id:'ex-a',kind:'wire',label:'WIREFRAME',title:'Direction A — Hero-first scroll',   ag:'Wireframe Agent',short:'WF',color:'#6f57d4',time:'5m'},
+    {id:'ex-b',kind:'wire',label:'WIREFRAME',title:'Direction B — Feature grid reveal', ag:'Wireframe Agent',short:'WF',color:'#6f57d4',time:'5m'},
+    {id:'ex-c',kind:'wire',label:'WIREFRAME',title:'Direction C — Conversational demo', ag:'Wireframe Agent',short:'WF',color:'#6f57d4',time:'5m'},
+  ],
+  review:[
+    {id:'rv-b',kind:'hifi',label:'HI-FI',title:'Direction B — Neura Nova brand applied',ag:'Visual Design Agent',short:'VD',color:'#d4456b',time:'2m',tone:'#2f5bea'},
+  ],
+  promoted:[
+    {id:'pr-1',kind:'hifi',label:'PROMOTED',title:'Neura Nova landing page — v1',ag:'ECD Agent',short:'EC',color:'#2f5bea',time:'2h',tone:'#6f57d4'},
+    {id:'pr-2',kind:'brief',label:'RESEARCH BRIEF',title:'Neura Nova — context synthesis',ag:'Research Agent',short:'RE',color:'#1f9d8f',time:'3h'},
+  ],
+};
+
+const CHAT_REPLIES=[
+  "The research brief is clear: bounce rate peaks at the fold because visitors don't immediately understand what Neura Nova does. Whatever direction you choose, the hero headline needs to be a value prop, not a tagline.",
+  "Maya Chen's persona signals technical credibility over polish. Any element that doesn't answer 'what makes this better' in 8 words should be below the fold.",
+  "Three directions are in play. My read: Direction B (feature grid) hits the right balance — technical credibility up front, social proof immediately after.",
+  "The Neura Nova brand token is strong enough to anchor the hero. Don't dilute it with secondary colors above the fold.",
+  "Hero headline conflict flagged in persona review is worth resolving next — 'Intelligent infrastructure' reads as a tagline; Maya wants '10× faster at half the cost'.",
+  "The ECD gate is the right call here — this concept is production-ready, but the headline tweak in v3 makes it unambiguous.",
+];
+
+// ── HELPERS ────────────────────────────────────────────────────────────────────
+function wireThumbnail(h){
+  h=h||96;
+  return`<div style="height:${h}px;border-radius:7px;background:${T.surfaceWarm};border:1px solid ${T.border};padding:9px;display:flex;flex-direction:column;gap:6px;overflow:hidden">
+    <div style="display:flex;gap:5px;align-items:center"><div style="width:12px;height:12px;border:1.5px solid ${T.border2};border-radius:3px;flex:none"></div><div style="height:6px;width:38%;background:${T.border2};border-radius:2px"></div><div style="height:9px;width:20px;border:1.5px solid ${T.border2};border-radius:3px;margin-left:auto"></div></div>
+    <div style="height:4px;width:90%;background:${T.border};border-radius:2px"></div>
+    <div style="height:18px;border:1.5px solid ${T.border};border-radius:4px;background:${T.surface};display:flex;align-items:center;padding:0 6px"><div style="height:4px;width:55%;background:${T.border};border-radius:2px"></div></div>
+    <div style="height:18px;border:1.5px solid ${T.border};border-radius:4px;background:${T.surface};display:flex;align-items:center;padding:0 6px"><div style="height:4px;width:40%;background:${T.border};border-radius:2px"></div></div>
+    <div style="flex:1;display:flex;gap:5px;align-items:flex-end"><div style="flex:1;height:10px;border:1.5px solid ${T.border2};border-radius:4px;background:${T.surface2}"></div><div style="height:10px;width:32px;background:${T.border2};border-radius:4px"></div></div>
+  </div>`;
+}
+function hifiThumbnail(tone,h){
+  h=h||96;
+  tone=tone||'#6f57d4';
+  return`<div style="height:${h}px;border-radius:7px;background:${T.surface};border:1px solid ${T.border};overflow:hidden;display:flex;flex-direction:column">
+    <div style="height:28px;background:${tone};display:flex;align-items:center;padding:0 9px;gap:6px;flex:none"><div style="width:24%;height:6px;background:rgba(255,255,255,.9);border-radius:3px"></div><div style="display:flex;gap:3px;margin-left:auto"><div style="width:12px;height:8px;background:rgba(255,255,255,.5);border-radius:2px"></div><div style="width:12px;height:8px;background:rgba(255,255,255,.5);border-radius:2px"></div></div></div>
+    <div style="flex:1;padding:9px 10px;display:flex;flex-direction:column;gap:5px"><div style="height:5px;width:70%;background:${T.text};border-radius:3px"></div><div style="height:4px;width:90%;background:${T.surface2};border-radius:3px"></div><div style="height:13px;background:${T.surface2};border-radius:3px;margin-top:2px"></div><div style="height:13px;background:${T.surface2};border-radius:3px"></div><div style="height:13px;width:50%;background:${tone};border-radius:5px;margin-top:4px"></div></div>
+  </div>`;
+}
+function briefThumbnail(h){
+  h=h||96;
+  return`<div style="height:${h}px;border-radius:7px;background:${T.surface};border:1px solid ${T.border};padding:10px;display:flex;flex-direction:column;gap:5px;overflow:hidden">
+    <div style="height:7px;width:50%;background:${T.border2};border-radius:3px"></div>
+    ${[92,84,88,60].map(w=>`<div style="height:4px;width:${w}%;background:${T.border};border-radius:3px"></div>`).join('')}
+  </div>`;
+}
+function getThumbnail(card,h){
+  if(card.kind==='wire')return wireThumbnail(h);
+  if(card.kind==='brief')return briefThumbnail(h);
+  return hifiThumbnail(card.tone,h);
+}
+function refCard(label,source,colorFn,accent){
+  return`<div class="ref-card"><div class="ref-thumb">${colorFn(accent)}</div><div class="ref-meta"><div class="ref-source" style="color:${accent}">${source}</div><div class="ref-label">${label}</div></div></div>`;
+}
+function rtForm(c){return`<div style="width:100%;height:100%;background:${T.surface};padding:7px;display:flex;flex-direction:column;gap:4px;overflow:hidden"><div style="height:5px;width:42%;background:${c};border-radius:2px;margin-bottom:3px"></div><div style="height:4px;width:70%;background:${T.border2};border-radius:2px"></div><div style="height:14px;border:1.5px solid ${T.border2};border-radius:3px;background:${T.surface2}"></div><div style="height:4px;width:60%;background:${T.border2};border-radius:2px;margin-top:2px"></div><div style="height:14px;border:1.5px solid ${T.border2};border-radius:3px;background:${T.surface2}"></div><div style="height:11px;width:40%;background:${c};border-radius:3px;margin-top:auto"></div></div>`;}
+function rtGrid(c){const cols=['#9B8E83',c,'#2e8157'];return`<div style="width:100%;height:100%;background:${T.surface2};padding:5px;display:flex;gap:4px;overflow:hidden">${cols.map(col=>`<div style="flex:1;display:flex;flex-direction:column;gap:3px"><div style="height:4px;width:70%;background:${col};border-radius:2px;margin-bottom:2px"></div><div style="height:16px;background:${T.surface};border:1px solid ${T.border};border-radius:3px"></div><div style="height:16px;background:${T.surface};border:1px solid ${T.border};border-radius:3px"></div></div>`).join('')}</div>`;}
+function rtChat(c){return`<div style="width:100%;height:100%;background:${T.surface};padding:7px;display:flex;flex-direction:column;gap:5px;overflow:hidden"><div style="display:flex;gap:5px"><div style="width:14px;height:14px;border-radius:50%;background:${c};flex:none"></div><div style="flex:1;background:${T.surface2};border-radius:0 5px 5px 5px;padding:4px 5px"><div style="height:3px;width:80%;background:${T.border2};border-radius:2px;margin-bottom:3px"></div><div style="height:3px;width:60%;background:${T.border2};border-radius:2px"></div></div></div><div style="display:flex;justify-content:flex-end"><div style="background:${c};border-radius:5px 0 5px 5px;padding:4px 6px;opacity:.8"><div style="height:3px;width:50px;background:rgba(255,255,255,.7);border-radius:2px"></div></div></div></div>`;}
+
+function stageEyebrow(ph){
+  const p=PHASES[ph];
+  const c=p.agent?AGENT_MAP[p.agent].color:T.blue;
+  return`<div class="stage-eyebrow" style="color:${c}">${p.eyebrow}</div>
+    <div class="stage-h1">${p.title}</div>
+    <div class="stage-lead">${p.sub}</div>`;
+}
+
+// ── PHASE CONTENT ──────────────────────────────────────────────────────────────
+function phaseContent(ph){
+  if(ph===0){
+    return`<div style="max-width:560px">
+      <div class="editable-card">
+        <div class="card-hdr"><span class="card-label">BRIEF · NEURA NOVA</span></div>
+        <div style="display:flex;align-items:center;gap:9px;margin-bottom:12px">
+          <span style="width:22px;height:22px;border-radius:6px;background:${T.purple};color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;font-family:'JetBrains Mono',monospace;flex:none">NN</span>
+          <span style="font-size:12px;font-weight:700;letter-spacing:.3px">DESIGN CHALLENGE · NEURA NOVA</span>
+        </div>
+        <div style="font-size:15px;font-weight:600;line-height:1.4;margin-bottom:10px">Redesign the Neura Nova landing page to convert AI-curious visitors into trial sign-ups within the first 90 seconds of arrival.</div>
+        <div style="font-size:13px;color:${T.text2};line-height:1.6;margin-bottom:14px">Current conversion rate is 1.8% against a 4% target. Bounce rate peaks at 72% on mobile. Audience spans technical AI practitioners to non-technical business buyers. Must use the Neura Nova brand system.</div>
+        <div style="display:flex;gap:7px;flex-wrap:wrap">
+          ${['No auth redesign','Mobile-first','Neura Nova brand tokens'].map(t=>`<span style="font-size:11px;padding:3px 8px;border-radius:4px;background:${T.surface2};border:1px solid ${T.border};color:${T.text2}">${t}</span>`).join('')}
+          <span style="font-size:11px;padding:3px 8px;border-radius:4px;background:${T.amberLight};border:1px solid ${isDark()?'#5a4010':'#ecd9a8'};color:${T.amber}">72% mobile bounce rate</span>
+        </div>
+      </div>
+    </div>`;
+  }
+  if(ph===1){
+    return`<div style="max-width:620px">
+      <div class="editable-card">
+        <div class="card-hdr"><span class="card-label">RESEARCH BRIEF</span></div>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          ${[['SIGNAL','Visitors leave before reaching the first value proposition. Heat maps show 80% of scroll depth stops at the fold. Technical visitors want benchmarks; business buyers want logos.'],['OPPORTUNITY','Two-track hero — instant credibility for each audience type, self-selected. Product demo above the fold removes doubt before the CTA.'],['CONSTRAINTS','Neura Nova brand tokens · mobile-first · must work for both personas · no auth changes.']].map(([k,v])=>`<div><div style="font-size:10px;font-weight:700;color:${T.text3};letter-spacing:.5px;margin-bottom:3px">${k}</div><div style="font-size:13.5px;line-height:1.5">${v}</div></div>`).join('')}
+        </div>
+        <div style="margin-top:18px;padding-top:16px;border-top:1px solid ${T.border}">
+          <div style="font-size:10px;font-weight:700;color:${T.text3};letter-spacing:.5px;margin-bottom:10px">VISUAL REFERENCES</div>
+          <div style="display:flex;gap:10px;overflow-x:auto;padding-bottom:4px">
+            ${refCard('Hero layout','Vercel',rtForm,T.purple)}
+            ${refCard('Social proof','Stripe',rtGrid,T.blue)}
+            ${refCard('Demo CTA','Linear',rtChat,T.teal)}
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }
+  if(ph===2){
+    return`<div style="max-width:800px">
+      <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:16px">
+        <div class="editable-card" style="flex:1;min-width:280px">
+          <div class="card-hdr"><span class="card-label">DESIGN BRIEF</span></div>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            ${[['GOAL','First meaningful engagement &lt;90s; cut bounce rate from 72% → under 35% on mobile.'],['PRINCIPLES','Show don\'t tell · dual-track for technical vs. business · one CTA per viewport · social proof visible before scroll.']].map(([k,v])=>`<div><div style="font-size:10px;font-weight:700;color:${T.text3};margin-bottom:3px">${k}</div><div style="font-size:13.5px;line-height:1.45">${v}</div></div>`).join('')}
+            <div><div style="font-size:10px;font-weight:700;color:${T.text3};margin-bottom:6px">DESIGN SYSTEM</div><div style="display:flex;gap:5px;flex-wrap:wrap">${[['NN-Purple','#6f57d4'],['NN-Surface','#F5F2FF'],['NN-Teal','#1f9d8f']].map(([n,c])=>`<div style="display:flex;align-items:center;gap:5px;background:${T.surface2};border-radius:6px;padding:4px 8px"><span style="width:10px;height:10px;border-radius:3px;background:${c};flex:none;border:1px solid ${T.border}"></span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:${T.text2}">${n}</span></div>`).join('')}</div></div>
+          </div>
+        </div>
+        <div class="editable-card" style="flex:1;min-width:220px">
+          <div class="card-hdr"><span class="card-label">PERSONA · PRIMARY</span></div>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><div style="width:38px;height:38px;border-radius:50%;background:#6f57d4;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex:none">MC</div><div><div style="font-size:14px;font-weight:700">Maya Chen</div><div style="font-size:11px;color:${T.text2}">VP of Engineering · primary persona</div></div></div>
+          <div style="font-size:12.5px;line-height:1.55;color:${T.text2};margin-bottom:10px">Technically fluent but time-scarce. Evaluates 4–6 AI tools per quarter. Will close the tab if the page doesn't answer "what makes this different" in 10 seconds.</div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="font-size:11.5px;display:flex;gap:6px"><span style="color:${T.amber};font-weight:700;flex:none">!</span><span style="color:${T.text2}">Motivated by benchmarks, not feature lists</span></div>
+            <div style="font-size:11.5px;display:flex;gap:6px"><span style="color:${T.green};font-weight:700;flex:none">✓</span><span style="color:${T.text2}">Trusts real customer logos of recognizable names</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="editable-card">
+        <div class="card-hdr"><span class="card-label">MOODBOARD · TONE &amp; DIRECTION REFERENCES</span></div>
+        <div style="display:flex;gap:10px;overflow-x:auto;padding-bottom:4px">
+          ${refCard('Minimal hero','Notion.so',rtForm,T.text3)}
+          ${refCard('Progress UX','Stripe Checkout',rtGrid,T.blue)}
+          ${refCard('Feature grid','Vercel',rtGrid,T.purple)}
+          ${refCard('Conversational','Typeform',rtChat,T.teal)}
+        </div>
+      </div>
+    </div>`;
+  }
+  if(ph===3){
+    const sel=state.selectedDir;
+    const dirCards=DIRECTIONS.map(dir=>{
+      const isSel=sel===dir.id;
+      return`<div class="dir-card" style="${isSel?`border-color:${dir.tone};background:${dir.tone}08`:''};${sel&&!isSel?'opacity:.5':''}" onclick="setState({selectedDir:'${dir.id}'})">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:${dir.tone}">DIR ${dir.id}</span>
+          <span style="font-size:12px;font-weight:700">${dir.name}</span>
+          <span style="font-size:9px;font-weight:700;color:${T.amber};background:${T.amberLight};border:1px solid ${isDark()?'#5a4010':'#ecd9a8'};border-radius:4px;padding:2px 5px;margin-left:auto">EXPLORING</span>
+        </div>
+        <div style="margin-bottom:10px">${wireThumbnail(128)}</div>
+        <div style="font-size:12.5px;color:${T.text2};line-height:1.45;margin-bottom:8px">${dir.desc}</div>
+        ${isSel?`<div style="font-size:12px;font-weight:700;color:${dir.tone}">✓ Selected</div>`:''}
+      </div>`;
+    }).join('');
+    return`<div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+        <span style="display:flex;gap:3px">${[0,.2,.4].map(d=>`<span style="width:5px;height:5px;border-radius:50%;background:${T.purple};animation:ch-pulse 1s ${d}s infinite"></span>`).join('')}</span>
+        <span style="font-size:13px;color:${T.text2}">All three share the brand system · Maya persona · Requirements</span>
+      </div>
+      <div style="display:flex;gap:16px;flex-wrap:wrap;max-width:820px">${dirCards}</div>
+      ${!sel?`<div style="margin-top:18px;display:inline-flex;align-items:center;gap:9px;background:${T.amberLight};border:1px solid ${isDark()?'#5a4010':'#ecd9a8'};border-radius:10px;padding:10px 15px;font-size:13px;color:${T.amber}"><span style="width:7px;height:7px;border-radius:50%;background:${T.amber};flex:none"></span>Human in the loop — select a direction to continue.</div>`:''}
+    </div>`;
+  }
+  // Phases 4, 5, 6, 7 — hi-fi mockup area
+  const dir=DIRECTIONS.find(d=>d.id===state.selectedDir)||DIRECTIONS[1];
+  const tone=dir.tone;
+  const v=state.designVersion;
+  const v3e=state.v3Created;
+  const creating=state.creatingVersion;
+
+  const mockup=`<div style="width:300px;background:${T.surface};border:1.5px solid ${v>=3?T.green:tone+'44'};border-radius:16px;overflow:hidden;box-shadow:${T.shadowLg};animation:ch-pop .5s ease backwards;flex:none">
+    <div style="height:44px;background:${tone};display:flex;align-items:center;padding:0 14px;gap:9px;flex:none">
+      <div style="width:22px;height:22px;border-radius:6px;background:rgba(255,255,255,.9);flex:none;display:flex;align-items:center;justify-content:center"><span style="font-size:8px;font-weight:800;color:${tone}">NN</span></div>
+      <span style="font-size:11.5px;font-weight:600;color:rgba(255,255,255,.9)">Neura Nova — Landing</span>
+      <div style="margin-left:auto;font-size:9px;font-family:'JetBrains Mono',monospace;color:rgba(255,255,255,.45)">v${v}</div>
+    </div>
+    ${v>=2?`<div style="height:3px;background:${T.surface2}"><div style="height:100%;width:50%;background:${tone}"></div></div>`:''}
+    <div style="padding:14px;display:flex;flex-direction:column;gap:9px">
+      <div><div style="font-size:10px;font-weight:600;color:${T.text2};margin-bottom:4px">Hero Headline</div>
+        <div style="height:34px;border:1.5px solid ${tone};border-radius:7px;background:${T.surface};display:flex;align-items:center;padding:0 11px;box-shadow:0 0 0 3px ${tone}22">
+          <div style="font-size:11.5px;color:${T.text}">${v>=3?'Run production AI at 10× lower cost':'Intelligent infrastructure for AI'}</div>
+        </div>
+      </div>
+      <div><div style="font-size:10px;font-weight:600;color:${T.text2};margin-bottom:4px">Value Props</div>
+        <div style="height:34px;border:1.5px solid ${T.border};border-radius:7px;background:${T.surface};display:flex;align-items:center;padding:0 11px;justify-content:space-between">
+          <div style="font-size:11.5px;color:${T.text3}">Feature grid layout</div><div style="color:${T.text3};font-size:10px">▾</div>
+        </div>
+      </div>
+      ${v>=2?`<div style="background:${T.amberLight};border:1px solid ${isDark()?'#5a4010':'#ecd9a8'};border-radius:8px;padding:9px 11px"><div style="font-size:9px;font-weight:700;color:${T.amber};letter-spacing:.4px;margin-bottom:4px">⚡ CONVERSION GOAL</div><div style="font-size:11.5px;font-weight:600;color:${T.amber}">4% trial sign-up rate</div></div>`:''}
+      <div style="height:38px;background:${v>=3?T.green:tone};border-radius:8px;display:flex;align-items:center;justify-content:center"><div style="font-size:12px;font-weight:700;color:#fff">Start Free Trial →</div></div>
+    </div>
+  </div>`;
+
+  const versionStrip=`<div style="display:flex;gap:10px;margin-bottom:20px;overflow-x:auto;padding-bottom:4px">
+    ${[1,2,...(v3e?[3]:[])].map(vn=>`
+      <div onclick="setState({designVersion:${vn}})" style="cursor:pointer;border:${v===vn?`2px solid ${tone}`:`1px solid ${T.border}`};border-radius:10px;overflow:hidden;background:${v===vn?T.surface:T.surface2};width:120px;flex:none">
+        <div style="height:60px;overflow:hidden;border-bottom:1px solid ${T.border}">${hifiThumbnail(tone,60)}</div>
+        <div style="padding:7px 9px"><div style="font-size:10px;font-weight:700;color:${v===vn?tone:T.text2}">Version ${vn}${vn===3?' (persona)':''}</div></div>
+      </div>
+    `).join('')}
+    ${!v3e?`<div onclick="${creating?'':'createV3()'}" style="cursor:${creating?'default':'pointer'};border:1.5px dashed ${T.border2};border-radius:10px;width:120px;flex:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:14px 10px;text-align:center">
+      ${creating?`<div style="font-size:22px;animation:spin 1s linear infinite;color:${T.text3};line-height:1">⟳</div><div style="font-size:10px;font-weight:600;color:${T.text3}">Generating v3…</div>`:`<div style="font-size:24px;color:${T.border2};line-height:1">+</div><div style="font-size:10px;font-weight:600;color:${T.text3};line-height:1.4">Create v3<br>from feedback</div>`}
+    </div>`:''}
+  </div>`;
+
+  const personaPanel=`<div style="flex:1;min-width:220px;max-width:268px">
+    <div style="background:${T.surfaceWarm};border:1px solid ${T.border};border-radius:14px;padding:18px;animation:ch-pop .5s ease .1s backwards">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+        <div style="width:34px;height:34px;border-radius:50%;background:#6f57d4;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;flex:none">MC</div>
+        <div><div style="font-size:13px;font-weight:700">Maya Chen</div><div style="font-size:11px;color:${T.text2}">Persona Review Agent · VP Eng</div></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px">
+        <div style="display:flex;gap:7px;font-size:12.5px;line-height:1.4"><span style="color:${T.green};font-weight:700;flex:none">✓</span><span>Benchmark section answers 'why Neura Nova' immediately.</span></div>
+        <div style="display:flex;gap:7px;font-size:12.5px;line-height:1.4"><span style="color:${T.green};font-weight:700;flex:none">✓</span><span>Single CTA above the fold — Maya won't scroll to sign up.</span></div>
+        ${v3e
+          ?`<div style="display:flex;gap:7px;font-size:12.5px;line-height:1.4;background:${T.greenLight};border-radius:8px;padding:8px;border:1px solid ${isDark()?'#1a4731':'#c4e3d3'}"><span style="color:${T.green};font-weight:700;flex:none">✓</span><span>Hero rewritten as value prop — 'Run production AI at 10× lower cost'.</span></div>`
+          :`<div style="display:flex;gap:7px;font-size:12.5px;line-height:1.4;background:${T.amberLight};border-radius:8px;padding:8px;border:1px solid ${isDark()?'#5a4010':'#ecd9a8'}"><span style="color:${T.amber};font-weight:700;flex:none">!</span><span>Hero headline reads like a tagline — Maya needs to know what it does in 8 words.</span></div>`}
+      </div>
+      ${!v3e
+        ?`<button onclick="createV3()" ${creating?'disabled':''} style="width:100%;padding:10px;border-radius:9px;background:${tone};color:#fff;font-size:12.5px;font-weight:700;cursor:${creating?'default':'pointer'};font-family:'Inter',sans-serif;border:none;${creating?'opacity:.65':''}">
+            ${creating?'⟳ Generating v3…':'Create v3 — address feedback →'}
+          </button>`
+        :`<div style="background:${T.greenLight};border:1px solid ${isDark()?'#1a4731':'#c4e3d3'};border-radius:9px;padding:10px;text-align:center;font-size:12.5px;font-weight:700;color:${isDark()?'#4aad7a':'#1a4731'}">✓ v3 addresses all persona feedback</div>`}
+    </div>
+  </div>`;
+
+  if(ph===7){
+    return`<div style="max-width:580px">
+      <div class="editable-card" style="border-color:${T.green};background:${T.greenLight}">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+          <div style="width:40px;height:40px;border-radius:10px;background:${T.green};display:flex;align-items:center;justify-content:center;font-size:20px">✓</div>
+          <div><div style="font-size:15px;font-weight:700;color:${isDark()?'#4aad7a':'#1a4731'}">Promoted to the Shared Canvas</div><div style="font-size:12px;color:${T.green}">Traceable from brief to approved — visible to the whole team</div></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          ${[['Research Agent','Synthesized 5 project inputs'],['Strategy Agent','Design brief + persona defined'],['Wireframe Agent','Direction B selected from 3'],['Visual Design Agent','Neura Nova brand system applied'],['Persona Review Agent','Maya Chen feedback addressed in v3'],['ECD Agent','Reviewed and approved']].map(([a,t])=>`<div style="display:flex;gap:10px;align-items:center;font-size:12.5px"><div style="width:6px;height:6px;border-radius:50%;background:${T.green};flex:none"></div><span style="color:${T.text2};min-width:140px">${a}</span><span>${t}</span></div>`).join('')}
+        </div>
+      </div>
+    </div>`;
+  }
+
+  return`<div style="max-width:680px">
+    ${ph>=5?versionStrip:''}
+    <div style="display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap">
+      <div style="flex:none">${mockup}</div>
+      ${ph>=5?personaPanel:''}
+    </div>
+  </div>`;
+}
+
+function advanceBtn(ph){
+  const label=PHASE_BTNS[ph];
+  const disabled=ph>=7||(ph===3&&!state.selectedDir);
+  const done=ph>=7;
+  return`<div class="stage-advance">
+    ${!done?`<button onclick="advance()" ${disabled?'disabled':''} class="tb-btn tb-primary" style="font-size:13.5px;padding:10px 22px;border-radius:10px;${disabled?'opacity:.45;cursor:default':''}">${label} ${!disabled&&ph<7?'→':''}</button>`
+    :'<div style="display:flex;align-items:center;gap:10px;font-size:13.5px;color:var(--green);font-weight:600"><span style="font-size:18px">✓</span>Flow complete — design is on the shared canvas</div>'}
+  </div>`;
+}
+
+function advance(){
+  if(state.phase>=7)return;
+  if(state.phase===3&&!state.selectedDir)return;
+  const next=state.phase+1;
+  const newEvents=[...(PHASE_EVENTS[next]||[]),...state.events];
+  setState({phase:next,events:newEvents});
+}
+function createV3(){
+  if(state.v3Created||state.creatingVersion)return;
+  setState({creatingVersion:true});
+  const ev={a:'visual',t:'Creating v3 — persona feedback addressed',tag:''};
+  setTimeout(()=>{setState({v3Created:true,designVersion:3,creatingVersion:false,events:[ev,...state.events]});},1800);
+}
+
+// ── PIPELINE RAIL ──────────────────────────────────────────────────────────────
+function renderPipeline(){
+  const ph=state.phase;
+  const activeKey=ph>0&&ph<8?PHASES[ph].agent:null;
+  const done=new Set();
+  for(let i=1;i<ph;i++){if(PHASES[i].agent)done.add(PHASES[i].agent);}
+  if(ph>=7)done.add('ecd');
+
+  let html=`<div class="pipe-hdr">
+    <div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;color:${T.text3};letter-spacing:1px;margin-bottom:4px">SEQUENTIAL PIPELINE</div>
+      <div class="pipe-title">Design workflow</div>
+      <div class="pipe-sub">Direct via AI Chat ↓</div>
+    </div>
+    <button onclick="setState({pipelineOpen:false})" style="width:24px;height:24px;border-radius:6px;background:transparent;border:1px solid ${T.border};color:${T.text3};font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center">‹</button>
+  </div>`;
+
+  AGENTS.forEach((ag,i)=>{
+    const isActive=ag.key===activeKey;
+    const isDone=done.has(ag.key);
+    const isLast=i===AGENTS.length-1;
+    const statusColor=isActive?ag.color:isDone?T.green:T.text3;
+    let dot='';
+    if(isActive){dot=`<div style="position:relative;width:28px;height:28px;flex:none"><div style="position:absolute;inset:-5px;border-radius:13px;border:2px solid ${ag.color};opacity:.5;animation:ch-pulse 1.4s ease-in-out infinite"></div><div style="width:28px;height:28px;border-radius:9px;background:${ag.color};display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:#fff;position:relative;z-index:1">${ag.short}</div></div>`;}
+    else if(isDone){dot=`<div style="width:28px;height:28px;border-radius:9px;background:${ag.color};display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;flex:none">✓</div>`;}
+    else{dot=`<div style="width:28px;height:28px;border-radius:9px;background:transparent;border:1.5px solid ${T.border2};display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:${T.text3};flex:none">${ag.short}</div>`;}
+    html+=`<div style="display:flex;gap:11px;align-items:flex-start">
+      <div style="display:flex;flex-direction:column;align-items:center">
+        ${dot}
+        ${!isLast?`<div style="width:2px;min-height:16px;background:${isDone?ag.color:T.border};margin:3px 0;flex:1"></div>`:''}
+      </div>
+      <div style="padding-top:3px;padding-bottom:${isLast?0:18}px;flex:1;min-width:0">
+        <div style="font-size:12.5px;font-weight:600;line-height:1.2;margin-bottom:2px">${ag.name}</div>
+        <div style="font-size:10.5px;color:${statusColor}">${isActive?'Working…':isDone?'Done':'Queued'}</div>
+      </div>
+    </div>`;
+  });
+
+  html+=`<div style="margin-top:auto;padding-top:20px;display:flex;flex-direction:column;gap:8px">
+    <button onclick="resetFlow()" style="width:100%;border:1px solid ${T.border};background:${T.surface};color:${T.text2};border-radius:9px;padding:9px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif">↺ Reset flow</button>
+  </div>`;
+
+  document.getElementById('pipeline-rail').innerHTML=html;
+  document.getElementById('pipeline-rail').className='pipeline-rail'+(state.pipelineOpen?'':' collapsed');
+}
+
+function resetFlow(){setState({phase:0,selectedDir:null,events:[],chatMessages:[],chatTyping:false,designVersion:2,v3Created:false,creatingVersion:false});}
+
+// ── STAGE ──────────────────────────────────────────────────────────────────────
+function renderStage(){
+  const el=document.getElementById('stage');
+  if(state.mode==='sitemap'){el.innerHTML=sitemapHTML();return;}
+  if(state.mode==='styleguide'){el.innerHTML=styleguideHTML();return;}
+  // pipeline mode
+  const ph=state.phase;
+  el.innerHTML=`<div>
+    ${stageEyebrow(ph)}
+    ${phaseContent(ph)}
+    ${advanceBtn(ph)}
+  </div>`;
+}
+
+// ── SITEMAP ────────────────────────────────────────────────────────────────────
+const SM={
+  home:{x:491,y:28,p:null,lv:0},about:{x:50,y:148,p:'home',lv:1},product:{x:222,y:148,p:'home',lv:1},
+  pricing:{x:432,y:148,p:'home',lv:1},blog:{x:622,y:148,p:'home',lv:1},contact:{x:822,y:148,p:'home',lv:1},
+  team:{x:30,y:278,p:'about',lv:2},mission:{x:162,y:278,p:'about',lv:2},
+  features:{x:182,y:278,p:'product',lv:2},integrations:{x:314,y:278,p:'product',lv:2},post:{x:602,y:278,p:'blog',lv:2},
+};
+const NW=118,NH=60;
+const PAGE_META={home:{icon:'🏠',label:'Home',type:'Landing'},about:{icon:'👥',label:'About',type:'Content'},product:{icon:'🔧',label:'Product',type:'App'},pricing:{icon:'💰',label:'Pricing',type:'Landing'},blog:{icon:'📝',label:'Blog',type:'Index'},contact:{icon:'📬',label:'Contact',type:'Form'},team:{icon:'👤',label:'Team',type:'Content'},mission:{icon:'⚡',label:'Mission',type:'Content'},features:{icon:'✦',label:'Features',type:'Content'},integrations:{icon:'🔗',label:'Integrations',type:'Content'},post:{icon:'📄',label:'Blog Post',type:'Content'}};
+function nc(id){return{x:SM[id].x+NW/2,y:SM[id].y+NH/2};}
+function sitemapHTML(){
+  const lines=Object.entries(SM).filter(([,n])=>n.p).map(([id,n])=>{
+    const from=nc(n.p),to={x:SM[id].x+NW/2,y:SM[id].y};
+    const my=(from.y+NH/2+to.y)/2;
+    return`<path d="M${from.x},${from.y+NH/2} C${from.x},${my} ${to.x},${my} ${to.x},${to.y}" fill="none" stroke="var(--border2,var(--border))" stroke-width="1.5" ${n.lv===2?'stroke-dasharray="5 3"':''}/>`;
+  }).join('');
+  const nodes=Object.entries(SM).map(([id,n])=>{
+    const pm=PAGE_META[id]||{icon:'📄',label:id,type:''};
+    const active=id===state.smPage;
+    return`<div class="sm-node${active?' sm-active':''}" style="left:${n.x}px;top:${n.y}px;width:${NW}px" onclick="setState({smPage:'${id}'})">
+      <div class="sm-icon">${pm.icon}</div>
+      <div class="sm-label">${pm.label}</div>
+      <div class="sm-type">${pm.type}</div>
+    </div>`;
+  }).join('');
+  return`<div class="sm-wrap" style="width:1060px;height:420px">
+    <svg style="position:absolute;inset:0;pointer-events:none;overflow:visible" viewBox="0 0 1060 420" width="1060" height="420">${lines}</svg>
+    ${nodes}
+  </div>`;
+}
+
+// ── STYLE GUIDE ────────────────────────────────────────────────────────────────
+function styleguideHTML(){
+  const colors=[
+    {g:'Brand',sw:[{n:'--brand',v:T.brand},{n:'--brand-mid',v:T.brandMid||'#EE7A00'},{n:'--brand-light',v:T.brandLight||'#FFF0E0'}]},
+    {g:'Neutrals',sw:[{n:'--text',v:T.text},{n:'--text2',v:T.text2},{n:'--text3',v:T.text3},{n:'--surface',v:T.surface},{n:'--surface2',v:T.surface2},{n:'--border',v:T.border}]},
+    {g:'Semantic',sw:[{n:'--blue',v:T.blue},{n:'--green',v:T.green},{n:'--amber',v:T.amber},{n:'--purple',v:T.purple},{n:'--red',v:T.red},{n:'--teal',v:T.teal}]},
+  ];
+  const types=[
+    {l:'Display',sp:'Playfair Display · 52px · 700',st:'font-family:"Playfair Display",serif;font-size:48px;font-weight:700',s:'Intelligence at speed.'},
+    {l:'H1',sp:'Playfair Display · 36px · 700',st:'font-family:"Playfair Display",serif;font-size:34px;font-weight:700',s:'Scale as you grow'},
+    {l:'H2',sp:'Inter · 22px · 700',st:'font-size:22px;font-weight:700',s:'Real-time Token Sync'},
+    {l:'Body',sp:'Inter · 14px · 400',st:'font-size:13.5px',s:'Tokens update live across Figma and code without copy-paste handoff.'},
+    {l:'Caption',sp:'Inter · 11px · 600 · spaced',st:'font-size:11px;font-weight:600;letter-spacing:.08em',s:'CORE CAPABILITIES · TOKEN SYNC · PRICING'},
+    {l:'Mono',sp:'JetBrains Mono · 12px',st:'font-family:"JetBrains Mono",monospace;font-size:12px',s:'var(--brand): #FF9200; /* dark mode */'},
+  ];
+  return`<div class="sg">
+    <div class="sg-sec"><div class="sg-title">Color Tokens</div>${colors.map(g=>`<div class="sg-sub">${g.g}</div><div class="sg-row">${g.sw.map(s=>`<div class="swatch"><div class="swatch-col" style="background:${s.v}"></div><div class="swatch-info"><div class="sw-name">${s.n}</div><div class="sw-val">${s.v}</div></div></div>`).join('')}</div>`).join('')}</div>
+    <div class="sg-sec"><div class="sg-title">Typography</div>${types.map(t=>`<div class="type-row"><div class="type-lbl">${t.l} <span style="font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:400;color:var(--text3)">${t.sp}</span></div><div style="${t.st};color:var(--text);line-height:1.2">${t.s}</div></div>`).join('')}</div>
+    <div class="sg-sec"><div class="sg-title">Spacing Scale</div><div class="sg-row" style="align-items:flex-end">${[4,8,12,16,24,32,48,64,96].map(n=>`<div style="display:flex;flex-direction:column;align-items:center;gap:5px"><div style="width:${Math.min(n,72)}px;height:${Math.min(n,72)}px;background:color-mix(in srgb,var(--brand) 28%,transparent);border-radius:4px"></div><div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text3)">${n}px</div></div>`).join('')}</div></div>
+    <div class="sg-sec"><div class="sg-title">Components</div>
+      <div class="sg-sub">Buttons</div>
+      <div class="comp-row">
+        <button style="height:40px;padding:0 22px;border-radius:20px;background:var(--brand);color:#fff;font-size:13.5px;font-weight:600;font-family:'Inter',sans-serif">Primary →</button>
+        <button style="height:40px;padding:0 20px;border-radius:20px;background:transparent;border:1.5px solid var(--border);color:var(--text2);font-size:13.5px;font-family:'Inter',sans-serif">Secondary</button>
+        <button style="height:40px;padding:0 18px;border-radius:20px;background:transparent;color:var(--brand);font-size:13.5px;font-weight:600;font-family:'Inter',sans-serif">Ghost →</button>
+        <button style="height:32px;padding:0 14px;border-radius:8px;background:var(--brand);color:#fff;font-size:12px;font-weight:600;font-family:'Inter',sans-serif">Small</button>
+      </div>
+      <div class="sg-sub">Badges</div>
+      <div class="comp-row">
+        ${[['Active','var(--brand-light)','var(--brand)'],['Review','#e7eefe','#2f5bea'],['Live','#e6f3ec','#2e8157'],['Error','#fde8ef','#d4456b'],['Draft','var(--surface2)','var(--text3)']].map(([l,bg,c])=>`<span style="display:inline-flex;padding:4px 10px;border-radius:6px;font-size:11px;font-weight:700;background:${bg};color:${c}">${l}</span>`).join('')}
+      </div>
+    </div>
+  </div>`;
+}
+
+// ── FEED RAIL ──────────────────────────────────────────────────────────────────
+function renderFeed(){
+  const el=document.getElementById('feed-rail');
+  if(!state.feedOpen){el.className='feed-rail collapsed';return;}
+  el.className='feed-rail';
+  const tabs=[['activity','⚡ Activity'],['chat','💬 AI Chat'],['canvas','▣ Canvas']];
+  let body='';
+  if(state.feedTab==='activity'){
+    const evRows=state.events.map(ev=>{
+      const ag=AGENT_MAP[ev.a]||{color:'#888',short:'??'};
+      const tagColors={'parallel':T.purple,'gate':T.amber,'promote':T.green,'human':T.blue,'directed':T.teal};
+      const tc=tagColors[ev.tag]||'transparent';
+      return`<div class="event-row">
+        <div class="event-badge" style="background:${ag.color}">${ag.short||'?'}</div>
+        <div class="event-text">${ev.t}</div>
+        ${ev.tag?`<span class="event-tag" style="background:${tc}22;color:${tc}">${ev.tag.toUpperCase()}</span>`:''}
+      </div>`;
+    }).join('');
+    body=evRows||`<div style="font-size:12px;color:var(--text3);text-align:center;padding-top:24px">Press "Start the flow" to begin</div>`;
+  } else if(state.feedTab==='chat'){
+    const msgs=state.chatMessages.map(m=>`<div class="chat-bubble ${m.role==='ai'?'chat-ai':'chat-user'}">${m.text}</div>`).join('');
+    const typing=state.chatTyping?`<div class="typing-dots">${[0,.2,.4].map(d=>`<div class="typing-dot" style="animation-delay:${d}s"></div>`).join('')}</div>`:'';
+    body=`<div id="chat-messages" style="display:flex;flex-direction:column;gap:8px;flex:1;overflow-y:auto;min-height:0;margin-bottom:8px">${msgs}${typing}</div>
+      <div style="display:flex;gap:6px;padding-top:8px;border-top:1px solid var(--border);flex-shrink:0">
+        <input id="chat-input" placeholder="Direct the agents…" style="flex:1;height:34px;border:1.5px solid var(--border);border-radius:8px;padding:0 10px;font-family:'Inter',sans-serif;font-size:12.5px;color:var(--text);background:var(--surface);outline:none" onfocus="this.style.borderColor='var(--brand)'" onblur="this.style.borderColor='var(--border)'" onkeydown="if(event.key==='Enter')sendChat()">
+        <button onclick="sendChat()" style="height:34px;padding:0 12px;border-radius:8px;background:var(--brand);color:#fff;font-size:12px;font-weight:600;font-family:'Inter',sans-serif">Send</button>
+      </div>`;
+  } else {
+    // Canvas tab
+    const ph=state.phase;
+    let sections='';
+    if(ph>=3){sections+=`<div class="canvas-col"><div class="canvas-col-hdr"><span style="width:7px;height:7px;border-radius:50%;background:${T.amber};display:inline-block"></span>EXPLORING (${ph===3?3:3} directions)</div>${CANVAS_CARDS.exploring.map(c=>canvasCardHTML(c)).join('')}</div>`;}
+    if(ph>=4){sections+=`<div class="canvas-col"><div class="canvas-col-hdr"><span style="width:7px;height:7px;border-radius:50%;background:${T.blue};display:inline-block"></span>IN REVIEW</div>${CANVAS_CARDS.review.map(c=>canvasCardHTML(c)).join('')}</div>`;}
+    if(ph>=7){sections+=`<div class="canvas-col"><div class="canvas-col-hdr"><span style="width:7px;height:7px;border-radius:50%;background:${T.green};display:inline-block"></span>PROMOTED</div>${CANVAS_CARDS.promoted.map(c=>canvasCardHTML(c)).join('')}</div>`;}
+    body=sections||`<div style="font-size:12px;color:var(--text3);text-align:center;padding-top:24px">Canvas cards appear as agents generate outputs</div>`;
+  }
+
+  el.innerHTML=`
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px 0;flex:none">
+      <span style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.06em">AGENT WORKSPACE</span>
+      <button onclick="setState({feedOpen:false})" style="background:none;border:1px solid var(--border);border-radius:6px;color:var(--text3);font-size:13px;cursor:pointer;width:22px;height:22px;display:flex;align-items:center;justify-content:center">›</button>
+    </div>
+    <div class="feed-tabs">${tabs.map(([t,l])=>`<button class="feed-tab${state.feedTab===t?' active':''}" onclick="setState({feedTab:'${t}'})">${l}</button>`).join('')}</div>
+    <div class="feed-body">${body}</div>
+  `;
+  if(state.feedTab==='chat'){
+    const msgs=document.getElementById('chat-messages');
+    if(msgs)msgs.scrollTop=msgs.scrollHeight;
+  }
+}
+
+function canvasCardHTML(c){
+  const agColor=c.color||'#888';
+  return`<div class="canvas-card" style="margin-bottom:8px">
+    <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px">
+      <div style="width:22px;height:22px;border-radius:6px;background:${agColor};display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:#fff;flex:none">${c.short}</div>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:${agColor}">${c.label}</span>
+      <span style="margin-left:auto;font-size:10px;color:var(--text3)">${c.time}</span>
+    </div>
+    <div style="margin-bottom:8px">${getThumbnail(c,72)}</div>
+    <div style="font-size:12px;font-weight:600;color:var(--text);line-height:1.3">${c.title}</div>
+    <div style="font-size:11px;color:var(--text3);margin-top:2px">${c.ag}</div>
+  </div>`;
+}
+
+function sendChat(){
+  const input=document.getElementById('chat-input');
+  if(!input)return;
+  const text=input.value.trim();
+  if(!text)return;
+  input.value='';
+  const msgs=[...state.chatMessages,{role:'user',text}];
+  const activeKey=state.phase>0&&state.phase<8?PHASES[state.phase].agent:null;
+  const newEv=activeKey?[{a:activeKey,t:text,tag:'directed'},...state.events]:state.events;
+  setState({chatMessages:msgs,chatTyping:true,events:newEv});
+  setTimeout(()=>{
+    const idx=(text.length*3+state.phase*7+state.chatMessages.length)%CHAT_REPLIES.length;
+    setState({chatMessages:[...state.chatMessages,{role:'ai',text:CHAT_REPLIES[idx]}],chatTyping:false});
+  },1100);
+}
+
+// ── TOOLBAR ────────────────────────────────────────────────────────────────────
+function renderToolbar(){
+  const ph=state.phase;
+  const modes=[['pipeline','Pipeline'],['sitemap','Sitemap'],['styleguide','Style Guide']];
+  const canAdvance=ph<7&&!(ph===3&&!state.selectedDir);
+  document.getElementById('toolbar').innerHTML=`
+    <div class="tb-logo"></div>
+    <span class="tb-name">Weave</span>
+    <div class="tb-sep"></div>
+    <span style="font-size:12.5px;color:var(--text2)">New Project</span>
+    <span style="font-size:12px;color:var(--text3)">·</span>
+    <span style="font-size:12.5px;font-weight:600">Neura Nova / Landing</span>
+    <div class="tb-sep"></div>
+    <div class="mode-tabs">${modes.map(([m,l])=>`<button class="mode-tab${state.mode===m?' active':''}" onclick="setState({mode:'${m}'})">${l}</button>`).join('')}</div>
+    ${state.mode==='pipeline'?`<div style="display:flex;align-items:center;gap:6px;padding:4px 10px;border-radius:7px;background:var(--surface2);border:1px solid var(--border)"><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3)">PHASE</span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:var(--text)">${ph}/7</span></div>`:''}
+    <div class="tb-space"></div>
+    ${state.mode==='pipeline'&&ph<7?`<button onclick="advance()" ${!canAdvance?'disabled':''} class="tb-btn tb-primary" style="${!canAdvance?'opacity:.45;cursor:default':''}">${PHASE_BTNS[ph]}${canAdvance?' →':''}</button>`:''}
+    <button class="tb-btn" onclick="toggleTheme()">${isDark()?'☀ Light':'◑ Dark'}</button>
+    <button class="tb-btn" onclick="openPreview()">▶ Preview</button>
+    ${!state.pipelineOpen?`<button class="tb-btn" onclick="setState({pipelineOpen:true})" title="Show pipeline">›☰</button>`:''}
+    ${!state.feedOpen?`<button class="tb-btn" onclick="setState({feedOpen:true})" title="Show feed">☰‹</button>`:''}
+    <div class="tb-sep"></div>
+    <div style="display:flex">
+      ${[['MC','#6f57d4'],['JL','#2e8157'],['AK','#c2700f']].map(([i,c],n)=>`<div class="tb-avatar" style="background:${c};border:2px solid var(--surface);margin-left:${n>0?'-6px':'0'};position:relative;z-index:${3-n}">${i}</div>`).join('')}
+    </div>
+  `;
+}
+
+// ── PREVIEW ────────────────────────────────────────────────────────────────────
+function openPreview(){document.getElementById('prev-overlay').classList.add('on');}
+function closePreview(){document.getElementById('prev-overlay').classList.remove('on');}
+function togglePrevTheme(){toggleTheme();const b=document.getElementById('prev-theme-btn');if(b)b.textContent=isDark()?'☀ Light':'◑ Dark';}
+function toggleTheme(){document.documentElement.setAttribute('data-theme',isDark()?'light':'dark');T=readT();render();}
+
+// ── MAIN ───────────────────────────────────────────────────────────────────────
+function render(){
+  renderToolbar();
+  renderPipeline();
+  renderStage();
+  renderFeed();
+}
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'&&document.getElementById('prev-overlay').classList.contains('on'))closePreview();
+});
+render();
+</script>
+</body>
+</html>
