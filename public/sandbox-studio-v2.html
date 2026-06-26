@@ -148,9 +148,24 @@ button{font-family:'Inter',sans-serif;cursor:pointer;border:none;outline:none}
 #prev-overlay{position:fixed;inset:0;z-index:9000;background:#f5f5f5;overflow-y:auto;display:none;font-family:'Inter',-apple-system,sans-serif}
 html[data-theme="dark"] #prev-overlay{background:var(--bg)}
 #prev-overlay.on{display:block}
-#prev-chrome{position:fixed;top:16px;right:20px;z-index:9001;display:flex;gap:8px}
-.prev-btn{display:flex;align-items:center;gap:5px;background:rgba(0,0,0,.72);backdrop-filter:blur(8px);color:#fff;border:1px solid rgba(255,255,255,.14);border-radius:24px;padding:8px 15px;font-size:12.5px;font-weight:600;cursor:pointer;transition:background .15s}
-.prev-btn:hover{background:rgba(0,0,0,.9)}
+#prev-chrome{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:9001;display:flex;align-items:center;gap:10px;background:rgba(0,0,0,.78);backdrop-filter:blur(12px);border-radius:30px;padding:5px 8px 5px 16px;border:1px solid rgba(255,255,255,.1);white-space:nowrap}
+.prev-btn{display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.14);border-radius:20px;padding:5px 13px;font-size:12px;font-weight:600;cursor:pointer;transition:background .15s}
+.prev-btn:hover{background:rgba(255,255,255,.22)}
+.prev-page-btn{padding:5px 11px;border-radius:18px;font-size:12px;font-weight:600;cursor:pointer;border:none;font-family:'Inter',sans-serif;transition:all .15s;white-space:nowrap}
+/* INSPECT PANE */
+.insp-tabs{display:flex;border-bottom:1px solid var(--border);flex:none}
+.insp-tab{flex:1;height:36px;display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:600;cursor:pointer;color:var(--text3);border-bottom:2px solid transparent;background:none;transition:all .14s}
+.insp-tab.on{color:var(--brand);border-bottom-color:var(--brand)}
+.insp-sec{padding:12px 14px;border-bottom:1px solid var(--border)}
+.insp-lbl{font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:700;color:var(--text3);letter-spacing:.07em;margin-bottom:8px}
+.insp-row{display:flex;align-items:center;justify-content:space-between;padding:5px 0}
+.insp-key{font-size:11.5px;color:var(--text3)}
+.insp-val{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text);background:var(--surface2);border-radius:4px;padding:2px 6px;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tok-bind{display:flex;align-items:center;gap:7px;padding:5px 0;font-size:11.5px}
+.tok-sw{width:11px;height:11px;border-radius:3px;flex:none;border:1px solid rgba(0,0,0,.08)}
+.tok-name{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--blue)}
+.src-badge{display:inline-flex;align-items:center;gap:3px;font-size:9px;font-weight:600;padding:2px 7px;border-radius:4px;cursor:pointer;transition:opacity .12s}
+.src-badge:hover{opacity:.7}
 .nn-nav{background:#fff;border-bottom:1px solid #e8e8e8;position:sticky;top:0;z-index:10;display:flex;align-items:center;padding:0 48px;height:64px;gap:32px}
 html[data-theme="dark"] .nn-nav{background:var(--surface);border-bottom-color:var(--border)}
 .nn-logo-mark{width:30px;height:30px;border-radius:8px;background:var(--brand);flex:none}
@@ -188,6 +203,45 @@ html[data-theme="dark"] .nn-footer{background:#080706}
 .nn-footer-logo{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:700;color:#e8e3de}
 .nn-flinks{display:flex;gap:18px}
 .nn-flinks a{font-size:12px;color:#706860;text-decoration:none}
+/* ADDITIONAL PREVIEW PAGE STYLES */
+.nn-page-hero{background:#f5f5f5;padding:80px 48px 64px;text-align:center;display:flex;flex-direction:column;align-items:center}
+html[data-theme="dark"] .nn-page-hero{background:var(--bg)}
+.nn-section{padding:72px 48px;background:#f0f0f0}
+html[data-theme="dark"] .nn-section{background:var(--surface2)}
+.nn-section-alt{padding:72px 48px;background:#f5f5f5}
+html[data-theme="dark"] .nn-section-alt{background:var(--bg)}
+.nn-team-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;max-width:860px;margin:0 auto}
+.nn-team-card{text-align:center;display:flex;flex-direction:column;align-items:center;gap:12px}
+.nn-team-avatar{width:80px;height:80px;border-radius:50%;object-fit:cover;flex:none}
+.nn-values-list{display:flex;flex-direction:column;gap:20px;max-width:640px;margin:0 auto}
+.nn-value-item{display:flex;gap:16px;align-items:flex-start}
+.nn-value-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex:none;font-size:18px}
+.nn-article-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;max-width:960px;margin:0 auto}
+.nn-article-card{background:#fff;border:1px solid #e4e4e4;border-radius:13px;overflow:hidden}
+html[data-theme="dark"] .nn-article-card{background:var(--surface);border-color:var(--border)}
+.nn-article-img{height:160px;background:#e0e0e0;display:flex;align-items:center;justify-content:center;font-size:32px}
+html[data-theme="dark"] .nn-article-img{background:var(--surface2)}
+.nn-article-body{padding:18px}
+.nn-contact-wrap{display:grid;grid-template-columns:1fr 1fr;gap:48px;max-width:860px;margin:0 auto}
+.nn-form-group{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+.nn-form-label{font-size:13px;font-weight:600;color:var(--text)}
+.nn-form-input{height:44px;border:1.5px solid #d8d8d8;border-radius:8px;padding:0 14px;font-size:14px;font-family:'Inter',sans-serif;color:var(--text);background:#fff;transition:border .15s}
+html[data-theme="dark"] .nn-form-input{background:var(--surface);border-color:var(--border);color:var(--text)}
+.nn-form-input:focus{border-color:var(--brand);outline:none}
+.nn-form-textarea{border:1.5px solid #d8d8d8;border-radius:8px;padding:12px 14px;font-size:14px;font-family:'Inter',sans-serif;color:var(--text);background:#fff;resize:vertical;min-height:120px;transition:border .15s}
+html[data-theme="dark"] .nn-form-textarea{background:var(--surface);border-color:var(--border);color:var(--text)}
+.nn-form-textarea:focus{border-color:var(--brand);outline:none}
+.nn-price-grid{display:flex;gap:20px;justify-content:center;max-width:860px;margin:0 auto;flex-wrap:wrap}
+.nn-price-card-v2{background:#fff;border:1.5px solid #e4e4e4;border-radius:16px;padding:28px;flex:1;min-width:220px;max-width:270px;display:flex;flex-direction:column;gap:0}
+html[data-theme="dark"] .nn-price-card-v2{background:var(--surface);border-color:var(--border)}
+.nn-price-card-v2.featured{border-color:var(--brand);box-shadow:0 0 0 1px var(--brand),0 0 20px color-mix(in srgb,var(--brand) 20%,transparent)}
+.nn-price-feat{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2);padding:6px 0;border-bottom:1px solid #f0f0f0}
+html[data-theme="dark"] .nn-price-feat{border-bottom-color:var(--border)}
+.nn-faq-item{padding:16px 0;border-bottom:1px solid #e8e8e8}
+html[data-theme="dark"] .nn-faq-item{border-bottom-color:var(--border)}
+.nn-integ-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;max-width:720px;margin:24px auto 0}
+.nn-integ-card{background:#fff;border:1px solid #e4e4e4;border-radius:12px;padding:20px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}
+html[data-theme="dark"] .nn-integ-card{background:var(--surface);border-color:var(--border)}
 </style>
 </head>
 <body>
@@ -201,15 +255,8 @@ html[data-theme="dark"] .nn-footer{background:#080706}
 </div>
 
 <div id="prev-overlay">
-  <div id="prev-chrome">
-    <button class="prev-btn" onclick="togglePrevTheme()">◑ Theme</button>
-    <button class="prev-btn" onclick="closePreview()">✕ Exit</button>
-  </div>
-  <nav class="nn-nav"><div style="display:flex;align-items:center;gap:10px"><div class="nn-logo-mark"></div><span style="font-size:15px;font-weight:700;color:var(--text)">Neura Nova</span></div><div class="nn-nav-links"><a href="#">Product</a><a href="#">Pricing</a><a href="#">About</a></div><button class="nn-cta">Get Started →</button></nav>
-  <section class="nn-hero"><div class="nn-badge">✦ NOW IN BETA — JOIN 3,400 TEAMS</div><h1 class="nn-h1">Intelligence that moves at the <em>speed of design.</em></h1><p class="nn-lead">Weave connects your tokens, components, and agents into a single source of truth — so your design system ships faster and stays consistent.</p><div class="nn-btns"><button class="nn-btn1">Start Free Trial →</button><button class="nn-btn2">Watch Demo</button></div></section>
-  <section class="nn-stats"><div class="nn-stat"><div class="nn-stat-val">3,400+</div><div class="nn-stat-lbl">TEAMS</div></div><div class="nn-stat-div"></div><div class="nn-stat"><div class="nn-stat-val">$4.2B</div><div class="nn-stat-lbl">VALUE MANAGED</div></div><div class="nn-stat-div"></div><div class="nn-stat"><div class="nn-stat-val">99.9%</div><div class="nn-stat-lbl">UPTIME</div></div><div class="nn-stat-div"></div><div class="nn-stat"><div class="nn-stat-val">4.9★</div><div class="nn-stat-lbl">RATING</div></div></section>
-  <section class="nn-feat"><div style="text-align:center;margin-bottom:36px"><div class="nn-eyebrow">CORE CAPABILITIES</div><div class="nn-h2">Everything your design system needs</div><p style="font-size:14.5px;color:var(--text2);max-width:460px;margin:0 auto;line-height:1.6">One platform to sync, review, and ship — from token to code.</p></div><div class="nn-feat-grid"><div class="nn-feat-card"><div class="nn-feat-icon" style="background:color-mix(in srgb,var(--brand) 12%,transparent)"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 2v4M10 14v4M2 10h4M14 10h4" stroke="var(--brand)" stroke-width="2" stroke-linecap="round"/><circle cx="10" cy="10" r="3" stroke="var(--brand)" stroke-width="2"/></svg></div><h3>Real-time Token Sync</h3><p>Tokens update live across Figma and code — no copy-paste, no drift.</p></div><div class="nn-feat-card"><div class="nn-feat-icon" style="background:#2E5CE820"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="14" height="14" rx="3" stroke="#2E5CE8" stroke-width="2"/><path d="M7 10l2.5 2.5L13 7.5" stroke="#2E5CE8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h3>AI Design Review</h3><p>Automated checks catch spacing errors, contrast failures, and token misuse.</p></div><div class="nn-feat-card"><div class="nn-feat-icon" style="background:#1A8A5A20"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 17A7 7 0 1 0 10 3a7 7 0 0 0 0 14Z" stroke="#1A8A5A" stroke-width="2"/><path d="M10 7v3l2 2" stroke="#1A8A5A" stroke-width="2" stroke-linecap="round"/></svg></div><h3>Component Health</h3><p>Live reports show which components are adopted, stale, or diverging.</p></div></div></section>
-  <footer class="nn-footer"><div class="nn-footer-logo"><div class="nn-logo-mark"></div>Neura Nova</div><div class="nn-flinks"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Status</a></div><p style="font-size:12px;color:#706860;margin:0">© 2026 Neura Nova, Inc.</p></footer>
+  <div id="prev-chrome"></div>
+  <div id="prev-body"></div>
 </div>
 
 <script>
@@ -239,12 +286,19 @@ let S={
   chat:[],
   typing:false,
   chatFor:null,
+  designSelected:null,
+  inspTab:'inspect',
   signals:[
-    {id:'s1',text:'Visitors leave before first value prop — 72% bounce on mobile',color:'#1f9d8f',pages:['home','pricing'],source:'Analytics',impact:'Critical'},
-    {id:'s2',text:'Two personas: technical evaluators want benchmarks, business buyers want logos',color:'#6f57d4',pages:['home','product'],source:'User Interviews',impact:'High'},
-    {id:'s3',text:'Social proof visible before scroll drives 2.3× lift in trial sign-ups',color:'#2f5bea',pages:['home'],source:'A/B Testing',impact:'High'},
-    {id:'s4',text:'CTA form has 7 fields — 3-field version converts at 4% vs 1.8%',color:'#c2700f',pages:['pricing','contact'],source:'Conversion Audit',impact:'Critical'},
-    {id:'s5',text:'"Intelligent infrastructure" understood by only 38% of first-time visitors',color:'#d4456b',pages:['home','product'],source:'User Survey',impact:'High'},
+    {id:'s1',text:'Visitors leave before first value prop — 72% bounce on mobile',color:'#1f9d8f',pages:['home','pricing'],source:'Analytics',impact:'Critical',
+     confluence:'NN-Research-Sprint-3 · Bounce Analysis',miro:'User Flow Audit Board'},
+    {id:'s2',text:'Two personas: technical evaluators want benchmarks, business buyers want logos',color:'#6f57d4',pages:['home','product'],source:'User Interviews',impact:'High',
+     confluence:'NN-Persona-Research · Dual Track',miro:'Persona Journey Map'},
+    {id:'s3',text:'Social proof visible before scroll drives 2.3× lift in trial sign-ups',color:'#2f5bea',pages:['home'],source:'A/B Testing',impact:'High',
+     confluence:'NN-CRO-Experiments · Social Proof',miro:'Conversion Flow Map'},
+    {id:'s4',text:'CTA form has 7 fields — 3-field version converts at 4% vs 1.8%',color:'#c2700f',pages:['pricing','contact'],source:'Conversion Audit',impact:'Critical',
+     confluence:'NN-CRO-Experiments · Form Optimization',miro:'Conversion Flow Map'},
+    {id:'s5',text:'"Intelligent infrastructure" understood by only 38% of first-time visitors',color:'#d4456b',pages:['home','product'],source:'User Survey',impact:'High',
+     confluence:'NN-Research-Sprint-3 · Message Testing',miro:'Messaging Workshop Board'},
   ],
   pages:[
     {id:'home',  label:'Home',    type:'Landing',icon:'🏠'},
@@ -330,7 +384,11 @@ function renderFlow(){
           <div style="display:flex;flex-wrap:wrap;gap:3px;margin-top:6px">
             ${sig.pages.map(pid=>{const pg=S.pages.find(p=>p.id===pid);return pg?`<span class="sig-page-tag" style="color:${sig.color};border-color:${sig.color}22;background:${sig.color}0f">${pg.icon} ${pg.label}</span>`:''}).join('')}
           </div>
-          <div style="font-size:9.5px;color:var(--text3);margin-top:5px">Research Agent</div>
+          <div style="display:flex;align-items:center;gap:5px;margin-top:5px;flex-wrap:wrap">
+            <span style="font-size:9.5px;color:var(--text3)">Research Agent</span>
+            ${sig.confluence?`<span class="src-badge" style="background:#e7eefe;color:#2f5bea" title="${sig.confluence}">📄 Confluence</span>`:''}
+            ${sig.miro?`<span class="src-badge" style="background:#e0f3f1;color:#1f9d8f" title="${sig.miro}">◫ Miro</span>`:''}
+          </div>
         </div>
         <div data-dot="${sig.id}-out" style="width:9px;height:9px;border-radius:50%;background:${sig.color};flex:none;margin-top:4px;box-shadow:0 0 0 2px ${tok.surface},0 0 0 3.5px ${sig.color}55"></div>
       </div>
@@ -508,6 +566,9 @@ function renderSitemap(){
     const pg=S.pages.find(p=>p.id===n.id)||{id:n.id,label:n.id,type:'',icon:'📄'};
     const sigs=psm[n.id]||[];
     const active=n.id===S.page;
+    // collect unique source docs for this node
+    const confDocs=[...new Set(sigs.filter(s=>s.confluence).map(s=>s.confluence))];
+    const miroDocs=[...new Set(sigs.filter(s=>s.miro).map(s=>s.miro))];
     return`<div class="sm-node${active?' sm-active':''}" style="left:${n.x}px;top:${n.y}px;width:${NW}px" onclick="setState({page:'${n.id}'})">
       <div style="font-size:14px;margin-bottom:2px">${pg.icon}</div>
       <div style="font-size:11px;font-weight:600;color:var(--text)">${pg.label}</div>
@@ -515,6 +576,10 @@ function renderSitemap(){
       <div style="display:flex;justify-content:center;gap:3px;margin-top:5px;flex-wrap:wrap">
         ${sigs.map(s=>`<div style="width:6px;height:6px;border-radius:50%;background:${s.color}" title="${s.text}"></div>`).join('')}
       </div>
+      ${confDocs.length||miroDocs.length?`<div style="display:flex;justify-content:center;gap:3px;margin-top:4px;flex-wrap:wrap">
+        ${confDocs.slice(0,1).map(()=>`<span style="font-size:8px;padding:1px 4px;border-radius:3px;background:#e7eefe;color:#2f5bea;font-weight:600">📄 Confluence</span>`).join('')}
+        ${miroDocs.slice(0,1).map(()=>`<span style="font-size:8px;padding:1px 4px;border-radius:3px;background:#e0f3f1;color:#1f9d8f;font-weight:600">◫ Miro</span>`).join('')}
+      </div>`:''}
     </div>`;
   }).join('');
 
@@ -726,19 +791,48 @@ function renderWireframe(){
   </div>`;
 }
 
+// ── DESIGN INSPECT DATA ───────────────────────────────────────────────────────
+const SECTION_DATA={
+  nav:{name:'NavBar',icon:'NB',color:'#2f5bea',
+    props:{sticky:true,height:'64px',logoText:'Neura Nova',links:4,cta:'Get Started →'},
+    tokens:[{k:'background',v:'--surface',sw:null},{k:'border-bottom',v:'--border',sw:null},{k:'logo-bg',v:'--brand',sw:null},{k:'cta-bg',v:'--brand',sw:null}],
+    size:{w:'100%',h:'64px'},status:'DS ✓'},
+  hero:{name:'HeroSection',icon:'HS',color:'#d4456b',
+    props:{align:'center',padding:'100px 48px',h1Size:'52px',font:'Playfair Display'},
+    tokens:[{k:'bg',v:'--bg-canvas',sw:null},{k:'badge-bg',v:'--brand-light',sw:null},{k:'h1-color',v:'--text',sw:null},{k:'cta-fill',v:'--brand',sw:null}],
+    size:{w:'100%',h:'~460px'},status:'VD Active'},
+  stats:{name:'StatsBar',icon:'SB',color:'#1f9d8f',
+    props:{columns:4,dividers:true,bg:'#eeeeee'},
+    tokens:[{k:'value-color',v:'--brand',sw:null},{k:'background',v:'--surface2',sw:null},{k:'label-color',v:'--text3',sw:null}],
+    size:{w:'100%',h:'140px'},status:'DS ✓'},
+  features:{name:'FeatureGrid',icon:'FG',color:'#6f57d4',
+    props:{columns:3,gap:'22px',radius:'16px',bg:'#f0f0f0'},
+    tokens:[{k:'card-bg',v:'--surface',sw:null},{k:'eyebrow-color',v:'--brand',sw:null},{k:'icon-bg',v:'--brand-light',sw:null},{k:'h2-font',v:'Playfair Display',sw:null}],
+    size:{w:'100%',h:'~440px'},status:'DS ✓'},
+};
+
 // ── DESIGN MODE ───────────────────────────────────────────────────────────────
+function secWrap(key,html){
+  const sel=S.designSelected===key;
+  return`<div onclick="setState({designSelected:'${key}',inspTab:'inspect'})" style="position:relative;cursor:pointer;outline:${sel?'2px solid var(--brand)':'2px solid transparent'};outline-offset:-1px;transition:outline .12s" title="Click to inspect ${key}">
+    ${html}
+    ${sel?'':'<div style="position:absolute;inset:0;background:transparent;transition:background .12s" onmouseenter="this.style.background=\'rgba(var(--brand-rgb,.5,.23,1),.04)\'" onmouseleave="this.style.background=\'transparent\'"></div>'}
+  </div>`;
+}
+
 function renderDesign(){
   document.getElementById('stage').innerHTML=`<div style="padding:28px;min-height:100%">
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
       <span style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.08em">DESIGN · HI-FI · HOME</span>
       <span style="font-size:11px;font-weight:600;padding:3px 9px;border-radius:5px;background:var(--green-light,#e6f3ec);color:var(--green)">Brand applied</span>
+      <span style="font-size:11px;color:var(--text3)">Click any section to inspect</span>
       <button onclick="openPreview()" class="tb-btn" style="margin-left:auto">▶ Full preview</button>
     </div>
     <div style="max-width:860px;background:var(--surface);border-radius:14px;overflow:hidden;border:1px solid var(--border);box-shadow:var(--shadow-lg,0 4px 16px rgba(28,25,20,.10))">
-      <nav class="nn-nav" style="position:relative"><div style="display:flex;align-items:center;gap:10px"><div class="nn-logo-mark"></div><span style="font-size:15px;font-weight:700;color:var(--text)">Neura Nova</span></div><div class="nn-nav-links"><a href="#">Product</a><a href="#">Pricing</a><a href="#">About</a></div><button class="nn-cta">Get Started →</button></nav>
-      <section class="nn-hero"><div class="nn-badge">✦ NOW IN BETA — JOIN 3,400 TEAMS</div><h1 class="nn-h1">Intelligence that moves at the <em>speed of design.</em></h1><p class="nn-lead">Weave connects your tokens, components, and agents into a single source of truth.</p><div class="nn-btns"><button class="nn-btn1">Start Free Trial →</button><button class="nn-btn2">Watch Demo</button></div></section>
-      <section class="nn-stats"><div class="nn-stat"><div class="nn-stat-val">3,400+</div><div class="nn-stat-lbl">TEAMS</div></div><div class="nn-stat-div"></div><div class="nn-stat"><div class="nn-stat-val">$4.2B</div><div class="nn-stat-lbl">VALUE MANAGED</div></div><div class="nn-stat-div"></div><div class="nn-stat"><div class="nn-stat-val">99.9%</div><div class="nn-stat-lbl">UPTIME</div></div><div class="nn-stat-div"></div><div class="nn-stat"><div class="nn-stat-val">4.9★</div><div class="nn-stat-lbl">RATING</div></div></section>
-      <section class="nn-feat"><div style="text-align:center;margin-bottom:36px"><div class="nn-eyebrow">CORE CAPABILITIES</div><div class="nn-h2">Everything your design system needs</div><p style="font-size:14.5px;color:var(--text2);max-width:460px;margin:0 auto;line-height:1.6">One platform to sync, review, and ship — from token to code.</p></div><div class="nn-feat-grid"><div class="nn-feat-card"><div class="nn-feat-icon" style="background:color-mix(in srgb,var(--brand) 12%,transparent)"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 2v4M10 14v4M2 10h4M14 10h4" stroke="var(--brand)" stroke-width="2" stroke-linecap="round"/><circle cx="10" cy="10" r="3" stroke="var(--brand)" stroke-width="2"/></svg></div><h3>Real-time Token Sync</h3><p>Tokens update live across Figma and code.</p></div><div class="nn-feat-card"><div class="nn-feat-icon" style="background:#2E5CE820"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="14" height="14" rx="3" stroke="#2E5CE8" stroke-width="2"/><path d="M7 10l2.5 2.5L13 7.5" stroke="#2E5CE8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h3>AI Design Review</h3><p>Automated checks catch failures before they ship.</p></div><div class="nn-feat-card"><div class="nn-feat-icon" style="background:#1A8A5A20"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 17A7 7 0 1 0 10 3a7 7 0 0 0 0 14Z" stroke="#1A8A5A" stroke-width="2"/><path d="M10 7v3l2 2" stroke="#1A8A5A" stroke-width="2" stroke-linecap="round"/></svg></div><h3>Component Health</h3><p>Live reports show adoption, staleness, and drift.</p></div></div></section>
+      ${secWrap('nav',`<nav class="nn-nav" style="position:relative"><div style="display:flex;align-items:center;gap:10px"><div class="nn-logo-mark"></div><span style="font-size:15px;font-weight:700;color:var(--text)">Neura Nova</span></div><div class="nn-nav-links"><a href="#">Product</a><a href="#">Pricing</a><a href="#">About</a></div><button class="nn-cta">Get Started →</button></nav>`)}
+      ${secWrap('hero',`<section class="nn-hero"><div class="nn-badge">✦ NOW IN BETA — JOIN 3,400 TEAMS</div><h1 class="nn-h1">Intelligence that moves at the <em>speed of design.</em></h1><p class="nn-lead">Weave connects your tokens, components, and agents into a single source of truth.</p><div class="nn-btns"><button class="nn-btn1">Start Free Trial →</button><button class="nn-btn2">Watch Demo</button></div></section>`)}
+      ${secWrap('stats',`<section class="nn-stats"><div class="nn-stat"><div class="nn-stat-val">3,400+</div><div class="nn-stat-lbl">TEAMS</div></div><div class="nn-stat-div"></div><div class="nn-stat"><div class="nn-stat-val">$4.2B</div><div class="nn-stat-lbl">VALUE MANAGED</div></div><div class="nn-stat-div"></div><div class="nn-stat"><div class="nn-stat-val">99.9%</div><div class="nn-stat-lbl">UPTIME</div></div><div class="nn-stat-div"></div><div class="nn-stat"><div class="nn-stat-val">4.9★</div><div class="nn-stat-lbl">RATING</div></div></section>`)}
+      ${secWrap('features',`<section class="nn-feat"><div style="text-align:center;margin-bottom:36px"><div class="nn-eyebrow">CORE CAPABILITIES</div><div class="nn-h2">Everything your design system needs</div><p style="font-size:14.5px;color:var(--text2);max-width:460px;margin:0 auto;line-height:1.6">One platform to sync, review, and ship — from token to code.</p></div><div class="nn-feat-grid"><div class="nn-feat-card"><div class="nn-feat-icon" style="background:color-mix(in srgb,var(--brand) 12%,transparent)"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 2v4M10 14v4M2 10h4M14 10h4" stroke="var(--brand)" stroke-width="2" stroke-linecap="round"/><circle cx="10" cy="10" r="3" stroke="var(--brand)" stroke-width="2"/></svg></div><h3>Real-time Token Sync</h3><p>Tokens update live across Figma and code.</p></div><div class="nn-feat-card"><div class="nn-feat-icon" style="background:#2E5CE820"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="14" height="14" rx="3" stroke="#2E5CE8" stroke-width="2"/><path d="M7 10l2.5 2.5L13 7.5" stroke="#2E5CE8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h3>AI Design Review</h3><p>Automated checks catch failures before they ship.</p></div><div class="nn-feat-card"><div class="nn-feat-icon" style="background:#1A8A5A20"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 17A7 7 0 1 0 10 3a7 7 0 0 0 0 14Z" stroke="#1A8A5A" stroke-width="2"/><path d="M10 7v3l2 2" stroke="#1A8A5A" stroke-width="2" stroke-linecap="round"/></svg></div><h3>Component Health</h3><p>Live reports show adoption, staleness, and drift.</p></div></div></section>`)}
     </div>
   </div>`;
 }
@@ -799,6 +893,7 @@ function renderLeft(){
 
 // ── RIGHT RAIL ────────────────────────────────────────────────────────────────
 function renderRight(){
+  if(S.mode==='design'){renderDesignInspect();return;}
   const tabs=[['agents','Agents'],['comments','Comments'],['history','History']];
   let body='';
 
@@ -872,6 +967,101 @@ function renderRight(){
   }
 }
 
+// ── DESIGN INSPECT PANEL ─────────────────────────────────────────────────────
+function renderDesignInspect(){
+  const el=document.getElementById('right-rail');
+  const tok=T();
+  const sd=S.designSelected?SECTION_DATA[S.designSelected]:null;
+
+  const noSel=`
+    <div class="insp-tabs">
+      <button class="insp-tab on">Inspect</button>
+      <button class="insp-tab">Code</button>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 20px;color:var(--text3);text-align:center;gap:8px;flex:1">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="2" y="2" width="24" height="24" rx="4" stroke="currentColor" stroke-width="1.5" opacity=".3"/><path d="M8 20l12-12M14 8h6v6" stroke="currentColor" stroke-width="1.5" opacity=".5"/></svg>
+      <div style="font-size:12.5px;font-weight:600">No selection</div>
+      <div style="font-size:11.5px;line-height:1.5">Click a section in the canvas to inspect it</div>
+    </div>`;
+
+  if(!sd){el.innerHTML=noSel;return;}
+
+  const propRows=Object.entries(sd.props).map(([k,v])=>`
+    <div class="insp-row"><span class="insp-key">${k}</span><span class="insp-val">${v}</span></div>`).join('');
+  const tokRows=sd.tokens.map(b=>`
+    <div class="tok-bind">
+      ${b.sw?`<div class="tok-sw" style="background:${b.sw}"></div>`:`<div style="width:10px;height:10px;border:1px dashed ${tok.border2};border-radius:3px;flex:none"></div>`}
+      <span style="font-size:11px;color:var(--text3);min-width:72px">${b.k}</span>
+      <span class="tok-name">${b.v}</span>
+    </div>`).join('');
+
+  const codeStr=`import ${sd.name} from '@neura/${sd.name.toLowerCase()}';\n\n<${sd.name}\n${Object.entries(sd.props).map(([k,v])=>`  ${k}=${typeof v==='boolean'?`{${v}}`:`"${v}"`}`).join('\n')}\n/>`;
+
+  const inspBody=`
+    <div class="insp-sec" style="border-bottom:none">
+      <div style="display:flex;align-items:center;gap:8px">
+        <div style="width:26px;height:26px;border-radius:7px;background:${sd.color};display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:#fff;flex:none">${sd.icon}</div>
+        <div>
+          <div style="font-size:13px;font-weight:700">${sd.name}</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text3)">neura-ds · ${sd.size.w} × ${sd.size.h}</div>
+        </div>
+        <span style="margin-left:auto;font-size:9px;font-weight:700;color:${sd.status==='DS ✓'?tok.green:tok.red};background:${sd.status==='DS ✓'?tok.greenLight||'#e6f3ec':'#fde8ee'};border-radius:4px;padding:2px 6px">${sd.status}</span>
+      </div>
+    </div>
+    <div class="insp-sec">
+      <div class="insp-lbl">PROPS</div>${propRows}
+    </div>
+    <div class="insp-sec">
+      <div class="insp-lbl">TOKEN BINDINGS</div>${tokRows}
+    </div>
+    <div class="insp-sec">
+      <div class="insp-lbl">LAYOUT</div>
+      <div class="insp-row"><span class="insp-key">width</span><span class="insp-val">${sd.size.w}</span></div>
+      <div class="insp-row"><span class="insp-key">height</span><span class="insp-val">${sd.size.h}</span></div>
+    </div>
+    <div class="insp-sec" style="border-bottom:none">
+      <div class="insp-lbl">VD AGENT · Active</div>
+      <div style="background:var(--surface2);border-radius:9px;padding:11px">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:7px">
+          <div style="width:18px;height:18px;border-radius:5px;background:#d4456b;display:flex;align-items:center;justify-content:center;font-size:7.5px;font-weight:700;color:#fff;font-family:'JetBrains Mono',monospace;flex:none">VD</div>
+          <span style="font-size:11px;font-weight:700">Suggestion</span>
+        </div>
+        <div style="font-size:11.5px;color:var(--text2);line-height:1.5;margin-bottom:9px">${
+          S.designSelected==='hero'?`Hero CTA uses <span style="font-family:'JetBrains Mono',monospace;color:var(--brand)">--brand</span>. Consider a ghost variant for "Watch Demo" — research signal s1 shows mobile bounce risk.`:
+          S.designSelected==='stats'?`Stats are above-fold social proof (signal s3). Confirm <span style="font-family:'JetBrains Mono',monospace;color:var(--brand)">--brand</span> for values matches hero CTA.`:
+          S.designSelected==='features'?`Feature order should reflect persona split (signal s2). Technical evaluators read left-to-right — lead with benchmark metric.`:
+          `NavBar sticky positioning confirmed. Logo links to Home per sitemap.`
+        }</div>
+        <div style="display:flex;gap:6px">
+          <button style="padding:5px 11px;border-radius:6px;background:var(--brand);color:#fff;font-size:11.5px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer">✓ Apply</button>
+          <button style="padding:5px 10px;border-radius:6px;background:transparent;color:var(--text2);font-size:11.5px;font-family:'Inter',sans-serif;cursor:pointer">Dismiss</button>
+        </div>
+      </div>
+    </div>`;
+
+  const codeBody=`
+    <div style="padding:13px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3)">JSX</span>
+        <button onclick="navigator.clipboard.writeText(${JSON.stringify(codeStr)})" style="font-size:10.5px;padding:2px 8px;border-radius:5px;border:1px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;font-family:'Inter',sans-serif">Copy</button>
+      </div>
+      <pre style="background:var(--surface2);border-radius:8px;padding:11px;font-family:'JetBrains Mono',monospace;font-size:10.5px;line-height:1.6;color:var(--text);overflow-x:auto;white-space:pre-wrap;word-break:break-all">${codeStr}</pre>
+      <div style="margin-top:10px;padding:9px;background:#e7eefe;border-radius:7px;border:1px solid #2f5bea22">
+        <div style="font-size:10.5px;font-weight:700;color:var(--blue);margin-bottom:3px">Source</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--blue)">src/components/${sd.name}/${sd.name}.jsx</div>
+      </div>
+    </div>`;
+
+  el.innerHTML=`
+    <div class="insp-tabs">
+      <button class="insp-tab${S.inspTab==='inspect'?' on':''}" onclick="setState({inspTab:'inspect'})">Inspect</button>
+      <button class="insp-tab${S.inspTab==='code'?' on':''}" onclick="setState({inspTab:'code'})">Code</button>
+    </div>
+    <div style="flex:1;overflow-y:auto">
+      ${S.inspTab==='inspect'?inspBody:codeBody}
+    </div>`;
+}
+
 // ── TOOLBAR ───────────────────────────────────────────────────────────────────
 const MODES=[['flow','Flow'],['sitemap','Sitemap'],['wireframe','Wireframe'],['design','Design'],['styleguide','Style Guide']];
 function renderToolbar(){
@@ -942,9 +1132,234 @@ function sendChat(){
   },1100);
 }
 function toggleTheme(){document.documentElement.setAttribute('data-theme',isDark()?'light':'dark');render();}
-function openPreview(){document.getElementById('prev-overlay').classList.add('on');}
+
+// ── PREVIEW ────────────────────────────────────────────────────────────────────
+let prevPage='home';
+const PREV_PAGES=[
+  {id:'home',label:'Home'},{id:'about',label:'About'},{id:'product',label:'Product'},
+  {id:'pricing',label:'Pricing'},{id:'blog',label:'Blog'},{id:'contact',label:'Contact'},
+];
+
+function openPreview(){
+  document.getElementById('prev-overlay').classList.add('on');
+  renderPrevChrome();
+  document.getElementById('prev-body').innerHTML=buildPageHtml(prevPage);
+}
 function closePreview(){document.getElementById('prev-overlay').classList.remove('on');}
-function togglePrevTheme(){toggleTheme();}
+function togglePrevTheme(){toggleTheme();renderPrevChrome();document.getElementById('prev-body').innerHTML=buildPageHtml(prevPage);}
+
+function renderPrevChrome(){
+  const tabs=PREV_PAGES.map(p=>`<button class="prev-page-btn" data-page="${p.id}" onclick="switchPrevPage('${p.id}')"
+    style="background:${prevPage===p.id?'rgba(255,255,255,.2)':'transparent'};color:${prevPage===p.id?'#fff':'rgba(255,255,255,.5)'}">${p.label}</button>`).join('');
+  document.getElementById('prev-chrome').innerHTML=`
+    <div style="display:flex;gap:2px">${tabs}</div>
+    <div style="width:1px;height:16px;background:rgba(255,255,255,.15);flex:none"></div>
+    <button class="prev-btn" onclick="togglePrevTheme()">◑ Theme</button>
+    <button class="prev-btn" onclick="closePreview()">✕ Exit</button>`;
+}
+
+function switchPrevPage(pid){
+  prevPage=pid;
+  document.getElementById('prev-body').innerHTML=buildPageHtml(pid);
+  document.querySelectorAll('.prev-page-btn').forEach(b=>{
+    const on=b.dataset.page===pid;
+    b.style.background=on?'rgba(255,255,255,.2)':'transparent';
+    b.style.color=on?'#fff':'rgba(255,255,255,.5)';
+  });
+}
+
+function nnNav(active){
+  return`<nav class="nn-nav" style="position:sticky;top:0;z-index:100">
+    <div style="display:flex;align-items:center;gap:10px"><div class="nn-logo-mark"></div><span style="font-size:15px;font-weight:700;color:var(--text)">Neura Nova</span></div>
+    <div class="nn-nav-links">
+      ${PREV_PAGES.slice(0,-1).map(p=>`<a href="#" onclick="switchPrevPage('${p.id}');return false" style="${p.id===active?'color:var(--brand);font-weight:600':''}">${p.label}</a>`).join('')}
+    </div>
+    <button class="nn-cta" onclick="switchPrevPage('contact');return false">Get Started →</button>
+  </nav>`;
+}
+
+function nnFooter(){
+  return`<footer class="nn-footer">
+    <div class="nn-footer-logo"><div class="nn-logo-mark"></div>Neura Nova</div>
+    <div class="nn-flinks"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Status</a><a href="#">Blog</a></div>
+    <p style="font-size:12px;color:#706860;margin:0">© 2026 Neura Nova, Inc.</p>
+  </footer>`;
+}
+
+function buildPageHtml(pid){
+  const pages={
+    home:()=>nnNav('home')+`
+      <section class="nn-hero"><div class="nn-badge">✦ NOW IN BETA — JOIN 3,400 TEAMS</div><h1 class="nn-h1">Intelligence that moves at the <em>speed of design.</em></h1><p class="nn-lead">Weave connects your tokens, components, and agents into a single source of truth — so your design system ships faster and stays consistent.</p><div class="nn-btns"><button class="nn-btn1" onclick="switchPrevPage('pricing');return false">Start Free Trial →</button><button class="nn-btn2">Watch Demo</button></div></section>
+      <section class="nn-stats"><div class="nn-stat"><div class="nn-stat-val">3,400+</div><div class="nn-stat-lbl">TEAMS</div></div><div class="nn-stat-div"></div><div class="nn-stat"><div class="nn-stat-val">$4.2B</div><div class="nn-stat-lbl">VALUE MANAGED</div></div><div class="nn-stat-div"></div><div class="nn-stat"><div class="nn-stat-val">99.9%</div><div class="nn-stat-lbl">UPTIME</div></div><div class="nn-stat-div"></div><div class="nn-stat"><div class="nn-stat-val">4.9★</div><div class="nn-stat-lbl">RATING</div></div></section>
+      <section class="nn-feat"><div style="text-align:center;margin-bottom:36px"><div class="nn-eyebrow">CORE CAPABILITIES</div><div class="nn-h2">Everything your design system needs</div><p style="font-size:14.5px;color:var(--text2);max-width:460px;margin:0 auto;line-height:1.6">One platform to sync, review, and ship — from token to code.</p></div><div class="nn-feat-grid"><div class="nn-feat-card"><div class="nn-feat-icon" style="background:color-mix(in srgb,var(--brand) 12%,transparent)"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 2v4M10 14v4M2 10h4M14 10h4" stroke="var(--brand)" stroke-width="2" stroke-linecap="round"/><circle cx="10" cy="10" r="3" stroke="var(--brand)" stroke-width="2"/></svg></div><h3>Real-time Token Sync</h3><p>Tokens update live across Figma and code — no copy-paste, no drift.</p></div><div class="nn-feat-card"><div class="nn-feat-icon" style="background:#2E5CE820"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="14" height="14" rx="3" stroke="#2E5CE8" stroke-width="2"/><path d="M7 10l2.5 2.5L13 7.5" stroke="#2E5CE8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h3>AI Design Review</h3><p>Automated checks catch spacing errors, contrast failures, and token misuse before they ship.</p></div><div class="nn-feat-card"><div class="nn-feat-icon" style="background:#1A8A5A20"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 17A7 7 0 1 0 10 3a7 7 0 0 0 0 14Z" stroke="#1A8A5A" stroke-width="2"/><path d="M10 7v3l2 2" stroke="#1A8A5A" stroke-width="2" stroke-linecap="round"/></svg></div><h3>Component Health</h3><p>Live reports show which components are adopted, stale, or diverging across teams.</p></div></div></section>
+      <section style="padding:64px 48px;text-align:center;background:#f5f5f5"><div class="nn-eyebrow">PRICING</div><div class="nn-h2" style="margin:8px 0 12px">Simple, transparent pricing</div><p style="font-size:15px;color:var(--text2);margin:0 0 28px">Start free, scale as you grow.</p><button class="nn-btn1" onclick="switchPrevPage('pricing');return false">View All Plans →</button></section>`
+      +nnFooter(),
+
+    about:()=>nnNav('about')+`
+      <section class="nn-page-hero">
+        <div class="nn-badge">OUR STORY</div>
+        <h1 class="nn-h1">Built by designers,<br>for design teams.</h1>
+        <p class="nn-lead">Neura Nova started when three engineers got tired of their tokens drifting overnight. We built the infrastructure we wished existed.</p>
+      </section>
+      <section class="nn-section" style="text-align:center">
+        <div class="nn-eyebrow">MISSION</div>
+        <div class="nn-h2" style="margin:10px 0 20px">Design consistency at scale</div>
+        <p style="max-width:640px;margin:0 auto;font-size:15px;color:var(--text2);line-height:1.7">We believe every design system should be a living document — one that evolves with your product, reflects your brand, and stays in sync with your code without manual intervention.</p>
+        <p style="max-width:640px;margin:24px auto 0;font-size:15px;color:var(--text2);line-height:1.7">That belief drove every decision we made: real-time token sync, agent-powered review, and a component health layer that keeps drift visible before it ships.</p>
+      </section>
+      <section class="nn-section-alt">
+        <div style="text-align:center;margin-bottom:40px"><div class="nn-eyebrow">TEAM</div><div class="nn-h2" style="margin-top:10px">The people behind Neura Nova</div></div>
+        <div class="nn-team-grid">
+          ${[{n:'Priya Sharma',r:'CEO & Co-founder',bg:'#6f57d4'},{n:'Marcus Lee',r:'CTO & Co-founder',bg:'#2f5bea'},{n:'Aiko Tanaka',r:'Head of Design',bg:'#d4456b'},{n:'James Okafor',r:'Head of Engineering',bg:'#1f9d8f'}].map(m=>`
+            <div class="nn-team-card">
+              <div style="width:80px;height:80px;border-radius:50%;background:${m.bg};display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:700;color:#fff">${m.n.split(' ').map(x=>x[0]).join('')}</div>
+              <div style="font-weight:700;font-size:14px">${m.n}</div>
+              <div style="font-size:12px;color:var(--text3)">${m.r}</div>
+            </div>`).join('')}
+        </div>
+      </section>
+      <section class="nn-section">
+        <div style="text-align:center;margin-bottom:36px"><div class="nn-eyebrow">VALUES</div><div class="nn-h2" style="margin-top:10px">What we stand for</div></div>
+        <div class="nn-values-list">
+          ${[{icon:'🔗',t:'Consistency over convenience',d:'We don't build shortcuts that create drift. Every feature we ship makes the system more consistent, not just faster.'},
+             {icon:'🤝',t:'Designers and engineers, together',d:'The best design systems are built collaboratively. Our tools are designed for both sides of the handoff.'},
+             {icon:'⚡',t:'Speed without compromise',d:'Shipping fast shouldn't mean shipping wrong. Our agents catch issues before they reach production.'}].map(v=>`
+          <div class="nn-value-item">
+            <div class="nn-value-icon" style="background:color-mix(in srgb,var(--brand) 10%,transparent)">${v.icon}</div>
+            <div><div style="font-weight:700;font-size:15px;margin-bottom:6px">${v.t}</div><div style="font-size:14px;color:var(--text2);line-height:1.6">${v.d}</div></div>
+          </div>`).join('')}
+        </div>
+      </section>`+nnFooter(),
+
+    product:()=>nnNav('product')+`
+      <section class="nn-page-hero">
+        <div class="nn-badge">PRODUCT</div>
+        <h1 class="nn-h1">Your design system,<br><em>intelligently maintained.</em></h1>
+        <p class="nn-lead">From token sync to component health — Neura Nova gives your team a live, connected design system that ships faster and stays consistent.</p>
+        <div class="nn-btns" style="margin-top:8px"><button class="nn-btn1" onclick="switchPrevPage('pricing');return false">Start Free Trial →</button><button class="nn-btn2">Watch Demo</button></div>
+      </section>
+      <section class="nn-section" style="text-align:center">
+        <div class="nn-eyebrow">CORE PLATFORM</div>
+        <div class="nn-h2" style="margin:10px 0 10px">Built for how design teams actually work</div>
+        <p style="max-width:520px;margin:0 auto 44px;font-size:15px;color:var(--text2);line-height:1.6">Real-time sync, AI review, and health monitoring — in one connected platform.</p>
+        <div class="nn-feat-grid" style="max-width:860px;margin:0 auto">
+          ${[{bg:'color-mix(in srgb,var(--brand) 12%,transparent)',icon:'🔄',title:'Token Sync',desc:'Tokens flow live from Figma to code. Change a value in your design tool and it propagates everywhere — no manual exports, no PRs for color changes.'},
+             {bg:'#2E5CE820',icon:'🤖',title:'AI Design Review',desc:'Agents scan every component for contrast failures, spacing violations, and token misuse. Catch issues in review, not in production.'},
+             {bg:'#1A8A5A20',icon:'📊',title:'Component Health',desc:'Know which components are adopted across your codebase, which are drifting from their Figma counterparts, and which are stale and due for a refresh.'}].map(f=>`
+          <div class="nn-feat-card">
+            <div class="nn-feat-icon" style="background:${f.bg};font-size:18px">${f.icon}</div>
+            <h3>${f.title}</h3><p>${f.desc}</p>
+          </div>`).join('')}
+        </div>
+      </section>
+      <section class="nn-section-alt">
+        <div style="text-align:center;margin-bottom:36px"><div class="nn-eyebrow">INTEGRATIONS</div><div class="nn-h2" style="margin-top:10px">Works with your existing stack</div></div>
+        <div class="nn-integ-grid">
+          ${[{icon:'🎨',n:'Figma'},{icon:'⚛',n:'React'},{icon:'📦',n:'Storybook'},{icon:'🧪',n:'Chromatic'},{icon:'🔀',n:'GitHub'},{icon:'🔵',n:'GitLab'},{icon:'💬',n:'Slack'},{icon:'📋',n:'Jira'}].map(i=>`
+          <div class="nn-integ-card">
+            <span style="font-size:26px">${i.icon}</span>
+            <span style="font-size:12px;font-weight:600;color:var(--text2)">${i.n}</span>
+          </div>`).join('')}
+        </div>
+      </section>`+nnFooter(),
+
+    pricing:()=>nnNav('pricing')+`
+      <section style="padding:80px 48px 64px;text-align:center;background:#f5f5f5">
+        <div class="nn-badge">PRICING</div>
+        <h1 class="nn-h1" style="font-size:46px;margin-top:16px">Start free. Scale as you grow.</h1>
+        <p style="font-size:16px;color:var(--text2);max-width:480px;margin:0 auto 48px;line-height:1.6">All plans include token sync, AI review, and component health. No seat limits on Starter.</p>
+        <div class="nn-price-grid">
+          ${[{name:'Starter',badge:'',price:'$0',period:'/mo',desc:'For small teams getting started with design systems.',feat:['Up to 5 users','Token sync — 1 file','AI review — 50 checks/mo','Community support'],cta:'Get Started',featured:false},
+             {name:'Pro',badge:'MOST POPULAR',price:'$49',period:'/mo per team',desc:'For growing teams that need deeper integration and more checks.',feat:['Unlimited users','Token sync — unlimited','AI review — unlimited','Component health dashboard','Slack + Jira integration','Priority support'],cta:'Start Free Trial',featured:true},
+             {name:'Enterprise',badge:'',price:'Custom',period:'',desc:'For large organizations with advanced security and compliance needs.',feat:['SSO & SAML','Custom integrations','SLA guarantee','Dedicated CSM','On-prem option'],cta:'Contact Sales',featured:false}].map(p=>`
+          <div class="nn-price-card-v2${p.featured?' featured':''}">
+            ${p.badge?`<div style="font-size:9px;font-weight:700;color:var(--brand);letter-spacing:.1em;margin-bottom:8px">${p.badge}</div>`:''}
+            <div style="font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--text3);margin-bottom:10px">${p.name.toUpperCase()}</div>
+            <div style="display:flex;align-items:baseline;gap:4px;margin-bottom:6px">
+              <span style="font-family:'Playfair Display',serif;font-size:40px;font-weight:700;color:var(--text)">${p.price}</span>
+              <span style="font-size:13px;color:var(--text3)">${p.period}</span>
+            </div>
+            <p style="font-size:13px;color:var(--text2);line-height:1.5;margin:0 0 20px">${p.desc}</p>
+            <div style="display:flex;flex-direction:column;gap:0;margin-bottom:24px;border-top:1px solid #f0f0f0">
+              ${p.feat.map(f=>`<div class="nn-price-feat"><span style="width:8px;height:8px;border-radius:50%;background:var(--green);flex:none"></span>${f}</div>`).join('')}
+            </div>
+            <button style="width:100%;height:44px;border-radius:22px;background:${p.featured?'var(--brand)':'transparent'};border:${p.featured?'none':'1.5px solid #d0d0d0'};color:${p.featured?'#fff':'var(--text2)'};font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:opacity .15s">${p.cta}</button>
+          </div>`).join('')}
+        </div>
+      </section>
+      <section class="nn-section" style="text-align:center">
+        <div class="nn-eyebrow">FAQ</div>
+        <div class="nn-h2" style="margin:10px 0 36px">Common questions</div>
+        <div style="max-width:640px;margin:0 auto;text-align:left">
+          ${[{q:'Can I switch plans later?',a:'Yes — upgrade or downgrade at any time. Changes take effect immediately and are prorated.'},
+             {q:'Do you offer a free trial?',a:'The Starter plan is free forever. Pro comes with a 14-day trial — no credit card required.'},
+             {q:'How does token sync work?',a:'We connect to your Figma file via API and watch for variable changes. When you publish, tokens update in your repo automatically.'},
+             {q:'What counts as an AI review check?',a:'Each component scanned for contrast, spacing, or token misuse counts as one check. A full page scan typically uses 20–60 checks.'},
+             {q:'Do you support Vue and Angular?',a:'Yes — our SDK supports React, Vue, Angular, and any framework that uses CSS custom properties.'}].map(f=>`
+          <div class="nn-faq-item">
+            <div style="font-size:15px;font-weight:700;margin-bottom:6px">${f.q}</div>
+            <div style="font-size:14px;color:var(--text2);line-height:1.6">${f.a}</div>
+          </div>`).join('')}
+        </div>
+      </section>`+nnFooter(),
+
+    blog:()=>nnNav('blog')+`
+      <section class="nn-page-hero">
+        <div class="nn-badge">BLOG</div>
+        <h1 class="nn-h1" style="font-size:46px">Design system insights</h1>
+        <p class="nn-lead">Stories, tutorials, and research from the Neura Nova team and community.</p>
+      </section>
+      <section style="padding:48px;background:#f0f0f0">
+        <div style="display:flex;gap:10px;justify-content:center;margin-bottom:40px;flex-wrap:wrap">
+          ${['All','Token Sync','AI Review','Component Health','Case Studies','Tutorials'].map((t,i)=>`<button style="padding:7px 16px;border-radius:20px;font-size:13px;font-weight:600;border:none;cursor:pointer;font-family:'Inter',sans-serif;background:${i===0?'var(--brand)':'#fff'};color:${i===0?'#fff':'var(--text2)'}">${t}</button>`).join('')}
+        </div>
+        <div class="nn-article-grid">
+          ${[{emoji:'🔄',cat:'Token Sync',title:'How we cut design-to-code handoff from 3 days to 3 minutes',author:'Marcus Lee',date:'Jun 18, 2026',read:'8 min'},
+             {emoji:'🤖',cat:'AI Review',title:'Why AI design review catches what humans miss — and vice versa',author:'Priya Sharma',date:'Jun 10, 2026',read:'6 min'},
+             {emoji:'📊',cat:'Component Health',title:'Component health scores: how to read them and what to do next',author:'Aiko Tanaka',date:'Jun 2, 2026',read:'5 min'},
+             {emoji:'💼',cat:'Case Studies',title:'How Atlassian cut token drift by 94% in one quarter',author:'Guest',date:'May 28, 2026',read:'10 min'},
+             {emoji:'🧪',cat:'Tutorials',title:'Getting started with Neura Nova + Storybook integration',author:'James Okafor',date:'May 20, 2026',read:'12 min'},
+             {emoji:'🎨',cat:'Design',title:'The anatomy of a great design token — naming, grouping, aliasing',author:'Aiko Tanaka',date:'May 14, 2026',read:'7 min'}].map(a=>`
+          <div class="nn-article-card">
+            <div class="nn-article-img">${a.emoji}</div>
+            <div class="nn-article-body">
+              <div style="font-size:10px;font-weight:700;color:var(--brand);letter-spacing:.06em;margin-bottom:8px">${a.cat.toUpperCase()}</div>
+              <h3 style="font-size:15px;font-weight:700;line-height:1.4;margin:0 0 10px;color:var(--text)">${a.title}</h3>
+              <div style="font-size:12px;color:var(--text3)">${a.author} · ${a.date} · ${a.read} read</div>
+            </div>
+          </div>`).join('')}
+        </div>
+      </section>`+nnFooter(),
+
+    contact:()=>nnNav('contact')+`
+      <section style="padding:80px 48px;background:#f5f5f5;min-height:80vh">
+        <div style="text-align:center;margin-bottom:52px">
+          <div class="nn-badge">CONTACT</div>
+          <h1 class="nn-h1" style="font-size:42px;margin-top:16px">Let's talk</h1>
+          <p style="font-size:15px;color:var(--text2);max-width:440px;margin:0 auto;line-height:1.6">Questions about pricing, integrations, or enterprise? We respond within one business day.</p>
+        </div>
+        <div class="nn-contact-wrap">
+          <div>
+            <div class="nn-form-group"><label class="nn-form-label">Name</label><input class="nn-form-input" placeholder="Your full name"></div>
+            <div class="nn-form-group"><label class="nn-form-label">Work email</label><input class="nn-form-input" type="email" placeholder="you@company.com"></div>
+            <div class="nn-form-group"><label class="nn-form-label">Message</label><textarea class="nn-form-textarea" placeholder="Tell us about your design system, team size, and what you're trying to solve…"></textarea></div>
+            <button style="height:48px;padding:0 28px;border-radius:24px;background:var(--brand);color:#fff;font-size:14px;font-weight:600;border:none;cursor:pointer;font-family:'Inter',sans-serif;width:100%">Send Message →</button>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:28px">
+            ${[{icon:'🏢',title:'San Francisco HQ',detail:'548 Market St, San Francisco, CA 94104'},
+               {icon:'📧',title:'Email',detail:'hello@neuranoca.com'},
+               {icon:'💬',title:'Live chat',detail:'Available Mon–Fri, 9am–6pm PT'},
+               {icon:'📞',title:'Sales',detail:'+1 (415) 555-0192'}].map(o=>`
+            <div style="display:flex;gap:14px;align-items:flex-start">
+              <div style="width:40px;height:40px;border-radius:10px;background:color-mix(in srgb,var(--brand) 10%,transparent);display:flex;align-items:center;justify-content:center;font-size:18px;flex:none">${o.icon}</div>
+              <div><div style="font-weight:700;font-size:14px;margin-bottom:3px">${o.title}</div><div style="font-size:13px;color:var(--text2)">${o.detail}</div></div>
+            </div>`).join('')}
+          </div>
+        </div>
+      </section>`+nnFooter(),
+  };
+  return (pages[pid]||pages.home)();
+}
 
 // ── RENDER ─────────────────────────────────────────────────────────────────────
 function render(){
