@@ -15,8 +15,12 @@ function ObsGeoArt() {
           <svg className="obs-geo-svg obs-geo-svg--bg" viewBox="0 0 100 100">
             <polygon points="50,0 100,50 50,100 0,50" fill="#1A1A1A" />
           </svg>
-          <div className="obs-geo-circle"></div>
-          <div className="obs-geo-square"></div>
+          <div className="obs-shape-wrap obs-shape-wrap--circle">
+            <div className="obs-geo-circle"></div>
+          </div>
+          <div className="obs-shape-wrap obs-shape-wrap--square-coral">
+            <div className="obs-geo-square"></div>
+          </div>
           <svg id="obs-wire-coral" className="obs-geo-svg obs-geo-svg--wire" viewBox="0 0 100 100">
             <circle id="obs-coral-circle" cx="50" cy="50" r="35.35" fill="none" stroke="#1A1A1A" strokeWidth="1.5" vectorEffect="non-scaling-stroke" opacity="0.4" strokeDasharray="222" strokeDashoffset="222"/>
             <rect id="obs-coral-rect" x="25" y="25" width="50" height="50" fill="none" stroke="#F47C59" strokeWidth="0.5" vectorEffect="non-scaling-stroke" opacity="0.5" strokeDasharray="200" strokeDashoffset="200"/>
@@ -38,8 +42,12 @@ function ObsGeoArt() {
           <svg className="obs-geo-svg obs-geo-svg--bg" viewBox="0 0 100 100">
             <circle cx="50" cy="50" r="50" fill="#1A1A1A" />
           </svg>
-          <div className="obs-geo-square obs-geo-square--blue"></div>
-          <div className="obs-geo-diamond"></div>
+          <div className="obs-shape-wrap obs-shape-wrap--square-blue">
+            <div className="obs-geo-square obs-geo-square--blue"></div>
+          </div>
+          <div className="obs-shape-wrap obs-shape-wrap--diamond">
+            <div className="obs-geo-diamond"></div>
+          </div>
           <svg id="obs-wire-blue" className="obs-geo-svg obs-geo-svg--wire" viewBox="0 0 100 100">
             <rect id="obs-blue-rect" x="25" y="25" width="50" height="50" fill="none" stroke="#92CFF2" strokeWidth="0.5" vectorEffect="non-scaling-stroke" opacity="0.6" strokeDasharray="200" strokeDashoffset="200"/>
             <line id="obs-blue-line-v" x1="50" y1="14.6" x2="50" y2="85.4" stroke="#1A1A1A" strokeWidth="1" opacity="0.3" strokeDasharray="70" strokeDashoffset="70"/>

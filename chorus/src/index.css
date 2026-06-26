@@ -1945,55 +1945,99 @@ img { max-width: 100%; display: block; }
 [data-theme="blueprint"] .system-thread-hero { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 200; color: #ffffff; font-size: 32px; }
 [data-theme="blueprint"] .system-thread-accent { color: #B9DAFF; text-shadow: 0 0 24px rgba(185,218,255,0.35); }
 
-/* ── OBSIDIAN HERO SHAPE ANIMATION ─────────── */
-@keyframes obs-draw-in {
-  0%   { stroke-dashoffset: var(--dash-len); opacity: 0.2; }
-  30%  { opacity: 0.6; }
-  70%  { stroke-dashoffset: 0; opacity: 0.6; }
-  85%  { stroke-dashoffset: 0; opacity: 0.6; }
-  100% { stroke-dashoffset: var(--dash-len); opacity: 0.2; }
+/* ── OBSIDIAN HERO SHAPE ANIMATION v2 ───────── */
+
+/* Wrapper CSS */
+[data-theme=""] .obs-shape-wrap {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex; align-items: center; justify-content: center;
+  width: 100%; height: 100%;
+}
+[data-theme=""] .obs-shape-wrap .obs-geo-circle,
+[data-theme=""] .obs-shape-wrap .obs-geo-square,
+[data-theme=""] .obs-shape-wrap .obs-geo-diamond {
+  position: relative; top: auto; left: auto; translate: none;
 }
 
-@keyframes obs-draw-in-connected {
-  0%   { stroke-dashoffset: var(--dash-len); opacity: 0.15; }
-  20%  { opacity: 0.7; }
-  65%  { stroke-dashoffset: 0; opacity: 0.7; }
-  80%  { stroke-dashoffset: 0; opacity: 0.7; }
-  100% { stroke-dashoffset: var(--dash-len); opacity: 0.15; }
+/* Keyframes */
+@keyframes obs-circle-spin {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to   { transform: translate(-50%, -50%) rotate(-360deg); }
+}
+@keyframes obs-square-coral-spin {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to   { transform: translate(-50%, -50%) rotate(360deg); }
+}
+@keyframes obs-wire-coral-fade {
+  0%   { opacity: 0.15; }
+  25%  { opacity: 0.55; }
+  50%  { opacity: 0.10; }
+  75%  { opacity: 0.50; }
+  100% { opacity: 0.15; }
+}
+@keyframes obs-square-blue-breathe {
+  0%, 100% { transform: translate(-50%, -50%) scale(1.00); }
+  45%       { transform: translate(-50%, -50%) scale(1.12); }
+  55%       { transform: translate(-50%, -50%) scale(1.12); }
+}
+@keyframes obs-diamond-breathe {
+  0%, 100% { transform: translate(-50%, -50%) rotate(45deg) scale(1.00); }
+  45%       { transform: translate(-50%, -50%) rotate(45deg) scale(0.88); }
+  55%       { transform: translate(-50%, -50%) rotate(45deg) scale(0.88); }
+}
+@keyframes obs-wire-blue-pulse {
+  0%, 100% { opacity: 0.20; }
+  45%       { opacity: 0.75; }
+  55%       { opacity: 0.75; }
+}
+@keyframes obs-crosshair-breathe {
+  0%, 100% { transform: scaleX(1); opacity: 0.20; }
+  45%       { transform: scaleX(1.15); opacity: 0.60; }
+  55%       { transform: scaleX(1.15); opacity: 0.60; }
+}
+@keyframes obs-node-scan {
+  0%, 85%, 100% { opacity: 0.50; transform: scale(1); }
+  90%            { opacity: 1.00; transform: scale(1.6); }
+  95%            { opacity: 0.20; transform: scale(0.8); }
 }
 
-@keyframes obs-node-pulse {
-  0%, 100% { opacity: 0.6; }
-  50%       { opacity: 0.15; }
-}
+/* Apply animations */
+[data-theme=""] .obs-shape-wrap--circle       { animation: obs-circle-spin 40s linear infinite; }
+[data-theme=""] .obs-shape-wrap--square-coral { animation: obs-square-coral-spin 28s linear infinite; }
+[data-theme=""] .obs-geo-panel--coral .obs-geo-svg--wire { animation: obs-wire-coral-fade 12s ease-in-out infinite; }
 
-[data-theme=""] #obs-coral-circle { --dash-len: 222; animation: obs-draw-in 18s ease-in-out infinite; animation-delay: 0s; }
-[data-theme=""] #obs-coral-rect   { --dash-len: 200; animation: obs-draw-in 22s ease-in-out infinite; animation-delay: -4s; }
-[data-theme=""] #obs-coral-line-1 { --dash-len: 142; animation: obs-draw-in 14s ease-in-out infinite; animation-delay: -7s; }
-[data-theme=""] #obs-coral-line-2 { --dash-len: 142; animation: obs-draw-in 16s ease-in-out infinite; animation-delay: -11s; }
+[data-theme=""] .obs-shape-wrap--square-blue  { animation: obs-square-blue-breathe 8s cubic-bezier(0.45, 0, 0.55, 1) infinite; }
+[data-theme=""] .obs-shape-wrap--diamond      { animation: obs-diamond-breathe 8s cubic-bezier(0.45, 0, 0.55, 1) infinite; }
+[data-theme=""] .obs-geo-panel--blue .obs-geo-svg--wire { animation: obs-wire-blue-pulse 8s cubic-bezier(0.45, 0, 0.55, 1) infinite; }
 
-[data-theme=""] #obs-blue-rect    { --dash-len: 200; animation: obs-draw-in-connected 24s ease-in-out infinite; animation-delay: 0s; }
-[data-theme=""] #obs-blue-line-v  { --dash-len: 70;  animation: obs-draw-in-connected 24s ease-in-out infinite; animation-delay: 0s; }
-[data-theme=""] #obs-blue-line-h  { --dash-len: 70;  animation: obs-draw-in-connected 24s ease-in-out infinite; animation-delay: 0s; }
+[data-theme=""] #obs-blue-line-h { transform-origin: center; animation: obs-crosshair-breathe 8s cubic-bezier(0.45, 0, 0.55, 1) infinite; }
+[data-theme=""] #obs-blue-line-v { transform-origin: center; transform-box: fill-box; animation: obs-crosshair-breathe 8s cubic-bezier(0.45, 0, 0.55, 1) infinite; }
 
-[data-theme=""] .obs-geo-node { animation: obs-node-pulse 6s ease-in-out infinite; }
-[data-theme=""] .obs-geo-node--l  { animation-delay: 0s; }
-[data-theme=""] .obs-geo-node--r  { animation-delay: 1.5s; }
-[data-theme=""] .obs-geo-node--t  { animation-delay: 3s; }
-[data-theme=""] .obs-geo-node--b  { animation-delay: 4.5s; }
-[data-theme=""] .obs-geo-node--tl { animation-delay: 0s; }
-[data-theme=""] .obs-geo-node--tr { animation-delay: 2s; }
-[data-theme=""] .obs-geo-node--bl { animation-delay: 4s; }
-[data-theme=""] .obs-geo-node--br { animation-delay: 6s; }
+[data-theme=""] .obs-geo-node--l  { animation: obs-node-scan 9s ease-in-out infinite; animation-delay: 0s; }
+[data-theme=""] .obs-geo-node--r  { animation: obs-node-scan 9s ease-in-out infinite; animation-delay: 1.5s; }
+[data-theme=""] .obs-geo-node--t  { animation: obs-node-scan 9s ease-in-out infinite; animation-delay: 3s; }
+[data-theme=""] .obs-geo-node--b  { animation: obs-node-scan 9s ease-in-out infinite; animation-delay: 4.5s; }
+[data-theme=""] .obs-geo-node--tl { animation: obs-node-scan 11s ease-in-out infinite; animation-delay: 0.8s; }
+[data-theme=""] .obs-geo-node--tr { animation: obs-node-scan 11s ease-in-out infinite; animation-delay: 2.8s; }
+[data-theme=""] .obs-geo-node--bl { animation: obs-node-scan 11s ease-in-out infinite; animation-delay: 5.2s; }
+[data-theme=""] .obs-geo-node--br { animation: obs-node-scan 11s ease-in-out infinite; animation-delay: 7.8s; }
 
+/* Z-index layering */
+[data-theme=""] .obs-shape-wrap--circle       { z-index: 5; }
+[data-theme=""] .obs-shape-wrap--square-coral { z-index: 10; }
+[data-theme=""] .obs-shape-wrap--square-blue  { z-index: 5; }
+[data-theme=""] .obs-shape-wrap--diamond      { z-index: 10; }
+[data-theme=""] .obs-geo-svg--wire            { z-index: 20; }
+[data-theme=""] .obs-geo-node                 { z-index: 30; }
 
+/* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
-  [data-theme=""] #obs-coral-circle,
-  [data-theme=""] #obs-coral-rect,
-  [data-theme=""] #obs-coral-line-1,
-  [data-theme=""] #obs-coral-line-2,
-  [data-theme=""] #obs-blue-rect,
-  [data-theme=""] #obs-blue-line-v,
-  [data-theme=""] #obs-blue-line-h,
+  [data-theme=""] .obs-shape-wrap--circle,
+  [data-theme=""] .obs-shape-wrap--square-coral,
+  [data-theme=""] .obs-shape-wrap--square-blue,
+  [data-theme=""] .obs-shape-wrap--diamond,
+  [data-theme=""] .obs-geo-panel--coral .obs-geo-svg--wire,
+  [data-theme=""] .obs-geo-panel--blue .obs-geo-svg--wire,
   [data-theme=""] .obs-geo-node { animation: none; }
 }
