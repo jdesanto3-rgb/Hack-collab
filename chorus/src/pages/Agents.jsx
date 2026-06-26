@@ -238,31 +238,155 @@ export default function Agents() {
             Executive Agents govern and gate. Specialist agents execute and preserve context. Humans approve. The system is event-driven — when a thread in the product model changes, the right agents respond automatically. Nothing is disconnected. Nothing is lost.
           </p>
 
-          <div className="collab-visual" aria-label="Agent collaboration diagram">
-            <svg width="100%" height="200" viewBox="0 0 800 200" preserveAspectRatio="xMidYMid meet">
-              {[
-                { x: 160, label: 'ECD', color: '#9590e8' },
-                { x: 400, label: 'EPM', color: '#1D9E75' },
-                { x: 640, label: 'EDev', color: '#378ADD' },
-              ].map(n => (
-                <g key={n.label}>
-                  <line x1={n.x} y1={60} x2={n.x} y2={90} stroke="rgba(255,255,255,0.15)" strokeWidth="1.5" strokeDasharray="4,3"/>
-                  <circle cx={n.x} cy={40} r={26} fill={n.color + '33'} stroke={n.color} strokeWidth="1.5"/>
-                  <text x={n.x} y={40} textAnchor="middle" dominantBaseline="middle" fill={n.color} fontSize="13" fontFamily="Inter,sans-serif" fontWeight="600">{n.label}</text>
-                  {[110, 145].map((y, si) => (
-                    <g key={si}>
-                      <line x1={n.x} y1={y} x2={n.x} y2={y+20} stroke="rgba(255,255,255,0.12)" strokeWidth="1"/>
-                      <rect x={n.x-30} y={y} width="60" height="20" rx="4" fill={n.color + '20'} stroke={n.color + '40'} strokeWidth="1"/>
-                      <text x={n.x} y={y+10} textAnchor="middle" dominantBaseline="middle" fill={n.color} fontSize="10" fontFamily="Inter,sans-serif">{si === 0 ? 'SAGE-1' : 'SAGE-2'}</text>
-                    </g>
-                  ))}
-                  <line x1={n.x} y1={165} x2={n.x} y2={180} stroke="rgba(255,255,255,0.12)" strokeWidth="1"/>
-                  <rect x={n.x-32} y={166} width="64" height="22" rx="4" fill="rgba(239,159,39,0.15)" stroke="#EF9F27" strokeWidth="1"/>
-                  <text x={n.x} y={177} textAnchor="middle" dominantBaseline="middle" fill="#EF9F27" fontSize="10" fontFamily="Inter,sans-serif">Human Gate</text>
-                </g>
-              ))}
-              <text x="400" y="14" textAnchor="middle" fill="rgba(255,255,255,0.3)" fontSize="11" fontFamily="Inter,sans-serif" letterSpacing="1">PARALLEL EXECUTION ↔ SEQUENTIAL PIPELINE ↔ EVENT-DRIVEN</text>
-            </svg>
+          <div className="collab-diagram" id="collabDiagram">
+
+            <div className="collab-label">
+              PARALLEL EXECUTION ↔ SEQUENTIAL PIPELINE ↔ EVENT-DRIVEN
+            </div>
+
+            <div className="collab-grid">
+
+              {/* ── DESIGN COLUMN ── */}
+              <div className="collab-column">
+                <div className="collab-exec collab-exec--design">
+                  <div className="collab-exec-ring"></div>
+                  <span className="collab-exec-label">ECD</span>
+                  <span className="collab-exec-sub">Executive Creative Director</span>
+                </div>
+                <div className="collab-connector">
+                  <div className="collab-connector-line"></div>
+                  <div className="collab-connector-dot"></div>
+                </div>
+                <div className="collab-gate">
+                  <span className="collab-gate-icon">⏸</span>
+                  <span className="collab-gate-label">Human Gate</span>
+                </div>
+                <div className="collab-connector">
+                  <div className="collab-connector-line"></div>
+                  <div className="collab-connector-dot"></div>
+                </div>
+                <div className="collab-agents">
+                  <div className="collab-agent collab-agent--design">
+                    <span className="collab-agent-name">Intentor</span>
+                    <span className="collab-agent-role">design intent</span>
+                  </div>
+                  <div className="collab-agent collab-agent--design">
+                    <span className="collab-agent-name">Sketch</span>
+                    <span className="collab-agent-role">wireframes</span>
+                  </div>
+                  <div className="collab-agent collab-agent--design">
+                    <span className="collab-agent-name">Lens</span>
+                    <span className="collab-agent-role">validation</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* ── CENTER — WEAVE CANVAS ── */}
+              <div className="collab-center">
+                <div className="collab-canvas-ring collab-canvas-ring--outer"></div>
+                <div className="collab-canvas-ring collab-canvas-ring--inner"></div>
+                <div className="collab-canvas-node">
+                  <span className="collab-canvas-label">Weave</span>
+                  <span className="collab-canvas-sub">living product model</span>
+                </div>
+                <div className="collab-canvas-threads" aria-hidden="true">
+                  <div className="collab-thread collab-thread--left"></div>
+                  <div className="collab-thread collab-thread--right"></div>
+                  <div className="collab-thread collab-thread--bottom"></div>
+                </div>
+              </div>
+
+              {/* ── PRODUCT COLUMN ── */}
+              <div className="collab-column">
+                <div className="collab-exec collab-exec--product">
+                  <div className="collab-exec-ring"></div>
+                  <span className="collab-exec-label">EPM</span>
+                  <span className="collab-exec-sub">Executive Product Manager</span>
+                </div>
+                <div className="collab-connector">
+                  <div className="collab-connector-line"></div>
+                  <div className="collab-connector-dot"></div>
+                </div>
+                <div className="collab-gate">
+                  <span className="collab-gate-icon">⏸</span>
+                  <span className="collab-gate-label">Human Gate</span>
+                </div>
+                <div className="collab-connector">
+                  <div className="collab-connector-line"></div>
+                  <div className="collab-connector-dot"></div>
+                </div>
+                <div className="collab-agents">
+                  <div className="collab-agent collab-agent--product">
+                    <span className="collab-agent-name">Scout</span>
+                    <span className="collab-agent-role">research</span>
+                  </div>
+                  <div className="collab-agent collab-agent--product">
+                    <span className="collab-agent-name">Echo</span>
+                    <span className="collab-agent-role">persona gen</span>
+                  </div>
+                  <div className="collab-agent collab-agent--product">
+                    <span className="collab-agent-name">Mapper</span>
+                    <span className="collab-agent-role">opportunity map</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* ── DEV COLUMN ── */}
+              <div className="collab-column">
+                <div className="collab-exec collab-exec--dev">
+                  <div className="collab-exec-ring"></div>
+                  <span className="collab-exec-label">EDev</span>
+                  <span className="collab-exec-sub">Executive Developer</span>
+                </div>
+                <div className="collab-connector">
+                  <div className="collab-connector-line"></div>
+                  <div className="collab-connector-dot"></div>
+                </div>
+                <div className="collab-gate">
+                  <span className="collab-gate-icon">⏸</span>
+                  <span className="collab-gate-label">Human Gate</span>
+                </div>
+                <div className="collab-connector">
+                  <div className="collab-connector-line"></div>
+                  <div className="collab-connector-dot"></div>
+                </div>
+                <div className="collab-agents">
+                  <div className="collab-agent collab-agent--dev">
+                    <span className="collab-agent-name">Builder</span>
+                    <span className="collab-agent-role">user stories</span>
+                  </div>
+                  <div className="collab-agent collab-agent--dev">
+                    <span className="collab-agent-name">Proof</span>
+                    <span className="collab-agent-role">test coverage</span>
+                  </div>
+                  <div className="collab-agent collab-agent--dev">
+                    <span className="collab-agent-name">Ship</span>
+                    <span className="collab-agent-role">pull request</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <div className="collab-legend">
+              <div className="collab-legend-item">
+                <div className="collab-legend-dot collab-legend-dot--exec"></div>
+                <span>Executive Agent</span>
+              </div>
+              <div className="collab-legend-item">
+                <div className="collab-legend-dot collab-legend-dot--gate"></div>
+                <span>Human Gate</span>
+              </div>
+              <div className="collab-legend-item">
+                <div className="collab-legend-dot collab-legend-dot--agent"></div>
+                <span>Specialist Agent</span>
+              </div>
+              <div className="collab-legend-item">
+                <div className="collab-legend-dot collab-legend-dot--canvas"></div>
+                <span>Living Product Model</span>
+              </div>
+            </div>
+
           </div>
         </div>
       </section>

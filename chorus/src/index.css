@@ -465,6 +465,98 @@ img { max-width: 100%; display: block; }
 .pillar-card p { font-size: 15px; color: var(--text-2); line-height: 1.7; }
 
 /* =============================================
+   COLLAB DIAGRAM (Agents page)
+   ============================================= */
+.collab-diagram { width: 100%; max-width: 1100px; margin: 0 auto; padding: 64px 40px 80px; display: flex; flex-direction: column; align-items: center; gap: 40px; }
+.collab-label { font-size: 10px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; opacity: 0.40; text-align: center; }
+.collab-grid { display: grid; grid-template-columns: 1fr 140px 1fr 1fr; gap: 0 32px; width: 100%; align-items: start; }
+.collab-column { display: flex; flex-direction: column; align-items: center; gap: 0; }
+
+.collab-exec { position: relative; width: 88px; height: 88px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; z-index: 2; }
+.collab-exec-ring { position: absolute; inset: -6px; border-radius: 50%; border: 1px dashed currentColor; opacity: 0.20; pointer-events: none; }
+.collab-exec-label { font-size: 15px; font-weight: 700; letter-spacing: -0.02em; line-height: 1; }
+.collab-exec-sub { font-size: 8px; font-weight: 400; letter-spacing: 0.04em; text-align: center; opacity: 0.65; max-width: 72px; line-height: 1.3; }
+.collab-exec--design  { background: #EEEDFE; color: #7F77DD; border: 1.5px solid #7F77DD; }
+.collab-exec--product { background: #E3F7F0; color: #1D9E75; border: 1.5px solid #1D9E75; }
+.collab-exec--dev     { background: #E6F1FB; color: #378ADD; border: 1.5px solid #378ADD; }
+
+.collab-connector { display: flex; flex-direction: column; align-items: center; gap: 0; height: 36px; position: relative; }
+.collab-connector-line { width: 1px; flex: 1; background: currentColor; opacity: 0.20; }
+.collab-connector-dot  { width: 5px; height: 5px; border-radius: 50%; background: currentColor; opacity: 0.35; flex-shrink: 0; }
+
+.collab-gate { display: flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 6px; border: 1px solid #EF9F27; background: rgba(239,159,39,0.08); white-space: nowrap; }
+.collab-gate-icon  { font-size: 11px; color: #EF9F27; }
+.collab-gate-label { font-size: 11px; font-weight: 600; color: #EF9F27; letter-spacing: 0.04em; font-family: 'JetBrains Mono', monospace; }
+
+.collab-agents { display: flex; flex-direction: column; gap: 8px; width: 100%; padding-top: 4px; }
+.collab-agent  { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 10px 14px; border-radius: 6px; border: 1px solid transparent; }
+.collab-agent-name { font-size: 13px; font-weight: 600; letter-spacing: -0.01em; line-height: 1; }
+.collab-agent-role { font-size: 10px; font-weight: 400; letter-spacing: 0.04em; opacity: 0.60; font-family: 'JetBrains Mono', monospace; }
+.collab-agent--design  { background: rgba(127,119,221,0.06); border-color: rgba(127,119,221,0.18); color: #7F77DD; }
+.collab-agent--product { background: rgba(29,158,117,0.06);  border-color: rgba(29,158,117,0.18);  color: #1D9E75; }
+.collab-agent--dev     { background: rgba(55,138,221,0.06);   border-color: rgba(55,138,221,0.18);  color: #378ADD; }
+
+.collab-center { position: relative; display: flex; align-items: center; justify-content: center; align-self: center; }
+.collab-canvas-ring { position: absolute; border-radius: 50%; border: 1px dashed currentColor; pointer-events: none; }
+.collab-canvas-ring--outer { width: 130px; height: 130px; opacity: 0.12; animation: collab-ring-pulse 4s ease-in-out infinite; }
+.collab-canvas-ring--inner { width: 100px; height: 100px; opacity: 0.20; animation: collab-ring-pulse 4s ease-in-out infinite; animation-delay: -2s; }
+@keyframes collab-ring-pulse { 0%, 100% { opacity: 0.12; transform: scale(1); } 50% { opacity: 0.25; transform: scale(1.04); } }
+.collab-canvas-node { width: 80px; height: 80px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; position: relative; z-index: 2; border: 1.5px solid currentColor; }
+.collab-canvas-label { font-size: 13px; font-weight: 600; letter-spacing: -0.02em; line-height: 1; }
+.collab-canvas-sub { font-size: 7.5px; font-weight: 400; letter-spacing: 0.04em; opacity: 0.60; text-align: center; max-width: 60px; line-height: 1.3; }
+.collab-canvas-threads { position: absolute; inset: 0; pointer-events: none; }
+
+.collab-legend { display: flex; gap: 28px; flex-wrap: wrap; justify-content: center; padding-top: 16px; }
+.collab-legend-item { display: flex; align-items: center; gap: 8px; font-size: 11px; opacity: 0.50; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.04em; }
+.collab-legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.collab-legend-dot--exec   { background: #7F77DD; }
+.collab-legend-dot--gate   { background: #EF9F27; }
+.collab-legend-dot--agent  { background: #B4B2A9; }
+.collab-legend-dot--canvas { background: currentColor; }
+@media (prefers-reduced-motion: reduce) { .collab-canvas-ring { animation: none; } }
+
+/* Canvas theme */
+[data-theme="canvas"] .collab-diagram { background: transparent; }
+[data-theme="canvas"] .collab-label { font-family: 'JetBrains Mono', monospace; color: rgba(36,18,8,0.40); }
+[data-theme="canvas"] .collab-connector-line, [data-theme="canvas"] .collab-connector-dot { color: rgba(36,18,8,1); }
+[data-theme="canvas"] .collab-canvas-node { background: #F5EFE8; border-color: rgba(36,18,8,0.25); color: #241208; }
+[data-theme="canvas"] .collab-canvas-ring { color: rgba(36,18,8,1); }
+[data-theme="canvas"] .collab-legend-item { color: rgba(36,18,8,0.50); font-family: 'JetBrains Mono', monospace; }
+[data-theme="canvas"] .collab-legend-dot--canvas { background: rgba(36,18,8,0.40); }
+[data-theme="canvas"] .collab-exec--design  { background: #EEEDFE; }
+[data-theme="canvas"] .collab-exec--product { background: #E3F7F0; }
+[data-theme="canvas"] .collab-exec--dev     { background: #E6F1FB; }
+
+/* Obsidian theme */
+[data-theme=""] .collab-diagram { background: transparent; }
+[data-theme=""] .collab-label { font-family: 'JetBrains Mono', monospace; color: rgba(235,230,223,0.40); }
+[data-theme=""] .collab-connector-line, [data-theme=""] .collab-connector-dot { color: rgba(235,230,223,1); }
+[data-theme=""] .collab-exec--design  { background: rgba(127,119,221,0.12); }
+[data-theme=""] .collab-exec--product { background: rgba(29,158,117,0.12); }
+[data-theme=""] .collab-exec--dev     { background: rgba(55,138,221,0.12); }
+[data-theme=""] .collab-canvas-node { background: rgba(235,230,223,0.05); border-color: rgba(235,230,223,0.25); color: #EBE6DF; }
+[data-theme=""] .collab-canvas-ring { color: rgba(235,230,223,1); }
+[data-theme=""] .collab-legend-item { color: rgba(235,230,223,0.45); font-family: 'JetBrains Mono', monospace; }
+[data-theme=""] .collab-legend-dot--canvas { background: rgba(235,230,223,0.35); }
+[data-theme=""] .collab-gate { background: rgba(239,159,39,0.08); }
+
+/* Blueprint theme */
+[data-theme="blueprint"] .collab-diagram { background: transparent; }
+[data-theme="blueprint"] .collab-label { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: rgba(255,255,255,0.30); letter-spacing: 0.18em; }
+[data-theme="blueprint"] .collab-connector-line, [data-theme="blueprint"] .collab-connector-dot { color: rgba(255,255,255,1); }
+[data-theme="blueprint"] .collab-exec--design  { background: rgba(127,119,221,0.10); }
+[data-theme="blueprint"] .collab-exec--product { background: rgba(29,158,117,0.10); }
+[data-theme="blueprint"] .collab-exec--dev     { background: rgba(55,138,221,0.10); }
+[data-theme="blueprint"] .collab-canvas-node { background: rgba(185,218,255,0.05); border-color: rgba(185,218,255,0.30); color: #B9DAFF; box-shadow: 0 0 24px rgba(185,218,255,0.12); }
+[data-theme="blueprint"] .collab-canvas-ring { color: rgba(185,218,255,1); }
+[data-theme="blueprint"] .collab-legend-item { color: rgba(255,255,255,0.35); font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; letter-spacing: 0.12em; }
+[data-theme="blueprint"] .collab-legend-dot--canvas { background: #B9DAFF; }
+[data-theme="blueprint"] .collab-gate { background: rgba(239,159,39,0.06); }
+[data-theme="blueprint"] .collab-agent--design  { box-shadow: 0 0 12px rgba(127,119,221,0.08); }
+[data-theme="blueprint"] .collab-agent--product { box-shadow: 0 0 12px rgba(29,158,117,0.08); }
+[data-theme="blueprint"] .collab-agent--dev     { box-shadow: 0 0 12px rgba(55,138,221,0.08); }
+
+/* =============================================
    FOOTER
    ============================================= */
 .footer { border-top: 1px solid var(--border); padding: 48px 0; }
