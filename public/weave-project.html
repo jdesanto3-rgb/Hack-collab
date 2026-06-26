@@ -5,22 +5,13 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Weave — Project Studio</title>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/tokens.css">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#f0f0f5;--surface:#fff;--surface2:#f5f5f9;--border:#e4e4eb;--border2:#d0d0db;
-  --text:#16161a;--text2:#5f5f70;--text3:#a0a0b0;
-  --brand:#7c3aed;--brand-light:#ede9fe;--brand-mid:#a78bfa;
-  --green:#16a34a;--green-light:#dcfce7;
-  --amber:#d97706;--amber-light:#fef3c7;
-  --red:#dc2626;--red-light:#fee2e2;
-  --blue:#2563eb;--blue-light:#dbeafe;
-}
-[data-theme="dark"]{
-  --bg:#08080e;--surface:#111118;--surface2:#18181f;--border:#27273a;--border2:#38384a;
-  --text:#f0f0f5;--text2:#8888a0;--text3:#48485a;--brand-light:#1e0a4a;
-}
-body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--text);height:100vh;overflow:hidden;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased;font-size:13px}
+body{height:100vh;overflow:hidden;display:flex;flex-direction:column}
 button{font-family:inherit}
 
 /* ── TOOLBAR ── */
@@ -287,7 +278,7 @@ button{font-family:inherit}
   <div class="tb-actions">
     <button class="tb-btn" onclick="toggleTheme()">◐</button>
     <button class="tb-btn primary">↑ Promote</button>
-    <div class="av" style="background:#7c3aed">JD</div>
+    <div class="av" style="background:var(--brand)">JD</div>
     <div class="av" style="background:#059669">AK</div>
   </div>
 </div>
@@ -306,7 +297,7 @@ button{font-family:inherit}
       </div>
       <div class="rail-sec">
         <div class="rail-sec-title">PAGES</div>
-        <div class="rail-item"><div style="width:8px;height:8px;border-radius:50%;background:#7c3aed"></div>Home</div>
+        <div class="rail-item"><div style="width:8px;height:8px;border-radius:50%;background:var(--brand)"></div>Home</div>
         <div class="rail-item"><div style="width:8px;height:8px;border-radius:50%;background:#059669"></div>Product</div>
         <div class="rail-item"><div style="width:8px;height:8px;border-radius:50%;background:#2563eb"></div>Pricing</div>
         <div class="rail-item"><div style="width:8px;height:8px;border-radius:50%;background:#d97706"></div>About</div>
@@ -433,7 +424,7 @@ button{font-family:inherit}
     <div class="project-sidebar">
       <div style="font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--text3);margin-bottom:10px">TEAM</div>
       <div class="team-card">
-        <div class="team-row"><div class="team-av" style="background:#7c3aed">JD</div><div style="flex:1"><div class="team-name">Joe DeSanto</div><div class="team-role">Lead Designer</div></div><div class="team-online"></div></div>
+        <div class="team-row"><div class="team-av" style="background:var(--brand)">JD</div><div style="flex:1"><div class="team-name">Joe DeSanto</div><div class="team-role">Lead Designer</div></div><div class="team-online"></div></div>
         <div class="team-row"><div class="team-av" style="background:#059669">AK</div><div style="flex:1"><div class="team-name">Alex Kim</div><div class="team-role">UX Researcher</div></div><div style="width:7px;height:7px;border-radius:50%;background:var(--amber)"></div></div>
         <div class="team-row"><div class="team-av" style="background:#ea580c">MR</div><div style="flex:1"><div class="team-name">Maya Russo</div><div class="team-role">Strategist</div></div><div style="width:7px;height:7px;border-radius:50%;background:var(--text3)"></div></div>
       </div>
@@ -674,10 +665,10 @@ function renderInspect(){
 
 function renderStyle(){
   const colors=[
-    {n:'Brand',v:'#7c3aed'},{n:'Brand Mid',v:'#a78bfa'},{n:'Brand Light',v:'#ede9fe'},
-    {n:'Surface',v:'#ffffff'},{n:'Surface 2',v:'#f5f5f9'},{n:'Border',v:'#e4e4eb'},
-    {n:'Text',v:'#16161a'},{n:'Text 2',v:'#5f5f70'},{n:'Green',v:'#16a34a'},
-    {n:'Red',v:'#dc2626'},{n:'Amber',v:'#d97706'},{n:'Blue',v:'#2563eb'},
+    {n:'Brand',v:'#D96000'},{n:'Brand Mid',v:'#EE7A00'},{n:'Brand Light',v:'#FFF0E0'},
+    {n:'Surface',v:'#FDFAF5'},{n:'Surface 2',v:'#EEE9E2'},{n:'Border',v:'#DAD5CC'},
+    {n:'Text',v:'#201D1A'},{n:'Text 2',v:'#5C5850'},{n:'Green',v:'#1A8A5A'},
+    {n:'Red',v:'#C4305A'},{n:'Amber',v:'#B07A0A'},{n:'Blue',v:'#2E5CE8'},
   ];
   return `
     <div class="sg-section"><div class="sg-heading">Color Tokens</div><div class="color-grid">${colors.map(c=>`<div class="swatch"><div class="swatch-color" style="background:${c.v}"></div><div class="swatch-info"><div class="swatch-name">${c.n}</div><div class="swatch-val">${c.v}</div></div></div>`).join('')}</div></div>
