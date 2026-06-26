@@ -286,6 +286,7 @@ let S={
   mode:'flow',
   page:'home',
   rtab:'agents',
+  sgComp:'button',
   chat:[],
   typing:false,
   chatFor:null,
@@ -850,33 +851,113 @@ function renderDesign(){
 // ── STYLE GUIDE ───────────────────────────────────────────────────────────────
 function renderStyleGuide(){
   const tok=T();
-  const colors=[
-    {g:'Brand',items:[{n:'--brand',v:tok.brand},{n:'--brand-mid',v:tok.brandMid},{n:'--brand-light',v:tok.brandLight}]},
-    {g:'Neutrals',items:[{n:'--text',v:tok.text},{n:'--text2',v:tok.text2},{n:'--text3',v:tok.text3},{n:'--surface',v:tok.surface},{n:'--surface2',v:tok.surface2},{n:'--border',v:tok.border}]},
-    {g:'Semantic',items:[{n:'--teal',v:tok.teal},{n:'--purple',v:tok.purple},{n:'--blue',v:tok.blue},{n:'--amber',v:tok.amber},{n:'--red',v:tok.red},{n:'--green',v:tok.green}]},
+  const sel=S.sgComp||'button';
+  const TREE=[
+    {group:'Atoms',items:[{id:'button',label:'Button'},{id:'badge',label:'Badge'},{id:'avatar',label:'Avatar'},{id:'input',label:'Input'}]},
+    {group:'Layout',items:[{id:'card',label:'Card'},{id:'modal',label:'Modal'}]},
+    {group:'Tokens',items:[{id:'colors',label:'Colors'},{id:'typography',label:'Typography'},{id:'spacing',label:'Spacing'}]},
   ];
-  const types=[
-    {l:'Display',sp:'Playfair · 52px · 700',st:'font-family:"Playfair Display",serif;font-size:46px;font-weight:700',s:'Intelligence at speed.'},
-    {l:'H1',sp:'Playfair · 36px · 700',st:'font-family:"Playfair Display",serif;font-size:32px;font-weight:700',s:'Scale as you grow'},
-    {l:'Body',sp:'Inter · 14px · 400',st:'font-size:13.5px',s:'Tokens update live across Figma and code without copy-paste handoff.'},
-    {l:'Caption',sp:'Inter · 11px · 700 · tracked',st:'font-size:11px;font-weight:700;letter-spacing:.08em',s:'CORE CAPABILITIES · TOKEN SYNC · PRICING'},
-    {l:'Mono',sp:'JetBrains Mono · 12px',st:'font-family:"JetBrains Mono",monospace;font-size:12px',s:'var(--brand): #FF9200;'},
-  ];
-  document.getElementById('stage').innerHTML=`<div class="sg">
-    <div class="sg-sec"><div class="sg-title">Color Tokens</div>${colors.map(g=>`<div class="sg-sub">${g.g}</div><div class="sg-row">${g.items.map(c=>`<div class="swatch"><div class="swatch-col" style="background:${c.v}"></div><div class="swatch-info"><div class="sw-name">${c.n}</div><div class="sw-val">${c.v}</div></div></div>`).join('')}</div>`).join('')}</div>
-    <div class="sg-sec"><div class="sg-title">Typography</div>${types.map(t=>`<div class="type-row"><div class="type-lbl">${t.l} — <span style="font-family:'JetBrains Mono',monospace;font-weight:400;color:var(--text3)">${t.sp}</span></div><div style="${t.st};color:var(--text);line-height:1.2">${t.s}</div></div>`).join('')}</div>
-    <div class="sg-sec"><div class="sg-title">Spacing Scale</div><div class="sg-row" style="align-items:flex-end">${[4,8,12,16,24,32,48,64].map(n=>`<div style="display:flex;flex-direction:column;align-items:center;gap:4px"><div style="width:${Math.min(n,64)}px;height:${Math.min(n,64)}px;background:color-mix(in srgb,var(--brand) 22%,transparent);border-radius:3px"></div><div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text3)">${n}</div></div>`).join('')}</div></div>
-    <div class="sg-sec"><div class="sg-title">Components</div>
-      <div class="sg-sub">Buttons</div>
-      <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:14px">
-        <button style="height:40px;padding:0 22px;border-radius:20px;background:var(--brand);color:#fff;font-size:13.5px;font-weight:600;font-family:'Inter',sans-serif">Primary →</button>
-        <button style="height:40px;padding:0 20px;border-radius:20px;background:transparent;border:1.5px solid var(--border);color:var(--text2);font-size:13.5px;font-family:'Inter',sans-serif">Secondary</button>
-        <button style="height:40px;padding:0 18px;border-radius:20px;background:transparent;color:var(--brand);font-size:13.5px;font-weight:600;font-family:'Inter',sans-serif">Ghost →</button>
+  const CTRL_ROW=(name,val)=>`<tr style="border-bottom:1px solid var(--border)"><td style="padding:8px 12px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text2);white-space:nowrap;width:120px">${name}</td><td style="padding:8px 12px;font-size:12px;color:var(--text3)">${val}</td></tr>`;
+  function compPanel(){
+    if(sel==='button') return `
+      <div style="padding:22px 28px">
+        <div style="font-size:18px;font-weight:700;margin-bottom:4px">Button</div>
+        <div style="font-size:12px;color:var(--text3);margin-bottom:18px">atoms/Button · v1.4.2</div>
+        <div style="display:flex;border-bottom:1px solid var(--border);margin-bottom:20px">
+          <span style="padding:7px 16px;font-size:12px;font-weight:600;border-bottom:2px solid var(--brand);color:var(--brand)">Canvas</span>
+          <span style="padding:7px 16px;font-size:12px;color:var(--text3)">Docs</span>
+          <span style="padding:7px 16px;font-size:12px;color:var(--text3)">Accessibility</span>
+        </div>
+        <div style="border:1px solid var(--border);border-radius:10px;padding:32px 24px;background:var(--bg);display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin-bottom:24px">
+          <button style="height:40px;padding:0 22px;border-radius:20px;background:var(--brand);color:#fff;font-size:13.5px;font-weight:600;font-family:'Inter',sans-serif;border:none;cursor:pointer">Primary →</button>
+          <button style="height:40px;padding:0 20px;border-radius:20px;background:transparent;border:1.5px solid var(--border);color:var(--text2);font-size:13.5px;font-family:'Inter',sans-serif;cursor:pointer">Secondary</button>
+          <button style="height:40px;padding:0 18px;border-radius:20px;background:transparent;color:var(--brand);font-size:13.5px;font-weight:600;font-family:'Inter',sans-serif;border:none;cursor:pointer">Ghost →</button>
+          <button style="height:40px;padding:0 20px;border-radius:20px;background:transparent;border:1.5px solid var(--border);color:var(--text3);font-size:13.5px;font-family:'Inter',sans-serif;cursor:not-allowed;opacity:.45" disabled>Disabled</button>
+        </div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--text3);margin-bottom:8px">CONTROLS</div>
+        <table style="width:100%;border-collapse:collapse;border:1px solid var(--border);border-radius:8px;overflow:hidden">
+          ${CTRL_ROW('variant','primary | secondary | ghost')}
+          ${CTRL_ROW('size','sm | md | lg')}
+          ${CTRL_ROW('disabled','false | true')}
+          ${CTRL_ROW('loading','false | true')}
+          ${CTRL_ROW('icon','ReactNode | undefined')}
+        </table>
+      </div>`;
+    if(sel==='badge') return `
+      <div style="padding:22px 28px">
+        <div style="font-size:18px;font-weight:700;margin-bottom:4px">Badge</div>
+        <div style="font-size:12px;color:var(--text3);margin-bottom:18px">atoms/Badge · v1.2.0</div>
+        <div style="display:flex;border-bottom:1px solid var(--border);margin-bottom:20px">
+          <span style="padding:7px 16px;font-size:12px;font-weight:600;border-bottom:2px solid var(--brand);color:var(--brand)">Canvas</span>
+          <span style="padding:7px 16px;font-size:12px;color:var(--text3)">Docs</span>
+        </div>
+        <div style="border:1px solid var(--border);border-radius:10px;padding:32px 24px;background:var(--bg);display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:24px">
+          ${[['Active','var(--brand-light)','var(--brand)'],['Review','#e7eefe','#2f5bea'],['Live','#e6f3ec','#2e8157'],['Draft','var(--surface2)','var(--text3)'],['Blocked','#fce8ea','#c0392b'],['Archived','var(--surface2)','var(--text3)']].map(([l,bg,c])=>`<span style="display:inline-flex;padding:4px 10px;border-radius:6px;font-size:11px;font-weight:700;letter-spacing:.04em;background:${bg};color:${c}">${l}</span>`).join('')}
+        </div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--text3);margin-bottom:8px">CONTROLS</div>
+        <table style="width:100%;border-collapse:collapse;border:1px solid var(--border);border-radius:8px;overflow:hidden">
+          ${CTRL_ROW('status','active | review | live | draft | blocked | archived')}
+          ${CTRL_ROW('size','sm | md')}
+          ${CTRL_ROW('dot','false | true')}
+        </table>
+      </div>`;
+    if(sel==='colors') return `
+      <div style="padding:22px 28px">
+        <div style="font-size:18px;font-weight:700;margin-bottom:4px">Colors</div>
+        <div style="font-size:12px;color:var(--text3);margin-bottom:20px">tokens/Colors · design system color primitives</div>
+        ${[
+          {g:'Brand',items:[{n:'--brand',v:tok.brand},{n:'--brand-mid',v:tok.brandMid},{n:'--brand-light',v:tok.brandLight}]},
+          {g:'Neutrals',items:[{n:'--text',v:tok.text},{n:'--text2',v:tok.text2},{n:'--text3',v:tok.text3},{n:'--surface',v:tok.surface},{n:'--surface2',v:tok.surface2},{n:'--border',v:tok.border}]},
+          {g:'Semantic',items:[{n:'--teal',v:tok.teal},{n:'--purple',v:tok.purple},{n:'--blue',v:tok.blue},{n:'--amber',v:tok.amber},{n:'--red',v:tok.red},{n:'--green',v:tok.green}]},
+        ].map(g=>`<div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:10px">${g.g}</div><div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px">${g.items.map(c=>`<div style="width:90px"><div style="height:44px;border-radius:8px;background:${c.v};border:1px solid var(--border);margin-bottom:6px"></div><div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text2);white-space:nowrap">${c.n}</div><div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text3)">${c.v}</div></div>`).join('')}</div>`).join('')}
+      </div>`;
+    if(sel==='typography') return `
+      <div style="padding:22px 28px">
+        <div style="font-size:18px;font-weight:700;margin-bottom:4px">Typography</div>
+        <div style="font-size:12px;color:var(--text3);margin-bottom:20px">tokens/Typography · type scale</div>
+        ${[
+          {l:'Display',sp:'Playfair Display · 52px · 700',st:'font-family:"Playfair Display",serif;font-size:46px;font-weight:700;line-height:1.1',s:'Intelligence at speed.'},
+          {l:'H1',sp:'Playfair Display · 36px · 700',st:'font-family:"Playfair Display",serif;font-size:32px;font-weight:700;line-height:1.15',s:'Scale as you grow'},
+          {l:'H2',sp:'Inter · 22px · 700',st:'font-size:22px;font-weight:700;line-height:1.2',s:'Design system tokens'},
+          {l:'Body',sp:'Inter · 14px · 400',st:'font-size:13.5px;line-height:1.6',s:'Tokens update live across Figma and code without copy-paste handoff.'},
+          {l:'Caption',sp:'Inter · 11px · 700 · tracked',st:'font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase',s:'Core capabilities · token sync · pricing'},
+          {l:'Mono',sp:'JetBrains Mono · 12px',st:'font-family:"JetBrains Mono",monospace;font-size:12px',s:'var(--brand): #D96000;'},
+        ].map(t=>`<div style="border-bottom:1px solid var(--border);padding:16px 0;display:flex;gap:20px;align-items:baseline"><div style="min-width:90px;font-size:10px;font-weight:700;letter-spacing:.07em;color:var(--text3)">${t.l}</div><div><div style="font-size:9px;font-family:'JetBrains Mono',monospace;color:var(--text3);margin-bottom:8px">${t.sp}</div><div style="${t.st};color:var(--text)">${t.s}</div></div></div>`).join('')}
+      </div>`;
+    if(sel==='spacing') return `
+      <div style="padding:22px 28px">
+        <div style="font-size:18px;font-weight:700;margin-bottom:4px">Spacing</div>
+        <div style="font-size:12px;color:var(--text3);margin-bottom:20px">tokens/Spacing · 4px base scale</div>
+        <div style="display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap">
+          ${[4,8,12,16,24,32,48,64,96].map(n=>`<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><div style="width:${Math.min(n,96)}px;height:${Math.min(n,96)}px;background:color-mix(in srgb,var(--brand) 18%,transparent);border:1px dashed color-mix(in srgb,var(--brand) 40%,transparent);border-radius:4px"></div><div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text3)">${n}px</div><div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text2)">${n/4}×</div></div>`).join('')}
+        </div>
+      </div>`;
+    // default fallback
+    return `<div style="padding:40px;color:var(--text3);font-size:13px">Select a component from the sidebar</div>`;
+  }
+  document.getElementById('stage').innerHTML=`
+    <div style="display:flex;flex-direction:column;height:100%;overflow:hidden">
+      <div style="height:42px;border-bottom:1px solid var(--border);background:var(--surface);display:flex;align-items:center;padding:0 14px;gap:10px;flex:none">
+        <span style="background:#FF4785;color:#fff;font-weight:900;font-size:9px;padding:2px 6px;border-radius:4px;font-family:'JetBrains Mono',monospace;letter-spacing:.03em">SB</span>
+        <span style="font-size:13px;font-weight:700;letter-spacing:-.02em">Weave DS</span>
+        <span style="font-size:12px;color:var(--text3)">— Storybook</span>
+        <span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px;background:color-mix(in srgb,#FF4785 12%,transparent);color:#FF4785;font-family:'JetBrains Mono',monospace">v2.1.0</span>
+        <div style="flex:1"></div>
+        <a href="https://storybook.js.org" target="_blank" style="display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:#FF4785;text-decoration:none;padding:4px 10px;border:1px solid color-mix(in srgb,#FF4785 35%,transparent);border-radius:6px;transition:all .14s">Open Storybook ↗</a>
       </div>
-      <div class="sg-sub">Badges</div>
-      <div style="display:flex;flex-wrap:wrap;gap:8px">${[['Active','var(--brand-light)','var(--brand)'],['Review','#e7eefe','#2f5bea'],['Live','#e6f3ec','#2e8157'],['Draft','var(--surface2)','var(--text3)']].map(([l,bg,c])=>`<span style="display:inline-flex;padding:4px 10px;border-radius:6px;font-size:11px;font-weight:700;background:${bg};color:${c}">${l}</span>`).join('')}</div>
-    </div>
-  </div>`;
+      <div style="display:flex;flex:1;overflow:hidden">
+        <div style="width:188px;border-right:1px solid var(--border);background:var(--surface);overflow-y:auto;flex:none;padding:8px 0;font-family:'Inter',sans-serif">
+          <div style="padding:8px 12px 4px;font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--text3)">COMPONENTS</div>
+          ${TREE.map(g=>`
+            <div style="padding:6px 12px 3px;font-size:11px;font-weight:700;color:var(--text2)">▾ ${g.group}</div>
+            ${g.items.map(it=>`<div onclick="setState({sgComp:'${it.id}'})" style="padding:6px 12px 6px 22px;font-size:12px;cursor:pointer;color:${it.id===sel?'#FF4785':'var(--text2)'};background:${it.id===sel?'color-mix(in srgb,#FF4785 8%,transparent)':'transparent'};border-left:2px solid ${it.id===sel?'#FF4785':'transparent'};margin-left:0">${it.label}</div>`).join('')}
+          `).join('')}
+        </div>
+        <div style="flex:1;overflow-y:auto;background:var(--bg)">
+          ${compPanel()}
+        </div>
+      </div>
+    </div>`;
 }
 
 // ── LEFT RAIL ─────────────────────────────────────────────────────────────────
@@ -1073,7 +1154,7 @@ function renderDesignInspect(){
 }
 
 // ── TOOLBAR ───────────────────────────────────────────────────────────────────
-const MODES=[['flow','Flow'],['sitemap','Sitemap'],['wireframe','Wireframe'],['design','Design'],['styleguide','Style Guide']];
+const MODES=[['flow','Flow'],['sitemap','Sitemap'],['wireframe','Wireframe'],['design','Design'],['styleguide','Storybook']];
 function renderToolbar(){
   document.getElementById('toolbar').innerHTML=`
     <a href="/weave-canvas-v2.html" style="display:flex;align-items:center;gap:9px;text-decoration:none;color:inherit;flex:none">
@@ -1099,6 +1180,10 @@ function renderToolbar(){
     <a href="https://www.figma.com" target="_blank" class="tb-btn" style="text-decoration:none;display:flex;align-items:center;gap:5px;font-size:12px">
       <svg width="11" height="13" viewBox="0 0 38 57" fill="none"><path d="M19 28.5A9.5 9.5 0 1 1 28.5 19v9.5H19Z" fill="#0ACF83"/><path d="M9.5 47.5A9.5 9.5 0 0 1 19 38h9.5v9.5A9.5 9.5 0 0 1 9.5 47.5Z" fill="#FF7262"/><path d="M9.5 9.5A9.5 9.5 0 0 1 19 0h9.5v19H19A9.5 9.5 0 0 1 9.5 9.5Z" fill="#F24E1E"/><path d="M0 28.5A9.5 9.5 0 0 1 9.5 19H19v19H9.5A9.5 9.5 0 0 1 0 28.5Z" fill="#FF7262"/><circle cx="28.5" cy="28.5" r="9.5" fill="#1ABCFE"/></svg>
       Figma
+    </a>
+    <a href="https://storybook.js.org" target="_blank" class="tb-btn" style="text-decoration:none;display:flex;align-items:center;gap:5px;font-size:12px" onclick="event.preventDefault();setState({mode:'styleguide'})">
+      <span style="display:flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:3px;background:#FF4785;font-size:8px;font-weight:900;color:#fff;font-family:'JetBrains Mono',monospace;flex:none">SB</span>
+      Storybook
     </a>
     <button class="tb-btn" onclick="toggleTheme()">${isDark()?'☀':'◑'}</button>
     <button class="tb-btn" onclick="openPreview()">▶ Preview</button>
