@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Weave — New Project</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f0f0f5;--surface:#fff;--surface2:#f5f5f9;--border:#e4e4eb;--border2:#d0d0db;
+  --text:#16161a;--text2:#5f5f70;--text3:#a0a0b0;
+  --brand:#7c3aed;--brand-light:#ede9fe;--brand-mid:#a78bfa;
+  --green:#16a34a;--green-light:#dcfce7;
+  --amber:#d97706;--amber-light:#fef3c7;
+}
+[data-theme="dark"]{
+  --bg:#08080e;--surface:#111118;--surface2:#18181f;--border:#27273a;--border2:#38384a;
+  --text:#f0f0f5;--text2:#8888a0;--text3:#48485a;--brand-light:#1e0a4a;
+}
+body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased;font-size:13px}
+
+/* NAV */
+.nav{display:flex;align-items:center;gap:0;padding:0 28px;height:54px;background:var(--surface);border-bottom:1px solid var(--border)}
+.nav-logo{display:flex;align-items:center;gap:9px;text-decoration:none;color:inherit}
+.nav-logo-name{font-size:15px;font-weight:800;letter-spacing:-.03em}
+.nav-crumb{display:flex;align-items:center;gap:8px;margin-left:16px;font-size:12px;color:var(--text2)}
+.nav-crumb-sep{color:var(--text3)}
+.nav-crumb-curr{font-weight:700;color:var(--text)}
+.nav-spacer{flex:1}
+
+/* LAYOUT */
+.page-body{flex:1;display:flex;align-items:flex-start;justify-content:center;padding:40px 24px;gap:32px}
+.wizard-col{width:100%;max-width:660px}
+.preview-col{width:340px;flex-shrink:0;position:sticky;top:40px}
+
+/* STEPS */
+.steps-row{display:flex;align-items:center;margin-bottom:32px}
+.step{display:flex;align-items:center;gap:8px}
+.step-dot{width:26px;height:26px;border-radius:50%;border:2px solid var(--border);background:var(--surface);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--text3);flex-shrink:0;transition:all .2s}
+.step.active .step-dot{border-color:var(--brand);background:var(--brand);color:#fff}
+.step.done .step-dot{border-color:var(--green);background:var(--green);color:#fff}
+.step-label{font-size:11px;font-weight:600;color:var(--text3);white-space:nowrap}
+.step.active .step-label{color:var(--brand)}
+.step.done .step-label{color:var(--green)}
+.step-line{flex:1;height:2px;background:var(--border);margin:0 10px}
+.step-line.done{background:var(--green)}
+
+/* PANEL */
+.wizard-panel{background:var(--surface);border:1px solid var(--border);border-radius:20px;overflow:hidden}
+.panel-head{padding:28px 32px 0}
+.panel-title{font-size:20px;font-weight:800;letter-spacing:-.03em;margin-bottom:4px}
+.panel-sub{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:28px}
+.panel-body{padding:0 32px}
+.panel-footer{display:flex;justify-content:space-between;align-items:center;padding:24px 32px;border-top:1px solid var(--border);margin-top:28px}
+
+/* FORM */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.form-full{grid-column:1/-1}
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--text3)}
+.field input,.field select,.field textarea{background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:10px 13px;font-size:13px;color:var(--text);font-family:inherit;outline:none;transition:border-color .15s;width:100%}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--brand);background:var(--surface)}
+.field textarea{resize:none;height:80px;line-height:1.55}
+
+/* SOURCE INTAKE */
+.src-type-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:24px}
+.src-type{display:flex;flex-direction:column;align-items:center;gap:7px;padding:16px 8px;border:2px solid var(--border);border-radius:12px;cursor:pointer;font-size:11px;font-weight:700;color:var(--text2);transition:all .15s;background:var(--surface2)}
+.src-type:hover{border-color:var(--brand);color:var(--brand);background:var(--brand-light)}
+.src-type-icon{font-size:24px}
+.src-suggest-title{font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--text3);margin-bottom:10px}
+.src-suggest-row{display:flex;align-items:center;gap:10px;padding:10px 13px;border:1px solid var(--border);border-radius:9px;margin-bottom:7px;cursor:pointer;transition:all .15s;background:var(--surface2);user-select:none}
+.src-suggest-row:hover{border-color:var(--brand);background:var(--brand-light)}
+.src-suggest-row.added{opacity:.4;pointer-events:none}
+.src-suggest-icon{font-size:16px}
+.src-suggest-name{font-size:12px;font-weight:600;flex:1}
+.src-suggest-type{font-size:10px;color:var(--text3)}
+.src-suggest-add{font-size:18px;color:var(--text3)}
+.src-chips{display:flex;flex-wrap:wrap;gap:6px;min-height:28px}
+.src-chip{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:20px;font-size:11px;font-weight:700;background:var(--brand-light);color:var(--brand)}
+.src-chip button{background:none;border:none;cursor:pointer;color:var(--brand);font-size:14px;line-height:1;padding:0 0 0 2px;opacity:.5;transition:opacity .1s}
+.src-chip button:hover{opacity:1}
+
+/* PROCESSING */
+.proc-wrap{display:flex;flex-direction:column;gap:14px}
+.proc-progress{height:5px;background:var(--surface2);border-radius:3px;overflow:hidden;border:1px solid var(--border)}
+.proc-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--brand),var(--brand-mid));transition:width .7s ease}
+.proc-status-text{font-size:12px;color:var(--text2);min-height:18px;font-weight:600}
+.proc-src-row{display:flex;align-items:center;gap:10px;padding:9px 13px;border-radius:9px;border:1px solid var(--border);font-size:12px;background:var(--surface2)}
+.proc-src-icon{font-size:15px}
+.proc-src-name{flex:1;font-weight:600}
+.proc-src-state{font-size:10px;font-weight:700;letter-spacing:.04em}
+.state-analyzing{color:var(--amber);animation:pulse 1s ease-in-out infinite}
+.state-done{color:var(--green)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.proc-signal{display:flex;align-items:flex-start;gap:10px;padding:10px 13px;border-radius:9px;border-left:3px solid;background:var(--surface2);opacity:0;transform:translateY(8px);transition:opacity .35s,transform .35s;border:1px solid var(--border)}
+.proc-signal.show{opacity:1;transform:none}
+.proc-signal-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;margin-top:3px}
+.proc-signal-text{font-size:12px;font-weight:600;line-height:1.5;flex:1}
+.proc-signal-src{font-size:10px;color:var(--text3);margin-top:2px}
+.proc-cta{display:none;width:100%;padding:14px;background:var(--brand);color:#fff;border:none;border-radius:11px;font-size:14px;font-weight:800;cursor:pointer;transition:opacity .15s;letter-spacing:-.01em}
+.proc-cta.show{display:block}
+.proc-cta:hover{opacity:.88}
+.proc-count{font-size:13px;font-weight:700;color:var(--brand);margin-top:4px}
+
+/* PREVIEW PANEL */
+.preview-panel{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.preview-head{padding:14px 18px;border-bottom:1px solid var(--border);font-size:12px;font-weight:700;color:var(--text2)}
+.preview-body{padding:18px}
+.preview-label{font-size:9px;font-weight:700;letter-spacing:.1em;color:var(--text3);margin-bottom:8px}
+.preview-proj-name{font-size:16px;font-weight:800;letter-spacing:-.02em;margin-bottom:3px;min-height:24px}
+.preview-proj-client{font-size:11px;color:var(--text2);margin-bottom:16px}
+.preview-divider{height:1px;background:var(--border);margin:14px 0}
+.preview-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.preview-key{font-size:11px;color:var(--text2)}
+.preview-val{font-size:11px;font-weight:700}
+.preview-sources{display:flex;flex-direction:column;gap:6px;margin-top:12px}
+.preview-source{display:flex;align-items:center;gap:7px;font-size:11px;padding:7px 10px;border-radius:7px;background:var(--surface2);border:1px solid var(--border)}
+.preview-source-icon{font-size:13px}
+.preview-source-name{flex:1;font-weight:600;color:var(--text2)}
+.preview-empty{text-align:center;padding:24px 12px;color:var(--text3);font-size:11px;line-height:1.6}
+
+/* BUTTONS */
+.btn{padding:10px 20px;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;border:none;transition:all .15s;font-family:inherit}
+.btn-ghost{background:var(--surface2);color:var(--text2);border:1px solid var(--border)}
+.btn-ghost:hover{border-color:var(--brand);color:var(--brand)}
+.btn-primary{background:var(--brand);color:#fff}
+.btn-primary:hover{opacity:.88}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-logo" href="/weave-canvas.html">
+    <img src="/weave-icon.svg" width="22" height="21" alt="Weave">
+    <span class="nav-logo-name">Weave</span>
+  </a>
+  <div class="nav-crumb">
+    <span class="nav-crumb-sep">›</span>
+    <a href="/weave-canvas.html" style="color:var(--text2);text-decoration:none">Canvas</a>
+    <span class="nav-crumb-sep">›</span>
+    <span class="nav-crumb-curr">New Project</span>
+  </div>
+  <div class="nav-spacer"></div>
+  <button style="background:none;border:none;cursor:pointer;font-size:12px;color:var(--text2);padding:6px 12px;border-radius:7px" onclick="toggleTheme()">◐</button>
+</nav>
+
+<div class="page-body">
+  <!-- WIZARD -->
+  <div class="wizard-col">
+    <div class="steps-row">
+      <div class="step active" id="step-1">
+        <div class="step-dot">1</div>
+        <div class="step-label">Setup</div>
+      </div>
+      <div class="step-line" id="line-1"></div>
+      <div class="step" id="step-2">
+        <div class="step-dot">2</div>
+        <div class="step-label">Research</div>
+      </div>
+      <div class="step-line" id="line-2"></div>
+      <div class="step" id="step-3">
+        <div class="step-dot">3</div>
+        <div class="step-label">Processing</div>
+      </div>
+    </div>
+
+    <!-- STEP 1: SETUP -->
+    <div id="panel-1" class="wizard-panel">
+      <div class="panel-head">
+        <div class="panel-title">Project Setup</div>
+        <div class="panel-sub">Tell us about the project. We'll configure the research pipeline and agent stack based on your project type and goals.</div>
+      </div>
+      <div class="panel-body">
+        <div class="form-grid">
+          <div class="field">
+            <label>PROJECT NAME</label>
+            <input type="text" id="np-name" placeholder="e.g. Neura Nova Landing" oninput="updatePreview()">
+          </div>
+          <div class="field">
+            <label>CLIENT</label>
+            <input type="text" id="np-client" placeholder="e.g. Neura Nova Inc." oninput="updatePreview()">
+          </div>
+          <div class="field">
+            <label>PROJECT TYPE</label>
+            <select id="np-type" onchange="updatePreview()">
+              <option>Landing Page</option>
+              <option>Web App</option>
+              <option>Mobile App</option>
+              <option>Design System</option>
+              <option>E-commerce</option>
+              <option>Marketing Site</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>TIMELINE</label>
+            <select id="np-timeline" onchange="updatePreview()">
+              <option>4 weeks</option>
+              <option>6 weeks</option>
+              <option>8 weeks</option>
+              <option>12 weeks</option>
+            </select>
+          </div>
+          <div class="field form-full">
+            <label>PROJECT BRIEF</label>
+            <textarea id="np-brief" placeholder="Describe the goals, audience, and key challenges..."></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="panel-footer">
+        <a class="btn btn-ghost" href="/weave-canvas.html">← Cancel</a>
+        <button class="btn btn-primary" onclick="goStep(2)">Continue to Research →</button>
+      </div>
+    </div>
+
+    <!-- STEP 2: RESEARCH -->
+    <div id="panel-2" class="wizard-panel" style="display:none">
+      <div class="panel-head">
+        <div class="panel-title">Load Research Sources</div>
+        <div class="panel-sub">Connect your existing research. The Research Agent will read your sources, extract signals, and start informing the design automatically.</div>
+      </div>
+      <div class="panel-body">
+        <div class="src-type-grid">
+          <div class="src-type" onclick="addType('confluence')"><div class="src-type-icon">📄</div>Confluence</div>
+          <div class="src-type" onclick="addType('miro')"><div class="src-type-icon">◫</div>Miro Board</div>
+          <div class="src-type" onclick="addType('analytics')"><div class="src-type-icon">📊</div>Analytics</div>
+          <div class="src-type" onclick="addType('upload')"><div class="src-type-icon">📁</div>Upload File</div>
+        </div>
+        <div class="src-suggest-title">SUGGESTED FROM YOUR WORKSPACE</div>
+        <div id="suggest-list">
+          <div class="src-suggest-row" onclick="addSuggestion(this,'confluence','NN-Research-Sprint-3 · Bounce Analysis')">
+            <span class="src-suggest-icon">📄</span>
+            <span class="src-suggest-name">NN-Research-Sprint-3 · Bounce Analysis</span>
+            <span class="src-suggest-type">Confluence</span>
+            <span class="src-suggest-add">+</span>
+          </div>
+          <div class="src-suggest-row" onclick="addSuggestion(this,'confluence','NN-Persona-Research · Dual Track')">
+            <span class="src-suggest-icon">📄</span>
+            <span class="src-suggest-name">NN-Persona-Research · Dual Track</span>
+            <span class="src-suggest-type">Confluence</span>
+            <span class="src-suggest-add">+</span>
+          </div>
+          <div class="src-suggest-row" onclick="addSuggestion(this,'confluence','NN-CRO-Experiments · Social Proof')">
+            <span class="src-suggest-icon">📄</span>
+            <span class="src-suggest-name">NN-CRO-Experiments · Social Proof</span>
+            <span class="src-suggest-type">Confluence</span>
+            <span class="src-suggest-add">+</span>
+          </div>
+          <div class="src-suggest-row" onclick="addSuggestion(this,'miro','User Flow Audit Board')">
+            <span class="src-suggest-icon">◫</span>
+            <span class="src-suggest-name">User Flow Audit Board</span>
+            <span class="src-suggest-type">Miro</span>
+            <span class="src-suggest-add">+</span>
+          </div>
+          <div class="src-suggest-row" onclick="addSuggestion(this,'miro','Persona Journey Map')">
+            <span class="src-suggest-icon">◫</span>
+            <span class="src-suggest-name">Persona Journey Map</span>
+            <span class="src-suggest-type">Miro</span>
+            <span class="src-suggest-add">+</span>
+          </div>
+        </div>
+        <div style="margin-top:16px;margin-bottom:4px;font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--text3)" id="chips-label" style="display:none">ADDED SOURCES</div>
+        <div class="src-chips" id="src-chips"></div>
+      </div>
+      <div class="panel-footer">
+        <button class="btn btn-ghost" onclick="goStep(1)">← Back</button>
+        <button class="btn btn-primary" onclick="goStep(3)">Analyze Research →</button>
+      </div>
+    </div>
+
+    <!-- STEP 3: PROCESSING -->
+    <div id="panel-3" class="wizard-panel" style="display:none">
+      <div class="panel-head">
+        <div class="panel-title">Research Agent Running</div>
+        <div class="panel-sub">The Research Agent is reading your sources, extracting design signals, and mapping them to your pages. This usually takes under a minute.</div>
+      </div>
+      <div class="panel-body">
+        <div class="proc-wrap">
+          <div class="proc-progress"><div class="proc-fill" id="proc-fill" style="width:0%"></div></div>
+          <div class="proc-status-text" id="proc-status">Initializing Research Agent...</div>
+          <div id="proc-sources" style="display:flex;flex-direction:column;gap:7px"></div>
+          <div id="proc-signals" style="display:flex;flex-direction:column;gap:7px"></div>
+          <div class="proc-count" id="proc-count" style="display:none"></div>
+          <button class="proc-cta" id="proc-cta" onclick="window.location='/weave-project.html'">Open Project Studio →</button>
+        </div>
+      </div>
+      <div class="panel-footer">
+        <button class="btn btn-ghost" onclick="goStep(2)">← Back</button>
+        <span style="font-size:11px;color:var(--text3)" id="proc-footer-hint">Processing...</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- PREVIEW PANEL -->
+  <div class="preview-col">
+    <div class="preview-panel">
+      <div class="preview-head">Project Preview</div>
+      <div class="preview-body">
+        <div class="preview-label">PROJECT</div>
+        <div class="preview-proj-name" id="prev-name" style="color:var(--text3)">Project name...</div>
+        <div class="preview-proj-client" id="prev-client">Client...</div>
+        <div class="preview-divider"></div>
+        <div class="preview-row"><span class="preview-key">Type</span><span class="preview-val" id="prev-type">Landing Page</span></div>
+        <div class="preview-row"><span class="preview-key">Timeline</span><span class="preview-val" id="prev-timeline">6 weeks</span></div>
+        <div class="preview-row"><span class="preview-key">Phase</span><span class="preview-val" style="color:var(--brand)">Setup</span></div>
+        <div class="preview-divider"></div>
+        <div class="preview-label">RESEARCH SOURCES</div>
+        <div id="prev-sources">
+          <div class="preview-empty">No sources added yet.<br>Connect Confluence, Miro,<br>or upload your research files.</div>
+        </div>
+        <div class="preview-divider"></div>
+        <div class="preview-label">AGENT PIPELINE</div>
+        <div style="display:flex;flex-direction:column;gap:6px;font-size:11px">
+          <div style="display:flex;align-items:center;gap:7px;color:var(--text2)"><div style="width:7px;height:7px;border-radius:50%;background:var(--text3)"></div>Research Agent</div>
+          <div style="display:flex;align-items:center;gap:7px;color:var(--text2)"><div style="width:7px;height:7px;border-radius:50%;background:var(--text3)"></div>Sitemap Agent</div>
+          <div style="display:flex;align-items:center;gap:7px;color:var(--text2)"><div style="width:7px;height:7px;border-radius:50%;background:var(--text3)"></div>Wireframe Agent</div>
+          <div style="display:flex;align-items:center;gap:7px;color:var(--text2)"><div style="width:7px;height:7px;border-radius:50%;background:var(--text3)"></div>Visual Design Agent</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let currentStep=1;
+let sources=[];
+
+function toggleTheme(){
+  document.documentElement.dataset.theme=document.documentElement.dataset.theme==='dark'?'light':'dark';
+}
+
+function goStep(n){
+  [1,2,3].forEach(i=>{
+    document.getElementById(`panel-${i}`).style.display=i===n?'block':'none';
+    const s=document.getElementById(`step-${i}`);
+    s.classList.remove('active','done');
+    if(i<n)s.classList.add('done');
+    else if(i===n)s.classList.add('active');
+    const dot=s.querySelector('.step-dot');
+    dot.textContent=i<n?'✓':i;
+  });
+  [1,2].forEach(i=>{
+    const l=document.getElementById(`line-${i}`);
+    l.classList.toggle('done',i<n);
+  });
+  currentStep=n;
+  if(n===3) startProcessing();
+}
+
+function updatePreview(){
+  const name=document.getElementById('np-name').value;
+  const client=document.getElementById('np-client').value;
+  const type=document.getElementById('np-type').value;
+  const timeline=document.getElementById('np-timeline').value;
+  const pn=document.getElementById('prev-name');
+  pn.textContent=name||'Project name...';
+  pn.style.color=name?'var(--text)':'var(--text3)';
+  document.getElementById('prev-client').textContent=client||'Client...';
+  document.getElementById('prev-type').textContent=type;
+  document.getElementById('prev-timeline').textContent=timeline;
+}
+
+function addType(type){
+  const count=sources.filter(s=>s.type===type).length+1;
+  const names={confluence:`Confluence Page ${count}`,miro:`Miro Board ${count}`,analytics:`Analytics Report ${count}`,upload:`Uploaded File ${count}`};
+  addSource(names[type],type);
+}
+
+function addSuggestion(el,type,name){
+  el.classList.add('added');
+  addSource(name,type);
+}
+
+function addSource(name,type){
+  sources.push({name,type});
+  renderChips();
+  renderPreviewSources();
+}
+
+function removeSource(idx){
+  sources.splice(idx,1);
+  renderChips();
+  renderPreviewSources();
+}
+
+function renderChips(){
+  const c=document.getElementById('src-chips');
+  const lbl=document.getElementById('chips-label');
+  if(lbl)lbl.style.display=sources.length?'block':'none';
+  c.innerHTML=sources.map((s,i)=>`
+    <div class="src-chip">
+      ${s.type==='confluence'?'📄':'s.type'==='miro'?'◫':'📄'} ${s.name}
+      <button onclick="removeSource(${i})">×</button>
+    </div>`).join('');
+  c.innerHTML=sources.map((s,i)=>`
+    <div class="src-chip">
+      ${s.type==='miro'?'◫':'📄'} ${s.name}
+      <button onclick="removeSource(${i})">×</button>
+    </div>`).join('');
+}
+
+function renderPreviewSources(){
+  const el=document.getElementById('prev-sources');
+  if(!sources.length){
+    el.innerHTML='<div class="preview-empty">No sources added yet.<br>Connect Confluence, Miro,<br>or upload your research files.</div>';
+    return;
+  }
+  el.innerHTML=sources.map(s=>`
+    <div class="preview-source">
+      <span class="preview-source-icon">${s.type==='miro'?'◫':'📄'}</span>
+      <span class="preview-source-name">${s.name}</span>
+    </div>`).join('');
+}
+
+const PROC=[
+  {delay:0,source:{name:'NN-Research-Sprint-3 · Bounce Analysis',type:'confluence',state:'analyzing'},progress:8},
+  {delay:900,signal:{text:'Visitors leave before first value prop — 72% bounce on mobile',color:'#1f9d8f',src:'Analytics'},progress:25},
+  {delay:1600,signal:{text:'"Intelligent infrastructure" understood by only 38% of visitors',color:'#d4456b',src:'User Survey'},progress:38},
+  {delay:2200,source:{name:'NN-Research-Sprint-3 · Bounce Analysis',done:true},source2:{name:'User Flow Audit Board',type:'miro',state:'analyzing'},progress:48},
+  {delay:3000,signal:{text:'Social proof drives 2.3× lift in trial sign-ups',color:'#2f5bea',src:'A/B Testing'},progress:62},
+  {delay:3700,signal:{text:'CTA form: 3-field version converts at 4% vs 1.8%',color:'#c2700f',src:'Conversion Audit'},progress:78},
+  {delay:4400,signal:{text:'Two personas need different content paths',color:'#6f57d4',src:'User Interviews'},progress:92},
+  {delay:5100,done:true,progress:100},
+];
+
+let procSourceEls={};
+function startProcessing(){
+  procSourceEls={};
+  const fill=document.getElementById('proc-fill');
+  const status=document.getElementById('proc-status');
+  const srcCont=document.getElementById('proc-sources');
+  const sigCont=document.getElementById('proc-signals');
+  const cta=document.getElementById('proc-cta');
+  const count=document.getElementById('proc-count');
+  const hint=document.getElementById('proc-footer-hint');
+  let sigCount=0;
+  PROC.forEach(step=>{
+    setTimeout(()=>{
+      fill.style.width=step.progress+'%';
+      if(step.source){
+        const s=step.source;
+        if(!s.done){
+          status.textContent=`Analyzing ${s.name}...`;
+          const row=document.createElement('div');
+          row.className='proc-src-row';
+          row.innerHTML=`<span class="proc-src-icon">${s.type==='miro'?'◫':'📄'}</span><span class="proc-src-name">${s.name}</span><span class="proc-src-state state-analyzing" id="ss-${s.name.replace(/[^a-z]/gi,'')}">ANALYZING</span>`;
+          srcCont.appendChild(row);
+          procSourceEls[s.name]=row;
+        } else {
+          const el=document.getElementById('ss-'+s.name.replace(/[^a-z]/gi,''));
+          if(el){el.className='proc-src-state state-done';el.textContent='DONE';}
+        }
+        if(step.source2){
+          const s2=step.source2;
+          status.textContent=`Analyzing ${s2.name}...`;
+          const row2=document.createElement('div');
+          row2.className='proc-src-row';
+          row2.innerHTML=`<span class="proc-src-icon">${s2.type==='miro'?'◫':'📄'}</span><span class="proc-src-name">${s2.name}</span><span class="proc-src-state state-analyzing" id="ss-${s2.name.replace(/[^a-z]/gi,'')}">ANALYZING</span>`;
+          srcCont.appendChild(row2);
+        }
+      }
+      if(step.signal){
+        sigCount++;
+        status.textContent=`Signal found: ${step.signal.src}`;
+        const el=document.createElement('div');
+        el.className='proc-signal';
+        el.style.borderLeftColor=step.signal.color;
+        el.innerHTML=`<div class="proc-signal-dot" style="background:${step.signal.color}"></div><div><div class="proc-signal-text">${step.signal.text}</div><div class="proc-signal-src">${step.signal.src}</div></div>`;
+        sigCont.appendChild(el);
+        requestAnimationFrame(()=>el.classList.add('show'));
+      }
+      if(step.done){
+        status.textContent='Research complete — 5 signals extracted.';
+        count.textContent=`${sigCount} signals found across your research sources`;
+        count.style.display='block';
+        cta.classList.add('show');
+        hint.textContent='Ready to open Studio';
+      }
+    },step.delay);
+  });
+}
+</script>
+</body>
+</html>

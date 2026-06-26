@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Weave — Project Studio</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f0f0f5;--surface:#fff;--surface2:#f5f5f9;--border:#e4e4eb;--border2:#d0d0db;
+  --text:#16161a;--text2:#5f5f70;--text3:#a0a0b0;
+  --brand:#7c3aed;--brand-light:#ede9fe;--brand-mid:#a78bfa;
+  --green:#16a34a;--green-light:#dcfce7;
+  --amber:#d97706;--amber-light:#fef3c7;
+  --red:#dc2626;--red-light:#fee2e2;
+  --blue:#2563eb;--blue-light:#dbeafe;
+}
+[data-theme="dark"]{
+  --bg:#08080e;--surface:#111118;--surface2:#18181f;--border:#27273a;--border2:#38384a;
+  --text:#f0f0f5;--text2:#8888a0;--text3:#48485a;--brand-light:#1e0a4a;
+}
+body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--text);height:100vh;overflow:hidden;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased;font-size:13px}
+button{font-family:inherit}
+
+/* ── TOOLBAR ── */
+.toolbar{display:flex;align-items:center;gap:8px;padding:0 16px;height:50px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0}
+.tb-logo{display:flex;align-items:center;gap:8px;text-decoration:none;color:inherit;margin-right:4px}
+.tb-logo-name{font-size:14px;font-weight:800;letter-spacing:-.03em}
+.tb-divider{width:1px;height:18px;background:var(--border);margin:0 2px}
+.tb-crumb{font-size:11px;color:var(--text2)}
+.tb-crumb a{color:var(--text2);text-decoration:none}
+.tb-crumb a:hover{color:var(--brand)}
+.tb-proj{font-size:13px;font-weight:700;letter-spacing:-.01em}
+.tb-spacer{flex:1}
+.top-tabs{display:flex;gap:2px;background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:2px}
+.top-tab{padding:5px 14px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;color:var(--text2);border:none;background:none;transition:all .15s}
+.top-tab.active{background:var(--surface);color:var(--brand);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.tb-spacer2{flex:1}
+.mode-tabs{display:flex;gap:2px}
+.mode-tab{padding:4px 10px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;color:var(--text2);border:none;background:none;transition:all .15s}
+.mode-tab.active{background:var(--brand-light);color:var(--brand)}
+.tb-actions{display:flex;align-items:center;gap:6px}
+.tb-btn{padding:5px 12px;border-radius:7px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--surface2);color:var(--text2);transition:all .15s}
+.tb-btn:hover{border-color:var(--brand);color:var(--brand)}
+.tb-btn.primary{background:var(--brand);color:#fff;border-color:var(--brand)}
+.tb-btn.primary:hover{opacity:.88}
+.av{width:26px;height:26px;border-radius:50%;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;color:#fff}
+
+/* ── BODY ── */
+.app-body{display:flex;flex:1;overflow:hidden}
+
+/* ── LEFT RAIL ── */
+.left-rail{width:200px;border-right:1px solid var(--border);background:var(--surface);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto}
+.rail-sec{padding:10px 12px}
+.rail-sec+.rail-sec{border-top:1px solid var(--border)}
+.rail-sec-title{font-size:9px;font-weight:700;letter-spacing:.1em;color:var(--text3);margin-bottom:6px;padding-left:4px}
+.rail-item{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:7px;cursor:pointer;font-size:12px;color:var(--text2);font-weight:500;transition:all .15s}
+.rail-item:hover,.rail-item.active{background:var(--brand-light);color:var(--brand)}
+.rail-item-icon{font-size:13px;flex-shrink:0}
+.agent-ind{display:flex;align-items:center;gap:7px;padding:5px 8px;font-size:11px;color:var(--text2)}
+.a-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.a-dot.done{background:var(--green)}
+.a-dot.active{background:var(--brand);animation:pulse 1.5s infinite}
+.a-dot.idle{background:var(--text3)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* ── STAGE ── */
+.stage{flex:1;overflow:hidden;display:flex;flex-direction:column;background:var(--surface2)}
+.stage-scroll{flex:1;overflow-y:auto}
+.stage-pad{padding:24px;min-height:100%}
+
+/* ── RIGHT RAIL ── */
+.right-rail{width:264px;border-left:1px solid var(--border);background:var(--surface);display:flex;flex-direction:column;overflow:hidden;flex-shrink:0}
+.rr-tabs{display:flex;border-bottom:1px solid var(--border);flex-shrink:0}
+.rr-tab{flex:1;padding:10px 6px;font-size:11px;font-weight:600;text-align:center;cursor:pointer;color:var(--text2);border-bottom:2px solid transparent;transition:all .15s;background:none;border-left:none;border-right:none;border-top:none}
+.rr-tab.active{color:var(--brand);border-bottom-color:var(--brand)}
+.rr-body{flex:1;overflow-y:auto;padding:14px}
+.chat-msg{margin-bottom:10px}
+.chat-bubble{max-width:88%;padding:9px 12px;border-radius:10px;font-size:12px;line-height:1.6}
+.chat-bubble.user{background:var(--brand);color:#fff;margin-left:auto}
+.chat-bubble.ai{background:var(--surface2);border:1px solid var(--border)}
+.chat-sender{font-size:9px;font-weight:700;letter-spacing:.04em;color:var(--text3);margin-bottom:3px}
+.chat-input-row{display:flex;gap:6px;padding:10px;border-top:1px solid var(--border);flex-shrink:0}
+.chat-input{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:7px 10px;font-size:12px;font-family:inherit;outline:none;resize:none;height:34px;line-height:1.4;transition:border-color .15s}
+.chat-input:focus{border-color:var(--brand)}
+.chat-send{background:var(--brand);color:#fff;border:none;border-radius:8px;width:32px;height:34px;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:opacity .15s;flex-shrink:0}
+.chat-send:hover{opacity:.85}
+.hist-item{padding:9px 11px;border-radius:8px;margin-bottom:7px;border:1px solid var(--border);background:var(--surface2)}
+.hist-time{font-size:9px;color:var(--text3);margin-bottom:3px}
+.hist-text{font-size:11px;color:var(--text2);line-height:1.55}
+
+/* ── BRIEF PANE ── */
+.brief-pane{display:flex;flex:1;overflow:hidden}
+.brief-nav{width:200px;border-right:1px solid var(--border);background:var(--surface);overflow-y:auto;flex-shrink:0}
+.brief-main{flex:1;overflow-y:auto;padding:24px;display:flex;flex-direction:column;gap:16px}
+.brief-sidebar{width:264px;border-left:1px solid var(--border);background:var(--surface);overflow-y:auto;flex-shrink:0;padding:16px}
+.bcard{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.bcard-head{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.bcard-title{font-size:13px;font-weight:700}
+.bcard-badge{font-size:10px;font-weight:700;letter-spacing:.04em;padding:3px 9px;border-radius:20px}
+.bcard-body{padding:16px 20px}
+.ov-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.ov-field{display:flex;flex-direction:column;gap:3px}
+.ov-label{font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--text3)}
+.ov-val{font-size:13px;font-weight:600}
+.sig-row{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.sig-row:last-child{border-bottom:none}
+.sig-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:3px}
+.sig-text{font-size:12px;line-height:1.55;flex:1}
+.sig-meta{font-size:10px;color:var(--text3);margin-top:3px}
+.persona-pair{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.persona-card{border:1px solid var(--border);border-radius:10px;padding:14px}
+.persona-emoji{font-size:30px;margin-bottom:8px}
+.persona-name{font-size:12px;font-weight:700;margin-bottom:2px}
+.persona-role{font-size:11px;color:var(--text2);margin-bottom:10px}
+.persona-tags{display:flex;flex-wrap:wrap;gap:4px}
+.ptag{font-size:10px;background:var(--surface2);border:1px solid var(--border);padding:2px 8px;border-radius:20px;color:var(--text2)}
+.metric-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border)}
+.metric-row:last-child{border-bottom:none}
+.metric-label{font-size:12px;color:var(--text2)}
+.metric-val{font-size:13px;font-weight:700;text-align:right}
+.metric-curr{font-size:10px;color:var(--text3);margin-top:1px}
+.src-link{display:flex;align-items:center;gap:8px;padding:9px 11px;border:1px solid var(--border);border-radius:8px;margin-bottom:6px;cursor:pointer;transition:all .15s;background:var(--surface2)}
+.src-link:hover{border-color:var(--brand);background:var(--brand-light)}
+.src-link-icon{font-size:14px}
+.src-link-name{font-size:11px;font-weight:600;flex:1}
+.src-link-type{font-size:10px;color:var(--text3)}
+.agent-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.agent-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.agent-name{font-size:11px;font-weight:600;flex:1}
+.agent-status{font-size:10px;font-weight:700;letter-spacing:.04em}
+
+/* ── FLOW MODE ── */
+.flow-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.flow-title{font-size:15px;font-weight:700}
+.flow-legend{display:flex;gap:6px;flex-wrap:wrap}
+.legend-pill{font-size:10px;font-weight:600;padding:3px 9px;border-radius:20px;background:var(--surface);border:1px solid var(--border);color:var(--text2)}
+.flow-layout{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px}
+.flow-col-head{font-size:9px;font-weight:700;letter-spacing:.1em;color:var(--text3);margin-bottom:8px}
+.signal-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:13px;cursor:pointer;transition:box-shadow .15s;margin-bottom:10px}
+.signal-card:hover{box-shadow:0 2px 10px rgba(0,0,0,.1)}
+.sc-top{display:flex;align-items:center;gap:6px;margin-bottom:8px}
+.sc-impact{font-size:9px;font-weight:700;letter-spacing:.06em;padding:2px 7px;border-radius:4px}
+.imp-critical{background:var(--red-light);color:var(--red)}
+.imp-high{background:var(--amber-light);color:var(--amber)}
+.imp-medium{background:var(--blue-light);color:var(--blue)}
+.sc-src{font-size:10px;color:var(--text2);margin-left:auto;display:flex;align-items:center;gap:3px}
+.sc-text{font-size:11px;line-height:1.6;color:var(--text)}
+.sc-pages{display:flex;gap:4px;flex-wrap:wrap;margin-top:8px}
+.sc-page{font-size:9px;font-weight:600;background:var(--surface2);border:1px solid var(--border);padding:2px 6px;border-radius:4px;color:var(--text2)}
+.sc-badges{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px}
+.sc-badge{font-size:9px;font-weight:600;padding:2px 7px;border-radius:4px}
+.badge-cf{background:var(--blue-light);color:var(--blue)}
+.badge-mi{background:var(--brand-light);color:var(--brand)}
+.sc-agent{font-size:9px;color:var(--text3);margin-top:6px}
+
+/* ── SITEMAP ── */
+.sm-node{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:10px 13px;cursor:pointer;transition:all .15s;display:inline-flex;flex-direction:column}
+.sm-node:hover,.sm-node.active{border-color:var(--brand);background:var(--brand-light);color:var(--brand)}
+.sm-node-icon{font-size:14px;margin-bottom:3px}
+.sm-node-label{font-size:12px;font-weight:700}
+.sm-chips{display:flex;flex-wrap:wrap;gap:3px;margin-top:7px}
+.sm-chip{font-size:8px;font-weight:600;padding:1px 5px;border-radius:3px}
+.sm-chip-cf{background:var(--blue-light);color:var(--blue)}
+.sm-chip-mi{background:var(--brand-light);color:var(--brand)}
+.sm-row{display:flex;align-items:flex-start;gap:12px;margin-bottom:20px;flex-wrap:wrap}
+.sm-arrow{color:var(--text3);font-size:18px;align-self:center;flex-shrink:0}
+
+/* ── WIREFRAME ── */
+.wf-section{background:var(--surface);border:1px solid var(--border);border-radius:10px;margin-bottom:12px;overflow:hidden}
+.wf-head{display:flex;align-items:center;gap:8px;padding:8px 13px;border-bottom:1px solid var(--border);background:var(--surface2)}
+.wf-name{font-size:11px;font-weight:700;flex:1;outline:none;border:none;background:transparent;color:var(--text)}
+.wf-sig-dots{display:flex;gap:3px}
+.wf-sig-dot{width:8px;height:8px;border-radius:50%}
+.wf-del{width:18px;height:18px;border-radius:4px;border:none;background:none;cursor:pointer;color:var(--text3);font-size:14px;display:flex;align-items:center;justify-content:center;margin-left:4px;transition:all .15s}
+.wf-del:hover{background:var(--red-light);color:var(--red)}
+.wf-block{padding:12px 14px}
+.wf-bar{height:8px;background:var(--border);border-radius:2px;margin-bottom:7px}
+.wf-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.wf-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.wf-col{display:flex;flex-direction:column;gap:6px}
+.wf-circle{border-radius:50%;background:var(--border)}
+.wf-text{height:6px;background:var(--border);border-radius:2px}
+.wf-add{display:flex;align-items:center;justify-content:center;gap:6px;padding:11px;border:2px dashed var(--border);border-radius:9px;font-size:12px;color:var(--text3);cursor:pointer;transition:all .15s}
+.wf-add:hover{border-color:var(--brand);color:var(--brand)}
+
+/* ── DESIGN ── */
+.design-scroll{overflow-x:auto;padding-bottom:8px}
+.design-row{display:flex;gap:16px;min-width:max-content}
+.design-frame{background:var(--surface);border:2px solid var(--border);border-radius:12px;overflow:hidden;cursor:pointer;transition:all .15s;width:280px;flex-shrink:0}
+.design-frame:hover,.design-frame.sel{border-color:var(--brand);box-shadow:0 0 0 2px var(--brand-light)}
+.design-frame-label{padding:8px 13px;border-bottom:1px solid var(--border);font-size:11px;font-weight:700;background:var(--surface2);color:var(--text2)}
+.design-frame-body{padding:14px;display:flex;flex-direction:column;gap:7px;min-height:180px}
+
+/* ── STYLEGUIDE ── */
+.sg-section{margin-bottom:28px}
+.sg-heading{font-size:13px;font-weight:700;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.color-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:8px}
+.swatch{border-radius:9px;overflow:hidden;border:1px solid var(--border)}
+.swatch-color{height:48px}
+.swatch-info{padding:7px 9px;background:var(--surface)}
+.swatch-name{font-size:10px;font-weight:700;margin-bottom:1px}
+.swatch-val{font-size:9px;color:var(--text3);font-family:monospace}
+.type-scale{display:flex;flex-direction:column;gap:14px}
+.type-row{display:flex;align-items:baseline;gap:16px}
+.type-spec{font-size:10px;color:var(--text3);font-family:monospace;white-space:nowrap;width:100px;flex-shrink:0}
+.comp-row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+
+/* ── PROJECT TAB ── */
+.project-pane{display:flex;flex:1;overflow:hidden}
+.project-main{flex:1;overflow-y:auto;padding:24px;display:flex;flex-direction:column;gap:18px}
+.project-sidebar{width:264px;border-left:1px solid var(--border);background:var(--surface);overflow-y:auto;flex-shrink:0;padding:16px}
+.phase-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.phase-card-head{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.phase-card-title{font-size:13px;font-weight:700}
+.phase-body{padding:16px 20px}
+.phase-row{margin-bottom:16px}
+.phase-row:last-child{margin-bottom:0}
+.phase-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.phase-name{font-size:12px;font-weight:600}
+.phase-dates{font-size:10px;color:var(--text3)}
+.phase-track{height:8px;background:var(--surface2);border-radius:4px;overflow:hidden;border:1px solid var(--border)}
+.phase-fill{height:100%;border-radius:4px}
+.dl-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.dl-head{padding:14px 20px;border-bottom:1px solid var(--border);font-size:13px;font-weight:700}
+.dl-row{display:flex;align-items:center;gap:12px;padding:10px 20px;border-bottom:1px solid var(--border);font-size:12px}
+.dl-row:last-child{border-bottom:none}
+.dl-icon{font-size:14px;width:20px;text-align:center}
+.dl-name{flex:1}
+.dl-phase{font-size:10px;color:var(--text3)}
+.dl-status{font-size:10px;font-weight:700;letter-spacing:.04em;padding:2px 8px;border-radius:20px}
+.ds-active{background:var(--green-light);color:var(--green)}
+.ds-progress{background:var(--brand-light);color:var(--brand)}
+.ds-pending{background:var(--surface2);border:1px solid var(--border);color:var(--text3)}
+.team-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-top:16px}
+.team-head{padding:12px 16px;border-bottom:1px solid var(--border);font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--text3)}
+.team-row{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--border)}
+.team-row:last-child{border-bottom:none}
+.team-av{width:30px;height:30px;border-radius:50%;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
+.team-name{font-size:12px;font-weight:700}
+.team-role{font-size:10px;color:var(--text2)}
+.team-online{width:7px;height:7px;border-radius:50%;background:var(--green);flex-shrink:0}
+
+/* INSPECT PANEL (design mode) */
+.insp-tab-bar{display:flex;gap:4px;padding:10px 14px;border-bottom:1px solid var(--border)}
+.insp-tab{padding:4px 10px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;color:var(--text2);border:none;background:none;transition:all .15s}
+.insp-tab.active{background:var(--brand-light);color:var(--brand)}
+.insp-body{padding:14px;overflow-y:auto;flex:1}
+.insp-label{font-size:9px;font-weight:700;letter-spacing:.1em;color:var(--text3);margin-bottom:8px;margin-top:14px}
+.insp-label:first-child{margin-top:0}
+.insp-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.insp-key{font-size:11px;color:var(--text2)}
+.insp-val{font-size:11px;font-weight:600;font-family:monospace}
+.insp-token{font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;background:var(--brand-light);color:var(--brand);font-family:monospace}
+.insp-code{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px;font-family:monospace;font-size:11px;line-height:1.7;overflow-x:auto}
+.insp-vd{background:color-mix(in srgb,var(--brand) 6%,var(--surface));border:1px solid color-mix(in srgb,var(--brand) 20%,var(--border));border-radius:8px;padding:10px 12px;font-size:11px;line-height:1.65}
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <a class="tb-logo" href="/weave-canvas.html">
+    <img src="/weave-icon.svg" width="22" height="21" alt="Weave">
+    <span class="tb-logo-name">Weave</span>
+  </a>
+  <div class="tb-divider"></div>
+  <div class="tb-crumb">
+    <a href="/weave-canvas.html">Canvas</a>
+    <span style="color:var(--text3);margin:0 5px">›</span>
+  </div>
+  <span class="tb-proj">Neura Nova Landing Page</span>
+  <div class="tb-spacer"></div>
+  <div class="top-tabs">
+    <button class="top-tab active" onclick="setTopTab('brief')">Brief</button>
+    <button class="top-tab" onclick="setTopTab('studio')">Studio</button>
+    <button class="top-tab" onclick="setTopTab('project')">Project</button>
+  </div>
+  <div class="tb-spacer2"></div>
+  <div class="mode-tabs" id="mode-tabs" style="display:none">
+    <button class="mode-tab active" onclick="setMode('flow')">Flow</button>
+    <button class="mode-tab" onclick="setMode('sitemap')">Sitemap</button>
+    <button class="mode-tab" onclick="setMode('wireframe')">Wireframe</button>
+    <button class="mode-tab" onclick="setMode('design')">Design</button>
+    <button class="mode-tab" onclick="setMode('style')">Style</button>
+  </div>
+  <div class="tb-actions">
+    <button class="tb-btn" onclick="toggleTheme()">◐</button>
+    <button class="tb-btn primary">↑ Promote</button>
+    <div class="av" style="background:#7c3aed">JD</div>
+    <div class="av" style="background:#059669">AK</div>
+  </div>
+</div>
+
+<div class="app-body" id="app-body">
+
+  <!-- ══ BRIEF TAB ══ -->
+  <div id="pane-brief" style="display:flex;flex:1;overflow:hidden">
+    <div class="brief-nav">
+      <div class="rail-sec">
+        <div class="rail-sec-title">PROJECT</div>
+        <div class="rail-item active"><span class="rail-item-icon">📋</span>Overview</div>
+        <div class="rail-item"><span class="rail-item-icon">🔬</span>Research</div>
+        <div class="rail-item"><span class="rail-item-icon">👥</span>Personas</div>
+        <div class="rail-item"><span class="rail-item-icon">🎯</span>Metrics</div>
+      </div>
+      <div class="rail-sec">
+        <div class="rail-sec-title">PAGES</div>
+        <div class="rail-item"><div style="width:8px;height:8px;border-radius:50%;background:#7c3aed"></div>Home</div>
+        <div class="rail-item"><div style="width:8px;height:8px;border-radius:50%;background:#059669"></div>Product</div>
+        <div class="rail-item"><div style="width:8px;height:8px;border-radius:50%;background:#2563eb"></div>Pricing</div>
+        <div class="rail-item"><div style="width:8px;height:8px;border-radius:50%;background:#d97706"></div>About</div>
+        <div class="rail-item"><div style="width:8px;height:8px;border-radius:50%;background:#dc2626"></div>Contact</div>
+      </div>
+    </div>
+    <div class="brief-main">
+      <div class="bcard">
+        <div class="bcard-head"><div class="bcard-title">Project Overview</div><span class="bcard-badge" style="background:var(--green-light);color:var(--green)">ACTIVE</span></div>
+        <div class="bcard-body">
+          <div class="ov-grid">
+            <div class="ov-field"><div class="ov-label">CLIENT</div><div class="ov-val">Neura Nova Inc.</div></div>
+            <div class="ov-field"><div class="ov-label">TYPE</div><div class="ov-val">Landing Page</div></div>
+            <div class="ov-field"><div class="ov-label">TIMELINE</div><div class="ov-val">6 weeks</div></div>
+            <div class="ov-field"><div class="ov-label">PHASE</div><div class="ov-val">Visual Design</div></div>
+            <div class="ov-field" style="grid-column:1/-1"><div class="ov-label">BRIEF</div><div class="ov-val" style="font-weight:400;font-size:12px;line-height:1.65;margin-top:3px">Redesign the primary landing page to improve conversion for two distinct buyer personas — technical evaluators and business buyers — while reducing bounce on mobile and clarifying the core value proposition.</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="bcard">
+        <div class="bcard-head"><div class="bcard-title">Research Summary</div><span class="bcard-badge" style="background:var(--brand-light);color:var(--brand)">5 SIGNALS · 4 SOURCES</span></div>
+        <div class="bcard-body" style="padding:0 20px">
+          <div class="sig-row"><div class="sig-dot" style="background:#1f9d8f"></div><div><div class="sig-text">Visitors leave before first value prop — 72% bounce on mobile</div><div class="sig-meta">Analytics · Critical</div></div></div>
+          <div class="sig-row"><div class="sig-dot" style="background:#6f57d4"></div><div><div class="sig-text">Two personas: technical evaluators want benchmarks, business buyers want logos</div><div class="sig-meta">User Interviews · High</div></div></div>
+          <div class="sig-row"><div class="sig-dot" style="background:#2f5bea"></div><div><div class="sig-text">Social proof visible before scroll drives 2.3× lift in trial sign-ups</div><div class="sig-meta">A/B Testing · High</div></div></div>
+          <div class="sig-row"><div class="sig-dot" style="background:#c2700f"></div><div><div class="sig-text">CTA form has 7 fields — 3-field version converts at 4% vs 1.8%</div><div class="sig-meta">Conversion Audit · Critical</div></div></div>
+          <div class="sig-row"><div class="sig-dot" style="background:#d4456b"></div><div><div class="sig-text">"Intelligent infrastructure" understood by only 38% of first-time visitors</div><div class="sig-meta">User Survey · High</div></div></div>
+        </div>
+      </div>
+      <div class="bcard">
+        <div class="bcard-head"><div class="bcard-title">Personas</div></div>
+        <div class="bcard-body">
+          <div class="persona-pair">
+            <div class="persona-card"><div class="persona-emoji">👨‍💻</div><div class="persona-name">The Evaluator</div><div class="persona-role">Senior Engineer · 28–40</div><div class="persona-tags"><span class="ptag">Wants benchmarks</span><span class="ptag">Reads docs first</span><span class="ptag">Skeptical</span></div></div>
+            <div class="persona-card"><div class="persona-emoji">👩‍💼</div><div class="persona-name">The Buyer</div><div class="persona-role">VP Engineering · 35–50</div><div class="persona-tags"><span class="ptag">Needs social proof</span><span class="ptag">ROI focused</span><span class="ptag">Case studies</span></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="bcard">
+        <div class="bcard-head"><div class="bcard-title">Success Metrics</div></div>
+        <div class="bcard-body" style="padding:0 20px">
+          <div class="metric-row"><span class="metric-label">Mobile bounce rate</span><div><div class="metric-val">↓ &lt;40%</div><div class="metric-curr">Currently 72%</div></div></div>
+          <div class="metric-row"><span class="metric-label">Trial sign-up conversion</span><div><div class="metric-val">↑ 4%+</div><div class="metric-curr">Currently 1.8%</div></div></div>
+          <div class="metric-row"><span class="metric-label">Message comprehension</span><div><div class="metric-val">↑ 70%+</div><div class="metric-curr">Currently 38%</div></div></div>
+          <div class="metric-row"><span class="metric-label">Form completion rate</span><div><div class="metric-val">↑ 65%+</div><div class="metric-curr">After 3-field switch</div></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="brief-sidebar">
+      <div style="font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--text3);margin-bottom:10px">RESEARCH SOURCES</div>
+      <div class="src-link"><span class="src-link-icon">📄</span><span class="src-link-name">NN-Research-Sprint-3 · Bounce Analysis</span><span class="src-link-type">Confluence</span></div>
+      <div class="src-link"><span class="src-link-icon">📄</span><span class="src-link-name">NN-Persona-Research · Dual Track</span><span class="src-link-type">Confluence</span></div>
+      <div class="src-link"><span class="src-link-icon">📄</span><span class="src-link-name">NN-CRO-Experiments</span><span class="src-link-type">Confluence</span></div>
+      <div class="src-link"><span class="src-link-icon">◫</span><span class="src-link-name">User Flow Audit Board</span><span class="src-link-type">Miro</span></div>
+      <div class="src-link"><span class="src-link-icon">◫</span><span class="src-link-name">Persona Journey Map</span><span class="src-link-type">Miro</span></div>
+      <div style="font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--text3);margin:18px 0 10px">AGENT PIPELINE</div>
+      <div class="agent-row"><div class="agent-dot" style="background:var(--green)"></div><div class="agent-name">Research Agent</div><div class="agent-status" style="color:var(--green)">DONE</div></div>
+      <div class="agent-row"><div class="agent-dot" style="background:var(--green)"></div><div class="agent-name">Sitemap Agent</div><div class="agent-status" style="color:var(--green)">DONE</div></div>
+      <div class="agent-row"><div class="agent-dot" style="background:var(--green)"></div><div class="agent-name">Wireframe Agent</div><div class="agent-status" style="color:var(--green)">DONE</div></div>
+      <div class="agent-row"><div class="agent-dot" style="background:var(--brand);animation:pulse 1.5s infinite"></div><div class="agent-name">Visual Design Agent</div><div class="agent-status" style="color:var(--brand)">ACTIVE</div></div>
+      <div class="agent-row"><div class="agent-dot" style="background:var(--text3)"></div><div class="agent-name">Copy Agent</div><div class="agent-status" style="color:var(--text3)">WAITING</div></div>
+    </div>
+  </div>
+
+  <!-- ══ STUDIO TAB ══ -->
+  <div id="pane-studio" style="display:none;flex:1;overflow:hidden">
+    <div class="left-rail">
+      <div class="rail-sec">
+        <div class="rail-sec-title">PAGES</div>
+        <div id="page-list"></div>
+      </div>
+      <div class="rail-sec">
+        <div class="rail-sec-title">AGENTS</div>
+        <div class="agent-ind"><div class="a-dot done"></div><span>Research</span></div>
+        <div class="agent-ind"><div class="a-dot done"></div><span>Sitemap</span></div>
+        <div class="agent-ind"><div class="a-dot done"></div><span>Wireframe</span></div>
+        <div class="agent-ind"><div class="a-dot active"></div><span>Visual Design</span></div>
+        <div class="agent-ind"><div class="a-dot idle"></div><span>Copy</span></div>
+      </div>
+    </div>
+    <div class="stage">
+      <div class="stage-scroll"><div class="stage-pad" id="stage-content"></div></div>
+    </div>
+    <div class="right-rail" id="right-rail">
+      <div class="rr-tabs">
+        <button class="rr-tab active" onclick="setRtab('agents')">Agents</button>
+        <button class="rr-tab" onclick="setRtab('comments')">Comments</button>
+        <button class="rr-tab" onclick="setRtab('history')">History</button>
+      </div>
+      <div class="rr-body" id="rr-body"></div>
+      <div class="chat-input-row" id="chat-wrap">
+        <textarea class="chat-input" id="chat-input" placeholder="Ask an agent..." onkeydown="chatKey(event)"></textarea>
+        <button class="chat-send" onclick="sendChat()">↑</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ PROJECT TAB ══ -->
+  <div id="pane-project" style="display:none;flex:1;overflow:hidden">
+    <div class="project-main">
+      <div class="phase-card">
+        <div class="phase-card-head"><div class="phase-card-title">Project Timeline</div><span style="font-size:11px;color:var(--text3)">6 weeks · Started Jun 2</span></div>
+        <div class="phase-body">
+          <div class="phase-row"><div class="phase-meta"><span class="phase-name">Discovery &amp; Research</span><span class="phase-dates">Jun 2–9</span></div><div class="phase-track"><div class="phase-fill" style="width:100%;background:var(--green)"></div></div></div>
+          <div class="phase-row"><div class="phase-meta"><span class="phase-name">Strategy &amp; Sitemap</span><span class="phase-dates">Jun 9–13</span></div><div class="phase-track"><div class="phase-fill" style="width:100%;background:var(--green)"></div></div></div>
+          <div class="phase-row"><div class="phase-meta"><span class="phase-name">Wireframes</span><span class="phase-dates">Jun 13–20</span></div><div class="phase-track"><div class="phase-fill" style="width:100%;background:var(--green)"></div></div></div>
+          <div class="phase-row"><div class="phase-meta"><span class="phase-name">Visual Design</span><span class="phase-dates">Jun 20–Jul 2</span></div><div class="phase-track"><div class="phase-fill" style="width:62%;background:var(--brand)"></div></div></div>
+          <div class="phase-row"><div class="phase-meta"><span class="phase-name">Review &amp; QA</span><span class="phase-dates">Jul 2–9</span></div><div class="phase-track"><div class="phase-fill" style="width:0%"></div></div></div>
+          <div class="phase-row"><div class="phase-meta"><span class="phase-name">Handoff</span><span class="phase-dates">Jul 9–14</span></div><div class="phase-track"><div class="phase-fill" style="width:0%"></div></div></div>
+        </div>
+      </div>
+      <div class="dl-card">
+        <div class="dl-head">Deliverables</div>
+        <div class="dl-row"><span class="dl-icon">📊</span><span class="dl-name">Research Report + Signal Map</span><span class="dl-phase">Discovery</span><span class="dl-status ds-active">DONE</span></div>
+        <div class="dl-row"><span class="dl-icon">🗺</span><span class="dl-name">Information Architecture Sitemap</span><span class="dl-phase">Strategy</span><span class="dl-status ds-active">DONE</span></div>
+        <div class="dl-row"><span class="dl-icon">🖼</span><span class="dl-name">Wireframes — All 6 Pages</span><span class="dl-phase">Wireframes</span><span class="dl-status ds-active">DONE</span></div>
+        <div class="dl-row"><span class="dl-icon">🎨</span><span class="dl-name">Visual Design — Home &amp; Product</span><span class="dl-phase">Design</span><span class="dl-status ds-progress">IN PROGRESS</span></div>
+        <div class="dl-row"><span class="dl-icon">🎨</span><span class="dl-name">Visual Design — Pricing, About, Contact</span><span class="dl-phase">Design</span><span class="dl-status ds-pending">PENDING</span></div>
+        <div class="dl-row"><span class="dl-icon">🎨</span><span class="dl-name">Style Guide &amp; Component Library</span><span class="dl-phase">Design</span><span class="dl-status ds-pending">PENDING</span></div>
+        <div class="dl-row"><span class="dl-icon">✅</span><span class="dl-name">QA Review + Annotations</span><span class="dl-phase">Review</span><span class="dl-status ds-pending">PENDING</span></div>
+        <div class="dl-row"><span class="dl-icon">📦</span><span class="dl-name">Dev Handoff Package</span><span class="dl-phase">Handoff</span><span class="dl-status ds-pending">PENDING</span></div>
+      </div>
+    </div>
+    <div class="project-sidebar">
+      <div style="font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--text3);margin-bottom:10px">TEAM</div>
+      <div class="team-card">
+        <div class="team-row"><div class="team-av" style="background:#7c3aed">JD</div><div style="flex:1"><div class="team-name">Joe DeSanto</div><div class="team-role">Lead Designer</div></div><div class="team-online"></div></div>
+        <div class="team-row"><div class="team-av" style="background:#059669">AK</div><div style="flex:1"><div class="team-name">Alex Kim</div><div class="team-role">UX Researcher</div></div><div style="width:7px;height:7px;border-radius:50%;background:var(--amber)"></div></div>
+        <div class="team-row"><div class="team-av" style="background:#ea580c">MR</div><div style="flex:1"><div class="team-name">Maya Russo</div><div class="team-role">Strategist</div></div><div style="width:7px;height:7px;border-radius:50%;background:var(--text3)"></div></div>
+      </div>
+      <div style="font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--text3);margin:18px 0 10px">UPCOMING</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="padding:11px 13px;border:1px solid var(--border);border-radius:9px;background:var(--surface)"><div style="font-size:12px;font-weight:700;margin-bottom:2px">Design Review</div><div style="font-size:11px;color:var(--text2)">Jun 27 · 10:00am</div></div>
+        <div style="padding:11px 13px;border:1px solid var(--border);border-radius:9px;background:var(--surface)"><div style="font-size:12px;font-weight:700;margin-bottom:2px">Client Presentation</div><div style="font-size:11px;color:var(--text2)">Jul 2 · 2:00pm</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const SIGNALS=[
+  {id:'s1',text:'Visitors leave before first value prop — 72% bounce on mobile',color:'#1f9d8f',pages:['home','pricing'],source:'Analytics',impact:'Critical',confluence:'NN-Research-Sprint-3 · Bounce Analysis',miro:'User Flow Audit Board'},
+  {id:'s2',text:'Two personas: technical evaluators want benchmarks, business buyers want logos',color:'#6f57d4',pages:['home','product'],source:'User Interviews',impact:'High',confluence:'NN-Persona-Research · Dual Track',miro:'Persona Journey Map'},
+  {id:'s3',text:'Social proof visible before scroll drives 2.3× lift in trial sign-ups',color:'#2f5bea',pages:['home'],source:'A/B Testing',impact:'High',confluence:'NN-CRO-Experiments · Social Proof',miro:'Conversion Flow Map'},
+  {id:'s4',text:'CTA form has 7 fields — 3-field version converts at 4% vs 1.8%',color:'#c2700f',pages:['pricing','contact'],source:'Conversion Audit',impact:'Critical',confluence:'NN-CRO-Experiments · Form Optimization',miro:'Conversion Flow Map'},
+  {id:'s5',text:'"Intelligent infrastructure" understood by only 38% of first-time visitors',color:'#d4456b',pages:['home','product'],source:'User Survey',impact:'High',confluence:'NN-Research-Sprint-3 · Message Testing',miro:'Messaging Workshop Board'},
+];
+
+const PAGES=[
+  {id:'home',label:'Home',icon:'🏠'},{id:'product',label:'Product',icon:'⚡'},
+  {id:'pricing',label:'Pricing',icon:'💰'},{id:'about',label:'About',icon:'ℹ️'},
+  {id:'blog',label:'Blog',icon:'📝'},{id:'contact',label:'Contact',icon:'✉️'},
+];
+
+let S={
+  topTab:'brief',mode:'flow',page:'home',rtab:'agents',inspTab:'inspect',designSel:null,
+  sections:{
+    home:[{name:'NAV',sigs:['s1']},{name:'HERO — value prop',sigs:['s5','s2']},{name:'STATS — social proof',sigs:['s3']},{name:'FEATURES',sigs:['s2']},{name:'PRICING TEASER',sigs:['s4']},{name:'FOOTER',sigs:[]}],
+    product:[{name:'NAV',sigs:[]},{name:'HERO — product overview',sigs:['s2','s5']},{name:'FEATURES — technical',sigs:['s2']},{name:'INTEGRATIONS',sigs:[]},{name:'FOOTER',sigs:[]}],
+    pricing:[{name:'NAV',sigs:[]},{name:'PRICING TABLE',sigs:['s4','s1']},{name:'FAQ',sigs:['s4']},{name:'FOOTER',sigs:[]}],
+    about:[{name:'NAV',sigs:[]},{name:'MISSION',sigs:[]},{name:'TEAM',sigs:[]},{name:'VALUES',sigs:[]},{name:'FOOTER',sigs:[]}],
+    blog:[{name:'NAV',sigs:[]},{name:'ARTICLE LIST',sigs:[]},{name:'PAGINATION',sigs:[]},{name:'FOOTER',sigs:[]}],
+    contact:[{name:'NAV',sigs:[]},{name:'CONTACT FORM',sigs:['s4']},{name:'OFFICE',sigs:[]},{name:'FOOTER',sigs:[]}],
+  },
+  chat:[
+    {role:'ai',text:'Research Agent extracted 5 signals from 4 sources — Confluence and Miro. Sitemap and wireframes are ready.'},
+    {role:'ai',text:'Visual Design Agent is building Home and Product pages. Based on signal s3, social proof is placed above the fold.'},
+  ],
+  typing:false,
+};
+
+function setState(u){Object.assign(S,u);render();}
+function render(){
+  // top tab buttons
+  document.querySelectorAll('.top-tab').forEach((t,i)=>{
+    t.classList.toggle('active',['brief','studio','project'][i]===S.topTab);
+  });
+  document.getElementById('pane-brief').style.display=S.topTab==='brief'?'flex':'none';
+  document.getElementById('pane-studio').style.display=S.topTab==='studio'?'flex':'none';
+  document.getElementById('pane-project').style.display=S.topTab==='project'?'flex':'none';
+  document.getElementById('mode-tabs').style.display=S.topTab==='studio'?'flex':'none';
+  if(S.topTab==='studio'){
+    renderPageList();
+    renderStage();
+    if(S.mode==='design') renderInspect();
+    else renderRR();
+  }
+  document.querySelectorAll('.mode-tab').forEach((t,i)=>{
+    t.classList.toggle('active',['flow','sitemap','wireframe','design','style'][i]===S.mode);
+  });
+}
+
+function setTopTab(t){setState({topTab:t});}
+function setMode(m){setState({mode:m});}
+
+function renderPageList(){
+  const el=document.getElementById('page-list');
+  if(!el)return;
+  el.innerHTML=PAGES.map(p=>`<div class="rail-item ${S.page===p.id?'active':''}" onclick="setState({page:'${p.id}'})">${p.icon} ${p.label}</div>`).join('');
+}
+
+function renderStage(){
+  const el=document.getElementById('stage-content');
+  if(!el)return;
+  if(S.mode==='flow')el.innerHTML=renderFlow();
+  else if(S.mode==='sitemap')el.innerHTML=renderSitemap();
+  else if(S.mode==='wireframe')el.innerHTML=renderWireframe();
+  else if(S.mode==='design')el.innerHTML=renderDesign();
+  else if(S.mode==='style')el.innerHTML=renderStyle();
+}
+
+function impCls(i){return i==='Critical'?'imp-critical':i==='High'?'imp-high':'imp-medium';}
+function srcIcon(s){return{Analytics:'📊','User Interviews':'👥','A/B Testing':'⚗️','Conversion Audit':'🔍','User Survey':'📋'}[s]||'📋';}
+
+function renderFlow(){
+  const pageSigs=pid=>SIGNALS.filter(s=>s.pages.includes(pid));
+  return `
+    <div class="flow-header">
+      <div class="flow-title">Research → Design Flow</div>
+      <div class="flow-legend">
+        <span class="legend-pill">📊 Analytics</span>
+        <span class="legend-pill">👥 Interviews</span>
+        <span class="legend-pill">⚗️ A/B Testing</span>
+        <span class="legend-pill">🔍 Audit</span>
+        <span class="legend-pill">📋 Survey</span>
+      </div>
+    </div>
+    <div class="flow-layout">
+      <div>
+        <div class="flow-col-head">RESEARCH SIGNALS</div>
+        ${SIGNALS.map(s=>`<div class="signal-card">
+          <div class="sc-top"><span class="sc-impact ${impCls(s.impact)}">${s.impact.toUpperCase()}</span><span class="sc-src">${srcIcon(s.source)} ${s.source}</span></div>
+          <div class="sc-text">${s.text}</div>
+          <div class="sc-pages">${s.pages.map(p=>`<span class="sc-page">${p}</span>`).join('')}</div>
+          <div class="sc-badges">${s.confluence?`<span class="sc-badge badge-cf">📄 ${s.confluence}</span>`:''}${s.miro?`<span class="sc-badge badge-mi">◫ ${s.miro}</span>`:''}</div>
+          <div class="sc-agent">🤖 Research Agent</div>
+        </div>`).join('')}
+      </div>
+      <div>
+        <div class="flow-col-head">SITEMAP</div>
+        ${PAGES.slice(0,5).map(p=>{
+          const sigs=pageSigs(p.id);
+          const cfs=[...new Set(sigs.filter(s=>s.confluence).map(s=>s.confluence))];
+          const mis=[...new Set(sigs.filter(s=>s.miro).map(s=>s.miro))];
+          return `<div class="signal-card ${S.page===p.id?'':''}">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:${(cfs.length||mis.length)?'8px':'0'}">
+              <span>${p.icon}</span><span style="font-weight:700">${p.label}</span>
+              <span style="font-size:10px;color:var(--text3);margin-left:auto">${sigs.length} sig</span>
+            </div>
+            <div class="sc-badges">${cfs.map(c=>`<span class="sc-badge badge-cf">📄 ${c.split('·')[0].trim()}</span>`).join('')}${mis.map(m=>`<span class="sc-badge badge-mi">◫ ${m}</span>`).join('')}</div>
+          </div>`;
+        }).join('')}
+      </div>
+      <div>
+        <div class="flow-col-head">WIREFRAMES</div>
+        ${PAGES.slice(0,4).map(p=>`<div class="signal-card" style="cursor:pointer" onclick="setState({mode:'wireframe',page:'${p.id}'})">
+          <div style="font-size:10px;font-weight:700;color:var(--text3);margin-bottom:8px">${p.label.toUpperCase()}</div>
+          ${(S.sections[p.id]||[]).slice(0,4).map(sec=>`<div style="height:${sec.name.includes('HERO')?'14':'8'}px;background:var(--border);border-radius:2px;margin-bottom:5px;opacity:${sec.sigs&&sec.sigs.length?1:.4}"></div>`).join('')}
+        </div>`).join('')}
+      </div>
+    </div>`;
+}
+
+function renderSitemap(){
+  const pageSigs=pid=>SIGNALS.filter(s=>s.pages.includes(pid));
+  const nodeHtml=(pid)=>{
+    const p=PAGES.find(x=>x.id===pid);if(!p)return'';
+    const sigs=pageSigs(pid);
+    const cfs=[...new Set(sigs.filter(s=>s.confluence).map(s=>s.confluence))];
+    const mis=[...new Set(sigs.filter(s=>s.miro).map(s=>s.miro))];
+    return `<div class="sm-node ${S.page===pid?'active':''}" onclick="setState({page:'${pid}'})">
+      <div class="sm-node-icon">${p.icon}</div>
+      <div class="sm-node-label">${p.label}</div>
+      ${(cfs.length||mis.length)?`<div class="sm-chips">${cfs.map(c=>`<span class="sm-chip sm-chip-cf">📄 ${c.split('·')[0].trim()}</span>`).join('')}${mis.map(m=>`<span class="sm-chip sm-chip-mi">◫ ${m}</span>`).join('')}</div>`:''}
+    </div>`;
+  };
+  const struct=[
+    {id:'home',children:['product','pricing']},
+    {id:'about',children:[]},
+    {id:'blog',children:[]},
+    {id:'contact',children:[]},
+  ];
+  return `<div style="font-size:15px;font-weight:700;margin-bottom:18px">Site Architecture</div>
+    ${struct.map(s=>`<div class="sm-row">${nodeHtml(s.id)}${s.children.map(c=>`<span class="sm-arrow">→</span>${nodeHtml(c)}`).join('')}</div>`).join('')}`;
+}
+
+function wfBlock(sec){
+  const n=sec.name.toUpperCase();
+  if(n.includes('NAV'))return`<div class="wf-block"><div style="display:flex;align-items:center;gap:8px"><div class="wf-bar" style="width:50px;margin:0"></div><div style="flex:1"></div>${[40,40,40].map(w=>`<div class="wf-bar" style="width:${w}px;margin:0"></div>`).join('')}<div class="wf-bar" style="width:64px;height:24px;border-radius:5px;background:var(--border2);margin:0"></div></div></div>`;
+  if(n.includes('HERO'))return`<div class="wf-block"><div class="wf-grid-2" style="align-items:center;gap:14px"><div><div class="wf-bar" style="height:11px;width:85%;margin-bottom:9px"></div><div class="wf-bar" style="height:11px;width:95%%;margin-bottom:9px"></div><div class="wf-bar" style="height:11px;width:60%;margin-bottom:14px"></div><div class="wf-bar" style="width:80px;height:28px;border-radius:5px;background:var(--border2)"></div></div><div style="height:100px;background:var(--surface2);border:1px solid var(--border);border-radius:6px"></div></div></div>`;
+  if(n.includes('STATS')||n.includes('SOCIAL'))return`<div class="wf-block"><div class="wf-grid-3">${[1,2,3].map(()=>`<div class="wf-col" style="align-items:center"><div class="wf-bar" style="height:18px;width:55px;margin-bottom:5px"></div><div class="wf-text" style="width:80%"></div></div>`).join('')}</div></div>`;
+  if(n.includes('FEAT'))return`<div class="wf-block"><div class="wf-grid-3">${[1,2,3].map(()=>`<div class="wf-col"><div class="wf-circle" style="width:30px;height:30px;margin-bottom:8px"></div><div class="wf-bar" style="height:8px;margin-bottom:5px"></div><div class="wf-text" style="width:90%;margin-bottom:4px"></div><div class="wf-text" style="width:70%"></div></div>`).join('')}</div></div>`;
+  if(n.includes('PRICING'))return`<div class="wf-block"><div class="wf-grid-3">${[1,2,3].map(()=>`<div class="wf-col" style="border:1px solid var(--border);border-radius:8px;padding:10px"><div class="wf-bar" style="height:8px;width:70%;margin-bottom:6px"></div><div class="wf-bar" style="height:16px;width:50%;margin-bottom:10px"></div><div class="wf-bar" style="height:24px;border-radius:4px;background:var(--border2)"></div></div>`).join('')}</div></div>`;
+  if(n.includes('FORM')||n.includes('CONTACT'))return`<div class="wf-block"><div style="max-width:280px"><div class="wf-bar" style="height:24px;margin-bottom:8px"></div><div class="wf-bar" style="height:24px;margin-bottom:8px"></div><div class="wf-bar" style="height:48px;margin-bottom:8px"></div><div class="wf-bar" style="height:28px;width:100px;border-radius:5px;background:var(--border2)"></div></div></div>`;
+  if(n.includes('TEAM'))return`<div class="wf-block"><div class="wf-grid-3">${[1,2,3].map(()=>`<div class="wf-col" style="align-items:center"><div class="wf-circle" style="width:44px;height:44px;margin-bottom:8px"></div><div class="wf-bar" style="height:8px;width:75%;margin-bottom:4px"></div><div class="wf-text" style="width:55%"></div></div>`).join('')}</div></div>`;
+  if(n.includes('FOOTER'))return`<div class="wf-block" style="background:var(--surface2)"><div class="wf-grid-3">${[1,2,3].map(()=>`<div class="wf-col">${[70,50,40,55].map(w=>`<div class="wf-text" style="width:${w}%;margin-bottom:6px"></div>`).join('')}</div>`).join('')}</div></div>`;
+  if(n.includes('ARTICLE')||n.includes('BLOG'))return`<div class="wf-block"><div style="display:flex;flex-direction:column;gap:10px">${[1,2,3].map(()=>`<div style="display:flex;gap:10px"><div style="width:70px;min-width:70px;height:50px;background:var(--surface2);border:1px solid var(--border);border-radius:4px"></div><div style="flex:1"><div class="wf-bar" style="height:8px;margin-bottom:5px"></div><div class="wf-text" style="width:80%;margin-bottom:4px"></div><div class="wf-text" style="width:55%"></div></div></div>`).join('')}</div></div>`;
+  return`<div class="wf-block"><div class="wf-text" style="width:90%;margin-bottom:6px"></div><div class="wf-text" style="width:75%;margin-bottom:6px"></div><div class="wf-text" style="width:60%"></div></div>`;
+}
+
+function renderWireframe(){
+  const secs=S.sections[S.page]||[];
+  const pageLabel=PAGES.find(p=>p.id===S.page)?.label||'';
+  return `<div style="font-size:15px;font-weight:700;margin-bottom:18px">${pageLabel} — Wireframe</div>
+    ${secs.map((sec,i)=>`
+      <div class="wf-section">
+        <div class="wf-head">
+          <div contenteditable="true" class="wf-name" onblur="renSec('${S.page}',${i},this.textContent)">${sec.name}</div>
+          <div class="wf-sig-dots">${(sec.sigs||[]).map(sid=>{const s=SIGNALS.find(x=>x.id===sid);return s?`<div class="wf-sig-dot" style="background:${s.color}" title="${s.text}"></div>`:''}).join('')}</div>
+          <button class="wf-del" onclick="delSec('${S.page}',${i})">×</button>
+        </div>
+        ${wfBlock(sec)}
+      </div>`).join('')}
+    <div class="wf-add" onclick="addSec('${S.page}')">+ Add Section</div>`;
+}
+
+function renSec(pid,i,v){const s=[...(S.sections[pid]||[])];s[i]={...s[i],name:v.trim()||s[i].name};setState({sections:{...S.sections,[pid]:s}});}
+function delSec(pid,i){const s=[...(S.sections[pid]||[])];s.splice(i,1);setState({sections:{...S.sections,[pid]:s}});}
+function addSec(pid){const s=[...(S.sections[pid]||[]),{name:'NEW SECTION',sigs:[]}];setState({sections:{...S.sections,[pid]:s}});}
+
+const INSP_DATA={
+  'NAV':{label:'Navigation',props:{Height:'60px',Background:'--color-surface',Position:'Sticky'},tokens:{bg:'--color-surface',border:'--color-border',text:'--color-text-primary'},vd:'Add scroll-activated shadow to improve depth. Signal s3: consider trust logos in nav for buyer persona.'},
+  'HERO — value prop':{label:'Hero',props:{Layout:'2-col 50/50',Heading:'text-5xl',CTA:'Primary button'},tokens:{bg:'--color-bg',heading:'--type-display-xl',btn:'--comp-btn-primary'},vd:'Lead with outcome not product. Address 38% comprehension gap (signal s5) — rewrite headline to "infrastructure that scales with you."'},
+  'STATS — social proof':{label:'Stats Bar',props:{Columns:'3',Animation:'Count-up on scroll'},tokens:{bg:'--color-surface-2',stat:'--type-display-md',label:'--type-label-sm'},vd:'Signal s3: push stats above fold to capture 2.3× lift from early social proof. Show real customer numbers.'},
+};
+
+function renderDesign(){
+  return `<div class="design-scroll">
+    <div style="font-size:15px;font-weight:700;margin-bottom:18px">Design — All Pages</div>
+    <div class="design-row">${PAGES.map(p=>`
+      <div class="design-frame ${S.designSel===p.id?'sel':''}" onclick="setState({designSel:'${p.id}'})">
+        <div class="design-frame-label">${p.icon} ${p.label}</div>
+        <div class="design-frame-body">${(S.sections[p.id]||[]).map(sec=>`<div style="height:${sec.name.includes('HERO')?'42':'16'}px;background:var(--border);border-radius:3px;opacity:${sec.sigs&&sec.sigs.length?1:.45}"></div>`).join('')}</div>
+      </div>`).join('')}
+    </div>
+  </div>`;
+}
+
+function renderInspect(){
+  const rr=document.getElementById('right-rail');if(!rr)return;
+  const sel=S.designSel;
+  if(!sel){rr.innerHTML=`<div style="padding:16px;font-size:12px;color:var(--text3)">Select a page frame to inspect</div>`;return;}
+  const p=PAGES.find(x=>x.id===sel);
+  const secs=S.sections[sel]||[];
+  const firstSec=secs[0];
+  const data=INSP_DATA[firstSec?.name]||{label:firstSec?.name||'',props:{},tokens:{},vd:''};
+  rr.innerHTML=`
+    <div class="insp-tab-bar">
+      <button class="insp-tab ${S.inspTab==='inspect'?'active':''}" onclick="setState({inspTab:'inspect'})">Inspect</button>
+      <button class="insp-tab ${S.inspTab==='code'?'active':''}" onclick="setState({inspTab:'code'})">Code</button>
+    </div>
+    <div class="insp-body">
+      <div style="font-size:13px;font-weight:700;margin-bottom:14px">${p?.label} — ${data.label}</div>
+      ${S.inspTab==='inspect'?`
+        <div class="insp-label">PROPERTIES</div>
+        ${Object.entries(data.props||{}).map(([k,v])=>`<div class="insp-row"><span class="insp-key">${k}</span><span class="insp-val">${v}</span></div>`).join('')}
+        <div class="insp-label">DESIGN TOKENS</div>
+        ${Object.entries(data.tokens||{}).map(([k,v])=>`<div class="insp-row"><span class="insp-key">${k}</span><span class="insp-token">${v}</span></div>`).join('')}
+        <div class="insp-label">VD AGENT SUGGESTION</div>
+        <div class="insp-vd">🤖 ${data.vd||'No suggestion available for this section.'}</div>`:`
+        <div class="insp-label">CSS</div>
+        <div class="insp-code">.${(data.label||'section').toLowerCase().replace(/\s/g,'-')} {\n  background: var(${Object.values(data.tokens||{})[0]||'--color-bg'});\n  padding: var(--space-16) var(--space-8);\n  border-bottom: 1px solid\n    var(--color-border);\n}</div>`}
+    </div>`;
+}
+
+function renderStyle(){
+  const colors=[
+    {n:'Brand',v:'#7c3aed'},{n:'Brand Mid',v:'#a78bfa'},{n:'Brand Light',v:'#ede9fe'},
+    {n:'Surface',v:'#ffffff'},{n:'Surface 2',v:'#f5f5f9'},{n:'Border',v:'#e4e4eb'},
+    {n:'Text',v:'#16161a'},{n:'Text 2',v:'#5f5f70'},{n:'Green',v:'#16a34a'},
+    {n:'Red',v:'#dc2626'},{n:'Amber',v:'#d97706'},{n:'Blue',v:'#2563eb'},
+  ];
+  return `
+    <div class="sg-section"><div class="sg-heading">Color Tokens</div><div class="color-grid">${colors.map(c=>`<div class="swatch"><div class="swatch-color" style="background:${c.v}"></div><div class="swatch-info"><div class="swatch-name">${c.n}</div><div class="swatch-val">${c.v}</div></div></div>`).join('')}</div></div>
+    <div class="sg-section"><div class="sg-heading">Type Scale</div><div class="type-scale">
+      <div class="type-row"><span class="type-spec">display-xl · 40/44</span><span style="font-size:38px;font-weight:800;letter-spacing:-.04em;line-height:1">Display</span></div>
+      <div class="type-row"><span class="type-spec">display-lg · 32/36</span><span style="font-size:30px;font-weight:700;letter-spacing:-.03em;line-height:1">Display</span></div>
+      <div class="type-row"><span class="type-spec">heading · 22/28</span><span style="font-size:22px;font-weight:700;letter-spacing:-.02em">Section Heading</span></div>
+      <div class="type-row"><span class="type-spec">body-lg · 16/26</span><span style="font-size:16px;line-height:1.6">Body text for long-form content and reading</span></div>
+      <div class="type-row"><span class="type-spec">body-md · 13/20</span><span style="font-size:13px;line-height:1.55">Standard body text</span></div>
+      <div class="type-row"><span class="type-spec">label · 10/14</span><span style="font-size:10px;font-weight:700;letter-spacing:.1em">LABEL TEXT</span></div>
+    </div></div>
+    <div class="sg-section"><div class="sg-heading">Components</div><div class="comp-row">
+      <button style="background:var(--brand);color:#fff;border:none;padding:9px 18px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer">Primary</button>
+      <button style="border:1px solid var(--border);background:var(--surface2);padding:9px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer">Secondary</button>
+      <input style="border:1px solid var(--border);background:var(--surface2);padding:8px 12px;border-radius:8px;font-size:13px;font-family:inherit" placeholder="Text input">
+      <span style="font-size:10px;font-weight:700;background:var(--brand-light);color:var(--brand);padding:3px 9px;border-radius:20px;letter-spacing:.04em">BADGE</span>
+    </div></div>`;
+}
+
+function renderRR(){
+  const rr=document.getElementById('right-rail');if(!rr)return;
+  const tabBar=`<div class="rr-tabs"><button class="rr-tab ${S.rtab==='agents'?'active':''}" onclick="setRtab('agents')">Agents</button><button class="rr-tab ${S.rtab==='comments'?'active':''}" onclick="setRtab('comments')">Comments</button><button class="rr-tab ${S.rtab==='history'?'active':''}" onclick="setRtab('history')">History</button></div>`;
+  let body='';
+  if(S.rtab==='agents'){
+    const msgs=S.chat.map(m=>`<div class="chat-msg"><div class="chat-sender">${m.role==='ai'?'🤖 Weave Agent':'You'}</div><div class="chat-bubble ${m.role}">${m.text}</div></div>`).join('');
+    body=`<div class="rr-body" id="rr-body">${msgs}${S.typing?'<div class="chat-msg"><div class="chat-bubble ai">...</div></div>':''}</div><div class="chat-input-row"><textarea class="chat-input" id="chat-input" placeholder="Ask an agent..." onkeydown="chatKey(event)"></textarea><button class="chat-send" onclick="sendChat()">↑</button></div>`;
+  } else if(S.rtab==='comments'){
+    body=`<div class="rr-body"><div class="hist-item"><div class="hist-time">Today · AK</div><div class="hist-text">Hero headline isn't clear enough — 5 user tests showed "intelligent infrastructure" causing confusion.</div></div><div class="hist-item"><div class="hist-time">Today · MR</div><div class="hist-text">Pricing CTA should use 3-field form. Signal s4 is solid — 4% vs 1.8% is a clear win.</div></div></div>`;
+  } else {
+    body=`<div class="rr-body"><div class="hist-item"><div class="hist-time">Today 11:30am</div><div class="hist-text">Visual Design Agent started Home page.</div></div><div class="hist-item"><div class="hist-time">Today 10:00am</div><div class="hist-text">Wireframe Agent completed all 6 pages.</div></div><div class="hist-item"><div class="hist-time">Yesterday 4:00pm</div><div class="hist-text">Sitemap built from 5 signals.</div></div><div class="hist-item"><div class="hist-time">Yesterday 2:30pm</div><div class="hist-text">Research Agent extracted 5 signals from 4 sources.</div></div></div>`;
+  }
+  rr.innerHTML=tabBar+body;
+}
+
+function setRtab(t){setState({rtab:t});}
+function chatKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendChat();}}
+function sendChat(){
+  const inp=document.getElementById('chat-input');if(!inp)return;
+  const v=inp.value.trim();if(!v)return;
+  inp.value='';
+  const replies=["I'll analyze the research signals and update the wireframe accordingly.","Based on signal s1, I recommend reducing mobile hero height to push value prop above fold.","The conversion audit (signal s4) suggests removing 4 fields. Updating wireframe now.","Cross-referencing the Persona Journey Map — updating layout to serve both evaluators and buyers."];
+  setState({chat:[...S.chat,{role:'user',text:v}],typing:true});
+  setTimeout(()=>setState({chat:[...S.chat,{role:'user',text:v},{role:'ai',text:replies[S.chat.length%replies.length]}],typing:false}),1200);
+}
+
+function toggleTheme(){
+  document.documentElement.dataset.theme=document.documentElement.dataset.theme==='dark'?'light':'dark';
+}
+
+render();
+</script>
+</body>
+</html>
