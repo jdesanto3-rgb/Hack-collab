@@ -859,7 +859,10 @@ img { max-width: 100%; display: block; }
 [data-theme="canvas"] .btn           { border-radius: 2px; }
 [data-theme="canvas"] .nav-logo-mark { border-radius: 2px; }
 [data-theme="canvas"] .badge         { border-radius: 2px; }
-[data-theme="canvas"] .step-num      { border-radius: 2px; }
+[data-theme="canvas"] .step-num      { border-radius: 2px; background: #EDE4D8; border-color: #C8BFB4; color: #241208; }
+[data-theme="canvas"] .step-info h4  { color: #241208; }
+[data-theme="canvas"] .step-info p   { color: rgba(36,18,8,0.60); }
+[data-theme="canvas"] .step-item.active .step-num { background: var(--purple); border-color: var(--purple); color: #fff; }
 
 /* Table header: ensure accessible contrast */
 [data-theme="canvas"] .compare-table th { color: #241208 !important; }
@@ -1028,7 +1031,14 @@ img { max-width: 100%; display: block; }
 /* Step number badges: pill shape */
 [data-theme="blueprint"] .step-num {
   border-radius: 9999px;
+  background: rgba(185,218,255,0.10);
+  border-color: rgba(185,218,255,0.22);
+  color: #B9DAFF;
 }
+[data-theme="blueprint"] .step-item.active { background: rgba(185,218,255,0.08); border-color: rgba(185,218,255,0.35); }
+[data-theme="blueprint"] .step-item.active .step-num { background: #B9DAFF; border-color: #B9DAFF; color: #000; }
+[data-theme="blueprint"] .step-info h4  { color: rgba(255,255,255,0.90); }
+[data-theme="blueprint"] .step-info p   { color: rgba(255,255,255,0.50); }
 
 /* Agent tags: glass treatment */
 [data-theme="blueprint"] .agent-tag {
@@ -1640,6 +1650,12 @@ img { max-width: 100%; display: block; }
 [data-theme=""] .step-detail p,
 [data-theme=""] .testimonial-card blockquote,
 [data-theme=""] .persona-card p { color: rgba(235,230,223,0.65); }
+
+/* Step list contrast — Obsidian */
+[data-theme=""] .step-num  { background: rgba(235,230,223,0.10); border-color: rgba(235,230,223,0.18); color: rgba(235,230,223,0.80); }
+[data-theme=""] .step-item.active .step-num { background: var(--purple); border-color: var(--purple); color: #fff; }
+[data-theme=""] .step-info h4 { color: rgba(235,230,223,0.92); }
+[data-theme=""] .step-info p  { color: rgba(235,230,223,0.50); }
 
 [data-theme=""] .diff-table td,
 [data-theme=""] .diff-table th {
