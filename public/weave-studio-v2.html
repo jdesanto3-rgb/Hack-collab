@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
+<script>(function(){var t=localStorage.getItem("weave-theme")||"dark";document.documentElement.setAttribute("data-theme",t);})()</script>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Weave Studio — Neura Nova</title>
 <link rel="shortcut icon" href="/weave-logo.png"><link rel="icon" type="image/png" sizes="64x64" href="/weave-logo.png">
@@ -1142,7 +1143,7 @@ function sendChat(){
     setState({chat:[...S.chat,{role:'ai',text:CHAT_REPLIES[idx]}],typing:false});
   },1100);
 }
-function toggleTheme(){document.documentElement.setAttribute('data-theme',isDark()?'light':'dark');render();}
+function toggleTheme(){var t=isDark()?'light':'dark';document.documentElement.setAttribute('data-theme',t);localStorage.setItem('weave-theme',t);render();}
 
 // ── PREVIEW ────────────────────────────────────────────────────────────────────
 let prevPage='home';

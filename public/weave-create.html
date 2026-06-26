@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
+<script>(function(){var t=localStorage.getItem("weave-theme")||"dark";document.documentElement.setAttribute("data-theme",t);})()</script>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Weave — New Project</title>
 <link rel="shortcut icon" href="/weave-logo.png"><link rel="icon" type="image/png" sizes="64x64" href="/weave-logo.png">
@@ -347,7 +348,7 @@ header{height:64px;background:var(--surface);display:flex;align-items:center;pad
 </div>
 
 <script>
-function toggleTheme(){document.documentElement.dataset.theme=document.documentElement.dataset.theme==='dark'?'light':'dark'}
+function toggleTheme(){var t=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=t;localStorage.setItem('weave-theme',t);}
 
 let currentStep=1;
 

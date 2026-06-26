@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<script>(function(){var t=localStorage.getItem("weave-theme")||"dark";document.documentElement.setAttribute("data-theme",t);})()</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Weave — Canvas</title>
 <link rel="shortcut icon" href="/weave-logo.png"><link rel="icon" type="image/png" sizes="64x64" href="/weave-logo.png">
@@ -66,7 +67,7 @@ function readTokens(){
 }
 let T=readTokens();
 function isDark(){const a=document.documentElement.getAttribute('data-theme');if(a==='dark')return true;if(a==='light')return false;return window.matchMedia('(prefers-color-scheme:dark)').matches;}
-function toggleTheme(){document.documentElement.setAttribute('data-theme',isDark()?'light':'dark');T=readTokens();render();}
+function toggleTheme(){var t=isDark()?'light':'dark';document.documentElement.setAttribute('data-theme',t);localStorage.setItem('weave-theme',t);T=readTokens();render();}
 
 // ── DATA ──────────────────────────────────────────────────────────────────────
 const AGENTS=[
