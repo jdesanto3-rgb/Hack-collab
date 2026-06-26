@@ -145,16 +145,16 @@
 /* ── DARK MODE (system) ── */
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg:           #0D0D0E;
-    --surface:      #1A1A1C;
-    --surface2:     #222225;
-    --border:       #303034;
-    --border2:      #424248;
-    --text:         #EAEAEC;
-    --text2:        #9898A2;
-    --text3:        #676772;
-    --bg-canvas:    #090909;
-    --surface-warm: #161618;
+    --bg:           #0C0C0B;
+    --surface:      #1A1919;
+    --surface2:     #222120;
+    --border:       #2F2E2C;
+    --border2:      #403F3C;
+    --text:         #ECEAE8;
+    --text2:        #9A9896;
+    --text3:        #686664;
+    --bg-canvas:    #090808;
+    --surface-warm: #161514;
 
     --brand:       #FF9200;
     --brand-light: #221200;
@@ -185,16 +185,16 @@
 
 /* ── DARK MODE (explicit JS toggle) ── */
 html[data-theme="dark"] {
-  --bg:           #0D0D0E;
-  --surface:      #1A1A1C;
-  --surface2:     #222225;
-  --border:       #303034;
-  --border2:      #424248;
-  --text:         #EAEAEC;
-  --text2:        #9898A2;
-  --text3:        #676772;
-  --bg-canvas:    #090909;
-  --surface-warm: #161618;
+  --bg:           #0C0C0B;
+  --surface:      #1A1919;
+  --surface2:     #222120;
+  --border:       #2F2E2C;
+  --border2:      #403F3C;
+  --text:         #ECEAE8;
+  --text2:        #9A9896;
+  --text3:        #686664;
+  --bg-canvas:    #090808;
+  --surface-warm: #161514;
 
   --brand:       #FF9200;
   --brand-light: #221200;
