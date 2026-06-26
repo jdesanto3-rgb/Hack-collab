@@ -15,15 +15,15 @@ const STEPS = [
     num: '02',
     title: 'The right agents pick up the work',
     short: 'The right Executive Agent accepts ownership.',
-    desc: 'The Executive Creative Director, Executive PM, or Executive Developer agent evaluates the brief and accepts ownership. They decompose the work into discrete threads and activate the appropriate SAGE specialist agents — each one preserving context as it executes, not discarding it.',
+    desc: 'The Executive Creative Director, Executive PM, or Executive Developer agent evaluates the brief and accepts ownership. They decompose the work into discrete threads and activate the appropriate specialist agents — each one preserving context as it executes, not discarding it.',
     agents: ['ECD Agent', 'EPM Agent', 'EDev Agent'],
     color: '#1D9E75',
   },
   {
     num: '03',
     title: 'Specialists execute — in parallel or sequence',
-    short: 'SAGE agents weave their threads into the model.',
-    desc: 'SAGE agents weave their threads into the model. Intentor structures design intent. Scout researches the competitive landscape. Echo generates behavioral personas. Sketch wireframes the flows. Every output lands on the shared canvas in real time — connected to the insight that caused it.',
+    short: 'Specialist agents weave their threads into the model.',
+    desc: 'Specialist agents weave their threads into the model. Intentor structures design intent. Scout researches the competitive landscape. Echo generates behavioral personas. Sketch wireframes the flows. Every output lands on the shared canvas in real time — connected to the insight that caused it.',
     agents: ['Intentor', 'Scout', 'Echo', 'Mapper', 'Composer', 'Sketch'],
     color: '#378ADD',
   },
@@ -175,7 +175,7 @@ export default function HowItWorks() {
           <p className="section-label">Process</p>
           <h1 className="section-title">From first insight to sprint-ready.<br />Nothing lost in between.</h1>
           <p className="section-sub mx-auto">
-            Every project follows the same governed pipeline. SAGE agents do the work. Humans approve at gates. The living product model stays current for everyone.
+            Every project follows the same governed pipeline. Specialist agents do the work. Humans approve at gates. The living product model stays current for everyone.
           </p>
         </div>
       </section>

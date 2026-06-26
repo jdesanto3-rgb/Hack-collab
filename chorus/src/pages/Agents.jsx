@@ -9,7 +9,7 @@ const EXEC_AGENTS = [
     color: '#9590e8',
     bg: 'rgba(149,144,232,0.12)',
     caps: [
-      'Orchestrates all design SAGE agents',
+      'Orchestrates all design specialist agents',
       'Enforces brand standards and design system rules',
       'Generates design token proposals',
       'Gates all design output before human review',
@@ -30,7 +30,7 @@ const EXEC_AGENTS = [
     bg: 'rgba(29,158,117,0.12)',
     caps: [
       'Decomposes briefs into the living product model',
-      'Orchestrates all product SAGE agents',
+      'Orchestrates all product specialist agents',
       'Aligns output with business objectives',
       'Generates acceptance criteria and DoD checklists',
       'Gates product specs before human review',
@@ -49,7 +49,7 @@ const EXEC_AGENTS = [
     color: '#378ADD',
     bg: 'rgba(55,138,221,0.12)',
     caps: [
-      'Orchestrates all engineering SAGE agents',
+      'Orchestrates all engineering specialist agents',
       'Enforces coding standards and architecture rules',
       'Reviews technical specs against requirements',
       'Gates all code output before human review',
@@ -164,7 +164,7 @@ export default function Agents() {
           <p className="section-label">The Workforce</p>
           <h1 className="section-title">Meet the Workforce</h1>
           <p className="section-sub mx-auto">
-            Weave runs two layers of agents. Executive Agents govern and gate the work. SAGE specialist agents execute it. Every agent has a defined role, a defined authority, and a defined ceiling — and a human in the loop above them. Agents don't replace people. They preserve the thread between people.
+            Weave runs two layers of agents. Executive Agents govern and gate the work. Specialist agents execute it. Every agent has a defined role, a defined authority, and a defined ceiling — and a human in the loop above them. Agents don't replace people. They preserve the thread between people.
           </p>
         </div>
       </section>
@@ -195,10 +195,10 @@ export default function Agents() {
       {/* SAGE Specialists */}
       <section className="section" style={{ borderTop: '1px solid var(--border)' }}>
         <div className="container">
-          <p className="section-label">SAGE Specialists</p>
-          <h2 className="section-title">The SAGE Specialists</h2>
+          <p className="section-label">Specialist Agents</p>
+          <h2 className="section-title">The Specialist Agents</h2>
           <p className="section-sub" style={{ marginBottom: 64 }}>
-            SAGE agents are the named specialist workforce inside Weave. They don't wait to be summoned — they respond to the product model as it evolves, preserve context at every step, and surface decisions at the right moment for human review.
+            Specialist agents are the named specialist workforce inside Weave. They don't wait to be summoned — they respond to the product model as it evolves, preserve context at every step, and surface decisions at the right moment for human review.
           </p>
 
           {SAGE_GROUPS.map((group, gi) => (
@@ -235,7 +235,7 @@ export default function Agents() {
           <p className="section-label">Collaboration Model</p>
           <h2 className="section-title">How They Work Together</h2>
           <p className="section-sub" style={{ marginBottom: 48 }}>
-            Executive Agents govern and gate. SAGE agents execute and preserve context. Humans approve. The system is event-driven — when a thread in the product model changes, the right agents respond automatically. Nothing is disconnected. Nothing is lost.
+            Executive Agents govern and gate. Specialist agents execute and preserve context. Humans approve. The system is event-driven — when a thread in the product model changes, the right agents respond automatically. Nothing is disconnected. Nothing is lost.
           </p>
 
           <div className="collab-visual" aria-label="Agent collaboration diagram">

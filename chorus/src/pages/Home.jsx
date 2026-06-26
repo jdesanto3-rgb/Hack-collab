@@ -310,7 +310,7 @@ const PILLARS = [
     color: '#1D9E75',
     bg: 'rgba(29,158,117,0.12)',
     title: 'Executive Agents',
-    body: 'Three governing agents — ECD, EPM, EDev — orchestrate SAGE specialist agents, enforce quality standards, and gate approvals. Agents execute. Humans approve. The thread is always preserved.',
+    body: 'Three governing agents — ECD, EPM, EDev — orchestrate specialist agents, enforce quality standards, and gate approvals. Agents execute. Humans approve. The thread is always preserved.',
   },
   {
     icon: (
