@@ -2167,6 +2167,23 @@ img { max-width: 100%; display: block; }
   .obs-rail-cycle, .obs-rail-cycle.obs-rail-fade-out, .obs-rail-cycle.obs-rail-fade-in { transition: none; transform: none; }
 }
 
+/* ── NAV FONT OVERRIDES BY THEME ── */
+
+/* Canvas — Newsreader for wordmark, JetBrains Mono for links + CTA */
+[data-theme="canvas"] .nav-logo { font-family: 'Newsreader', Georgia, serif; }
+[data-theme="canvas"] .nav-links a { font-family: 'JetBrains Mono', monospace; }
+[data-theme="canvas"] .nav-cta { font-family: 'JetBrains Mono', monospace; }
+
+/* Obsidian — Newsreader for wordmark, JetBrains Mono for links + CTA */
+[data-theme=""] .nav-logo { font-family: 'Newsreader', Georgia, serif; }
+[data-theme=""] .nav-links a { font-family: 'JetBrains Mono', monospace; }
+[data-theme=""] .nav-cta { font-family: 'JetBrains Mono', monospace; }
+
+/* Blueprint — Helvetica Neue for everything in the nav */
+[data-theme="blueprint"] .nav-logo { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; }
+[data-theme="blueprint"] .nav-links a { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; }
+[data-theme="blueprint"] .nav-cta { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; }
+
 /* Reduced motion — stop all shape animations */
 @media (prefers-reduced-motion: reduce) {
   [data-theme=""] .obs-shape-wrap--circle,
