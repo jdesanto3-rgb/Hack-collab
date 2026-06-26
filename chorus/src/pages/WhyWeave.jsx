@@ -121,6 +121,10 @@ export default function WhyWeave() {
   const isCanvas = theme === 'canvas'
   const isObsidian = theme === 'obsidian'
 
+  const philosophyPoster = theme === 'canvas'
+    ? '/videos/weave-philosophy-poster.png'
+    : '/videos/weave-brand-poster.png'
+
   const videoRef   = useRef(null)
   const frameRef   = useRef(null)
   const controlRef = useRef(null)
@@ -219,7 +223,7 @@ export default function WhyWeave() {
               ref={videoRef}
               className="philosophy-video"
               src="/videos/Weave-Philosophy-1.mp4"
-              poster="/videos/weave-philosophy-poster.png"
+              poster={philosophyPoster}
               muted
               playsInline
               preload="metadata"
