@@ -290,6 +290,7 @@ header{height:64px;background:var(--surface);display:flex;align-items:center;pad
       <div class="fr-tabs">
         <button class="fr-tab active" onclick="setFrTab(this,'activity')">Activity</button>
         <button class="fr-tab" onclick="setFrTab(this,'chat')">Chat</button>
+        <button class="fr-tab" onclick="setFrTab(this,'approval')">Approval</button>
       </div>
       <div class="fr-body" id="fr-body">
         <div class="event-card"><div class="event-top"><div class="event-agent-dot" style="background:#d4456b">VD</div><span class="event-agent-name">Visual Design Agent</span><span class="event-time">Just now</span></div><div class="event-text">Starting Feature Grid section. Applying signal S4 — architecture diagram above mid-fold.</div><span class="tag-chip" style="background:var(--brand-light);color:var(--brand)">SECTION 3/7</span></div>
@@ -302,6 +303,7 @@ header{height:64px;background:var(--surface);display:flex;align-items:center;pad
       <div class="fr-body" id="fr-chat" style="display:none;flex-direction:column">
         <div id="chat-messages" style="display:flex;flex-direction:column;gap:7px;min-height:140px;flex:1;margin-bottom:8px"></div>
       </div>
+      <div id="fr-approval" style="display:none;flex:1;overflow-y:auto"></div>
       <div class="fr-chat">
         <div class="chat-input-wrap">
           <input class="chat-input" id="chat-input" placeholder="Ask an agent..." onkeydown="chatKey(event)">
@@ -367,6 +369,78 @@ function setFrTab(btn,tab){
   const fc=document.getElementById('fr-chat');
   fc.style.display=tab==='chat'?'flex':'none';
   if(tab==='chat')fc.style.flexDirection='column';
+  const fa=document.getElementById('fr-approval');
+  fa.style.display=tab==='approval'?'block':'none';
+  if(tab==='approval')renderApproval();
+  // hide chat input on approval tab
+  document.querySelector('.fr-chat').style.display=tab==='approval'?'none':'block';
+}
+
+let approvalDone=false;
+const FIGMA_SVG_SM=`<svg width="10" height="14" viewBox="0 0 14 20" fill="none"><rect x="0" y="0" width="7" height="7" rx="3.5" fill="#F24E1E"/><rect x="7" y="0" width="7" height="7" rx="3.5" fill="#FF7262"/><rect x="0" y="7" width="7" height="7" rx="3.5" fill="#A259FF"/><rect x="0" y="14" width="7" height="7" rx="3.5" fill="#0ACF83"/><circle cx="10.5" cy="10.5" r="3.5" fill="#1ABCFE"/></svg>`;
+const APPROVAL_COMMENTS=[
+  {n:'1',auth:'VD · Visual Designer',bg:'#e05b8a',text:'Should the hero CTA use brand orange or the new deep amber token on dark?',time:'40m',resolved:false},
+  {n:'2',auth:'AK · Alex Kim',bg:'#2e8157',text:'Mobile nav collapses too early at 768px — needs hamburger at 900px.',time:'1h',resolved:false},
+  {n:'3',auth:'MC · Marcus Chen',bg:'#6f57d4',text:'Logo clearspace confirmed per brand guide — Jun 22 decision.',time:'2h',resolved:true},
+];
+const APPROVAL_HISTORY=[
+  {time:'2m ago', agent:'VD',color:'#d4456b',text:'Figma v4.2 shared for stakeholder review — 2 comments open'},
+  {time:'40m ago',agent:'VD',color:'#e05b8a',text:'Comment on hero CTA token in Figma v4.2'},
+  {time:'1h ago', agent:'AK',color:'#2e8157',text:'Comment on mobile nav breakpoint in Figma v4.2'},
+  {time:'2h ago', agent:'MC',color:'#6f57d4',text:'Uploaded Figma v4.2 — dual-CTA hero consolidated'},
+  {time:'Jun 22', agent:'VD',color:'#d4456b',text:'Interim nav removed per team decision'},
+];
+function renderApproval(){
+  const done=approvalDone;
+  const openComments=APPROVAL_COMMENTS.filter(c=>!c.resolved);
+  document.getElementById('fr-approval').innerHTML=`
+    <div style="padding:14px 16px 20px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.07em;color:${done?'var(--green)':'var(--amber)'};margin-bottom:8px">${done?'✓ REVIEW COMPLETE':'WAITING APPROVAL'}</div>
+      <div style="background:${done?'var(--green-light)':'var(--amber-light)'};border:1px solid ${done?'color-mix(in srgb,var(--green) 30%,transparent)':'color-mix(in srgb,var(--amber) 25%,transparent)'};border-radius:10px;padding:11px;margin-bottom:18px">
+        <div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:${done?0:10}px">
+          <div style="width:22px;height:22px;border-radius:6px;background:#5551ff;display:flex;align-items:center;justify-content:center;flex:none">${FIGMA_SVG_SM}</div>
+          <div style="flex:1">
+            <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:2px">Figma Design Review</div>
+            <div style="font-size:11px;color:var(--text2);line-height:1.4">${done?'Approved · ready for engineering handoff':'Neura Nova Landing v4.2 — '+openComments.length+' open comment'+(openComments.length!==1?'s':'')}</div>
+            <div style="margin-top:3px"><span style="font-size:10.5px;color:#8b88ff;cursor:pointer" onclick="window.open('https://www.figma.com','_blank')">Open in Figma →</span></div>
+          </div>
+        </div>
+        ${done
+          ?`<div style="font-size:11px;color:var(--green);font-weight:600;display:flex;align-items:center;gap:5px;padding-top:6px"><span>✓</span> Ready for engineering handoff</div>`
+          :`<div style="margin-bottom:8px">
+              ${openComments.map(c=>`
+                <div style="display:flex;align-items:flex-start;gap:6px;padding:5px 0;border-bottom:1px solid color-mix(in srgb,var(--amber) 20%,transparent)">
+                  <span style="font-family:'JetBrains Mono',monospace;font-size:8px;font-weight:700;color:#8b88ff;background:#5551ff18;border-radius:50%;width:15px;height:15px;display:flex;align-items:center;justify-content:center;flex:none;margin-top:1px">${c.n}</span>
+                  <div style="flex:1">
+                    <div style="font-size:10px;font-weight:600;color:var(--text2)">${c.auth}</div>
+                    <div style="font-size:10.5px;color:var(--text2);line-height:1.35">${c.text}</div>
+                    <div style="font-size:9px;color:var(--text3);margin-top:1px">${c.time}</div>
+                  </div>
+                </div>`).join('')}
+            </div>
+            <div style="display:flex;gap:7px">
+              <button onclick="approveFigma()" style="flex:1;padding:7px 0;border-radius:7px;background:#5551ff;color:#fff;font-size:12px;font-weight:700;border:none;cursor:pointer;opacity:1;transition:opacity .15s" onmouseover="this.style.opacity='.82'" onmouseout="this.style.opacity='1'">Approve</button>
+              <button style="flex:1;padding:7px 0;border-radius:7px;background:transparent;color:var(--text);font-size:12px;font-weight:600;border:1.5px solid var(--border2);cursor:pointer" onmouseover="this.style.borderColor='var(--text2)'" onmouseout="this.style.borderColor='var(--border2)'">Request Changes</button>
+            </div>`}
+      </div>
+
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.07em;color:var(--text3);margin-bottom:8px">REVIEW HISTORY</div>
+      ${APPROVAL_HISTORY.map((e,i)=>`
+        <div style="display:flex;gap:9px;padding:7px 0;${i<APPROVAL_HISTORY.length-1?'border-bottom:1px solid var(--border)':''}">
+          <div style="display:flex;flex-direction:column;align-items:center;width:20px;flex:none">
+            <div style="width:20px;height:20px;border-radius:5px;background:${e.color};display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:7.5px;font-weight:700;color:#fff;flex:none">${e.agent}</div>
+            ${i<APPROVAL_HISTORY.length-1?`<div style="width:1.5px;flex:1;min-height:6px;background:var(--border);border-radius:2px;margin:2px 0"></div>`:''}
+          </div>
+          <div style="flex:1;padding-top:1px">
+            <div style="font-size:11.5px;color:var(--text2);line-height:1.35">${e.text}</div>
+            <div style="font-size:9.5px;color:var(--text3);margin-top:2px">${e.time}</div>
+          </div>
+        </div>`).join('')}
+    </div>`;
+}
+function approveFigma(){
+  approvalDone=true;
+  renderApproval();
 }
 const REPLIES=[
   "Neura Nova Home hero is approved. Feature Grid in progress — S4 architecture diagram positioned above fold. ETA for full design pass: ~2 hours.",
