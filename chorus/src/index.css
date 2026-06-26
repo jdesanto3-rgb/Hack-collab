@@ -2234,9 +2234,9 @@ img { max-width: 100%; display: block; }
 [data-theme=""] .system-thread-hero { font-family: 'Newsreader', Georgia, serif; font-weight: 200; color: #EBE6DF; font-size: 32px; }
 [data-theme=""] .system-thread-accent { color: #F47C59; }
 
-[data-theme="blueprint"] .system-thread-context { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: rgba(255,255,255,0.18); font-weight: 300; }
+[data-theme="blueprint"] .system-thread-context { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: rgba(255,255,255,0.50); font-weight: 300; }
 [data-theme="blueprint"] .system-thread-hero { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 200; color: #ffffff; font-size: 32px; }
-[data-theme="blueprint"] .system-thread-accent { color: #B9DAFF; text-shadow: 0 0 24px rgba(185,218,255,0.35); }
+[data-theme="blueprint"] .system-thread-accent { color: #C8E0FF; text-shadow: 0 0 16px rgba(185,218,255,0.55); }
 
 /* ── OBSIDIAN HERO SHAPE ANIMATION v2 ───────── */
 

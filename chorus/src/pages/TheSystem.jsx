@@ -6,7 +6,7 @@ const SYSTEM_MAP_HTML = `
 <div class="sm-header">
   <div class="sm-header-left">
     <h2>Weave</h2>
-    <a href="https://design-hack-2026.netlify.app/weave-canvas-v2.html" target="_blank" rel="noopener noreferrer" class="sm-demo-btn">Weave Canvas v2 ↗</a>
+    <a href="https://design-hack-2026.netlify.app/weave-canvas-v2.html" target="_blank" rel="noopener noreferrer" class="sm-demo-btn">View Demo ↗</a>
   </div>
   <div id="sm-breadcrumb">
     <span class="sm-bc-sep">›</span>
