@@ -1976,15 +1976,13 @@ img { max-width: 100%; display: block; }
   75%  { opacity: 0.50; }
   100% { opacity: 0.15; }
 }
-@keyframes obs-square-blue-breathe {
-  0%, 100% { transform: translate(-50%, -50%) scale(1.00); }
-  45%       { transform: translate(-50%, -50%) scale(1.12); }
-  55%       { transform: translate(-50%, -50%) scale(1.12); }
+@keyframes obs-square-blue-spin {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to   { transform: translate(-50%, -50%) rotate(360deg); }
 }
-@keyframes obs-diamond-breathe {
-  0%, 100% { transform: translate(-50%, -50%) rotate(45deg) scale(1.00); }
-  45%       { transform: translate(-50%, -50%) rotate(45deg) scale(0.88); }
-  55%       { transform: translate(-50%, -50%) rotate(45deg) scale(0.88); }
+@keyframes obs-diamond-spin {
+  from { transform: translate(-50%, -50%) rotate(45deg); }
+  to   { transform: translate(-50%, -50%) rotate(405deg); }
 }
 @keyframes obs-wire-blue-pulse {
   0%, 100% { opacity: 0.20; }
@@ -2007,8 +2005,8 @@ img { max-width: 100%; display: block; }
 [data-theme=""] .obs-shape-wrap--square-coral { animation: obs-square-coral-spin 28s linear infinite; }
 [data-theme=""] .obs-geo-panel--coral .obs-geo-svg--wire { animation: obs-wire-coral-fade 12s ease-in-out infinite; }
 
-[data-theme=""] .obs-shape-wrap--square-blue  { animation: obs-square-blue-breathe 8s cubic-bezier(0.45, 0, 0.55, 1) infinite; }
-[data-theme=""] .obs-shape-wrap--diamond      { animation: obs-diamond-breathe 8s cubic-bezier(0.45, 0, 0.55, 1) infinite; }
+[data-theme=""] .obs-shape-wrap--square-blue  { animation: obs-square-blue-spin 36s linear infinite; }
+[data-theme=""] .obs-shape-wrap--diamond      { animation: obs-diamond-spin 36s linear infinite; }
 [data-theme=""] .obs-geo-panel--blue .obs-geo-svg--wire { animation: obs-wire-blue-pulse 8s cubic-bezier(0.45, 0, 0.55, 1) infinite; }
 
 [data-theme=""] #obs-blue-line-h { transform-origin: center; animation: obs-crosshair-breathe 8s cubic-bezier(0.45, 0, 0.55, 1) infinite; }
