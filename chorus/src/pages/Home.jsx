@@ -698,10 +698,13 @@ export default function Home() {
                 </span>
               </div>
               <h1 className="hero-title">
-                The workplace where your team and your AI <span className="accent-purple">never lose the thread.</span>
+                Never lose the thread.
               </h1>
               <p className="hero-sub">
-                Weave is the living product model where humans and AI agents collaborate around every customer insight, design decision, and line of code — so nothing is ever disconnected, and every decision is smarter than the last.
+                Every customer story. Every design decision. Every requirement. Every line of code. Each is a thread.
+              </p>
+              <p className="hero-sub">
+                Weave is where those threads become a product — and nothing gets lost between idea and outcome.
               </p>
               <div className="hero-actions">
                 <Link to="/demo" className="btn btn-primary btn-lg">Pull the Thread</Link>

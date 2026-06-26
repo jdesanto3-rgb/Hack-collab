@@ -272,6 +272,8 @@ export default function WhyWeave() {
       {/* Category section */}
       <section className="section" style={{ borderTop: '1px solid var(--border)' }}>
         <div className="container">
+          {/* PITCH NOTE: Navigate to this section when saying
+              "Weave has the thread." in the pitch script */}
           <div className="thread-list" aria-label="What every tool owns">
             <div className="thread-list-items">
               <div className="thread-item thread-item--dim">
