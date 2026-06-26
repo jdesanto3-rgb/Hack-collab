@@ -398,6 +398,7 @@ export default function Home() {
               ref={videoRef}
               className="brand-video"
               src="/videos/weave-brand-video.mp4"
+              poster="/videos/weave-brand-poster.png"
               loop
               playsInline
               preload="metadata"

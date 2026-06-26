@@ -219,6 +219,7 @@ export default function WhyWeave() {
               ref={videoRef}
               className="philosophy-video"
               src="/videos/Weave-Philosophy-1.mp4"
+              poster="/videos/weave-philosophy-poster.png"
               muted
               playsInline
               preload="metadata"
