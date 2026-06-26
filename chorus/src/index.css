@@ -290,7 +290,6 @@ html { scroll-behavior: smooth; }
 
 body {
   font-family: var(--font-body);
-  font-weight: 450;
   background: var(--bg);
   color: var(--text);
   line-height: 1.6;
