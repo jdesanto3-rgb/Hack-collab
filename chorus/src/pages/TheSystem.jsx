@@ -125,7 +125,7 @@ export default function TheSystem() {
   const isCanvas = theme === 'canvas'
   const isObsidian = theme === 'obsidian'
   const canvasRef = useRef(null)
-  const [selected, setSelected] = useState(NODE_DATA.chorus)
+  const [selected, setSelected] = useState(null)
   const nodesRef = useRef([])
   const raf = useRef(null)
   const t = useRef(0)
@@ -271,7 +271,11 @@ export default function TheSystem() {
                   </div>
                 </>
               ) : (
-                <p style={{ color: 'var(--text-3)', fontSize: 14 }}>Click a node to see details.</p>
+                <div className="idle-desc">
+                  <p className="idle-subtitle">Figma has nodes.&nbsp; Miro has connectors.&nbsp; Linear has issues.&nbsp; GitHub has commits.</p>
+                  <p className="idle-hero">Weave has the thread.</p>
+                  <p className="idle-support">Click any node to explore the system.</p>
+                </div>
               )}
             </div>
           </div>

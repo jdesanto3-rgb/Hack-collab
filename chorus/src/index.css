@@ -1885,3 +1885,55 @@ img { max-width: 100%; display: block; }
 [data-theme="blueprint"] .bv-corner { display: none; }
 [data-theme="blueprint"] .brand-video-caption { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 13px; font-weight: 300; color: rgba(255,255,255,0.40); }
 [data-theme="blueprint"] .bv-eyebrow { color: #B9DAFF; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 300; letter-spacing: 0.22em; }
+
+/* ── THREAD LIST ────────────────────────────── */
+.thread-list { margin-bottom: 56px; }
+.thread-list-items { display: flex; flex-direction: column; gap: 0; }
+.thread-item { display: grid; grid-template-columns: 120px 24px 1fr; align-items: baseline; padding: 10px 0; }
+.thread-tool { font-size: 14px; font-weight: 500; }
+.thread-dash { font-size: 14px; text-align: center; }
+.thread-object { font-size: 14px; }
+.thread-divider { height: 1px; margin: 8px 0; }
+.thread-item--hero .thread-tool,
+.thread-item--hero .thread-dash,
+.thread-item--hero .thread-object { font-size: 20px; font-weight: 400; }
+
+/* Canvas */
+[data-theme="canvas"] .thread-item--dim .thread-tool,
+[data-theme="canvas"] .thread-item--dim .thread-dash,
+[data-theme="canvas"] .thread-item--dim .thread-object { font-family: 'JetBrains Mono', monospace; color: rgba(36,18,8,0.30); font-weight: 400; font-size: 13px; }
+[data-theme="canvas"] .thread-divider { background: rgba(36,18,8,0.12); }
+[data-theme="canvas"] .thread-item--hero .thread-tool,
+[data-theme="canvas"] .thread-item--hero .thread-dash { font-family: 'Newsreader', Georgia, serif; font-weight: 200; color: #241208; }
+[data-theme="canvas"] .thread-object--accent { font-family: 'Newsreader', Georgia, serif; font-weight: 200; color: #F47C59; }
+
+/* Obsidian */
+[data-theme=""] .thread-item--dim .thread-tool,
+[data-theme=""] .thread-item--dim .thread-dash,
+[data-theme=""] .thread-item--dim .thread-object { font-family: 'JetBrains Mono', monospace; color: rgba(235,230,223,0.25); font-weight: 400; font-size: 13px; }
+[data-theme=""] .thread-divider { background-image: repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(235,230,223,0.12) 2px, rgba(235,230,223,0.12) 3px); }
+[data-theme=""] .thread-item--hero .thread-tool,
+[data-theme=""] .thread-item--hero .thread-dash { font-family: 'Newsreader', Georgia, serif; font-weight: 200; color: #EBE6DF; }
+[data-theme=""] .thread-object--accent { font-family: 'Newsreader', Georgia, serif; font-weight: 200; color: #F47C59; }
+
+/* Blueprint */
+[data-theme="blueprint"] .thread-item--dim .thread-tool,
+[data-theme="blueprint"] .thread-item--dim .thread-dash,
+[data-theme="blueprint"] .thread-item--dim .thread-object { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: rgba(255,255,255,0.20); font-weight: 300; font-size: 13px; }
+[data-theme="blueprint"] .thread-divider { background: rgba(185,218,255,0.08); }
+[data-theme="blueprint"] .thread-item--hero .thread-tool,
+[data-theme="blueprint"] .thread-item--hero .thread-dash { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 200; color: #ffffff; }
+[data-theme="blueprint"] .thread-object--accent { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 200; color: #B9DAFF; text-shadow: 0 0 24px rgba(185,218,255,0.35); }
+
+/* ── SYSTEM PAGE IDLE DESC ──────────────────── */
+.idle-desc { display: flex; flex-direction: column; gap: 12px; }
+.idle-subtitle { font-size: 11px; font-family: 'JetBrains Mono', monospace; opacity: 0.35; letter-spacing: 0.05em; line-height: 1.7; }
+.idle-hero { font-size: 22px; font-family: 'JetBrains Mono', monospace; font-weight: 500; letter-spacing: -0.01em; }
+.idle-support { font-size: 11px; font-family: 'JetBrains Mono', monospace; opacity: 0.35; letter-spacing: 0.05em; }
+
+[data-theme="canvas"] .idle-desc { color: #241208; }
+[data-theme="canvas"] .idle-hero { color: #241208; }
+[data-theme=""] .idle-desc { color: #EBE6DF; }
+[data-theme=""] .idle-hero { color: #EBE6DF; }
+[data-theme="blueprint"] .idle-desc { color: #ffffff; }
+[data-theme="blueprint"] .idle-hero { color: #B9DAFF; text-shadow: 0 0 8px rgba(185,218,255,0.40); }

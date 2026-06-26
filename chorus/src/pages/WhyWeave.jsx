@@ -273,6 +273,36 @@ export default function WhyWeave() {
       {/* Category section */}
       <section className="section" style={{ borderTop: '1px solid var(--border)' }}>
         <div className="container">
+          <div className="thread-list" aria-label="What every tool owns">
+            <div className="thread-list-items">
+              <div className="thread-item thread-item--dim">
+                <span className="thread-tool">Figma</span>
+                <span className="thread-dash">—</span>
+                <span className="thread-object">nodes</span>
+              </div>
+              <div className="thread-item thread-item--dim">
+                <span className="thread-tool">Miro</span>
+                <span className="thread-dash">—</span>
+                <span className="thread-object">connectors</span>
+              </div>
+              <div className="thread-item thread-item--dim">
+                <span className="thread-tool">Linear</span>
+                <span className="thread-dash">—</span>
+                <span className="thread-object">issues</span>
+              </div>
+              <div className="thread-item thread-item--dim">
+                <span className="thread-tool">GitHub</span>
+                <span className="thread-dash">—</span>
+                <span className="thread-object">commits</span>
+              </div>
+              <div className="thread-divider" aria-hidden="true"></div>
+              <div className="thread-item thread-item--hero">
+                <span className="thread-tool">Weave</span>
+                <span className="thread-dash">—</span>
+                <span className="thread-object thread-object--accent">the thread</span>
+              </div>
+            </div>
+          </div>
           <p className="section-label">The Category</p>
           <h2 className="section-title">A new category. A new kind of platform.</h2>
           <p className="section-sub" style={{ marginBottom: 48 }}>
