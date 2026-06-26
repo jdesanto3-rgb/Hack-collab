@@ -1827,31 +1827,22 @@ img { max-width: 100%; display: block; }
   flex-shrink: 0;
 }
 
-.bv-play-overlay {
+.bv-play-btn-overlay {
   position: absolute; inset: 0;
-  background: #000;
+  background: transparent;
   border: none; cursor: pointer; padding: 0;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  gap: 32px;
-  transition: background 200ms ease;
-}
-.bv-play-overlay:hover { background: #0a0a0a; }
-.bv-poster-logo { width: min(320px, 60%); opacity: 0.95; }
-.bv-poster-logo svg { width: 100%; height: auto; display: block; }
-.bv-play-btn {
-  width: 64px; height: 64px; border-radius: 50%;
-  background: rgba(255,255,255,0.10);
-  border: 1px solid rgba(255,255,255,0.20);
   display: flex; align-items: center; justify-content: center;
-  color: #fff; transition: all 200ms ease;
-  backdrop-filter: blur(8px);
 }
-.bv-play-btn svg { width: 28px; height: 28px; margin-left: 3px; }
-.bv-play-overlay:hover .bv-play-btn {
-  background: rgba(244,124,89,0.25);
-  border-color: rgba(244,124,89,0.60);
-  transform: scale(1.08);
+.bv-play-btn-overlay svg {
+  width: 64px; height: 64px;
+  color: #fff;
+  filter: drop-shadow(0 2px 12px rgba(0,0,0,0.60));
+  transition: transform 200ms ease, opacity 200ms ease;
+  opacity: 0.85;
+}
+.bv-play-btn-overlay:hover svg {
+  transform: scale(1.10);
+  opacity: 1;
 }
 
 /* Canvas */
