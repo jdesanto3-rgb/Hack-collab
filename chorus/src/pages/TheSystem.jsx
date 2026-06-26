@@ -276,11 +276,9 @@ export default function TheSystem() {
                   </div>
                 </>
               ) : (
-                <div className="idle-desc">
-                  <p className="idle-subtitle">Figma has nodes.&nbsp; Miro has connectors.&nbsp; Linear has issues.&nbsp; GitHub has commits.</p>
-                  <p className="idle-hero">Weave has the thread.</p>
-                  <p className="idle-support">Click any node to explore the system.</p>
-                </div>
+                <p className="idle-desc">
+                  An interactive map of every thread in the Weave model — from specialist agents executing the work, to Human-in-the-loop approvals, to the living product canvas where everything comes together. Click any node to explore.
+                </p>
               )}
             </div>
           </div>
