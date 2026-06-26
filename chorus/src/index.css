@@ -1780,7 +1780,53 @@ img { max-width: 100%; display: block; }
 .bv-corner--bl { bottom: 8px; left: 8px;    border-width: 0 0 1px 1px; }
 .bv-corner--br { bottom: 8px; right: 8px;   border-width: 0 1px 1px 0; }
 
+/* ===== PHILOSOPHY VIDEO SECTION ===== */
+.philosophy-video-section { width: 100%; padding: 60px 40px; max-width: 1100px; margin: 0 auto; }
+.philosophy-video-wrap { display: flex; flex-direction: column; gap: 20px; }
+.philosophy-video-eyebrow { display: flex; align-items: center; gap: 12px; }
+.pv-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 0.10em; text-transform: uppercase; }
+.philosophy-video-frame { position: relative; width: 100%; aspect-ratio: 16/9; border-radius: 8px; overflow: hidden; cursor: pointer; }
+.philosophy-video { width: 100%; height: 100%; object-fit: cover; display: block; }
+.pv-corner { position: absolute; width: 10px; height: 10px; border-style: solid; border-color: transparent; z-index: 10; pointer-events: none; display: none; }
+.pv-corner--tl { top:8px;    left:8px;    border-width: 1px 0 0 1px; }
+.pv-corner--tr { top:8px;    right:8px;   border-width: 1px 1px 0 0; }
+.pv-corner--bl { bottom:8px; left:8px;    border-width: 0 0 1px 1px; }
+.pv-corner--br { bottom:8px; right:8px;   border-width: 0 1px 1px 0; }
+.pv-control { position: absolute; top: 50%; left: 50%; translate: -50% -50%; width: 56px; height: 56px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 20; transition: opacity 0.2s ease, transform 0.2s ease; }
+.pv-control:hover { transform: translate(-50%, -50%) scale(1.08); }
+.pv-icon { width: 24px; height: 24px; pointer-events: none; }
+.philosophy-video-frame.is-playing .pv-control { opacity: 0; }
+.philosophy-video-frame.is-playing:hover .pv-control { opacity: 1; }
+.pv-progress-wrap { position: absolute; bottom: 0; left: 0; right: 0; height: 3px; z-index: 20; }
+.pv-progress-bar { height: 100%; width: 0%; transition: width 0.1s linear; }
+[data-theme="canvas"] .philosophy-video-frame { border: 1px solid rgba(36,18,8,0.15); border-radius: 2px; box-shadow: 0 2.8px 2.2px rgba(36,18,8,0.03), 0 6.7px 5.3px rgba(36,18,8,0.04), 0 12.5px 10px rgba(36,18,8,0.05), 0 22.3px 17.9px rgba(36,18,8,0.06); }
+[data-theme="canvas"] .pv-corner { display: block; border-color: rgba(36,18,8,0.35); }
+[data-theme="canvas"] .pv-eyebrow { color: #F47C59; font-family: 'JetBrains Mono', monospace; }
+[data-theme="canvas"] .pv-control { background: rgba(252,249,246,0.90); color: #241208; backdrop-filter: blur(8px); box-shadow: 0 4px 16px rgba(36,18,8,0.15); }
+[data-theme="canvas"] .pv-progress-wrap { background: rgba(36,18,8,0.10); }
+[data-theme="canvas"] .pv-progress-bar { background: #F47C59; }
+[data-theme=""] .philosophy-video-frame { border: 1px solid rgba(235,230,223,0.10); border-radius: 2px; box-shadow: 0 2.8px 2.2px rgba(0,0,0,0.20), 0 6.7px 5.3px rgba(0,0,0,0.25), 0 12.5px 10px rgba(0,0,0,0.30); }
+[data-theme=""] .pv-corner { display: block; border-color: rgba(235,230,223,0.35); }
+[data-theme=""] .pv-eyebrow { color: #F47C59; font-family: 'JetBrains Mono', monospace; }
+[data-theme=""] .pv-control { background: rgba(24,24,27,0.85); color: #EBE6DF; backdrop-filter: blur(8px); box-shadow: 0 4px 16px rgba(0,0,0,0.40); border: 1px solid rgba(235,230,223,0.15); }
+[data-theme=""] .pv-progress-wrap { background: rgba(235,230,223,0.08); }
+[data-theme=""] .pv-progress-bar { background: #F47C59; }
+[data-theme="blueprint"] .philosophy-video-frame { border: 1px solid rgba(185,218,255,0.10); border-radius: 6px; box-shadow: 0 0 0 1px rgba(185,218,255,0.06), 0 4px 24px rgba(0,0,0,0.60); }
+[data-theme="blueprint"] .pv-corner { display: none; }
+[data-theme="blueprint"] .pv-eyebrow { color: #B9DAFF; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 300; letter-spacing: 0.22em; }
+[data-theme="blueprint"] .pv-control { background: rgba(0,0,0,0.65); color: #ffffff; backdrop-filter: blur(12px); box-shadow: 0 0 0 1px rgba(185,218,255,0.15), 0 4px 24px rgba(0,0,0,0.50); }
+[data-theme="blueprint"] .pv-progress-wrap { background: rgba(185,218,255,0.08); }
+[data-theme="blueprint"] .pv-progress-bar { background: #B9DAFF; }
+
 /* Play overlay */
+.nav-logo-icon {
+  height: 24px;
+  width: auto;
+  display: block;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
 .bv-play-overlay {
   position: absolute; inset: 0;
   background: #000;

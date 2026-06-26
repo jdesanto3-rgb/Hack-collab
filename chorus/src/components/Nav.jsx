@@ -2,6 +2,23 @@ import { useState, useEffect } from 'react'
 import { NavLink, Link } from 'react-router-dom'
 import { useTheme } from '../ThemeContext'
 
+function NavLogoIcon() {
+  const { theme } = useTheme()
+  const src = theme === 'canvas'
+    ? '/Logos/weave_logo_clean_black_on_tan_64px.png'
+    : '/Logos/weave_logo_original_glow_on_black_64px.png'
+  return (
+    <img
+      src={src}
+      alt=""
+      aria-hidden="true"
+      className="nav-logo-icon"
+      height="24"
+      style={{ height: '24px', width: 'auto', display: 'block' }}
+    />
+  )
+}
+
 const THEMES = [
   { id: 'obsidian', label: 'Obsidian' },
   { id: 'canvas', label: 'Canvas' },
@@ -40,15 +57,7 @@ export default function Nav() {
       <nav className={`nav${scrolled ? ' scrolled' : ''}`}>
         <div className="container nav-inner">
           <Link to="/" className="nav-logo" onClick={handleNavClick}>
-            <div className="nav-logo-mark">
-              <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-                <circle cx="9" cy="9" r="4" fill="white" opacity="0.9"/>
-                <circle cx="9" cy="3" r="2" fill="white" opacity="0.5"/>
-                <circle cx="9" cy="15" r="2" fill="white" opacity="0.5"/>
-                <circle cx="3" cy="9" r="2" fill="white" opacity="0.5"/>
-                <circle cx="15" cy="9" r="2" fill="white" opacity="0.5"/>
-              </svg>
-            </div>
+            <NavLogoIcon />
             Weave
           </Link>
 

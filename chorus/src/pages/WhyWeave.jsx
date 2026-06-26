@@ -1,3 +1,4 @@
+import { useRef, useEffect } from 'react'
 import Footer from '../components/Footer'
 import { useTheme } from '../ThemeContext'
 
@@ -120,6 +121,77 @@ export default function WhyWeave() {
   const isCanvas = theme === 'canvas'
   const isObsidian = theme === 'obsidian'
 
+  const videoRef   = useRef(null)
+  const frameRef   = useRef(null)
+  const controlRef = useRef(null)
+  const barRef     = useRef(null)
+
+  useEffect(() => {
+    const video   = videoRef.current
+    const frame   = frameRef.current
+    const control = controlRef.current
+    const bar     = barRef.current
+    if (!video || !control || !bar) return
+
+    const iconPlay   = control.querySelector('.pv-icon--play')
+    const iconPause  = control.querySelector('.pv-icon--pause')
+    const iconReplay = control.querySelector('.pv-icon--replay')
+
+    function showIcon(name) {
+      iconPlay.style.display   = name === 'play'   ? 'block' : 'none'
+      iconPause.style.display  = name === 'pause'  ? 'block' : 'none'
+      iconReplay.style.display = name === 'replay' ? 'block' : 'none'
+    }
+
+    function setState(state) {
+      control.dataset.state = state
+      control.setAttribute('aria-label',
+        state === 'playing' ? 'Pause video' :
+        state === 'ended'   ? 'Replay video' : 'Play video'
+      )
+      showIcon(
+        state === 'playing' ? 'pause' :
+        state === 'ended'   ? 'replay' : 'play'
+      )
+      frame.classList.toggle('is-playing', state === 'playing')
+      frame.classList.toggle('is-ended',   state === 'ended')
+    }
+
+    setState('paused')
+
+    const onControl = () => {
+      const state = control.dataset.state
+      if (state === 'paused' || state === 'ended') {
+        if (state === 'ended') video.currentTime = 0
+        video.play().then(() => setState('playing')).catch(() => {})
+      } else {
+        video.pause()
+        setState('paused')
+      }
+    }
+    const onVideoClick  = () => control.click()
+    const onTimeUpdate  = () => { if (video.duration) bar.style.width = (video.currentTime / video.duration * 100) + '%' }
+    const onEnded       = () => { setState('ended'); bar.style.width = '100%' }
+    const onPlay        = () => setState('playing')
+    const onPause       = () => { if (!video.ended) setState('paused') }
+
+    control.addEventListener('click', onControl)
+    video.addEventListener('click',      onVideoClick)
+    video.addEventListener('timeupdate', onTimeUpdate)
+    video.addEventListener('ended',      onEnded)
+    video.addEventListener('play',       onPlay)
+    video.addEventListener('pause',      onPause)
+
+    return () => {
+      control.removeEventListener('click', onControl)
+      video.removeEventListener('click',      onVideoClick)
+      video.removeEventListener('timeupdate', onTimeUpdate)
+      video.removeEventListener('ended',      onEnded)
+      video.removeEventListener('play',       onPlay)
+      video.removeEventListener('pause',      onPause)
+    }
+  }, [])
+
   const content = (
     <>
       <section className="page-hero">
@@ -129,6 +201,38 @@ export default function WhyWeave() {
           <p className="section-sub mx-auto">
             Figma knows what your product looks like. Jira knows what your team is doing. Claude knows what you asked. Weave knows what you're building, why every decision was made, and what changed.
           </p>
+        </div>
+      </section>
+
+      {/* PHILOSOPHY VIDEO */}
+      <section className="philosophy-video-section" aria-label="Why we build this way">
+        <div className="philosophy-video-wrap">
+          <div className="philosophy-video-eyebrow">
+            <span className="pv-eyebrow">Why we build this way</span>
+          </div>
+          <div className="philosophy-video-frame" ref={frameRef}>
+            <span className="pv-corner pv-corner--tl"></span>
+            <span className="pv-corner pv-corner--tr"></span>
+            <span className="pv-corner pv-corner--bl"></span>
+            <span className="pv-corner pv-corner--br"></span>
+            <video
+              ref={videoRef}
+              className="philosophy-video"
+              src="/videos/Weave-Philosophy-1.mp4"
+              muted
+              playsInline
+              preload="metadata"
+              aria-label="Why we build this way — Weave philosophy video"
+            />
+            <button ref={controlRef} className="pv-control" aria-label="Play video">
+              <svg className="pv-icon pv-icon--play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+              <svg className="pv-icon pv-icon--pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style={{display:'none'}}><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+              <svg className="pv-icon pv-icon--replay" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style={{display:'none'}}><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>
+            </button>
+            <div className="pv-progress-wrap">
+              <div ref={barRef} className="pv-progress-bar"></div>
+            </div>
+          </div>
         </div>
       </section>
 
