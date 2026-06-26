@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weave Canvas v2</title>
+<link rel="icon" href="/weave_colored_glow_logo.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/tokens.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;font-family:'Inter',sans-serif;font-size:15px;color:var(--text);background:var(--bg-canvas)}
+button{font-family:'Inter',sans-serif;border:none;cursor:pointer}
+a{text-decoration:none;color:inherit}
+@keyframes ch-rise{from{transform:translateY(8px);opacity:0}to{transform:none;opacity:1}}
+@keyframes ch-pop{0%{transform:translateY(10px) scale(.975);opacity:0}60%{transform:translateY(-2px) scale(1.006)}100%{transform:none;opacity:1}}
+@keyframes ch-pulse{0%,100%{opacity:.35;transform:scale(1)}50%{opacity:1;transform:scale(1.3)}}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-thumb{background:var(--border2,#cfcabd);border-radius:8px;border:2px solid transparent;background-clip:padding-box}
+::-webkit-scrollbar-track{background:transparent}
+
+#app{height:100vh;display:flex;flex-direction:column;overflow:hidden}
+header{height:64px;background:var(--surface);display:flex;align-items:center;padding:0 24px;gap:16px;flex:none;z-index:10;border-bottom:1px solid var(--border)}
+#subheader{height:52px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 28px;gap:6px;flex:none}
+#body{flex:1;overflow:hidden}
+.board{height:100%;overflow-x:auto;overflow-y:hidden;padding:24px 28px 40px;display:flex;gap:20px;align-items:flex-start}
+.col{flex:none;width:316px;display:flex;flex-direction:column}
+.col-head{padding:0 2px 12px;display:flex;align-items:center;gap:9px}
+.col-body{display:flex;flex-direction:column;gap:14px;overflow-y:auto;max-height:calc(100vh - 176px);padding:2px;padding-bottom:36px}
+.proj{background:var(--surface);border-radius:16px;padding:20px;cursor:pointer;animation:ch-rise .4s ease;transition:transform .22s,box-shadow .22s;display:flex;flex-direction:column;box-shadow:var(--shadow-sm);position:relative}
+.proj:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,0,0,.35)}
+.proj::before{content:'';position:absolute;inset:-2px;border-radius:inherit;background:conic-gradient(from var(--glow-angle),transparent 0%,transparent 52%,color-mix(in srgb,var(--brand) 20%,transparent) 60%,color-mix(in srgb,var(--brand) 78%,transparent) 73%,var(--brand) 84%,var(--brand-mid) 90%,var(--brand) 96%,color-mix(in srgb,var(--brand) 28%,transparent) 98.5%,transparent 100%);mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;padding:2px;animation:glow-rotate 1.6s linear infinite;pointer-events:none;opacity:0;transition:opacity .2s ease;z-index:1}
+.proj:hover::before{opacity:1}
+.proj-client{display:inline-flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;letter-spacing:.5px;padding:3px 8px;border-radius:5px;margin-bottom:10px;background:var(--surface2);color:var(--text3)}
+.proj-name{font-family:'Playfair Display',Georgia,serif;font-size:19px;line-height:1.2;letter-spacing:-.02em;margin-bottom:7px}
+.proj-brief{font-size:13px;color:var(--text2);line-height:1.5;margin-bottom:14px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.prog-bar{height:4px;border-radius:2px;background:var(--border);overflow:hidden;margin-bottom:14px}
+.prog-fill{height:100%;border-radius:2px}
+.agent-dot{width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:700;color:#fff;flex:none;margin-right:-6px}
+.proj-footer{display:flex;align-items:center;justify-content:space-between;padding-top:14px;margin-top:4px;border-top:1px solid var(--border)}
+.open-btn{font-size:13px;font-weight:600;padding:6px 14px;border-radius:8px;background:transparent;color:var(--text2);transition:all .12s;cursor:pointer;border:1px solid var(--border)}
+.open-btn:hover{background:var(--brand);color:#fff;border-color:var(--brand)}
+.pill{padding:8px 14px;border-radius:20px;background:transparent;color:var(--text2);font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;white-space:nowrap;border:none}
+.pill.on{background:var(--brand);color:var(--bg-canvas)}
+.new-btn{padding:9px 18px;border-radius:10px;background:var(--brand);color:var(--bg-canvas);font-size:14px;font-weight:700;border:none;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:6px;margin-left:auto;transition:opacity .15s}
+.new-btn:hover{opacity:.85}
+.add-col{flex:none;width:280px;border:2px dashed var(--border2);border-radius:16px;display:flex;align-items:center;justify-content:center;cursor:pointer;min-height:90px;color:var(--text3);font-size:14px;gap:8px;transition:all .15s;padding:24px}
+.add-col:hover{border-color:var(--brand);color:var(--brand)}
+</style>
+</head>
+<body>
+<div id="app">
+  <header id="hdr"></header>
+  <div id="subheader" id="sub"></div>
+  <div id="body"><div class="board" id="board"></div></div>
+</div>
+
+<script>
+function readTokens(){
+  const s=getComputedStyle(document.documentElement),g=v=>s.getPropertyValue(v).trim();
+  return{
+    bgCanvas:g('--bg-canvas')||'#ecebe5',surface:g('--surface')||'#FDFAF6',
+    surfaceWarm:g('--surface-warm')||'#fffdf8',surface2:g('--surface2')||'#E8E3D9',
+    border:g('--border')||'#D8D2C6',border2:g('--border2')||'#C4BCAF',
+    text:g('--text')||'#1C1914',text2:g('--text2')||'#6B6860',text3:g('--text3')||'#9C9890',
+    brand:g('--brand')||'#D96000',brandLight:g('--brand-light')||'#FFF0E0',
+    blue:g('--blue')||'#2f5bea',green:g('--green')||'#2e8157',
+    purple:g('--purple')||'#6f57d4',teal:g('--teal')||'#1f9d8f',
+    amber:g('--amber')||'#c2700f',red:g('--red')||'#d4456b',
+    shadowSm:g('--shadow-sm')||'0 1px 2px rgba(28,25,20,.06)',
+  };
+}
+let T=readTokens();
+function isDark(){const a=document.documentElement.getAttribute('data-theme');if(a==='dark')return true;if(a==='light')return false;return window.matchMedia('(prefers-color-scheme:dark)').matches;}
+function toggleTheme(){document.documentElement.setAttribute('data-theme',isDark()?'light':'dark');T=readTokens();render();}
+
+const AGENTS=[
+  {key:'RE',color:'#1f9d8f',name:'Research Agent'},
+  {key:'ST',color:'#c2700f',name:'Strategy Agent'},
+  {key:'WF',color:'#6f57d4',name:'Wireframe Agent'},
+  {key:'VD',color:'#d4456b',name:'Visual Design Agent'},
+  {key:'PR',color:'#2e8157',name:'Persona Review Agent'},
+  {key:'EC',color:'#2f5bea',name:'ECD Agent'},
+];
+const AGENT_MAP=Object.fromEntries(AGENTS.map(a=>[a.key,a]));
+
+const PROJECTS=[
+  {
+    id:'neura-nova-landing',
+    name:'Neura Nova — Landing Page',
+    client:'Neura Nova Inc.',clientColor:'#d4456b',accent:'#d4456b',
+    phase:'review',
+    brief:'Redesign the landing page to convert AI-curious visitors into trial sign-ups within 90 seconds. Dual-persona CTA, research-backed social proof above fold.',
+    progress:62,
+    agents:['RE','ST','WF','VD'],
+    updated:'2m ago',tag:'Visual Design active',tagColor:'#d4456b',
+  },
+  {
+    id:'orbit-labs-brand',
+    name:'Orbit Labs — Brand Refresh',
+    client:'Orbit Labs',clientColor:'#2f5bea',accent:'#2f5bea',
+    phase:'concepting',
+    brief:'Full brand identity refresh: logo, design tokens, component library, and marketing site — targeting Q3 launch.',
+    progress:38,
+    agents:['RE','ST','WF'],
+    updated:'1h ago',tag:'3 directions in parallel',tagColor:'#6f57d4',
+  },
+  {
+    id:'bloom-retail',
+    name:'Bloom Retail — E-Commerce',
+    client:'Bloom Retail',clientColor:'#1f9d8f',accent:'#1f9d8f',
+    phase:'briefing',
+    brief:'Shoppable homepage and product detail pages for a DTC skincare brand launching mobile-first in July.',
+    progress:14,
+    agents:['RE'],
+    updated:'3h ago',tag:'Brief landed',tagColor:'#9C9890',
+  },
+  {
+    id:'apex-fintech',
+    name:'Apex Fintech — Dashboard',
+    client:'Apex Capital',clientColor:'#c2700f',accent:'#c2700f',
+    phase:'approved',
+    brief:'Real-time portfolio dashboard with risk signals, transaction history, and compliance flag surfacing for fund managers.',
+    progress:91,
+    agents:['RE','ST','WF','VD','PR','EC'],
+    updated:'Yesterday',tag:'ECD Approved',tagColor:'#2e8157',
+  },
+  {
+    id:'weave-onboarding',
+    name:'Weave — Onboarding Flow',
+    client:'Internal',clientColor:'#6f57d4',accent:'#6f57d4',
+    phase:'live',
+    brief:'First-run experience for new Weave workspace members — zero friction from invite to first project brief in under 3 minutes.',
+    progress:100,
+    agents:['RE','ST','WF','VD','PR','EC'],
+    updated:'2 weeks ago',tag:'Live · 94% completion',tagColor:'#2e8157',
+  },
+];
+
+const COLS=[
+  {key:'briefing',  label:'Briefing',  color:'#9C9890'},
+  {key:'concepting',label:'Concepting',color:'#6f57d4'},
+  {key:'review',    label:'In Review', color:'#c2700f'},
+  {key:'approved',  label:'Approved',  color:'#2e8157'},
+  {key:'live',      label:'Live',      color:'#2f5bea'},
+];
+
+const state={filter:'all'};
+
+function renderHeader(){
+  document.getElementById('hdr').innerHTML=`
+    <div style="display:flex;align-items:center;gap:9px">
+      <img src="/weave-icon.svg" height="30" style="display:block;flex:none" onerror="this.style.display='none'">
+      <span style="font-family:'Playfair Display',Georgia,serif;font-size:20px;font-weight:600;letter-spacing:-.3px;line-height:1">Weave</span>
+      <span style="font-size:9px;font-family:'JetBrains Mono',monospace;color:${T.text3};border:1px solid ${T.border};border-radius:4px;padding:2px 5px;letter-spacing:.5px">BETA</span>
+    </div>
+    <div style="width:1px;height:22px;background:${T.border};flex:none"></div>
+    <span style="font-size:13.5px;color:${T.text2}">Canvas</span>
+    <span style="font-size:13.5px;color:${T.text3}">·</span>
+    <span style="font-size:13.5px;font-weight:600;color:${T.text}">Design Team</span>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:10px">
+      <a href="/weave-create.html" style="display:flex;align-items:center;gap:6px;height:36px;padding:0 16px;border-radius:9px;background:${T.brand};color:#fff;font-size:13px;font-weight:700;text-decoration:none;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">+ New Project</a>
+      <button onclick="toggleTheme()" style="width:36px;height:36px;border-radius:9px;background:${T.surface2};border:1px solid ${T.border};display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;color:${T.text2};transition:all .15s" onmouseover="this.style.background='${T.border}'" onmouseout="this.style.background='${T.surface2}'">${isDark()?'☀︎':'◑'}</button>
+      <div style="display:flex">
+        <div style="width:30px;height:30px;border-radius:50%;background:#d4456b;border:2px solid ${T.surface};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;z-index:3;margin-right:-8px">JD</div>
+        <div style="width:30px;height:30px;border-radius:50%;background:#2e8157;border:2px solid ${T.surface};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;z-index:2;margin-right:-8px">AK</div>
+        <div style="width:30px;height:30px;border-radius:50%;background:${T.border2};border:2px solid ${T.surface};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:${T.text2};z-index:1">+3</div>
+      </div>
+    </div>
+  `;
+}
+
+function renderSubheader(){
+  const sub=document.getElementById('subheader');
+  const filters=[
+    {k:'all',l:'All projects'},
+    {k:'mine',l:'My projects'},
+    {k:'Neura Nova Inc.',l:'Neura Nova'},
+    {k:'Orbit Labs',l:'Orbit Labs'},
+    {k:'Internal',l:'Internal'},
+  ];
+  sub.innerHTML=`
+    ${filters.map(f=>`<button class="pill${state.filter===f.k?' on':''}" onclick="state.filter='${f.k}';renderBoard()">${f.l}</button>`).join('')}
+    <a href="/weave-create.html" class="new-btn">
+      <span style="font-size:16px;line-height:1">+</span> New Project
+    </a>
+  `;
+}
+
+function renderBoard(){
+  const el=document.getElementById('board');
+  const projects=PROJECTS.filter(p=>{
+    if(state.filter==='all'||state.filter==='mine')return true;
+    return p.client===state.filter;
+  });
+  el.innerHTML=COLS.map(col=>{
+    const cards=projects.filter(p=>p.phase===col.key);
+    return `
+      <div class="col">
+        <div class="col-head">
+          <span style="width:8px;height:8px;border-radius:50%;background:${col.color};flex:none"></span>
+          <span style="font-size:13.5px;font-weight:600;flex:1">${col.label}</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:${T.text2}">${cards.length}</span>
+        </div>
+        <div class="col-body">
+          ${cards.length===0
+            ?`<div style="padding:28px 16px;text-align:center;font-size:12px;color:${T.text3};font-style:italic;border:1.5px dashed ${T.border};border-radius:12px">No projects here</div>`
+            :cards.map(p=>renderCard(p)).join('')
+          }
+          <div style="height:36px;border:1.5px dashed ${T.border};border-radius:10px;display:flex;align-items:center;justify-content:center;color:${T.text3};font-size:12px;cursor:pointer;transition:all .15s;gap:5px" onclick="window.location.href='/weave-create.html'" onmouseover="this.style.borderColor='${T.brand}';this.style.color='${T.brand}'" onmouseout="this.style.borderColor='${T.border}';this.style.color='${T.text3}'">+ Add card</div>
+        </div>
+      </div>
+    `;
+  }).join('')+`
+    <div class="add-col" onclick="alert('Add custom column — coming soon')">
+      <span style="font-size:22px;line-height:1;color:${T.border2}">+</span>
+      <span>Add column</span>
+    </div>
+  `;
+}
+
+function renderCard(p){
+  const agentDots=p.agents.map(k=>{
+    const a=AGENT_MAP[k];
+    return `<div class="agent-dot" style="background:${a.color}" title="${a.name}">${k}</div>`;
+  }).join('');
+  const progColor=p.progress>=90?T.green:p.progress>=50?T.blue:T.amber;
+  const isNeuraMain=p.id==='neura-nova-landing';
+  return `
+    <a class="proj" href="/weave-project-v2.html" style="background:linear-gradient(145deg,${T.surface} 20%,color-mix(in srgb,${p.accent} 8%,${T.surface}) 100%);display:flex;flex-direction:column">
+      <div class="proj-client">
+        <span style="width:5px;height:5px;border-radius:50%;background:${p.clientColor};flex:none"></span>
+        ${p.client}
+      </div>
+      <div class="proj-name">${p.name}</div>
+      <div class="proj-brief">${p.brief}</div>
+      <div class="prog-bar"><div class="prog-fill" style="width:${p.progress}%;background:${progColor}"></div></div>
+      <div style="display:flex;align-items:center;margin-bottom:10px">
+        ${agentDots}
+        <span style="margin-left:10px;font-size:12px;color:${T.text3}">${p.agents.length} agent${p.agents.length!==1?'s':''}</span>
+      </div>
+      <div class="proj-footer">
+        <div style="display:flex;flex-direction:column;gap:3px">
+          <span style="font-size:12px;font-weight:600;color:${p.tagColor}">${p.tag}</span>
+          <span style="font-size:11px;color:${T.text3}">Updated ${p.updated}</span>
+        </div>
+        <button class="open-btn" onclick="event.preventDefault();window.location.href='/weave-project-v2.html'">Open →</button>
+      </div>
+    </a>
+  `;
+}
+
+function render(){renderHeader();renderSubheader();renderBoard();}
+render();
+</script>
+</body>
+</html>

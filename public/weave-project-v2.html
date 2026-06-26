@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Weave — Neura Nova Project</title>
+<link rel="icon" href="/weave_colored_glow_logo.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/tokens.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;font-family:'Inter',sans-serif;font-size:14px;color:var(--text);background:var(--bg-canvas)}
+button{font-family:'Inter',sans-serif;border:none;cursor:pointer}
+a{text-decoration:none;color:inherit}
+@keyframes ch-rise{from{transform:translateY(9px);opacity:0}to{transform:none;opacity:1}}
+@keyframes ch-pop{0%{transform:translateY(12px) scale(.975);opacity:0}60%{transform:translateY(-2px) scale(1.008)}100%{transform:none;opacity:1}}
+@keyframes pulse-dot{0%,100%{opacity:.4}50%{opacity:1}}
+::-webkit-scrollbar{width:9px;height:9px}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:9px;border:2px solid transparent;background-clip:padding-box}
+::-webkit-scrollbar-track{background:transparent}
+
+#app{height:100vh;display:flex;flex-direction:column;overflow:hidden}
+header{height:64px;background:var(--surface);display:flex;align-items:center;padding:0 24px;gap:14px;flex:none;border-bottom:1px solid var(--border);z-index:10}
+#body{flex:1;min-height:0;display:flex;overflow:hidden}
+
+.pipeline-rail{width:264px;flex:none;background:var(--surface2);border-right:1px solid var(--border);padding:22px 18px;display:flex;flex-direction:column;overflow-y:auto}
+.rail-section-label{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;letter-spacing:1.2px;color:var(--text3);margin-bottom:8px;padding-left:4px}
+.pipeline-phase{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;cursor:pointer;transition:all .15s;margin-bottom:2px}
+.pipeline-phase:hover{background:var(--surface)}
+.pipeline-phase.active{background:var(--surface)}
+.phase-icon{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:11px;font-family:'JetBrains Mono',monospace;font-weight:700;color:#fff;flex-shrink:0}
+.phase-label{font-size:13px;font-weight:500;flex:1}
+.phase-badge{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;padding:2px 6px;border-radius:4px}
+.phase-done{background:var(--green-light);color:var(--green)}
+.phase-active{background:var(--brand-light);color:var(--brand)}
+.phase-pending{background:var(--surface);color:var(--text3);border:1px solid var(--border)}
+.phase-connector{width:1.5px;height:10px;background:var(--border2);margin-left:23px}
+
+.stage{flex:1;padding:28px 36px;overflow-y:auto;display:flex;flex-direction:column;min-height:0}
+.stage-eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1.5px;font-weight:600;margin-bottom:6px}
+.stage-title{font-family:'Playfair Display',Georgia,serif;font-size:33px;line-height:1.12;letter-spacing:-.025em;margin-bottom:10px}
+.stage-sub{font-size:14.5px;color:var(--text2);line-height:1.55;margin-bottom:20px;max-width:600px}
+
+.editable-card{background:var(--surface-warm);border:1px solid var(--border);border-radius:14px;padding:22px;animation:ch-pop .5s ease backwards;margin-bottom:14px}
+.editable-card-label{font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:600;letter-spacing:1px;color:var(--text3);margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
+.edit-btn{font-size:11px;font-weight:500;color:var(--text3);background:none;border:none;cursor:pointer;padding:2px 6px;border-radius:4px;transition:all .12s;font-family:'Inter',sans-serif}
+.edit-btn:hover{background:var(--surface);color:var(--text)}
+.editable-card h3{font-size:15px;font-weight:600;margin-bottom:6px}
+.editable-card p{font-size:13px;color:var(--text2);line-height:1.6}
+
+.signal-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:20px}
+.signal-card{background:var(--surface);border-radius:10px;padding:12px;border:1px solid var(--border);animation:ch-rise .4s ease backwards;cursor:pointer;transition:border-color .15s}
+.signal-card:hover{border-color:var(--brand)}
+.signal-id{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:var(--text3);margin-bottom:5px}
+.signal-quote{font-size:12.5px;line-height:1.5;color:var(--text);font-style:italic;margin-bottom:8px}
+.signal-source{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text3);display:flex;align-items:center;gap:5px}
+.signal-dot{width:6px;height:6px;border-radius:50%}
+
+.section-label{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;letter-spacing:1px;color:var(--text3);margin:28px 0 14px;display:flex;align-items:center;gap:10px}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+
+.artifact-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:24px}
+.artifact-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;cursor:pointer;text-decoration:none;display:flex;flex-direction:column;gap:8px;transition:all .15s;color:inherit}
+.artifact-card:hover{border-color:var(--brand);transform:translateY(-1px);box-shadow:var(--shadow-sm)}
+.artifact-icon{font-size:22px}
+.artifact-name{font-size:13px;font-weight:700}
+.artifact-sub{font-size:11.5px;color:var(--text3)}
+.artifact-link{font-size:11px;font-weight:600;color:var(--brand);margin-top:4px;display:flex;align-items:center;gap:4px}
+
+.deliverable-row{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid var(--border)}
+.deliverable-row:last-child{border-bottom:none}
+
+.feed-rail{width:300px;flex:none;background:var(--surface2);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+.fr-tabs{display:flex;padding:12px 14px 0;border-bottom:1px solid var(--border);flex-shrink:0;gap:2px}
+.fr-tab{font-size:13px;font-weight:500;padding:6px 10px;border-radius:7px 7px 0 0;color:var(--text2);cursor:pointer;background:transparent;border:none;transition:all .15s}
+.fr-tab.active{color:var(--brand);background:var(--surface);font-weight:600}
+.fr-body{flex:1;overflow-y:auto;padding:14px 16px}
+.event-card{background:var(--surface);border-radius:9px;padding:11px 12px;margin-bottom:8px;animation:ch-rise .35s ease}
+.event-top{display:flex;align-items:center;gap:7px;margin-bottom:5px}
+.event-agent-dot{width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;font-family:'JetBrains Mono',monospace;flex-shrink:0}
+.event-agent-name{font-size:12px;font-weight:600;flex:1}
+.event-time{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text3)}
+.event-text{font-size:12.5px;color:var(--text2);line-height:1.5}
+.tag-chip{display:inline-flex;align-items:center;border-radius:5px;padding:2px 7px;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;margin-top:6px}
+.fr-chat{border-top:1px solid var(--border);padding:10px 12px;flex-shrink:0}
+.chat-input-wrap{display:flex;gap:7px}
+.chat-input{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:7px 11px;font-size:13px;font-family:'Inter',sans-serif;color:var(--text);outline:none;transition:border .15s}
+.chat-input:focus{border-color:var(--brand)}
+.chat-send{width:34px;height:36px;border-radius:8px;background:var(--brand);color:#fff;border:none;cursor:pointer;font-size:16px;transition:opacity .15s;flex-shrink:0}
+.chat-send:hover{opacity:.85}
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <div style="display:flex;align-items:center;gap:9px">
+      <img src="/weave-icon.svg" height="28" style="display:block;flex:none" onerror="this.style.display='none'">
+      <span style="font-family:'Playfair Display',serif;font-size:18px;font-weight:600;letter-spacing:-.3px">Weave</span>
+      <span style="font-size:9px;font-family:'JetBrains Mono',monospace;color:var(--text3);border:1px solid var(--border);border-radius:4px;padding:2px 5px">BETA</span>
+    </div>
+    <div style="width:1px;height:22px;background:var(--border)"></div>
+    <a href="/weave-canvas-v2.html" style="font-size:13px;color:var(--text2);transition:color .15s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text2)'">← Canvas</a>
+    <span style="font-size:13px;color:var(--text3)">›</span>
+    <span style="font-size:13px;font-weight:700;color:var(--brand)">Neura Nova</span>
+
+    <div style="margin-left:auto;display:flex;align-items:center;gap:10px">
+      <a href="/weave-studio-v2.html" style="display:flex;align-items:center;gap:6px;height:34px;padding:0 16px;border-radius:8px;background:var(--brand);color:#fff;font-size:13px;font-weight:600;text-decoration:none;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">Open Studio →</a>
+      <a href="https://www.figma.com" target="_blank" style="display:flex;align-items:center;gap:5px;height:34px;padding:0 13px;border-radius:8px;background:var(--surface2);border:1px solid var(--border);color:var(--text2);font-size:13px;font-weight:600;text-decoration:none;transition:all .15s" onmouseover="this.style.borderColor='var(--brand)';this.style.color='var(--brand)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text2)'">
+        <svg width="12" height="14" viewBox="0 0 38 57" fill="none"><path d="M19 28.5A9.5 9.5 0 1 1 28.5 19v9.5H19Z" fill="#0ACF83"/><path d="M9.5 47.5A9.5 9.5 0 0 1 19 38h9.5v9.5A9.5 9.5 0 0 1 9.5 47.5Z" fill="#FF7262"/><path d="M9.5 9.5A9.5 9.5 0 0 1 19 0h9.5v19H19A9.5 9.5 0 0 1 9.5 9.5Z" fill="#F24E1E"/><path d="M0 28.5A9.5 9.5 0 0 1 9.5 19H19v19H9.5A9.5 9.5 0 0 1 0 28.5Z" fill="#FF7262"/><circle cx="28.5" cy="28.5" r="9.5" fill="#1ABCFE"/></svg>
+        Figma
+      </a>
+      <button onclick="document.documentElement.dataset.theme=document.documentElement.dataset.theme==='dark'?'light':'dark'" style="width:34px;height:34px;border-radius:8px;background:var(--surface2);border:1px solid var(--border);color:var(--text2);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s">◑</button>
+      <div style="display:flex">
+        <div style="width:30px;height:30px;border-radius:50%;background:var(--brand);border:2px solid var(--surface);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;z-index:3;margin-right:-8px">JD</div>
+        <div style="width:30px;height:30px;border-radius:50%;background:var(--green);border:2px solid var(--surface);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;z-index:2;margin-right:-8px">AK</div>
+        <div style="width:30px;height:30px;border-radius:50%;background:#c2700f;border:2px solid var(--surface);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;z-index:1">MR</div>
+      </div>
+    </div>
+  </header>
+
+  <div id="body">
+    <!-- PIPELINE RAIL -->
+    <div class="pipeline-rail">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:.8px;margin-bottom:4px">NEURA NOVA INC.</div>
+      <div style="font-size:16px;font-weight:700;letter-spacing:-.02em;margin-bottom:20px;line-height:1.2">Landing Page Redesign</div>
+
+      <div class="rail-section-label">PIPELINE</div>
+      <div style="margin-bottom:20px">
+        <div class="pipeline-phase"><div class="phase-icon" style="background:#1f9d8f">RE</div><div class="phase-label">Brief</div><span class="phase-badge phase-done">DONE</span></div>
+        <div class="phase-connector"></div>
+        <div class="pipeline-phase"><div class="phase-icon" style="background:#1f9d8f">RE</div><div class="phase-label">Research</div><span class="phase-badge phase-done">DONE</span></div>
+        <div class="phase-connector"></div>
+        <div class="pipeline-phase"><div class="phase-icon" style="background:#2f5bea">SM</div><div class="phase-label">Sitemap</div><span class="phase-badge phase-done">DONE</span></div>
+        <div class="phase-connector"></div>
+        <div class="pipeline-phase"><div class="phase-icon" style="background:#6f57d4">WF</div><div class="phase-label">Wireframe</div><span class="phase-badge phase-done">DONE</span></div>
+        <div class="phase-connector"></div>
+        <div class="pipeline-phase active"><div class="phase-icon" style="background:#d4456b">VD</div><div class="phase-label">Design</div><span class="phase-badge phase-active">ACTIVE</span></div>
+        <div class="phase-connector"></div>
+        <div class="pipeline-phase"><div class="phase-icon" style="background:#9b59b6">SB</div><div class="phase-label">Storybook</div><span class="phase-badge phase-pending">PENDING</span></div>
+        <div class="phase-connector"></div>
+        <div class="pipeline-phase"><div class="phase-icon" style="background:var(--border2);color:var(--text3)">EC</div><div class="phase-label">ECD Review</div><span class="phase-badge phase-pending">PENDING</span></div>
+      </div>
+
+      <div style="margin-top:auto;border-top:1px solid var(--border);padding-top:14px">
+        <div class="rail-section-label">OVERALL PROGRESS</div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text2);margin-bottom:6px"><span>5 of 8 stages</span><span style="font-family:'JetBrains Mono',monospace;color:var(--brand)">62%</span></div>
+        <div style="height:5px;background:var(--border);border-radius:3px;overflow:hidden;margin-bottom:6px"><div style="height:100%;width:62%;background:linear-gradient(90deg,var(--brand),var(--brand-mid));border-radius:3px"></div></div>
+        <a href="/weave-studio-v2.html" style="display:block;text-align:center;margin-top:12px;padding:8px;border-radius:8px;background:var(--brand);color:#fff;font-size:12px;font-weight:700;text-decoration:none;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">Open Studio →</a>
+      </div>
+    </div>
+
+    <!-- STAGE -->
+    <div class="stage">
+      <div class="stage-eyebrow" style="color:#d4456b">NEURA NOVA INC. · PROJECT DETAIL</div>
+      <div class="stage-title">Landing page<br><em>in progress.</em></div>
+      <div class="stage-sub">Research-driven redesign for a dual-persona B2B platform. Visual Design Agent active — 2 of 6 screens complete. ETA: Jun 27, 2026.</div>
+
+      <!-- Quick actions -->
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:32px">
+        <a href="/weave-studio-v2.html" style="display:flex;align-items:center;gap:6px;height:38px;padding:0 18px;border-radius:9px;background:var(--brand);color:#fff;font-size:13.5px;font-weight:700;text-decoration:none;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">Open Studio →</a>
+        <a href="https://www.figma.com" target="_blank" style="display:flex;align-items:center;gap:6px;height:38px;padding:0 14px;border-radius:9px;background:var(--surface);border:1px solid var(--border);color:var(--text2);font-size:13px;font-weight:600;text-decoration:none;transition:all .15s" onmouseover="this.style.borderColor='var(--brand)';this.style.color='var(--brand)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text2)'">
+          <svg width="11" height="13" viewBox="0 0 38 57" fill="none"><path d="M19 28.5A9.5 9.5 0 1 1 28.5 19v9.5H19Z" fill="#0ACF83"/><path d="M9.5 47.5A9.5 9.5 0 0 1 19 38h9.5v9.5A9.5 9.5 0 0 1 9.5 47.5Z" fill="#FF7262"/><path d="M9.5 9.5A9.5 9.5 0 0 1 19 0h9.5v19H19A9.5 9.5 0 0 1 9.5 9.5Z" fill="#F24E1E"/><path d="M0 28.5A9.5 9.5 0 0 1 9.5 19H19v19H9.5A9.5 9.5 0 0 1 0 28.5Z" fill="#FF7262"/><circle cx="28.5" cy="28.5" r="9.5" fill="#1ABCFE"/></svg>
+          Figma file
+        </a>
+        <a href="#" onclick="alert('Storybook: sandbox-storybook.html')" style="display:flex;align-items:center;gap:6px;height:38px;padding:0 14px;border-radius:9px;background:var(--surface);border:1px solid var(--border);color:var(--text2);font-size:13px;font-weight:600;text-decoration:none;transition:all .15s" onmouseover="this.style.borderColor='#FF4785';this.style.color='#FF4785'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text2)'">📦 Storybook</a>
+        <button onclick="openPreviewOverlay()" style="display:flex;align-items:center;gap:6px;height:38px;padding:0 14px;border-radius:9px;background:var(--surface);border:1px solid var(--border);color:var(--text2);font-size:13px;font-weight:600;transition:all .15s" onmouseover="this.style.borderColor='var(--brand)';this.style.color='var(--brand)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text2)'">▶ Preview</button>
+      </div>
+
+      <!-- PROJECT BRIEF -->
+      <div class="section-label">PROJECT BRIEF</div>
+      <div class="editable-card" style="animation-delay:.05s">
+        <div class="editable-card-label">OVERVIEW <button class="edit-btn">✎ Edit</button></div>
+        <h3>Neura Nova Landing Page</h3>
+        <p>Full website redesign for Neura Nova Inc., a B2B AI platform targeting enterprise operators and technical decision-makers. Primary goal: reduce time-to-trust for dual personas. Dual-CTA structure with research-backed social proof placement above fold.</p>
+      </div>
+      <div class="editable-card" style="animation-delay:.1s">
+        <div class="editable-card-label">CLIENT & TEAM <button class="edit-btn">✎ Edit</button></div>
+        <h3>Stakeholders</h3>
+        <p><strong>Client:</strong> Neura Nova Inc. — Sarah Lin (VP Product), James Park (CTO)<br>
+        <strong>ECD:</strong> J. DeSanto &nbsp;·&nbsp; <strong>Design:</strong> A. Kumar &nbsp;·&nbsp; <strong>Strategy:</strong> M. Ramos<br>
+        <strong>Engagement type:</strong> Brand + Digital Design · 6-week sprint</p>
+      </div>
+      <div class="editable-card" style="animation-delay:.15s">
+        <div class="editable-card-label">CREATIVE DIRECTION <button class="edit-btn">✎ Edit</button></div>
+        <h3>Brand intent</h3>
+        <p>Authoritative yet approachable. Dark hero with dual CTA — confidence for operators, trust signals for buyers. Playfair Display for editorial gravitas, Inter for legibility at scale. Brand orange (#D96000) as the single action colour.</p>
+      </div>
+
+      <!-- RESEARCH SIGNALS -->
+      <div class="section-label">RESEARCH SIGNALS · 5 EXTRACTED</div>
+      <div class="signal-grid">
+        <div class="signal-card" style="animation-delay:.1s">
+          <div class="signal-id">SIGNAL S1 · HIGH CONFIDENCE</div>
+          <div class="signal-quote">"Users leave within 8 seconds if they don't understand the value prop." — 3 interview sources</div>
+          <div class="signal-source"><div class="signal-dot" style="background:#1f9d8f"></div>Confluence · User Research Q3</div>
+        </div>
+        <div class="signal-card" style="animation-delay:.14s">
+          <div class="signal-id">SIGNAL S2 · MEDIUM CONFIDENCE</div>
+          <div class="signal-quote">"Operators trust logos. Buyers trust numbers." — synthesis note</div>
+          <div class="signal-source"><div class="signal-dot" style="background:#6f57d4"></div>Miro · Strategy Board</div>
+        </div>
+        <div class="signal-card" style="animation-delay:.18s">
+          <div class="signal-id">SIGNAL S3 · HIGH CONFIDENCE</div>
+          <div class="signal-quote">"CTA placement below fold doubled bounce rate in A/B test." — Analytics</div>
+          <div class="signal-source"><div class="signal-dot" style="background:var(--brand)"></div>Analytics · June 2026</div>
+        </div>
+        <div class="signal-card" style="animation-delay:.22s">
+          <div class="signal-id">SIGNAL S4 · MEDIUM CONFIDENCE</div>
+          <div class="signal-quote">"Technical buyers require an architecture diagram before booking demos." — Sales team</div>
+          <div class="signal-source"><div class="signal-dot" style="background:var(--blue)"></div>Slack · Sales thread</div>
+        </div>
+      </div>
+
+      <!-- TIMELINE -->
+      <div class="section-label">TIMELINE</div>
+      <div class="editable-card" style="animation-delay:.05s">
+        <div class="editable-card-label">MILESTONES <button class="edit-btn">✎ Edit</button></div>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <div style="display:flex;flex-direction:column;align-items:center;margin-top:4px"><div style="width:10px;height:10px;border-radius:50%;background:var(--green);flex-shrink:0"></div><div style="width:1.5px;min-height:20px;flex:1;background:var(--border2);margin:3px 0"></div></div>
+            <div><div style="font-size:13px;font-weight:600">Research & Brief</div><div style="font-size:12px;color:var(--text2);margin-top:2px">Complete — Jun 18, 2026</div></div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <div style="display:flex;flex-direction:column;align-items:center;margin-top:4px"><div style="width:10px;height:10px;border-radius:50%;background:var(--green);flex-shrink:0"></div><div style="width:1.5px;min-height:20px;flex:1;background:var(--border2);margin:3px 0"></div></div>
+            <div><div style="font-size:13px;font-weight:600">Sitemap + Wireframes</div><div style="font-size:12px;color:var(--text2);margin-top:2px">Complete — Jun 21, 2026</div></div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <div style="display:flex;flex-direction:column;align-items:center;margin-top:4px"><div style="width:10px;height:10px;border-radius:50%;background:var(--brand);animation:pulse-dot 1.2s ease-in-out infinite;flex-shrink:0"></div><div style="width:1.5px;min-height:20px;flex:1;background:var(--border2);margin:3px 0"></div></div>
+            <div><div style="font-size:13px;font-weight:600">Visual Design</div><div style="font-size:12px;color:var(--brand);margin-top:2px">In Progress — Target Jun 27, 2026</div></div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <div style="display:flex;flex-direction:column;align-items:center;margin-top:4px"><div style="width:10px;height:10px;border-radius:50%;background:var(--border2);flex-shrink:0"></div></div>
+            <div><div style="font-size:13px;font-weight:600;color:var(--text2)">ECD Review & Handoff</div><div style="font-size:12px;color:var(--text3);margin-top:2px">Pending — Target Jul 2, 2026</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DELIVERABLES -->
+      <div class="section-label">DELIVERABLES</div>
+      <div class="editable-card" style="animation-delay:.05s">
+        <div class="editable-card-label">CHECKLIST <button class="edit-btn">✎ Edit</button></div>
+        <div>
+          <div class="deliverable-row"><span style="color:var(--green);font-size:15px">✓</span><span style="font-size:13px">Research report + signal brief</span></div>
+          <div class="deliverable-row"><span style="color:var(--green);font-size:15px">✓</span><span style="font-size:13px">Sitemap (6 pages)</span></div>
+          <div class="deliverable-row"><span style="color:var(--green);font-size:15px">✓</span><span style="font-size:13px">Wireframes (6 screens, all signals mapped)</span></div>
+          <div class="deliverable-row"><span style="color:var(--brand);font-size:15px">◷</span><span style="font-size:13px;color:var(--text2)">Hi-fidelity designs (2 of 6 complete)</span></div>
+          <div class="deliverable-row"><span style="color:var(--text3);font-size:15px">○</span><span style="font-size:13px;color:var(--text3)">Storybook component stories</span></div>
+          <div class="deliverable-row"><span style="color:var(--text3);font-size:15px">○</span><span style="font-size:13px;color:var(--text3)">Figma handoff package + dev specs</span></div>
+          <div class="deliverable-row"><span style="color:var(--text3);font-size:15px">○</span><span style="font-size:13px;color:var(--text3)">ECD gate approval + promotion to canvas</span></div>
+        </div>
+      </div>
+
+      <!-- LINKED ARTIFACTS -->
+      <div class="section-label">LINKED ARTIFACTS</div>
+      <div class="artifact-grid">
+        <a href="/weave-studio-v2.html" class="artifact-card">
+          <div class="artifact-icon">🎨</div>
+          <div class="artifact-name">Weave Studio</div>
+          <div class="artifact-sub">Flow · Wireframe · Design · Storybook</div>
+          <div class="artifact-link">Open Studio →</div>
+        </a>
+        <a href="https://www.figma.com" target="_blank" class="artifact-card">
+          <div style="display:flex;align-items:center;gap:8px">
+            <svg width="18" height="22" viewBox="0 0 38 57" fill="none"><path d="M19 28.5A9.5 9.5 0 1 1 28.5 19v9.5H19Z" fill="#0ACF83"/><path d="M9.5 47.5A9.5 9.5 0 0 1 19 38h9.5v9.5A9.5 9.5 0 0 1 9.5 47.5Z" fill="#FF7262"/><path d="M9.5 9.5A9.5 9.5 0 0 1 19 0h9.5v19H19A9.5 9.5 0 0 1 9.5 9.5Z" fill="#F24E1E"/><path d="M0 28.5A9.5 9.5 0 0 1 9.5 19H19v19H9.5A9.5 9.5 0 0 1 0 28.5Z" fill="#FF7262"/><circle cx="28.5" cy="28.5" r="9.5" fill="#1ABCFE"/></svg>
+          </div>
+          <div class="artifact-name">Figma</div>
+          <div class="artifact-sub">Neura Nova — Landing v4.2</div>
+          <div class="artifact-link">Open in Figma ↗</div>
+        </a>
+        <a href="#" onclick="alert('Storybook link')" class="artifact-card">
+          <div class="artifact-icon">📦</div>
+          <div class="artifact-name">Storybook</div>
+          <div class="artifact-sub">14 components · neura-ds v1.2</div>
+          <div class="artifact-link" style="color:#FF4785">Open Storybook ↗</div>
+        </a>
+        <div class="artifact-card" onclick="openPreviewOverlay()" style="cursor:pointer">
+          <div class="artifact-icon">▶</div>
+          <div class="artifact-name">Live Preview</div>
+          <div class="artifact-sub">Home · Product · Pricing · About</div>
+          <div class="artifact-link">Open Preview →</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FEED RAIL -->
+    <div class="feed-rail">
+      <div class="fr-tabs">
+        <button class="fr-tab active" onclick="setFrTab(this,'activity')">Activity</button>
+        <button class="fr-tab" onclick="setFrTab(this,'chat')">Chat</button>
+      </div>
+      <div class="fr-body" id="fr-body">
+        <div class="event-card"><div class="event-top"><div class="event-agent-dot" style="background:#d4456b">VD</div><span class="event-agent-name">Visual Design Agent</span><span class="event-time">Just now</span></div><div class="event-text">Starting Feature Grid section. Applying signal S4 — architecture diagram above mid-fold.</div><span class="tag-chip" style="background:var(--brand-light);color:var(--brand)">SECTION 3/7</span></div>
+        <div class="event-card"><div class="event-top"><div class="event-agent-dot" style="background:#d4456b">VD</div><span class="event-agent-name">Visual Design Agent</span><span class="event-time">11:44am</span></div><div class="event-text">Social proof rail complete. 3 customer logos placed, stat band above fold per S2 signal.</div><span class="tag-chip" style="background:var(--green-light);color:var(--green)">APPROVED</span></div>
+        <div class="event-card"><div class="event-top"><div class="event-agent-dot" style="background:#d4456b">VD</div><span class="event-agent-name">Visual Design Agent</span><span class="event-time">11:30am</span></div><div class="event-text">Hero section complete. Dark landing with dual CTA. S1 + S3 signals applied.</div></div>
+        <div class="event-card"><div class="event-top"><div class="event-agent-dot" style="background:#6f57d4">WF</div><span class="event-agent-name">Wireframe Agent</span><span class="event-time">Yesterday</span></div><div class="event-text">All 6 wireframes complete. Research signals mapped to 14 decision points. Gate passed.</div><span class="tag-chip" style="background:var(--green-light);color:var(--green)">GATE PASSED</span></div>
+        <div class="event-card"><div class="event-top"><div class="event-agent-dot" style="background:#2f5bea">SM</div><span class="event-agent-name">Sitemap Agent</span><span class="event-time">Jun 21</span></div><div class="event-text">6-page sitemap approved. Use Cases page splits operator and buyer paths — informed by S2.</div></div>
+        <div class="event-card"><div class="event-top"><div class="event-agent-dot" style="background:#1f9d8f">RE</div><span class="event-agent-name">Research Agent</span><span class="event-time">Jun 18</span></div><div class="event-text">Research complete. 5 signals extracted from Confluence, Miro, analytics. Brief locked.</div><span class="tag-chip" style="background:var(--green-light);color:var(--green)">BRIEF LOCKED</span></div>
+      </div>
+      <div class="fr-body" id="fr-chat" style="display:none;flex-direction:column">
+        <div id="chat-messages" style="display:flex;flex-direction:column;gap:7px;min-height:140px;flex:1;margin-bottom:8px"></div>
+      </div>
+      <div class="fr-chat">
+        <div class="chat-input-wrap">
+          <input class="chat-input" id="chat-input" placeholder="Ask an agent..." onkeydown="chatKey(event)">
+          <button class="chat-send" onclick="sendChat()">↑</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PREVIEW OVERLAY -->
+<div id="preview-overlay" style="display:none;position:fixed;inset:0;z-index:100;background:#f5f5f5;overflow-y:auto;font-family:'Inter',-apple-system,sans-serif">
+  <div id="prev-chrome" style="position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:101;display:flex;align-items:center;gap:10px;background:rgba(0,0,0,.8);backdrop-filter:blur(12px);border-radius:30px;padding:5px 8px 5px 16px;border:1px solid rgba(255,255,255,.1);white-space:nowrap"></div>
+  <div id="prev-body" style="padding-top:60px"></div>
+</div>
+
+<style>
+.nn-nav{background:#fff;border-bottom:1px solid #e8e8e8;position:sticky;top:60px;z-index:10;display:flex;align-items:center;padding:0 48px;height:64px;gap:32px}
+html[data-theme="dark"] .nn-nav{background:var(--surface);border-bottom-color:var(--border)}
+.nn-logo-mark{width:30px;height:30px;border-radius:8px;background:var(--brand);flex:none}
+.nn-nav-links{display:flex;gap:28px;margin-left:8px}
+.nn-nav-links a{font-size:14px;color:var(--text2);text-decoration:none}
+.nn-cta-link{margin-left:auto;height:38px;padding:0 20px;border-radius:19px;background:var(--brand);color:#fff;font-size:13.5px;font-weight:600;border:none;cursor:pointer;font-family:'Inter',sans-serif}
+.nn-hero{background:#f5f5f5;padding:80px 48px 64px;text-align:center;display:flex;flex-direction:column;align-items:center}
+html[data-theme="dark"] .nn-hero{background:var(--bg)}
+.nn-badge{height:26px;padding:0 14px;border-radius:13px;border:1px solid var(--brand);background:var(--brand-light);display:inline-flex;align-items:center;margin-bottom:20px;font-size:11px;font-weight:600;color:var(--brand);letter-spacing:.04em}
+.nn-h1{font-family:'Playfair Display',Georgia,serif;font-size:52px;font-weight:700;color:var(--text);line-height:1.1;letter-spacing:-.025em;max-width:680px;margin:0 0 18px}
+.nn-lead{font-size:16px;color:var(--text2);line-height:1.65;max-width:510px;margin:0 0 28px}
+.nn-btns{display:flex;gap:12px}
+.nn-btn1{height:48px;padding:0 28px;border-radius:24px;background:var(--brand);color:#fff;font-size:14px;font-weight:600;border:none;cursor:pointer;font-family:'Inter',sans-serif}
+.nn-btn2{height:48px;padding:0 24px;border-radius:24px;border:1.5px solid #c8c8c8;background:transparent;color:var(--text2);font-size:14px;font-family:'Inter',sans-serif;cursor:pointer}
+.nn-stats{background:#eee;display:flex;align-items:center;justify-content:center;border-top:1px solid #e0e0e0;border-bottom:1px solid #e0e0e0}
+html[data-theme="dark"] .nn-stats{background:var(--surface2);border-color:var(--border)}
+.nn-stat{flex:1;max-width:220px;display:flex;flex-direction:column;align-items:center;padding:28px 16px;gap:4px}
+.nn-stat-val{font-family:'Playfair Display',Georgia,serif;font-size:36px;font-weight:700;color:var(--brand);line-height:1}
+.nn-stat-lbl{font-size:11px;color:var(--text3);letter-spacing:.06em}
+.nn-stat-div{width:1px;height:40px;background:#d8d8d8;align-self:center}
+html[data-theme="dark"] .nn-stat-div{background:var(--border)}
+.nn-feat{padding:64px 48px;background:#f0f0f0}
+html[data-theme="dark"] .nn-feat{background:var(--surface2)}
+.nn-eyebrow{display:inline-block;padding:4px 12px;border-radius:12px;background:var(--brand-light);color:var(--brand);font-size:10.5px;font-weight:600;margin-bottom:10px;letter-spacing:.05em}
+.nn-h2{font-family:'Playfair Display',Georgia,serif;font-size:34px;font-weight:700;color:var(--text);letter-spacing:-.02em;margin:0 0 10px}
+.nn-feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:860px;margin:0 auto}
+.nn-feat-card{background:#fff;border:1px solid #e4e4e4;border-radius:13px;padding:22px}
+html[data-theme="dark"] .nn-feat-card{background:var(--surface);border-color:var(--border)}
+.nn-feat-icon{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;font-size:18px}
+.nn-feat-card h3{font-size:14px;font-weight:700;color:var(--text);margin:0 0 6px}
+.nn-feat-card p{font-size:12.5px;color:var(--text2);line-height:1.55;margin:0}
+.nn-footer{background:#1a1714;padding:36px 48px;display:flex;align-items:center;justify-content:space-between}
+.nn-footer-logo{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:700;color:#e8e3de}
+.nn-flinks{display:flex;gap:18px}
+.nn-flinks a{font-size:12px;color:#706860;text-decoration:none}
+.prev-page-btn{padding:5px 11px;border-radius:18px;font-size:12px;font-weight:600;cursor:pointer;border:none;font-family:'Inter',sans-serif;transition:all .15s}
+.prev-btn{display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.14);border-radius:20px;padding:5px 13px;font-size:12px;font-weight:600;cursor:pointer;transition:background .15s}
+.prev-btn:hover{background:rgba(255,255,255,.22)}
+</style>
+
+<script>
+function setFrTab(btn,tab){
+  document.querySelectorAll('.fr-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('fr-body').style.display=tab==='activity'?'block':'none';
+  const fc=document.getElementById('fr-chat');
+  fc.style.display=tab==='chat'?'flex':'none';
+  if(tab==='chat')fc.style.flexDirection='column';
+}
+const REPLIES=[
+  "Neura Nova Home hero is approved. Feature Grid in progress — S4 architecture diagram positioned above fold. ETA for full design pass: ~2 hours.",
+  "Signal coverage is strong — 5 signals across all 6 screens. S3 (CTA below fold → high bounce) is the most critical.",
+  "Prioritise the Demo Request page after Feature Grid — highest conversion impact per S1 and S3.",
+  "Storybook generation can run in parallel with the final 2 screens to accelerate the timeline.",
+];
+let chatMsgs=[];
+function chatKey(e){if(e.key==='Enter'){e.preventDefault();sendChat();}}
+function sendChat(){
+  const inp=document.getElementById('chat-input');const v=inp.value.trim();if(!v)return;
+  inp.value='';chatMsgs.push({role:'user',text:v});renderChat();
+  setTimeout(()=>{chatMsgs.push({role:'ai',text:REPLIES[chatMsgs.length%REPLIES.length]});renderChat();},1100);
+}
+function renderChat(){
+  const el=document.getElementById('chat-messages');
+  el.innerHTML=chatMsgs.map(m=>`<div style="display:flex;flex-direction:column;align-items:${m.role==='user'?'flex-end':'flex-start'}">${m.role==='ai'?'<div style="font-family:\'JetBrains Mono\',monospace;font-size:9px;font-weight:600;color:var(--text3);margin-bottom:3px">Weave Agent</div>':''}<div style="max-width:88%;padding:8px 11px;border-radius:9px;font-size:12.5px;line-height:1.55;background:${m.role==='user'?'var(--brand)':'var(--surface)'};color:${m.role==='user'?'#fff':'var(--text)'};border:${m.role==='user'?'none':'1px solid var(--border)'}"> ${m.text}</div></div>`).join('');
+  el.scrollTop=el.scrollHeight;
+}
+
+let prevPage='home';
+const PREV_PAGES=[{id:'home',label:'Home'},{id:'product',label:'Product'},{id:'pricing',label:'Pricing'},{id:'about',label:'About'},{id:'blog',label:'Blog'},{id:'contact',label:'Contact'}];
+
+function openPreviewOverlay(){
+  document.getElementById('preview-overlay').style.display='block';
+  renderPrevChrome();
+  document.getElementById('prev-body').innerHTML=buildPageHtml(prevPage);
+}
+function closePreviewOverlay(){document.getElementById('preview-overlay').style.display='none';}
+function switchPrevPage(pid){prevPage=pid;document.getElementById('prev-body').innerHTML=buildPageHtml(pid);renderPrevChrome();}
+function renderPrevChrome(){
+  document.getElementById('prev-chrome').innerHTML=
+    PREV_PAGES.map(p=>`<button class="prev-page-btn" onclick="switchPrevPage('${p.id}')" style="background:${prevPage===p.id?'rgba(255,255,255,.22)':'transparent'};color:${prevPage===p.id?'#fff':'rgba(255,255,255,.5)'}">${p.label}</button>`).join('')+
+    `<div style="width:1px;height:16px;background:rgba(255,255,255,.15)"></div>
+    <button class="prev-btn" onclick="document.documentElement.dataset.theme=document.documentElement.dataset.theme==='dark'?'light':'dark';document.getElementById('prev-body').innerHTML=buildPageHtml(prevPage)">◑ Theme</button>
+    <button class="prev-btn" onclick="closePreviewOverlay()">✕ Exit</button>`;
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closePreviewOverlay();});
+
+function nnNav(active){
+  return`<nav class="nn-nav">
+    <div style="display:flex;align-items:center;gap:10px"><div class="nn-logo-mark"></div><span style="font-size:15px;font-weight:700;color:var(--text)">Neura Nova</span></div>
+    <div class="nn-nav-links">${PREV_PAGES.slice(0,-1).map(p=>`<a href="#" onclick="switchPrevPage('${p.id}');return false" style="${p.id===active?'color:var(--brand);font-weight:600':''}">${p.label}</a>`).join('')}</div>
+    <button class="nn-cta-link" onclick="switchPrevPage('contact')">Get Started →</button>
+  </nav>`;
+}
+function nnFooter(){return`<footer class="nn-footer"><div class="nn-footer-logo"><div class="nn-logo-mark"></div>Neura Nova</div><div class="nn-flinks"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Status</a><a href="#">Blog</a></div><p style="font-size:12px;color:#706860;margin:0">© 2026 Neura Nova, Inc.</p></footer>`;}
+
+function buildPageHtml(pid){
+  const pages={
+    home:()=>nnNav('home')+`
+      <section class="nn-hero"><div class="nn-badge">✦ NOW IN BETA — JOIN 3,400 TEAMS</div><h1 class="nn-h1">Intelligence that moves at the <em>speed of design.</em></h1><p class="nn-lead">Weave connects your tokens, components, and agents into a single source of truth — so your design system ships faster and stays consistent.</p><div class="nn-btns"><button class="nn-btn1">Start Free Trial →</button><button class="nn-btn2">Watch Demo</button></div></section>
+      <section class="nn-stats"><div class="nn-stat"><div class="nn-stat-val">3,400+</div><div class="nn-stat-lbl">TEAMS</div></div><div class="nn-stat-div"></div><div class="nn-stat"><div class="nn-stat-val">$4.2B</div><div class="nn-stat-lbl">VALUE MANAGED</div></div><div class="nn-stat-div"></div><div class="nn-stat"><div class="nn-stat-val">99.9%</div><div class="nn-stat-lbl">UPTIME</div></div><div class="nn-stat-div"></div><div class="nn-stat"><div class="nn-stat-val">4.9★</div><div class="nn-stat-lbl">RATING</div></div></section>
+      <section class="nn-feat"><div style="text-align:center;margin-bottom:36px"><div class="nn-eyebrow">CORE CAPABILITIES</div><div class="nn-h2">Everything your design system needs</div><p style="font-size:14.5px;color:var(--text2);max-width:460px;margin:0 auto;line-height:1.6">One platform to sync, review, and ship — from token to code.</p></div><div class="nn-feat-grid"><div class="nn-feat-card"><div class="nn-feat-icon" style="background:color-mix(in srgb,var(--brand) 12%,transparent)">⚡</div><h3>Real-time Token Sync</h3><p>Tokens update live across Figma and code — no copy-paste, no drift.</p></div><div class="nn-feat-card"><div class="nn-feat-icon" style="background:#2E5CE820">🤖</div><h3>AI Design Review</h3><p>Automated checks catch spacing errors and token misuse before they ship.</p></div><div class="nn-feat-card"><div class="nn-feat-icon" style="background:#1A8A5A20">📊</div><h3>Component Health</h3><p>Live reports show which components are adopted, stale, or diverging.</p></div></div></section>`+nnFooter(),
+    product:()=>nnNav('product')+`<section class="nn-hero"><div class="nn-badge">PRODUCT</div><h1 class="nn-h1">Your design system, <em>intelligently maintained.</em></h1><p class="nn-lead">From token sync to component health — one connected platform.</p><div class="nn-btns"><button class="nn-btn1">Start Free Trial →</button><button class="nn-btn2">Watch Demo</button></div></section><section class="nn-feat" style="background:#f0f0f0"><div style="text-align:center;margin-bottom:36px"><div class="nn-eyebrow">INTEGRATIONS</div><div class="nn-h2">Works with your existing stack</div></div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;max-width:720px;margin:0 auto">${[{i:'🎨',n:'Figma'},{i:'⚛',n:'React'},{i:'📦',n:'Storybook'},{i:'🧪',n:'Chromatic'},{i:'🔀',n:'GitHub'},{i:'🔵',n:'GitLab'},{i:'💬',n:'Slack'},{i:'📋',n:'Jira'}].map(x=>`<div style="background:#fff;border:1px solid #e4e4e4;border-radius:12px;padding:20px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center"><span style="font-size:26px">${x.i}</span><span style="font-size:12px;font-weight:600;color:var(--text2)">${x.n}</span></div>`).join('')}</div></section>`+nnFooter(),
+    pricing:()=>nnNav('pricing')+`<section style="padding:80px 48px 64px;text-align:center;background:#f5f5f5"><div class="nn-badge">PRICING</div><h1 class="nn-h1" style="font-size:46px;margin-top:16px">Start free. Scale as you grow.</h1><p style="font-size:16px;color:var(--text2);max-width:480px;margin:0 auto 48px;line-height:1.6">All plans include token sync, AI review, and component health.</p><div style="display:flex;gap:20px;justify-content:center;max-width:860px;margin:0 auto;flex-wrap:wrap">${[{n:'Starter',p:'$0',per:'/mo',d:'For small teams.',f:['Up to 5 users','Token sync','AI review — 50/mo'],cta:'Get Started',f2:false},{n:'Pro',p:'$49',per:'/mo',d:'For growing teams.',f:['Unlimited users','Token sync','AI review unlimited','Component health','Priority support'],cta:'Start Free Trial',f2:true},{n:'Enterprise',p:'Custom',per:'',d:'For large orgs.',f:['SSO & SAML','Dedicated CSM','SLA guarantee'],cta:'Contact Sales',f2:false}].map(p=>`<div style="background:#fff;border:${p.f2?'2px solid var(--brand)':'1.5px solid #e4e4e4'};border-radius:16px;padding:28px;flex:1;min-width:200px;max-width:260px"><div style="font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--text3);margin-bottom:10px">${p.n.toUpperCase()}</div><div style="display:flex;align-items:baseline;gap:4px;margin-bottom:6px"><span style="font-family:'Playfair Display',serif;font-size:40px;font-weight:700;color:var(--text)">${p.p}</span><span style="font-size:13px;color:var(--text3)">${p.per}</span></div><p style="font-size:13px;color:var(--text2);margin:0 0 20px;line-height:1.5">${p.d}</p><div style="border-top:1px solid #f0f0f0;margin-bottom:24px">${p.f.map(f=>`<div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2);padding:6px 0;border-bottom:1px solid #f0f0f0"><span style="width:8px;height:8px;border-radius:50%;background:var(--green);flex:none"></span>${f}</div>`).join('')}</div><button style="width:100%;height:44px;border-radius:22px;background:${p.f2?'var(--brand)':'transparent'};border:${p.f2?'none':'1.5px solid #d0d0d0'};color:${p.f2?'#fff':'var(--text2)'};font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif">${p.cta}</button></div>`).join('')}</div></section>`+nnFooter(),
+    about:()=>nnNav('about')+`<section class="nn-hero"><div class="nn-badge">OUR STORY</div><h1 class="nn-h1">Built by designers,<br>for design teams.</h1><p class="nn-lead">Neura Nova started when three engineers got tired of their tokens drifting overnight.</p></section><section class="nn-feat" style="text-align:center"><div class="nn-eyebrow">MISSION</div><div class="nn-h2" style="margin:10px 0 20px">Design consistency at scale</div><p style="max-width:640px;margin:0 auto;font-size:15px;color:var(--text2);line-height:1.7">We believe every design system should be a living document — one that evolves with your product and stays in sync with your code without manual intervention.</p></section>`+nnFooter(),
+    blog:()=>nnNav('blog')+`<section class="nn-hero"><div class="nn-badge">BLOG</div><h1 class="nn-h1" style="font-size:46px">Design system insights</h1><p class="nn-lead">Stories, tutorials, and research from the Neura Nova team.</p></section><section style="padding:48px;background:#f0f0f0"><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:22px;max-width:960px;margin:0 auto">${[{e:'🔄',c:'Token Sync',t:'How we cut design-to-code handoff from 3 days to 3 minutes',a:'Marcus Lee',d:'Jun 18'},{e:'🤖',c:'AI Review',t:'Why AI design review catches what humans miss',a:'Priya Sharma',d:'Jun 10'},{e:'📊',c:'Case Studies',t:'How Atlassian cut token drift by 94%',a:'Guest',d:'May 28'}].map(x=>`<div style="background:#fff;border:1px solid #e4e4e4;border-radius:13px;overflow:hidden"><div style="height:160px;background:#e0e0e0;display:flex;align-items:center;justify-content:center;font-size:32px">${x.e}</div><div style="padding:18px"><div style="font-size:10px;font-weight:700;color:var(--brand);letter-spacing:.06em;margin-bottom:8px">${x.c.toUpperCase()}</div><h3 style="font-size:15px;font-weight:700;line-height:1.4;margin:0 0 10px;color:var(--text)">${x.t}</h3><div style="font-size:12px;color:var(--text3)">${x.a} · ${x.d}</div></div></div>`).join('')}</div></section>`+nnFooter(),
+    contact:()=>nnNav('contact')+`<section style="padding:80px 48px;background:#f5f5f5"><div style="text-align:center;margin-bottom:52px"><div class="nn-badge">CONTACT</div><h1 class="nn-h1" style="font-size:42px;margin-top:16px">Let's talk</h1></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;max-width:860px;margin:0 auto"><div><div style="display:flex;flex-direction:column;gap:6px;margin-bottom:16px"><label style="font-size:13px;font-weight:600">Name</label><input style="height:44px;border:1.5px solid #d8d8d8;border-radius:8px;padding:0 14px;font-size:14px;font-family:'Inter',sans-serif" placeholder="Your full name"></div><div style="display:flex;flex-direction:column;gap:6px;margin-bottom:16px"><label style="font-size:13px;font-weight:600">Work email</label><input style="height:44px;border:1.5px solid #d8d8d8;border-radius:8px;padding:0 14px;font-size:14px;font-family:'Inter',sans-serif" placeholder="you@company.com"></div><div style="display:flex;flex-direction:column;gap:6px;margin-bottom:24px"><label style="font-size:13px;font-weight:600">Message</label><textarea style="border:1.5px solid #d8d8d8;border-radius:8px;padding:12px 14px;font-size:14px;font-family:'Inter',sans-serif;min-height:120px" placeholder="Tell us what you're trying to solve…"></textarea></div><button style="height:48px;padding:0 28px;border-radius:24px;background:var(--brand);color:#fff;font-size:14px;font-weight:600;border:none;cursor:pointer;font-family:'Inter',sans-serif;width:100%">Send Message →</button></div><div style="display:flex;flex-direction:column;gap:24px">${[{i:'🏢',t:'San Francisco HQ',d:'548 Market St, SF, CA 94104'},{i:'📧',t:'Email',d:'hello@neuranova.com'},{i:'💬',t:'Live chat',d:'Mon–Fri, 9am–6pm PT'}].map(o=>`<div style="display:flex;gap:14px"><div style="width:40px;height:40px;border-radius:10px;background:color-mix(in srgb,var(--brand) 10%,transparent);display:flex;align-items:center;justify-content:center;font-size:18px;flex:none">${o.i}</div><div><div style="font-weight:700;font-size:14px;margin-bottom:3px">${o.t}</div><div style="font-size:13px;color:var(--text2)">${o.d}</div></div></div>`).join('')}</div></div></section>`+nnFooter(),
+  };
+  return(pages[pid]||pages.home)();
+}
+</script>
+</body>
+</html>
