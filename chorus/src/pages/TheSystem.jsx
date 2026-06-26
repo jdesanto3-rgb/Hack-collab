@@ -551,6 +551,173 @@ function setupMap() {
     activeNodeId=null; closeNodePanel()
   })
   panel.addEventListener('click', e => e.stopPropagation())
+
+  // ── THEME INTEGRATION ────────────────────────────────────────────
+  function getMapThemePalette() {
+    const raw = document.documentElement.getAttribute('data-theme')
+    // Obsidian uses data-theme="" (empty string — falsy), so check explicitly
+    const theme = raw === '' ? 'obsidian' : (raw || 'canvas')
+
+    const palettes = {
+      canvas: {
+        hostBg:        '#FCF9F6',
+        diagramBg:     '#F5EFE8',
+        diagramShadow: '0 1px 4px rgba(36,18,8,0.04), 0 12px 40px rgba(36,18,8,0.06)',
+        panelBg:       '#F5EFE8',
+        panelBorder:   'rgba(36,18,8,0.10)',
+        panelText:     '#241208',
+        panelSubtext:  'rgba(36,18,8,0.50)',
+        panelTopBorder:'rgba(36,18,8,0.08)',
+        closeBg:       '#EDE4D8',
+        closeColor:    'rgba(36,18,8,0.50)',
+        breadcrumbSep: 'rgba(36,18,8,0.25)',
+        legendText:    'rgba(36,18,8,0.50)',
+        idleRect:      { fill:'#F5EFE8', stroke:'#EDE4D8' },
+        idleText1:     'rgba(36,18,8,0.35)',
+        idleText2:     '#241208',
+        idleText3:     'rgba(36,18,8,0.30)',
+        canvasFill1:   '#EDE4D8',
+        canvasFill2:   '#E5DCD0',
+        canvasStroke:  '#D4CCC0',
+        canvasText:    '#241208',
+        canvasSubtext: 'rgba(36,18,8,0.50)',
+      },
+      obsidian: {
+        hostBg:        '#18181B',
+        diagramBg:     '#111113',
+        diagramShadow: '0 1px 4px rgba(0,0,0,0.25), 0 12px 40px rgba(0,0,0,0.40)',
+        panelBg:       '#111113',
+        panelBorder:   'rgba(235,230,223,0.10)',
+        panelText:     '#EBE6DF',
+        panelSubtext:  'rgba(235,230,223,0.45)',
+        panelTopBorder:'rgba(235,230,223,0.08)',
+        closeBg:       '#1A1A1D',
+        closeColor:    'rgba(235,230,223,0.45)',
+        breadcrumbSep: 'rgba(235,230,223,0.25)',
+        legendText:    'rgba(235,230,223,0.45)',
+        idleRect:      { fill:'rgba(17,17,19,0.85)', stroke:'rgba(235,230,223,0.10)' },
+        idleText1:     'rgba(235,230,223,0.28)',
+        idleText2:     '#EBE6DF',
+        idleText3:     'rgba(235,230,223,0.25)',
+        canvasFill1:   '#1A1A1D',
+        canvasFill2:   '#111113',
+        canvasStroke:  'rgba(235,230,223,0.20)',
+        canvasText:    '#EBE6DF',
+        canvasSubtext: 'rgba(235,230,223,0.45)',
+      },
+      blueprint: {
+        hostBg:        '#000000',
+        diagramBg:     '#0A0A0A',
+        diagramShadow: '0 0 0 1px rgba(185,218,255,0.06), 0 12px 40px rgba(0,0,0,0.70)',
+        panelBg:       '#0A0A0A',
+        panelBorder:   'rgba(185,218,255,0.10)',
+        panelText:     '#ffffff',
+        panelSubtext:  'rgba(255,255,255,0.45)',
+        panelTopBorder:'rgba(185,218,255,0.08)',
+        closeBg:       '#111111',
+        closeColor:    'rgba(255,255,255,0.40)',
+        breadcrumbSep: 'rgba(255,255,255,0.20)',
+        legendText:    'rgba(255,255,255,0.40)',
+        idleRect:      { fill:'rgba(10,10,10,0.90)', stroke:'rgba(185,218,255,0.10)' },
+        idleText1:     'rgba(255,255,255,0.22)',
+        idleText2:     '#B9DAFF',
+        idleText3:     'rgba(255,255,255,0.20)',
+        canvasFill1:   '#0F0F12',
+        canvasFill2:   '#0A0A0D',
+        canvasStroke:  'rgba(185,218,255,0.25)',
+        canvasText:    '#ffffff',
+        canvasSubtext: 'rgba(255,255,255,0.45)',
+      },
+    }
+
+    return palettes[theme] || palettes.canvas
+  }
+
+  function applyMapTheme() {
+    const p = getMapThemePalette()
+
+    const host = document.getElementById('system-map-host')
+    if (host) host.style.background = p.hostBg
+
+    const diag = document.getElementById('sm-diagram')
+    if (diag) {
+      diag.style.background = p.diagramBg
+      diag.style.boxShadow  = p.diagramShadow
+    }
+
+    const smPanel = document.getElementById('sm-panel')
+    if (smPanel) {
+      smPanel.style.background  = p.panelBg
+      smPanel.style.borderColor = p.panelBorder
+    }
+
+    const hintTitle = document.querySelector('.sm-hint-title')
+    const hintBody  = document.querySelector('.sm-hint-body')
+    const pName     = document.getElementById('sm-p-name')
+    const pBody     = document.getElementById('sm-p-body')
+    const pRole     = document.getElementById('sm-p-role')
+    if (hintTitle) hintTitle.style.color = p.panelText
+    if (hintBody)  hintBody.style.color  = p.panelSubtext
+    if (pName)     pName.style.color     = p.panelText
+    if (pBody)     pBody.style.color     = p.panelSubtext
+    if (pRole)     pRole.style.color     = p.panelSubtext
+
+    const panelTop = document.querySelector('.sm-panel-top')
+    if (panelTop) panelTop.style.borderBottomColor = p.panelTopBorder
+
+    const closeBtn = document.querySelector('.sm-panel-close')
+    if (closeBtn) {
+      closeBtn.style.background = p.closeBg
+      closeBtn.style.color      = p.closeColor
+    }
+
+    const header = document.querySelector('.sm-header h2')
+    if (header) header.style.color = p.panelText
+
+    const bcSep = document.querySelector('.sm-bc-sep')
+    if (bcSep) bcSep.style.color = p.breadcrumbSep
+
+    document.querySelectorAll('.sm-leg').forEach(el => {
+      el.style.color = p.legendText
+    })
+
+    const idleRect = document.querySelector('#sm-idle-desc rect')
+    if (idleRect) {
+      idleRect.setAttribute('fill',   p.idleRect.fill)
+      idleRect.setAttribute('stroke', p.idleRect.stroke)
+    }
+
+    const idleTexts = document.querySelectorAll('#sm-idle-desc text')
+    if (idleTexts[0]) idleTexts[0].setAttribute('fill', p.idleText1)
+    if (idleTexts[1]) idleTexts[1].setAttribute('fill', p.idleText2)
+    if (idleTexts[2]) idleTexts[2].setAttribute('fill', p.idleText3)
+
+    const canvasGrad1 = document.querySelector('#sm-rg-canvas stop:first-child')
+    const canvasGrad2 = document.querySelector('#sm-rg-canvas stop:last-child')
+    if (canvasGrad1) canvasGrad1.setAttribute('stop-color', p.canvasFill1)
+    if (canvasGrad2) canvasGrad2.setAttribute('stop-color', p.canvasFill2)
+
+    const canvasCircle = document.querySelector('#sm-cn-canvas .main-circle')
+    if (canvasCircle) canvasCircle.setAttribute('stroke', p.canvasStroke)
+
+    const canvasTexts = document.querySelectorAll('#sm-cn-canvas text')
+    if (canvasTexts[0]) canvasTexts[0].setAttribute('fill', p.canvasText)
+    if (canvasTexts[1]) canvasTexts[1].setAttribute('fill', p.canvasSubtext)
+
+    const smBackBtn = document.getElementById('sm-back-btn')
+    if (smBackBtn) {
+      smBackBtn.style.background  = p.diagramBg
+      smBackBtn.style.color       = p.panelText
+      smBackBtn.style.borderColor = p.panelBorder
+    }
+  }
+
+  applyMapTheme()
+
+  new MutationObserver(applyMapTheme).observe(
+    document.documentElement,
+    { attributes: true, attributeFilter: ['data-theme'] }
+  )
 }
 
 export default function TheSystem() {

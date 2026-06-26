@@ -622,6 +622,24 @@ img { max-width: 100%; display: block; }
 }
 .sm-leg-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 
+/* ── SYSTEM MAP THEME OVERRIDES ── */
+[data-theme="canvas"] #sm-back-btn:hover { background: #EDE4D8 !important; color: #241208 !important; }
+[data-theme="canvas"] #sm-bc-disc:hover { color: #241208 !important; }
+[data-theme="canvas"] .sm-panel-close:hover { background: #D8D0C4 !important; }
+
+[data-theme=""] #sm-back-btn:hover { background: #1A1A1D !important; color: #EBE6DF !important; }
+[data-theme=""] #sm-bc-disc:hover { color: #EBE6DF !important; }
+[data-theme=""] .sm-panel-close:hover { background: #222225 !important; }
+[data-theme=""] .sm-node.dim { opacity: 0.06; }
+[data-theme=""] .sm-disc-edge.dim { opacity: 0.03; }
+
+[data-theme="blueprint"] #sm-back-btn:hover { background: #111111 !important; color: #ffffff !important; }
+[data-theme="blueprint"] #sm-bc-disc:hover { color: #ffffff !important; }
+[data-theme="blueprint"] .sm-panel-close:hover { background: #1A1A1A !important; }
+[data-theme="blueprint"] .sm-node.dim { opacity: 0.05; }
+[data-theme="blueprint"] .sm-disc-edge.dim { opacity: 0.02; }
+[data-theme="blueprint"] #sm-idle-desc text:nth-child(3) { filter: drop-shadow(0 0 8px rgba(185,218,255,0.40)); }
+
 /* =============================================
    AGENTS PAGE
    ============================================= */
