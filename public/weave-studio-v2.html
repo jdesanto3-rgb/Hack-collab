@@ -1475,7 +1475,7 @@ function buildPageHtml(pid){
 function render(){
   renderToolbar();
   const lr=document.getElementById('left-rail');
-  if(S.mode==='styleguide'){lr.style.display='none';}else{lr.style.display='';renderLeft();}
+  if(S.mode==='styleguide'||S.mode==='flow'){lr.style.display='none';}else{lr.style.display='';renderLeft();}
   renderRight();
   const m=S.mode;
   if(m==='flow')renderFlow();
