@@ -76,22 +76,7 @@ const SYSTEM_MAP_HTML = `
         <circle id="sm-vh-dev" cx="780" cy="560" r="162" fill="transparent"/>
       </g>
 
-      <g id="sm-idle-desc">
-        <rect x="310" y="736" width="940" height="90" rx="14"
-          fill="white" fill-opacity="0.75" stroke="#ECEAE3" stroke-width="1"/>
-        <text x="780" y="758" font-family="-apple-system,BlinkMacSystemFont,'Inter',sans-serif"
-          font-size="13" fill="#9C9A92" text-anchor="middle">
-          Figma has nodes. Miro has connectors. Linear has issues. GitHub has commits.
-        </text>
-        <text x="780" y="782" font-family="-apple-system,BlinkMacSystemFont,'Inter',sans-serif"
-          font-size="18" font-weight="500" fill="#1C1C1A" text-anchor="middle">
-          Weave has the thread.
-        </text>
-        <text x="780" y="808" font-family="-apple-system,BlinkMacSystemFont,'Inter',sans-serif"
-          font-size="11.5" fill="#B4B2A9" text-anchor="middle" letter-spacing="0.01em">
-          Click Design, Product, or Dev to explore each team&apos;s agents and people.
-        </text>
-      </g>
+
 
       <g id="sm-cn-canvas" class="sm-node">
         <circle cx="780" cy="420" r="72" fill="none" stroke="#D0CEC6" stroke-width="1"
@@ -351,7 +336,7 @@ function setupMap() {
   const backBtn    = document.getElementById('sm-back-btn')
   const breadcrumb = document.getElementById('sm-breadcrumb')
   const bcDisc     = document.getElementById('sm-bc-disc')
-  const idleDesc   = document.getElementById('sm-idle-desc')
+
   const cnCanvas   = document.getElementById('sm-cn-canvas')
   const cnClient   = document.getElementById('sm-cn-client')
 
@@ -435,7 +420,6 @@ function setupMap() {
       }
     })
 
-    gsap.to(idleDesc, { opacity:disc?0:1, duration:0.3 })
 
     if(!disc) {
       gsap.to(diagram, { attr:{viewBox:VB_IDLE}, duration:0.65, ease:'power2.inOut' })
@@ -681,16 +665,6 @@ function setupMap() {
       el.style.color = p.legendText
     })
 
-    const idleRect = document.querySelector('#sm-idle-desc rect')
-    if (idleRect) {
-      idleRect.setAttribute('fill',   p.idleRect.fill)
-      idleRect.setAttribute('stroke', p.idleRect.stroke)
-    }
-
-    const idleTexts = document.querySelectorAll('#sm-idle-desc text')
-    if (idleTexts[0]) idleTexts[0].setAttribute('fill', p.idleText1)
-    if (idleTexts[1]) idleTexts[1].setAttribute('fill', p.idleText2)
-    if (idleTexts[2]) idleTexts[2].setAttribute('fill', p.idleText3)
 
     const canvasGrad1 = document.querySelector('#sm-rg-canvas stop:first-child')
     const canvasGrad2 = document.querySelector('#sm-rg-canvas stop:last-child')
