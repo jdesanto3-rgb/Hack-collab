@@ -1229,7 +1229,7 @@ function renderToolbar(){
     <div class="tb-sep"></div>
     <div class="mode-tabs">${MODES.map(([m,l])=>`<button class="mode-tab${S.mode===m?' active':''}" onclick="setState({mode:'${m}'})">${l}</button>`).join('')}</div>
     <div class="tb-sep"></div>
-    <select class="ver-select" onchange="window.location='/weave-studio-v2.html'" title="Switch version">
+    <select class="ver-select" title="Switch version">
       <option>⬤ Your version</option>
       <option>Marcus Chen</option>
       <option>Jordan Lee</option>
