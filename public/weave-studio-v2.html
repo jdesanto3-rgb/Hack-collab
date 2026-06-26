@@ -286,7 +286,7 @@ let S={
   mode:'flow',
   page:'home',
   rtab:'agents',
-  sgComp:'button',
+  sgComp:'navbar',
   approvalDone:false,
   designComments:[
     {init:'MC',color:'#6f57d4',name:'Maya Chen',time:'2h',text:'Hero needs a benchmark, not a tagline. "Intelligent infrastructure" tells me nothing about why I should switch.',tag:'Home · Hero'},
@@ -800,19 +800,19 @@ function renderWireframe(){
 
 // ── DESIGN INSPECT DATA ───────────────────────────────────────────────────────
 const SECTION_DATA={
-  nav:{name:'NavBar',icon:'NB',color:'#2f5bea',
+  nav:{name:'NavBar',icon:'NB',color:'#2f5bea',sbKey:'navbar',
     props:{sticky:true,height:'64px',logoText:'Neura Nova',links:4,cta:'Get Started →'},
     tokens:[{k:'background',v:'--surface',sw:null},{k:'border-bottom',v:'--border',sw:null},{k:'logo-bg',v:'--brand',sw:null},{k:'cta-bg',v:'--brand',sw:null}],
     size:{w:'100%',h:'64px'},status:'DS ✓'},
-  hero:{name:'HeroSection',icon:'HS',color:'#d4456b',
+  hero:{name:'HeroSection',icon:'HS',color:'#d4456b',sbKey:'hero',
     props:{align:'center',padding:'100px 48px',h1Size:'52px',font:'Playfair Display'},
     tokens:[{k:'bg',v:'--bg-canvas',sw:null},{k:'badge-bg',v:'--brand-light',sw:null},{k:'h1-color',v:'--text',sw:null},{k:'cta-fill',v:'--brand',sw:null}],
     size:{w:'100%',h:'~460px'},status:'VD Active'},
-  stats:{name:'StatsBar',icon:'SB',color:'#1f9d8f',
+  stats:{name:'StatsBar',icon:'ST',color:'#1f9d8f',sbKey:'stats',
     props:{columns:4,dividers:true,bg:'#eeeeee'},
     tokens:[{k:'value-color',v:'--brand',sw:null},{k:'background',v:'--surface2',sw:null},{k:'label-color',v:'--text3',sw:null}],
     size:{w:'100%',h:'140px'},status:'DS ✓'},
-  features:{name:'FeatureGrid',icon:'FG',color:'#6f57d4',
+  features:{name:'FeatureGrid',icon:'FG',color:'#6f57d4',sbKey:'features',
     props:{columns:3,gap:'22px',radius:'16px',bg:'#f0f0f0'},
     tokens:[{k:'card-bg',v:'--surface',sw:null},{k:'eyebrow-color',v:'--brand',sw:null},{k:'icon-bg',v:'--brand-light',sw:null},{k:'h2-font',v:'Playfair Display',sw:null}],
     size:{w:'100%',h:'~440px'},status:'DS ✓'},
@@ -859,90 +859,109 @@ function renderDesign(){
 
 // ── STYLE GUIDE ───────────────────────────────────────────────────────────────
 function renderStyleGuide(){
-  const tok=T();
-  const sel=S.sgComp||'button';
-  const TREE=[
-    {group:'Atoms',items:[{id:'button',label:'Button'},{id:'badge',label:'Badge'},{id:'avatar',label:'Avatar'},{id:'input',label:'Input'}]},
-    {group:'Layout',items:[{id:'card',label:'Card'},{id:'modal',label:'Modal'}]},
-    {group:'Tokens',items:[{id:'colors',label:'Colors'},{id:'typography',label:'Typography'},{id:'spacing',label:'Spacing'}]},
+  const sel=S.sgComp||'navbar';
+  const EXPORTED=[
+    {id:'navbar',   label:'NavBar',      sd:SECTION_DATA.nav},
+    {id:'hero',     label:'HeroSection', sd:SECTION_DATA.hero},
+    {id:'stats',    label:'StatsBar',    sd:SECTION_DATA.stats},
+    {id:'features', label:'FeatureGrid', sd:SECTION_DATA.features},
   ];
-  const CTRL_ROW=(name,val)=>`<tr style="border-bottom:1px solid var(--border)"><td style="padding:8px 12px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text2);white-space:nowrap;width:120px">${name}</td><td style="padding:8px 12px;font-size:12px;color:var(--text3)">${val}</td></tr>`;
+  const CTRL_ROW=(name,val)=>`<tr style="border-bottom:1px solid var(--border)"><td style="padding:8px 12px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text2);white-space:nowrap;width:130px">${name}</td><td style="padding:8px 12px;font-size:12px;color:var(--text3)">${val}</td></tr>`;
+  const sbTabs=`<div style="display:flex;border-bottom:1px solid var(--border);margin-bottom:20px">
+    <span style="padding:7px 16px;font-size:12px;font-weight:600;border-bottom:2px solid #FF4785;color:#FF4785">Canvas</span>
+    <span style="padding:7px 16px;font-size:12px;color:var(--text3)">Docs</span>
+    <span style="padding:7px 16px;font-size:12px;color:var(--text3)">Accessibility</span>
+  </div>`;
+
   function compPanel(){
-    if(sel==='button') return `
+    if(sel==='navbar') return `
       <div style="padding:22px 28px">
-        <div style="font-size:18px;font-weight:700;margin-bottom:4px">Button</div>
-        <div style="font-size:12px;color:var(--text3);margin-bottom:18px">atoms/Button · v1.4.2</div>
-        <div style="display:flex;border-bottom:1px solid var(--border);margin-bottom:20px">
-          <span style="padding:7px 16px;font-size:12px;font-weight:600;border-bottom:2px solid var(--brand);color:var(--brand)">Canvas</span>
-          <span style="padding:7px 16px;font-size:12px;color:var(--text3)">Docs</span>
-          <span style="padding:7px 16px;font-size:12px;color:var(--text3)">Accessibility</span>
-        </div>
-        <div style="border:1px solid var(--border);border-radius:10px;padding:32px 24px;background:var(--bg);display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin-bottom:24px">
-          <button style="height:40px;padding:0 22px;border-radius:20px;background:var(--brand);color:#fff;font-size:13.5px;font-weight:600;font-family:'Inter',sans-serif;border:none;cursor:pointer">Primary →</button>
-          <button style="height:40px;padding:0 20px;border-radius:20px;background:transparent;border:1.5px solid var(--border);color:var(--text2);font-size:13.5px;font-family:'Inter',sans-serif;cursor:pointer">Secondary</button>
-          <button style="height:40px;padding:0 18px;border-radius:20px;background:transparent;color:var(--brand);font-size:13.5px;font-weight:600;font-family:'Inter',sans-serif;border:none;cursor:pointer">Ghost →</button>
-          <button style="height:40px;padding:0 20px;border-radius:20px;background:transparent;border:1.5px solid var(--border);color:var(--text3);font-size:13.5px;font-family:'Inter',sans-serif;cursor:not-allowed;opacity:.45" disabled>Disabled</button>
+        <div style="font-size:18px;font-weight:700;margin-bottom:2px">NavBar</div>
+        <div style="font-size:12px;color:var(--text3);margin-bottom:18px">components/NavBar · v2.3.1 · DS ✓</div>
+        ${sbTabs}
+        <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:24px;background:var(--surface)">
+          <nav class="nn-nav" style="position:relative;border-bottom:none">
+            <div style="display:flex;align-items:center;gap:10px"><div class="nn-logo-mark"></div><span style="font-size:15px;font-weight:700;color:var(--text)">Neura Nova</span></div>
+            <div class="nn-nav-links"><a href="#">Product</a><a href="#">Pricing</a><a href="#">About</a></div>
+            <button class="nn-cta">Get Started →</button>
+          </nav>
         </div>
         <div style="font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--text3);margin-bottom:8px">CONTROLS</div>
         <table style="width:100%;border-collapse:collapse;border:1px solid var(--border);border-radius:8px;overflow:hidden">
-          ${CTRL_ROW('variant','primary | secondary | ghost')}
-          ${CTRL_ROW('size','sm | md | lg')}
-          ${CTRL_ROW('disabled','false | true')}
-          ${CTRL_ROW('loading','false | true')}
-          ${CTRL_ROW('icon','ReactNode | undefined')}
+          ${CTRL_ROW('sticky','true | false')}
+          ${CTRL_ROW('logoText','string')}
+          ${CTRL_ROW('links','NavLink[]')}
+          ${CTRL_ROW('ctaLabel','string')}
+          ${CTRL_ROW('ctaVariant','primary | ghost')}
         </table>
       </div>`;
-    if(sel==='badge') return `
+    if(sel==='hero') return `
       <div style="padding:22px 28px">
-        <div style="font-size:18px;font-weight:700;margin-bottom:4px">Badge</div>
-        <div style="font-size:12px;color:var(--text3);margin-bottom:18px">atoms/Badge · v1.2.0</div>
-        <div style="display:flex;border-bottom:1px solid var(--border);margin-bottom:20px">
-          <span style="padding:7px 16px;font-size:12px;font-weight:600;border-bottom:2px solid var(--brand);color:var(--brand)">Canvas</span>
-          <span style="padding:7px 16px;font-size:12px;color:var(--text3)">Docs</span>
-        </div>
-        <div style="border:1px solid var(--border);border-radius:10px;padding:32px 24px;background:var(--bg);display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:24px">
-          ${[['Active','var(--brand-light)','var(--brand)'],['Review','#e7eefe','#2f5bea'],['Live','#e6f3ec','#2e8157'],['Draft','var(--surface2)','var(--text3)'],['Blocked','#fce8ea','#c0392b'],['Archived','var(--surface2)','var(--text3)']].map(([l,bg,c])=>`<span style="display:inline-flex;padding:4px 10px;border-radius:6px;font-size:11px;font-weight:700;letter-spacing:.04em;background:${bg};color:${c}">${l}</span>`).join('')}
+        <div style="font-size:18px;font-weight:700;margin-bottom:2px">HeroSection</div>
+        <div style="font-size:12px;color:var(--text3);margin-bottom:18px">components/HeroSection · v1.8.0 · VD Active</div>
+        ${sbTabs}
+        <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:24px;background:var(--bg-canvas)">
+          <section class="nn-hero" style="padding:48px 36px">
+            <div class="nn-badge">✦ NOW IN BETA — JOIN 3,400 TEAMS</div>
+            <h1 class="nn-h1" style="font-size:36px">Intelligence that moves at the <em>speed of design.</em></h1>
+            <p class="nn-lead" style="font-size:14px">Weave connects your tokens, components, and agents into a single source of truth.</p>
+            <div class="nn-btns"><button class="nn-btn1">Start Free Trial →</button><button class="nn-btn2">Watch Demo</button></div>
+          </section>
         </div>
         <div style="font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--text3);margin-bottom:8px">CONTROLS</div>
         <table style="width:100%;border-collapse:collapse;border:1px solid var(--border);border-radius:8px;overflow:hidden">
-          ${CTRL_ROW('status','active | review | live | draft | blocked | archived')}
-          ${CTRL_ROW('size','sm | md')}
-          ${CTRL_ROW('dot','false | true')}
+          ${CTRL_ROW('headline','string')}
+          ${CTRL_ROW('subhead','string')}
+          ${CTRL_ROW('badge','string | null')}
+          ${CTRL_ROW('primaryCta','string')}
+          ${CTRL_ROW('secondaryCta','string | null')}
+          ${CTRL_ROW('align','center | left')}
         </table>
       </div>`;
-    if(sel==='colors') return `
+    if(sel==='stats') return `
       <div style="padding:22px 28px">
-        <div style="font-size:18px;font-weight:700;margin-bottom:4px">Colors</div>
-        <div style="font-size:12px;color:var(--text3);margin-bottom:20px">tokens/Colors · design system color primitives</div>
-        ${[
-          {g:'Brand',items:[{n:'--brand',v:tok.brand},{n:'--brand-mid',v:tok.brandMid},{n:'--brand-light',v:tok.brandLight}]},
-          {g:'Neutrals',items:[{n:'--text',v:tok.text},{n:'--text2',v:tok.text2},{n:'--text3',v:tok.text3},{n:'--surface',v:tok.surface},{n:'--surface2',v:tok.surface2},{n:'--border',v:tok.border}]},
-          {g:'Semantic',items:[{n:'--teal',v:tok.teal},{n:'--purple',v:tok.purple},{n:'--blue',v:tok.blue},{n:'--amber',v:tok.amber},{n:'--red',v:tok.red},{n:'--green',v:tok.green}]},
-        ].map(g=>`<div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:10px">${g.g}</div><div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px">${g.items.map(c=>`<div style="width:90px"><div style="height:44px;border-radius:8px;background:${c.v};border:1px solid var(--border);margin-bottom:6px"></div><div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text2);white-space:nowrap">${c.n}</div><div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text3)">${c.v}</div></div>`).join('')}</div>`).join('')}
-      </div>`;
-    if(sel==='typography') return `
-      <div style="padding:22px 28px">
-        <div style="font-size:18px;font-weight:700;margin-bottom:4px">Typography</div>
-        <div style="font-size:12px;color:var(--text3);margin-bottom:20px">tokens/Typography · type scale</div>
-        ${[
-          {l:'Display',sp:'Playfair Display · 52px · 700',st:'font-family:"Playfair Display",serif;font-size:46px;font-weight:700;line-height:1.1',s:'Intelligence at speed.'},
-          {l:'H1',sp:'Playfair Display · 36px · 700',st:'font-family:"Playfair Display",serif;font-size:32px;font-weight:700;line-height:1.15',s:'Scale as you grow'},
-          {l:'H2',sp:'Inter · 22px · 700',st:'font-size:22px;font-weight:700;line-height:1.2',s:'Design system tokens'},
-          {l:'Body',sp:'Inter · 14px · 400',st:'font-size:13.5px;line-height:1.6',s:'Tokens update live across Figma and code without copy-paste handoff.'},
-          {l:'Caption',sp:'Inter · 11px · 700 · tracked',st:'font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase',s:'Core capabilities · token sync · pricing'},
-          {l:'Mono',sp:'JetBrains Mono · 12px',st:'font-family:"JetBrains Mono",monospace;font-size:12px',s:'var(--brand): #D96000;'},
-        ].map(t=>`<div style="border-bottom:1px solid var(--border);padding:16px 0;display:flex;gap:20px;align-items:baseline"><div style="min-width:90px;font-size:10px;font-weight:700;letter-spacing:.07em;color:var(--text3)">${t.l}</div><div><div style="font-size:9px;font-family:'JetBrains Mono',monospace;color:var(--text3);margin-bottom:8px">${t.sp}</div><div style="${t.st};color:var(--text)">${t.s}</div></div></div>`).join('')}
-      </div>`;
-    if(sel==='spacing') return `
-      <div style="padding:22px 28px">
-        <div style="font-size:18px;font-weight:700;margin-bottom:4px">Spacing</div>
-        <div style="font-size:12px;color:var(--text3);margin-bottom:20px">tokens/Spacing · 4px base scale</div>
-        <div style="display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap">
-          ${[4,8,12,16,24,32,48,64,96].map(n=>`<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><div style="width:${Math.min(n,96)}px;height:${Math.min(n,96)}px;background:color-mix(in srgb,var(--brand) 18%,transparent);border:1px dashed color-mix(in srgb,var(--brand) 40%,transparent);border-radius:4px"></div><div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text3)">${n}px</div><div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text2)">${n/4}×</div></div>`).join('')}
+        <div style="font-size:18px;font-weight:700;margin-bottom:2px">StatsBar</div>
+        <div style="font-size:12px;color:var(--text3);margin-bottom:18px">components/StatsBar · v1.1.4 · DS ✓</div>
+        ${sbTabs}
+        <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:24px">
+          <section class="nn-stats">
+            <div class="nn-stat"><div class="nn-stat-val">3,400+</div><div class="nn-stat-lbl">TEAMS</div></div>
+            <div class="nn-stat-div"></div>
+            <div class="nn-stat"><div class="nn-stat-val">$4.2B</div><div class="nn-stat-lbl">VALUE MANAGED</div></div>
+            <div class="nn-stat-div"></div>
+            <div class="nn-stat"><div class="nn-stat-val">99.9%</div><div class="nn-stat-lbl">UPTIME</div></div>
+            <div class="nn-stat-div"></div>
+            <div class="nn-stat"><div class="nn-stat-val">4.9★</div><div class="nn-stat-lbl">RATING</div></div>
+          </section>
         </div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--text3);margin-bottom:8px">CONTROLS</div>
+        <table style="width:100%;border-collapse:collapse;border:1px solid var(--border);border-radius:8px;overflow:hidden">
+          ${CTRL_ROW('stats','StatItem[]')}
+          ${CTRL_ROW('dividers','true | false')}
+          ${CTRL_ROW('columns','2 | 3 | 4')}
+        </table>
       </div>`;
-    // default fallback
-    return `<div style="padding:40px;color:var(--text3);font-size:13px">Select a component from the sidebar</div>`;
+    if(sel==='features') return `
+      <div style="padding:22px 28px">
+        <div style="font-size:18px;font-weight:700;margin-bottom:2px">FeatureGrid</div>
+        <div style="font-size:12px;color:var(--text3);margin-bottom:18px">components/FeatureGrid · v2.0.3 · DS ✓</div>
+        ${sbTabs}
+        <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:24px;padding:28px;background:var(--bg)">
+          <div class="nn-feat-grid">
+            <div class="nn-feat-card"><div class="nn-feat-icon" style="background:color-mix(in srgb,var(--brand) 12%,transparent)"><svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M10 2v4M10 14v4M2 10h4M14 10h4" stroke="var(--brand)" stroke-width="2" stroke-linecap="round"/><circle cx="10" cy="10" r="3" stroke="var(--brand)" stroke-width="2"/></svg></div><h3 style="font-size:13px">Real-time Token Sync</h3><p style="font-size:12px">Tokens update live across Figma and code.</p></div>
+            <div class="nn-feat-card"><div class="nn-feat-icon" style="background:#2E5CE820"><svg width="16" height="16" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="14" height="14" rx="3" stroke="#2E5CE8" stroke-width="2"/><path d="M7 10l2.5 2.5L13 7.5" stroke="#2E5CE8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h3 style="font-size:13px">AI Design Review</h3><p style="font-size:12px">Catch contrast and spacing issues early.</p></div>
+            <div class="nn-feat-card"><div class="nn-feat-icon" style="background:#1A8A5A20"><svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M10 17A7 7 0 1 0 10 3a7 7 0 0 0 0 14Z" stroke="#1A8A5A" stroke-width="2"/><path d="M10 7v3l2 2" stroke="#1A8A5A" stroke-width="2" stroke-linecap="round"/></svg></div><h3 style="font-size:13px">Component Health</h3><p style="font-size:12px">Track adoption and drift across teams.</p></div>
+          </div>
+        </div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--text3);margin-bottom:8px">CONTROLS</div>
+        <table style="width:100%;border-collapse:collapse;border:1px solid var(--border);border-radius:8px;overflow:hidden">
+          ${CTRL_ROW('features','Feature[]')}
+          ${CTRL_ROW('columns','2 | 3')}
+          ${CTRL_ROW('eyebrow','string | null')}
+          ${CTRL_ROW('headline','string | null')}
+        </table>
+      </div>`;
+    return `<div style="padding:40px;color:var(--text3);font-size:13px">Select a component</div>`;
   }
   document.getElementById('stage').innerHTML=`
     <div style="display:flex;flex-direction:column;height:100%;overflow:hidden">
@@ -952,15 +971,17 @@ function renderStyleGuide(){
         <span style="font-size:12px;color:var(--text3)">— Storybook</span>
         <span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px;background:color-mix(in srgb,#FF4785 12%,transparent);color:#FF4785;font-family:'JetBrains Mono',monospace">v2.1.0</span>
         <div style="flex:1"></div>
-        <a href="https://storybook.js.org" target="_blank" style="display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:#FF4785;text-decoration:none;padding:4px 10px;border:1px solid color-mix(in srgb,#FF4785 35%,transparent);border-radius:6px;transition:all .14s">Open Storybook ↗</a>
+        <a href="https://storybook.js.org" target="_blank" style="display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:#FF4785;text-decoration:none;padding:4px 10px;border:1px solid color-mix(in srgb,#FF4785 35%,transparent);border-radius:6px">Open Storybook ↗</a>
       </div>
       <div style="display:flex;flex:1;overflow:hidden">
         <div style="width:188px;border-right:1px solid var(--border);background:var(--surface);overflow-y:auto;flex:none;padding:8px 0;font-family:'Inter',sans-serif">
-          <div style="padding:8px 12px 4px;font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--text3)">COMPONENTS</div>
-          ${TREE.map(g=>`
-            <div style="padding:6px 12px 3px;font-size:11px;font-weight:700;color:var(--text2)">▾ ${g.group}</div>
-            ${g.items.map(it=>`<div onclick="setState({sgComp:'${it.id}'})" style="padding:6px 12px 6px 22px;font-size:12px;cursor:pointer;color:${it.id===sel?'#FF4785':'var(--text2)'};background:${it.id===sel?'color-mix(in srgb,#FF4785 8%,transparent)':'transparent'};border-left:2px solid ${it.id===sel?'#FF4785':'transparent'};margin-left:0">${it.label}</div>`).join('')}
-          `).join('')}
+          <div style="padding:8px 12px 4px;font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--text3)">EXPORTED FROM DESIGN</div>
+          <div style="padding:6px 12px 3px;font-size:11px;font-weight:700;color:var(--text2)">▾ Components</div>
+          ${EXPORTED.map(it=>`
+            <div onclick="setState({sgComp:'${it.id}'})" style="padding:6px 12px 6px 22px;font-size:12px;cursor:pointer;color:${it.id===sel?'#FF4785':'var(--text2)'};background:${it.id===sel?'color-mix(in srgb,#FF4785 8%,transparent)':'transparent'};border-left:2px solid ${it.id===sel?'#FF4785':'transparent'}">
+              <div>${it.label}</div>
+              <div style="font-size:10px;color:${it.id===sel?'#FF4785':'var(--text3)'};margin-top:1px">${it.sd.status}</div>
+            </div>`).join('')}
         </div>
         <div style="flex:1;overflow-y:auto;background:var(--bg)">
           ${compPanel()}
@@ -1199,13 +1220,23 @@ function renderDesignInspect(){
 
   const inspBody=`
     <div class="insp-sec" style="border-bottom:none">
-      <div style="display:flex;align-items:center;gap:8px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
         <div style="width:26px;height:26px;border-radius:7px;background:${sd.color};display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:#fff;flex:none">${sd.icon}</div>
         <div>
           <div style="font-size:13px;font-weight:700">${sd.name}</div>
           <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text3)">neura-ds · ${sd.size.w} × ${sd.size.h}</div>
         </div>
         <span style="margin-left:auto;font-size:9px;font-weight:700;color:${sd.status==='DS ✓'?tok.green:tok.red};background:${sd.status==='DS ✓'?tok.greenLight||'#e6f3ec':'#fde8ee'};border-radius:4px;padding:2px 6px">${sd.status}</span>
+      </div>
+      <div style="display:flex;gap:6px">
+        <button onclick="setState({mode:'styleguide',sgComp:'${sd.sbKey}'})" style="display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border-radius:6px;background:color-mix(in srgb,#FF4785 10%,transparent);border:1px solid color-mix(in srgb,#FF4785 30%,transparent);color:#FF4785;font-size:11px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif">
+          <span style="background:#FF4785;color:#fff;font-size:7px;font-weight:900;padding:1px 4px;border-radius:3px;font-family:'JetBrains Mono',monospace">SB</span>
+          View in Storybook
+        </button>
+        <a href="https://www.figma.com" target="_blank" style="display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border-radius:6px;background:var(--surface2);border:1px solid var(--border);color:var(--text2);font-size:11px;font-weight:600;text-decoration:none">
+          <svg width="8" height="10" viewBox="0 0 14 20" fill="none"><rect x="0" y="0" width="7" height="7" rx="3.5" fill="#F24E1E"/><rect x="7" y="0" width="7" height="7" rx="3.5" fill="#FF7262"/><rect x="0" y="7" width="7" height="7" rx="3.5" fill="#A259FF"/><rect x="0" y="14" width="7" height="7" rx="3.5" fill="#0ACF83"/><circle cx="10.5" cy="10.5" r="3.5" fill="#1ABCFE"/></svg>
+          Open in Figma
+        </a>
       </div>
     </div>
     <div class="insp-sec">
