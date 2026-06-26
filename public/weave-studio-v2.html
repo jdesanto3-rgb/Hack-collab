@@ -39,6 +39,8 @@ button{font-family:'Inter',sans-serif;cursor:pointer;border:none;outline:none}
 .tb-space{flex:1}
 .tb-btn{display:flex;align-items:center;gap:5px;padding:5px 11px;border-radius:8px;border:1px solid var(--border);background:transparent;font-size:12px;font-weight:600;color:var(--text2);transition:all .14s;white-space:nowrap}
 .tb-btn:hover{background:var(--surface);color:var(--text)}
+.ver-select{appearance:none;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text2);font-size:12px;font-weight:600;padding:5px 26px 5px 10px;cursor:pointer;font-family:inherit;background-image:url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23888' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;transition:all .14s}
+.ver-select:hover{background-color:var(--surface);color:var(--text)}
 .tb-av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex:none}
 
 /* LEFT RAIL */
@@ -1086,7 +1088,18 @@ function renderToolbar(){
     <span style="font-size:12px;font-weight:600">Studio</span>
     <div class="tb-sep"></div>
     <div class="mode-tabs">${MODES.map(([m,l])=>`<button class="mode-tab${S.mode===m?' active':''}" onclick="setState({mode:'${m}'})">${l}</button>`).join('')}</div>
+    <div class="tb-sep"></div>
+    <select class="ver-select" onchange="if(this.value)window.location=this.value" title="Switch version">
+      <option value="">⬤ Your version</option>
+      <option value="/sandbox-studio-v2.html">Marcus Chen</option>
+      <option value="/sandbox-studio.html">Jordan Lee</option>
+      <option value="/weave-studio-v2.html">Alex Kim</option>
+    </select>
     <div class="tb-space"></div>
+    <a href="https://www.figma.com" target="_blank" class="tb-btn" style="text-decoration:none;display:flex;align-items:center;gap:5px;font-size:12px">
+      <svg width="11" height="13" viewBox="0 0 38 57" fill="none"><path d="M19 28.5A9.5 9.5 0 1 1 28.5 19v9.5H19Z" fill="#0ACF83"/><path d="M9.5 47.5A9.5 9.5 0 0 1 19 38h9.5v9.5A9.5 9.5 0 0 1 9.5 47.5Z" fill="#FF7262"/><path d="M9.5 9.5A9.5 9.5 0 0 1 19 0h9.5v19H19A9.5 9.5 0 0 1 9.5 9.5Z" fill="#F24E1E"/><path d="M0 28.5A9.5 9.5 0 0 1 9.5 19H19v19H9.5A9.5 9.5 0 0 1 0 28.5Z" fill="#FF7262"/><circle cx="28.5" cy="28.5" r="9.5" fill="#1ABCFE"/></svg>
+      Figma
+    </a>
     <button class="tb-btn" onclick="toggleTheme()">${isDark()?'☀':'◑'}</button>
     <button class="tb-btn" onclick="openPreview()">▶ Preview</button>
     <div class="tb-sep"></div>
