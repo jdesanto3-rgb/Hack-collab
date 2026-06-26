@@ -1944,3 +1944,64 @@ img { max-width: 100%; display: block; }
 [data-theme="blueprint"] .system-thread-context { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: rgba(255,255,255,0.18); font-weight: 300; }
 [data-theme="blueprint"] .system-thread-hero { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 200; color: #ffffff; font-size: 32px; }
 [data-theme="blueprint"] .system-thread-accent { color: #B9DAFF; text-shadow: 0 0 24px rgba(185,218,255,0.35); }
+
+/* ── OBSIDIAN HERO SHAPE ANIMATION ─────────── */
+@keyframes obs-draw-in {
+  0%   { stroke-dashoffset: var(--dash-len); opacity: 0.2; }
+  30%  { opacity: 0.6; }
+  70%  { stroke-dashoffset: 0; opacity: 0.6; }
+  85%  { stroke-dashoffset: 0; opacity: 0.6; }
+  100% { stroke-dashoffset: var(--dash-len); opacity: 0.2; }
+}
+
+@keyframes obs-draw-in-connected {
+  0%   { stroke-dashoffset: var(--dash-len); opacity: 0.15; }
+  20%  { opacity: 0.7; }
+  65%  { stroke-dashoffset: 0; opacity: 0.7; }
+  80%  { stroke-dashoffset: 0; opacity: 0.7; }
+  100% { stroke-dashoffset: var(--dash-len); opacity: 0.15; }
+}
+
+@keyframes obs-node-pulse {
+  0%, 100% { opacity: 0.6; }
+  50%       { opacity: 0.15; }
+}
+
+[data-theme=""] #obs-coral-circle { --dash-len: 222; animation: obs-draw-in 18s ease-in-out infinite; animation-delay: 0s; }
+[data-theme=""] #obs-coral-rect   { --dash-len: 200; animation: obs-draw-in 22s ease-in-out infinite; animation-delay: -4s; }
+[data-theme=""] #obs-coral-line-1 { --dash-len: 142; animation: obs-draw-in 14s ease-in-out infinite; animation-delay: -7s; }
+[data-theme=""] #obs-coral-line-2 { --dash-len: 142; animation: obs-draw-in 16s ease-in-out infinite; animation-delay: -11s; }
+
+[data-theme=""] #obs-blue-rect    { --dash-len: 200; animation: obs-draw-in-connected 24s ease-in-out infinite; animation-delay: 0s; }
+[data-theme=""] #obs-blue-line-v  { --dash-len: 70;  animation: obs-draw-in-connected 24s ease-in-out infinite; animation-delay: 0s; }
+[data-theme=""] #obs-blue-line-h  { --dash-len: 70;  animation: obs-draw-in-connected 24s ease-in-out infinite; animation-delay: 0s; }
+
+[data-theme=""] .obs-geo-node { animation: obs-node-pulse 6s ease-in-out infinite; }
+[data-theme=""] .obs-geo-node--l  { animation-delay: 0s; }
+[data-theme=""] .obs-geo-node--r  { animation-delay: 1.5s; }
+[data-theme=""] .obs-geo-node--t  { animation-delay: 3s; }
+[data-theme=""] .obs-geo-node--b  { animation-delay: 4.5s; }
+[data-theme=""] .obs-geo-node--tl { animation-delay: 0s; }
+[data-theme=""] .obs-geo-node--tr { animation-delay: 2s; }
+[data-theme=""] .obs-geo-node--bl { animation-delay: 4s; }
+[data-theme=""] .obs-geo-node--br { animation-delay: 6s; }
+
+:not([data-theme=""]) #obs-coral-circle,
+:not([data-theme=""]) #obs-coral-rect,
+:not([data-theme=""]) #obs-coral-line-1,
+:not([data-theme=""]) #obs-coral-line-2,
+:not([data-theme=""]) #obs-blue-rect,
+:not([data-theme=""]) #obs-blue-line-v,
+:not([data-theme=""]) #obs-blue-line-h,
+:not([data-theme=""]) .obs-geo-node { animation: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  [data-theme=""] #obs-coral-circle,
+  [data-theme=""] #obs-coral-rect,
+  [data-theme=""] #obs-coral-line-1,
+  [data-theme=""] #obs-coral-line-2,
+  [data-theme=""] #obs-blue-rect,
+  [data-theme=""] #obs-blue-line-v,
+  [data-theme=""] #obs-blue-line-h,
+  [data-theme=""] .obs-geo-node { animation: none; }
+}

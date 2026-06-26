@@ -8,8 +8,8 @@ function ObsGeoArt() {
     <div className="obs-geo-art" aria-hidden="true">
       <div className="obs-geo-panel obs-geo-panel--coral">
         <div className="obs-geo-rail">
-          <span>SYS.01 // TOPO_EVAL</span>
-          <span>COORDS: 34.05°N</span>
+          <span>SYS.01 // FRAGMENTS</span>
+          <span>THREADS: DISCONNECTED</span>
         </div>
         <div className="obs-geo-assembly">
           <svg className="obs-geo-svg obs-geo-svg--bg" viewBox="0 0 100 100">
@@ -17,11 +17,11 @@ function ObsGeoArt() {
           </svg>
           <div className="obs-geo-circle"></div>
           <div className="obs-geo-square"></div>
-          <svg className="obs-geo-svg obs-geo-svg--wire" viewBox="0 0 100 100">
-            <circle cx="50" cy="50" r="35.35" fill="none" stroke="#1A1A1A" strokeWidth="1.5" vectorEffect="non-scaling-stroke" opacity="0.4"/>
-            <rect x="25" y="25" width="50" height="50" fill="none" stroke="#F47C59" strokeWidth="0.5" vectorEffect="non-scaling-stroke" opacity="0.5"/>
-            <line x1="0" y1="0" x2="100" y2="100" stroke="#1A1A1A" strokeWidth="1" opacity="0.2"/>
-            <line x1="100" y1="0" x2="0" y2="100" stroke="#1A1A1A" strokeWidth="1" opacity="0.2"/>
+          <svg id="obs-wire-coral" className="obs-geo-svg obs-geo-svg--wire" viewBox="0 0 100 100">
+            <circle id="obs-coral-circle" cx="50" cy="50" r="35.35" fill="none" stroke="#1A1A1A" strokeWidth="1.5" vectorEffect="non-scaling-stroke" opacity="0.4" strokeDasharray="222" strokeDashoffset="222"/>
+            <rect id="obs-coral-rect" x="25" y="25" width="50" height="50" fill="none" stroke="#F47C59" strokeWidth="0.5" vectorEffect="non-scaling-stroke" opacity="0.5" strokeDasharray="200" strokeDashoffset="200"/>
+            <line id="obs-coral-line-1" x1="0" y1="0" x2="100" y2="100" stroke="#1A1A1A" strokeWidth="1" opacity="0.2" strokeDasharray="142" strokeDashoffset="142"/>
+            <line id="obs-coral-line-2" x1="100" y1="0" x2="0" y2="100" stroke="#1A1A1A" strokeWidth="1" opacity="0.2" strokeDasharray="142" strokeDashoffset="142"/>
           </svg>
           <div className="obs-geo-node obs-geo-node--l"></div>
           <div className="obs-geo-node obs-geo-node--r"></div>
@@ -31,8 +31,8 @@ function ObsGeoArt() {
       </div>
       <div className="obs-geo-panel obs-geo-panel--blue">
         <div className="obs-geo-rail">
-          <span>SYS.02 // LOGIC</span>
-          <span>STATUS: SECURE</span>
+          <span>SYS.02 // WEAVE</span>
+          <span>THREADS: CONNECTED</span>
         </div>
         <div className="obs-geo-assembly">
           <svg className="obs-geo-svg obs-geo-svg--bg" viewBox="0 0 100 100">
@@ -40,10 +40,10 @@ function ObsGeoArt() {
           </svg>
           <div className="obs-geo-square obs-geo-square--blue"></div>
           <div className="obs-geo-diamond"></div>
-          <svg className="obs-geo-svg obs-geo-svg--wire" viewBox="0 0 100 100">
-            <rect x="25" y="25" width="50" height="50" fill="none" stroke="#92CFF2" strokeWidth="0.5" vectorEffect="non-scaling-stroke" opacity="0.6"/>
-            <line x1="50" y1="14.6" x2="50" y2="85.4" stroke="#1A1A1A" strokeWidth="1" opacity="0.3"/>
-            <line x1="14.6" y1="50" x2="85.4" y2="50" stroke="#1A1A1A" strokeWidth="1" opacity="0.3"/>
+          <svg id="obs-wire-blue" className="obs-geo-svg obs-geo-svg--wire" viewBox="0 0 100 100">
+            <rect id="obs-blue-rect" x="25" y="25" width="50" height="50" fill="none" stroke="#92CFF2" strokeWidth="0.5" vectorEffect="non-scaling-stroke" opacity="0.6" strokeDasharray="200" strokeDashoffset="200"/>
+            <line id="obs-blue-line-v" x1="50" y1="14.6" x2="50" y2="85.4" stroke="#1A1A1A" strokeWidth="1" opacity="0.3" strokeDasharray="70" strokeDashoffset="70"/>
+            <line id="obs-blue-line-h" x1="14.6" y1="50" x2="85.4" y2="50" stroke="#1A1A1A" strokeWidth="1" opacity="0.3" strokeDasharray="70" strokeDashoffset="70"/>
             <text x="50" y="54" textAnchor="middle" fontFamily="monospace" fontSize="8" fill="#92CFF2" opacity="0.8">+</text>
           </svg>
           <div className="obs-geo-node obs-geo-node--tl"></div>
