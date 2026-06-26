@@ -1229,11 +1229,11 @@ function renderToolbar(){
     <div class="tb-sep"></div>
     <div class="mode-tabs">${MODES.map(([m,l])=>`<button class="mode-tab${S.mode===m?' active':''}" onclick="setState({mode:'${m}'})">${l}</button>`).join('')}</div>
     <div class="tb-sep"></div>
-    <select class="ver-select" onchange="this.selectedIndex=0" title="Switch version">
+    <select class="ver-select" onchange="window.location='/weave-studio-v2.html'" title="Switch version">
       <option>⬤ Your version</option>
-      <option disabled>Marcus Chen</option>
-      <option disabled>Jordan Lee</option>
-      <option disabled>Alex Kim</option>
+      <option>Marcus Chen</option>
+      <option>Jordan Lee</option>
+      <option>Alex Kim</option>
     </select>
     <div class="tb-space"></div>
     <a href="https://www.figma.com" target="_blank" class="tb-btn" style="text-decoration:none;display:flex;align-items:center;gap:5px;font-size:12px">
