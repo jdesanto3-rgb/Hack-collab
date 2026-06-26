@@ -1947,27 +1947,31 @@ img { max-width: 100%; display: block; }
 
 /* ── OBSIDIAN HERO SHAPE ANIMATION v2 ───────── */
 
-/* Wrapper CSS */
+/* Wrapper — flex-centered, no translate offset */
 [data-theme=""] .obs-shape-wrap {
-  position: absolute; top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  display: flex; align-items: center; justify-content: center;
+  position: absolute; top: 0; left: 0;
   width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  transform: none;
 }
 [data-theme=""] .obs-shape-wrap .obs-geo-circle,
 [data-theme=""] .obs-shape-wrap .obs-geo-square,
 [data-theme=""] .obs-shape-wrap .obs-geo-diamond {
   position: relative; top: auto; left: auto; translate: none;
 }
+[data-theme=""] .obs-shape-wrap--circle .obs-geo-circle,
+[data-theme=""] .obs-shape-wrap--square-coral .obs-geo-square { transform: none; }
+[data-theme=""] .obs-shape-wrap--square-blue .obs-geo-square--blue { transform: none; }
+[data-theme=""] .obs-shape-wrap--diamond .obs-geo-diamond { transform: rotate(45deg); }
 
 /* Keyframes */
 @keyframes obs-circle-spin {
-  from { transform: translate(-50%, -50%) rotate(0deg); }
-  to   { transform: translate(-50%, -50%) rotate(-360deg); }
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(-360deg); }
 }
 @keyframes obs-square-coral-spin {
-  from { transform: translate(-50%, -50%) rotate(0deg); }
-  to   { transform: translate(-50%, -50%) rotate(360deg); }
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
 }
 @keyframes obs-wire-coral-fade {
   0%   { opacity: 0.15; }
@@ -1976,13 +1980,13 @@ img { max-width: 100%; display: block; }
   75%  { opacity: 0.50; }
   100% { opacity: 0.15; }
 }
-@keyframes obs-square-blue-spin {
-  from { transform: translate(-50%, -50%) rotate(0deg); }
-  to   { transform: translate(-50%, -50%) rotate(360deg); }
+@keyframes obs-blue-square-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
 }
-@keyframes obs-diamond-spin {
-  from { transform: translate(-50%, -50%) rotate(45deg); }
-  to   { transform: translate(-50%, -50%) rotate(405deg); }
+@keyframes obs-blue-diamond-spin {
+  from { transform: rotate(45deg); }
+  to   { transform: rotate(405deg); }
 }
 @keyframes obs-wire-blue-pulse {
   0%, 100% { opacity: 0.20; }
@@ -2000,18 +2004,22 @@ img { max-width: 100%; display: block; }
   95%            { opacity: 0.20; transform: scale(0.8); }
 }
 
-/* Apply animations */
-[data-theme=""] .obs-shape-wrap--circle       { animation: obs-circle-spin 40s linear infinite; }
-[data-theme=""] .obs-shape-wrap--square-coral { animation: obs-square-coral-spin 28s linear infinite; }
+/* Apply animations — coral */
+[data-theme=""] .obs-shape-wrap--circle       { animation: obs-circle-spin 40s linear infinite; z-index: 5; }
+[data-theme=""] .obs-shape-wrap--square-coral { animation: obs-square-coral-spin 28s linear infinite; z-index: 10; }
 [data-theme=""] .obs-geo-panel--coral .obs-geo-svg--wire { animation: obs-wire-coral-fade 12s ease-in-out infinite; }
 
-[data-theme=""] .obs-shape-wrap--square-blue  { animation: obs-square-blue-spin 36s linear infinite; }
-[data-theme=""] .obs-shape-wrap--diamond      { animation: obs-diamond-spin 36s linear infinite; }
+/* Apply animations — blue */
+[data-theme=""] .obs-shape-wrap--square-blue  { animation: obs-blue-square-spin 35s linear infinite; z-index: 5; }
+[data-theme=""] .obs-shape-wrap--diamond      { animation: obs-blue-diamond-spin 35s linear infinite; z-index: 10; }
 [data-theme=""] .obs-geo-panel--blue .obs-geo-svg--wire { animation: obs-wire-blue-pulse 8s cubic-bezier(0.45, 0, 0.55, 1) infinite; }
 
 [data-theme=""] #obs-blue-line-h { transform-origin: center; animation: obs-crosshair-breathe 8s cubic-bezier(0.45, 0, 0.55, 1) infinite; }
 [data-theme=""] #obs-blue-line-v { transform-origin: center; transform-box: fill-box; animation: obs-crosshair-breathe 8s cubic-bezier(0.45, 0, 0.55, 1) infinite; }
 
+/* Nodes */
+[data-theme=""] .obs-geo-svg--wire { z-index: 20; }
+[data-theme=""] .obs-geo-node      { z-index: 30; }
 [data-theme=""] .obs-geo-node--l  { animation: obs-node-scan 9s ease-in-out infinite; animation-delay: 0s; }
 [data-theme=""] .obs-geo-node--r  { animation: obs-node-scan 9s ease-in-out infinite; animation-delay: 1.5s; }
 [data-theme=""] .obs-geo-node--t  { animation: obs-node-scan 9s ease-in-out infinite; animation-delay: 3s; }
@@ -2021,15 +2029,15 @@ img { max-width: 100%; display: block; }
 [data-theme=""] .obs-geo-node--bl { animation: obs-node-scan 11s ease-in-out infinite; animation-delay: 5.2s; }
 [data-theme=""] .obs-geo-node--br { animation: obs-node-scan 11s ease-in-out infinite; animation-delay: 7.8s; }
 
-/* Z-index layering */
-[data-theme=""] .obs-shape-wrap--circle       { z-index: 5; }
-[data-theme=""] .obs-shape-wrap--square-coral { z-index: 10; }
-[data-theme=""] .obs-shape-wrap--square-blue  { z-index: 5; }
-[data-theme=""] .obs-shape-wrap--diamond      { z-index: 10; }
-[data-theme=""] .obs-geo-svg--wire            { z-index: 20; }
-[data-theme=""] .obs-geo-node                 { z-index: 30; }
+/* Rail cycle text */
+.obs-rail-cycle { transition: opacity 0.4s ease; display: inline-block; }
+.obs-rail-cycle.obs-rail-fade-out { opacity: 0; transform: translateY(-3px); transition: opacity 0.4s ease, transform 0.4s ease; }
+.obs-rail-cycle.obs-rail-fade-in  { opacity: 1; transform: translateY(0);  transition: opacity 0.4s ease, transform 0.4s ease; }
+@media (prefers-reduced-motion: reduce) {
+  .obs-rail-cycle, .obs-rail-cycle.obs-rail-fade-out, .obs-rail-cycle.obs-rail-fade-in { transition: none; transform: none; }
+}
 
-/* Reduced motion */
+/* Reduced motion — stop all shape animations */
 @media (prefers-reduced-motion: reduce) {
   [data-theme=""] .obs-shape-wrap--circle,
   [data-theme=""] .obs-shape-wrap--square-coral,

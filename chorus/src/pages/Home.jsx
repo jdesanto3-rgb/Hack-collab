@@ -9,7 +9,7 @@ function ObsGeoArt() {
       <div className="obs-geo-panel obs-geo-panel--coral">
         <div className="obs-geo-rail">
           <span>SYS.01 // FRAGMENTS</span>
-          <span>THREADS: DISCONNECTED</span>
+          <span className="obs-rail-cycle obs-rail-cycle--coral">THREADS: DISCONNECTED</span>
         </div>
         <div className="obs-geo-assembly">
           <svg className="obs-geo-svg obs-geo-svg--bg" viewBox="0 0 100 100">
@@ -36,7 +36,7 @@ function ObsGeoArt() {
       <div className="obs-geo-panel obs-geo-panel--blue">
         <div className="obs-geo-rail">
           <span>SYS.02 // WEAVE</span>
-          <span>THREADS: CONNECTED</span>
+          <span className="obs-rail-cycle obs-rail-cycle--blue">THREADS: CONNECTED</span>
         </div>
         <div className="obs-geo-assembly">
           <svg className="obs-geo-svg obs-geo-svg--bg" viewBox="0 0 100 100">
@@ -358,6 +358,54 @@ export default function Home() {
       setVideoPlaying(false)
     }
   }
+
+  useEffect(() => {
+    function isObsidianTheme() {
+      return document.documentElement.getAttribute('data-theme') === '';
+    }
+    const coralPhrases = ['THREADS: DISCONNECTED','CONTEXT: FRAGMENTED','DECISIONS: SILOED','RESEARCH: LOST','HANDOFFS: BROKEN'];
+    const bluePhrases  = ['THREADS: CONNECTED','CONTEXT: PRESERVED','DECISIONS: TRACED','RESEARCH: SURFACED','HANDOFFS: SEAMLESS'];
+    let coralTimer = null, blueTimer = null;
+    function cycleText(el, phrases, indexRef, delay) {
+      return setInterval(() => {
+        if (!isObsidianTheme()) return;
+        el.classList.add('obs-rail-fade-out');
+        setTimeout(() => {
+          indexRef.i = (indexRef.i + 1) % phrases.length;
+          el.textContent = phrases[indexRef.i];
+          el.classList.remove('obs-rail-fade-out');
+          el.classList.add('obs-rail-fade-in');
+          setTimeout(() => el.classList.remove('obs-rail-fade-in'), 600);
+        }, 400);
+      }, delay);
+    }
+    function startCycling() {
+      const coralEl = document.querySelector('.obs-rail-cycle--coral');
+      const blueEl  = document.querySelector('.obs-rail-cycle--blue');
+      if (!coralEl || !blueEl) return;
+      const coralRef = { i: 0 }, blueRef = { i: 0 };
+      coralTimer = cycleText(coralEl, coralPhrases, coralRef, 3000);
+      blueTimer  = cycleText(blueEl,  bluePhrases,  blueRef,  4200);
+    }
+    function stopCycling() {
+      if (coralTimer) { clearInterval(coralTimer); coralTimer = null; }
+      if (blueTimer)  { clearInterval(blueTimer);  blueTimer  = null; }
+    }
+    if (isObsidianTheme()) startCycling();
+    const observer = new MutationObserver(() => {
+      if (isObsidianTheme()) {
+        startCycling();
+      } else {
+        stopCycling();
+        const coralEl = document.querySelector('.obs-rail-cycle--coral');
+        const blueEl  = document.querySelector('.obs-rail-cycle--blue');
+        if (coralEl) coralEl.textContent = 'THREADS: DISCONNECTED';
+        if (blueEl)  blueEl.textContent  = 'THREADS: CONNECTED';
+      }
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    return () => { stopCycling(); observer.disconnect(); };
+  }, []);
 
   const content = (
     <>
