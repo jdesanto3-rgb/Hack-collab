@@ -4,7 +4,10 @@ import { useTheme } from '../ThemeContext'
 
 const SYSTEM_MAP_HTML = `
 <div class="sm-header">
-  <h2>Weave</h2>
+  <div class="sm-header-left">
+    <h2>Weave</h2>
+    <a href="https://glittery-melomakarona-2ba556.netlify.app/" target="_blank" rel="noopener noreferrer" class="sm-demo-btn">View Demo ↗</a>
+  </div>
   <div id="sm-breadcrumb">
     <span class="sm-bc-sep">›</span>
     <span id="sm-bc-disc"></span>
