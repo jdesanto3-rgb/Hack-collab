@@ -162,7 +162,7 @@ function renderHeader(){
     <span style="font-size:13.5px;color:${T.text3}">·</span>
     <span style="font-size:13.5px;font-weight:600;color:${T.text}">Design Team</span>
     <div style="margin-left:auto;display:flex;align-items:center;gap:10px">
-      <a href="/weave-create.html" style="display:flex;align-items:center;gap:6px;height:36px;padding:0 16px;border-radius:9px;background:${T.brand};color:#fff;font-size:13px;font-weight:700;text-decoration:none;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">+ New Project</a>
+      <a href="/weave-create-v2.html" style="display:flex;align-items:center;gap:6px;height:36px;padding:0 16px;border-radius:9px;background:${T.brand};color:#fff;font-size:13px;font-weight:700;text-decoration:none;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">+ New Project</a>
       <button onclick="toggleTheme()" style="width:36px;height:36px;border-radius:9px;background:${T.surface2};border:1px solid ${T.border};display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;color:${T.text2};transition:all .15s" onmouseover="this.style.background='${T.border}'" onmouseout="this.style.background='${T.surface2}'">${isDark()?'☀︎':'◑'}</button>
       <div style="display:flex">
         <div style="width:30px;height:30px;border-radius:50%;background:#d4456b;border:2px solid ${T.surface};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;z-index:3;margin-right:-8px">JD</div>
@@ -184,9 +184,6 @@ function renderSubheader(){
   ];
   sub.innerHTML=`
     ${filters.map(f=>`<button class="pill${state.filter===f.k?' on':''}" onclick="state.filter='${f.k}';renderBoard()">${f.l}</button>`).join('')}
-    <a href="/weave-create.html" class="new-btn">
-      <span style="font-size:16px;line-height:1">+</span> New Project
-    </a>
   `;
 }
 
@@ -210,7 +207,7 @@ function renderBoard(){
             ?`<div style="padding:28px 16px;text-align:center;font-size:12px;color:${T.text3};font-style:italic;border:1.5px dashed ${T.border};border-radius:12px">No projects here</div>`
             :cards.map(p=>renderCard(p)).join('')
           }
-          <div style="height:36px;border:1.5px dashed ${T.border};border-radius:10px;display:flex;align-items:center;justify-content:center;color:${T.text3};font-size:12px;cursor:pointer;transition:all .15s;gap:5px" onclick="window.location.href='/weave-create.html'" onmouseover="this.style.borderColor='${T.brand}';this.style.color='${T.brand}'" onmouseout="this.style.borderColor='${T.border}';this.style.color='${T.text3}'">+ Add card</div>
+          <div style="height:36px;border:1.5px dashed ${T.border};border-radius:10px;display:flex;align-items:center;justify-content:center;color:${T.text3};font-size:12px;cursor:pointer;transition:all .15s;gap:5px" onclick="window.location.href='/weave-create-v2.html'" onmouseover="this.style.borderColor='${T.brand}';this.style.color='${T.brand}'" onmouseout="this.style.borderColor='${T.border}';this.style.color='${T.text3}'">+ Add card</div>
         </div>
       </div>
     `;
