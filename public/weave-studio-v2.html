@@ -1473,7 +1473,10 @@ function buildPageHtml(pid){
 
 // ── RENDER ─────────────────────────────────────────────────────────────────────
 function render(){
-  renderToolbar();renderLeft();renderRight();
+  renderToolbar();
+  const lr=document.getElementById('left-rail');
+  if(S.mode==='styleguide'){lr.style.display='none';}else{lr.style.display='';renderLeft();}
+  renderRight();
   const m=S.mode;
   if(m==='flow')renderFlow();
   else if(m==='sitemap')renderSitemap();
