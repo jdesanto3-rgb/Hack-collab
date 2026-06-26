@@ -224,7 +224,6 @@ export default function WhyWeave() {
               className="philosophy-video"
               src="/videos/Weave-Philosophy-1.mp4"
               poster={philosophyPoster}
-              muted
               playsInline
               preload="metadata"
               aria-label="Why we build this way — Weave philosophy video"
