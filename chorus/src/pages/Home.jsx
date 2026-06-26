@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import Footer from '../components/Footer'
 import { useTheme } from '../ThemeContext'
@@ -336,6 +336,20 @@ export default function Home() {
 
   const isBlueprint = theme === 'blueprint'
   const heroVisual = isCanvas ? <CanvasGeoArt /> : isObsidian ? <ObsGeoArt /> : isBlueprint ? null : <OrbitalCanvas />
+  const videoRef = useRef(null)
+  const [videoPlaying, setVideoPlaying] = useState(false)
+  const handlePlayVideo = () => {
+    if (videoRef.current) {
+      videoRef.current.play()
+      setVideoPlaying(true)
+    }
+  }
+  const handlePauseVideo = () => {
+    if (videoRef.current) {
+      videoRef.current.pause()
+      setVideoPlaying(false)
+    }
+  }
 
   const content = (
     <>
@@ -356,7 +370,7 @@ export default function Home() {
                 Weave is the living product model where humans and AI agents collaborate around every customer insight, design decision, and line of code — so nothing is ever disconnected, and every decision is smarter than the last.
               </p>
               <div className="hero-actions">
-                <Link to="/demo" className="btn btn-primary btn-lg">Request Early Access</Link>
+                <Link to="/demo" className="btn btn-primary btn-lg">Pull the Thread</Link>
                 <Link to="/how-it-works" className="btn btn-ghost btn-lg">
                   See How It Works
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -369,6 +383,64 @@ export default function Home() {
               {heroVisual}
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* BRAND VIDEO */}
+      <section className="brand-video-section" aria-label="Brand video">
+        <div className="brand-video-wrap">
+          <div className="brand-video-frame">
+            <span className="bv-corner bv-corner--tl"></span>
+            <span className="bv-corner bv-corner--tr"></span>
+            <span className="bv-corner bv-corner--bl"></span>
+            <span className="bv-corner bv-corner--br"></span>
+            <video
+              ref={videoRef}
+              className="brand-video"
+              src="/videos/weave-brand-video.mp4"
+              loop
+              playsInline
+              preload="metadata"
+              aria-label="Weave brand video"
+              onClick={handlePauseVideo}
+              onEnded={() => setVideoPlaying(false)}
+              style={{ cursor: videoPlaying ? 'pointer' : 'default' }}
+            />
+            {!videoPlaying && (
+              <button className="bv-play-overlay" onClick={handlePlayVideo} aria-label="Play brand video">
+                <div className="bv-poster-logo">
+                  <svg viewBox="0 0 260 120" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <defs>
+                      <linearGradient id="wg" x1="0" y1="60" x2="260" y2="60" gradientUnits="userSpaceOnUse">
+                        <stop offset="0%" stopColor="#F0476A"/>
+                        <stop offset="50%" stopColor="#F47C59"/>
+                        <stop offset="100%" stopColor="#F5A623"/>
+                      </linearGradient>
+                      <filter id="glow">
+                        <feGaussianBlur stdDeviation="3" result="blur"/>
+                        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                      </filter>
+                    </defs>
+                    <path
+                      d="M10 70 Q30 20 65 60 Q85 85 100 60 Q115 35 130 60 Q145 85 160 60 Q175 35 195 60 Q230 100 250 70"
+                      stroke="url(#wg)" strokeWidth="5" strokeLinecap="round" fill="none" filter="url(#glow)"
+                    />
+                    <path
+                      d="M10 50 Q40 10 75 60 Q95 90 115 55 Q130 30 145 55 Q165 90 185 55 Q210 10 250 50"
+                      stroke="url(#wg)" strokeWidth="5" strokeLinecap="round" fill="none" filter="url(#glow)" opacity="0.7"
+                    />
+                  </svg>
+                </div>
+                <div className="bv-play-btn" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                </div>
+              </button>
+            )}
+          </div>
+          <p className="brand-video-caption">
+            <span className="bv-eyebrow">The Experience OS</span>
+            Products aren't built. They're woven.
+          </p>
         </div>
       </section>
 
@@ -457,7 +529,7 @@ export default function Home() {
           <p className="section-sub mx-auto" style={{ marginBottom: 32 }}>
             Join teams already using Weave to build together — humans and agents, on one living model.
           </p>
-          <Link to="/demo" className="btn btn-primary btn-lg">Request Early Access</Link>
+          <Link to="/demo" className="btn btn-primary btn-lg">Pull the Thread</Link>
         </div>
       </section>
 

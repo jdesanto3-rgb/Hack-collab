@@ -79,7 +79,7 @@ export default function Nav() {
                 </button>
               ))}
             </div>
-            <Link to="/demo" className="nav-cta">Request Access</Link>
+            <Link to="/demo" className="nav-cta">Pull the Thread</Link>
           </div>
 
           <button
