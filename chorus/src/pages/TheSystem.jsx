@@ -714,7 +714,7 @@ export default function TheSystem() {
           <h1 className="section-title">The Weave System</h1>
           <div className="system-thread-intro">
             <p className="system-thread-context">
-              Figma has nodes. Miro has connectors. Linear has issues. GitHub has commits.
+              Figma has design systems. Storybook has components. GitHub has commits. Confluence has pages.
             </p>
             <p className="system-thread-hero">
               Weave has <span className="system-thread-accent">the thread.</span>

@@ -279,22 +279,22 @@ export default function WhyWeave() {
               <div className="thread-item thread-item--dim">
                 <span className="thread-tool">Figma</span>
                 <span className="thread-dash">—</span>
-                <span className="thread-object">nodes</span>
+                <span className="thread-object">design systems</span>
               </div>
               <div className="thread-item thread-item--dim">
-                <span className="thread-tool">Miro</span>
+                <span className="thread-tool">Storybook</span>
                 <span className="thread-dash">—</span>
-                <span className="thread-object">connectors</span>
-              </div>
-              <div className="thread-item thread-item--dim">
-                <span className="thread-tool">Linear</span>
-                <span className="thread-dash">—</span>
-                <span className="thread-object">issues</span>
+                <span className="thread-object">components</span>
               </div>
               <div className="thread-item thread-item--dim">
                 <span className="thread-tool">GitHub</span>
                 <span className="thread-dash">—</span>
                 <span className="thread-object">commits</span>
+              </div>
+              <div className="thread-item thread-item--dim">
+                <span className="thread-tool">Confluence</span>
+                <span className="thread-dash">—</span>
+                <span className="thread-object">pages</span>
               </div>
               <div className="thread-divider" aria-hidden="true"></div>
               <div className="thread-item thread-item--hero">
