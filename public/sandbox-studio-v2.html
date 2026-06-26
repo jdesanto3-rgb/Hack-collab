@@ -240,11 +240,11 @@ let S={
   typing:false,
   chatFor:null,
   signals:[
-    {id:'s1',text:'Visitors leave before first value prop — 72% bounce on mobile',color:'#1f9d8f',pages:['home','pricing']},
-    {id:'s2',text:'Two personas: technical evaluators want benchmarks, business buyers want logos',color:'#6f57d4',pages:['home','product']},
-    {id:'s3',text:'Social proof visible before scroll drives 2.3× lift in trial sign-ups',color:'#2f5bea',pages:['home']},
-    {id:'s4',text:'CTA form has 7 fields — 3-field version converts at 4% vs 1.8%',color:'#c2700f',pages:['pricing','contact']},
-    {id:'s5',text:'"Intelligent infrastructure" understood by only 38% of first-time visitors',color:'#d4456b',pages:['home','product']},
+    {id:'s1',text:'Visitors leave before first value prop — 72% bounce on mobile',color:'#1f9d8f',pages:['home','pricing'],source:'Analytics',impact:'Critical'},
+    {id:'s2',text:'Two personas: technical evaluators want benchmarks, business buyers want logos',color:'#6f57d4',pages:['home','product'],source:'User Interviews',impact:'High'},
+    {id:'s3',text:'Social proof visible before scroll drives 2.3× lift in trial sign-ups',color:'#2f5bea',pages:['home'],source:'A/B Testing',impact:'High'},
+    {id:'s4',text:'CTA form has 7 fields — 3-field version converts at 4% vs 1.8%',color:'#c2700f',pages:['pricing','contact'],source:'Conversion Audit',impact:'Critical'},
+    {id:'s5',text:'"Intelligent infrastructure" understood by only 38% of first-time visitors',color:'#d4456b',pages:['home','product'],source:'User Survey',impact:'High'},
   ],
   pages:[
     {id:'home',  label:'Home',    type:'Landing',icon:'🏠'},
@@ -310,19 +310,27 @@ function renderFlow(){
   const psm=buildPageSigMap();
   const CW1=252,GAP=72,CW2=168,CW3=196;
 
+  const impactBg={Critical:'#fde8ee',High:'#faeeda',Medium:'#e6f3ec'};
+  const impactClr={Critical:'#d4456b',High:'#c2700f',Medium:'#2e8157'};
+  const srcIcon={'Analytics':'📊','User Interviews':'👥','A/B Testing':'⚗️','Conversion Audit':'🔍','User Survey':'📋'};
   const sigCards=S.signals.map((sig,i)=>`
     <div class="sig-card" data-sig="${sig.id}" style="animation-delay:${i*.05}s">
       <button class="sig-del" onclick="event.stopPropagation();deleteSig('${sig.id}')">×</button>
       <div style="display:flex;gap:9px;align-items:flex-start">
         <div style="width:3px;border-radius:2px;background:${sig.color};align-self:stretch;flex:none;min-height:20px"></div>
         <div style="flex:1;min-width:0">
+          <div style="display:flex;align-items:center;gap:5px;margin-bottom:5px;flex-wrap:wrap">
+            <span style="font-size:9.5px;font-weight:700;padding:1px 6px;border-radius:4px;background:${impactBg[sig.impact]||impactBg.Medium};color:${impactClr[sig.impact]||impactClr.Medium};letter-spacing:.04em">${(sig.impact||'Medium').toUpperCase()}</span>
+            <span style="font-size:10px;color:var(--text3)">${srcIcon[sig.source]||'📊'} ${sig.source||'Analytics'}</span>
+          </div>
           <div contenteditable="true" spellcheck="false"
             onblur="saveSig('${sig.id}',this.innerText)"
             onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur()}"
-            style="font-size:13px;line-height:1.5;cursor:text">${sig.text}</div>
-          <div style="display:flex;flex-wrap:wrap;margin-top:7px">
+            style="font-size:12.5px;line-height:1.5;cursor:text">${sig.text}</div>
+          <div style="display:flex;flex-wrap:wrap;gap:3px;margin-top:6px">
             ${sig.pages.map(pid=>{const pg=S.pages.find(p=>p.id===pid);return pg?`<span class="sig-page-tag" style="color:${sig.color};border-color:${sig.color}22;background:${sig.color}0f">${pg.icon} ${pg.label}</span>`:''}).join('')}
           </div>
+          <div style="font-size:9.5px;color:var(--text3);margin-top:5px">Research Agent</div>
         </div>
         <div data-dot="${sig.id}-out" style="width:9px;height:9px;border-radius:50%;background:${sig.color};flex:none;margin-top:4px;box-shadow:0 0 0 2px ${tok.surface},0 0 0 3.5px ${sig.color}55"></div>
       </div>
@@ -378,9 +386,14 @@ function renderFlow(){
       <svg class="flow-svg" id="flow-svg"></svg>
 
       <div class="flow-col" style="width:${CW1}px;flex:none">
-        <div class="flow-col-hdr">
-          <span>RESEARCH SIGNALS</span>
-          <span style="color:var(--text3)">${S.signals.length}</span>
+        <div class="flow-col-hdr" style="flex-direction:column;align-items:flex-start;gap:5px">
+          <div style="display:flex;align-items:center;justify-content:space-between;width:100%">
+            <span>RESEARCH SIGNALS</span>
+            <span style="color:var(--text3)">${S.signals.length}</span>
+          </div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            ${['📊 Analytics','👥 Interviews','⚗️ A/B Testing','🔍 Audit','📋 Survey'].map(src=>`<span style="font-size:9px;padding:1px 5px;border-radius:4px;background:var(--surface2);color:var(--text3)">${src}</span>`).join('')}
+          </div>
         </div>
         ${sigCards}
         <button class="rail-add" onclick="addSig()">+ Add signal</button>
@@ -520,6 +533,142 @@ function renderSitemap(){
     </div>`;
 }
 
+// ── WIREFRAME BLOCK RENDERER ──────────────────────────────────────────────────
+function wfBlock(sec){
+  const s=sec.toUpperCase();
+  const dark=isDark();
+  const g1=dark?'rgba(255,255,255,.07)':'rgba(0,0,0,.06)';
+  const g2=dark?'rgba(255,255,255,.13)':'rgba(0,0,0,.11)';
+  const tok=T();
+  const box=(w,h,r=5)=>`<div style="width:${w}px;height:${h}px;background:${g1};border-radius:${r}px;flex:none"></div>`;
+  const bar=(w,h=6,r=3)=>`<div style="height:${h}px;width:${w}%;background:${g1};border-radius:${r}px;flex:none"></div>`;
+  const bar2=(w,h=6,r=3)=>`<div style="height:${h}px;width:${w}%;background:${g2};border-radius:${r}px;flex:none"></div>`;
+  const pill=(w,h=24)=>`<div style="width:${w}px;height:${h}px;border-radius:${h/2}px;background:${g2};flex:none"></div>`;
+  const pillOut=(w,h=24)=>`<div style="width:${w}px;height:${h}px;border-radius:${h/2}px;border:1.5px solid ${g2};flex:none"></div>`;
+  const field=(h=28)=>`<div style="height:${h}px;border-radius:6px;border:1px solid ${g2};width:100%"></div>`;
+
+  if(s.includes('NAV')){
+    return`<div style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid ${g1}">
+      ${box(24,24,6)}${box(40,7,3)}
+      <div style="display:flex;gap:8px;margin-left:8px">${[32,26,28,22].map(w=>box(w,7,3)).join('')}</div>
+      <div style="margin-left:auto">${pill(64,26)}</div>
+    </div>`;
+  }
+  if(s.includes('FOOTER')){
+    return`<div style="background:${g2};padding:16px 14px;display:flex;align-items:center;justify-content:space-between">
+      <div style="display:flex;align-items:center;gap:8px">${box(20,20,5)}${box(44,7,3)}</div>
+      <div style="display:flex;gap:12px">${[28,28,28].map(w=>box(w,6,3)).join('')}</div>
+      ${box(80,6,3)}
+    </div>`;
+  }
+  if(s.includes('HERO')&&s.includes('FILTER')){
+    return`<div style="display:flex;flex-direction:column;gap:9px;padding:18px 14px;align-items:center">
+      ${bar2(48,12)}<div style="display:flex;flex-direction:column;gap:4px;width:75%">${bar(90,7)}${bar(75,5)}${bar(65,5)}</div>
+      <div style="display:flex;gap:5px;flex-wrap:wrap">${[60,50,42,60,38].map(w=>pillOut(w,22)).join('')}</div>
+    </div>`;
+  }
+  if(s.includes('HERO')){
+    return`<div style="display:flex;flex-direction:column;gap:9px;padding:22px 14px;align-items:center">
+      ${pill(90,18)}
+      ${bar2(62,13)}<div style="display:flex;flex-direction:column;gap:4px;width:72%">${bar(92,6)}${bar(82,6)}${bar(70,6)}</div>
+      <div style="display:flex;gap:8px;margin-top:4px">${pill(84,28)}${pillOut(72,28)}</div>
+    </div>`;
+  }
+  if(s.includes('STATS')){
+    return`<div style="display:flex;border-top:1px solid ${g1};border-bottom:1px solid ${g1}">
+      ${[0,1,2,3].map(i=>`<div style="flex:1;padding:12px 8px;display:flex;flex-direction:column;gap:5px;align-items:center;${i>0?'border-left:1px solid '+g1:''}">
+        ${bar2(50,16)}<div style="height:5px;width:60%;background:${g1};border-radius:3px"></div>
+      </div>`).join('')}
+    </div>`;
+  }
+  if(s.includes('FEATURES')||s.includes('FEAT')){
+    return`<div style="display:flex;flex-direction:column;gap:7px;padding:14px">
+      <div style="display:flex;flex-direction:column;gap:4px;align-items:center;margin-bottom:2px">${bar2(38,8)}${bar(55,5)}</div>
+      <div style="display:flex;gap:7px">
+        ${[0,1,2].map(()=>`<div style="flex:1;background:${g1};border-radius:8px;padding:9px;display:flex;flex-direction:column;gap:5px">
+          ${box(22,22,5)}
+          <div style="height:6px;background:${g2};border-radius:3px;width:75%"></div>
+          ${[92,80,68].map(w=>`<div style="height:4px;width:${w}%;background:${g1};border-radius:2px"></div>`).join('')}
+        </div>`).join('')}
+      </div>
+    </div>`;
+  }
+  if(s.includes('PRICING')||s.includes('PLAN')){
+    return`<div style="display:flex;gap:7px;padding:12px 14px">
+      ${['',g2,''].map((bg,i)=>`<div style="flex:1;background:${bg||g1};border-radius:8px;padding:10px;border:${i===1?`1.5px solid ${tok.brand}`:`1px solid ${g1}`};display:flex;flex-direction:column;gap:5px;align-items:center">
+        ${bar(60,6)}${bar2(50,14)}<div style="display:flex;flex-direction:column;gap:3px;width:100%">${[78,70,74].map(w=>`<div style="height:4px;width:${w}%;background:${g1};border-radius:2px"></div>`).join('')}</div>
+        ${pill(68,22)}
+      </div>`).join('')}
+    </div>`;
+  }
+  if(s.includes('FORM')||s.includes('CTA')){
+    return`<div style="display:flex;flex-direction:column;gap:8px;padding:16px 14px">
+      ${bar2(48,9)}<div style="display:flex;flex-direction:column;gap:6px;width:100%">${[0,1,2].map(()=>field()).join('')}</div>
+      ${pill(100,28)}
+    </div>`;
+  }
+  if(s.includes('TEAM')||s.includes('PHOTO')){
+    return`<div style="display:flex;flex-direction:column;gap:8px;padding:14px">
+      ${bar2(36,7)}<div style="display:flex;gap:10px;justify-content:center">
+        ${[0,1,2,3].map(()=>`<div style="display:flex;flex-direction:column;gap:4px;align-items:center">
+          <div style="width:36px;height:36px;border-radius:50%;background:${g2}"></div>
+          ${bar(70,5)}${bar(55,4)}
+        </div>`).join('')}
+      </div>
+    </div>`;
+  }
+  if(s.includes('ARTICLE')||s.includes('GRID')){
+    return`<div style="display:flex;gap:8px;padding:12px 14px">
+      ${[0,1,2].map(()=>`<div style="flex:1;display:flex;flex-direction:column;gap:4px">
+        <div style="height:56px;background:${g1};border-radius:6px"></div>
+        ${bar(80,6)}${bar(90,5)}${bar(70,5)}${bar(42,5)}
+      </div>`).join('')}
+    </div>`;
+  }
+  if(s.includes('MISSION')){
+    return`<div style="display:flex;flex-direction:column;gap:7px;padding:16px 14px">
+      ${bar2(52,8)}
+      <div style="display:flex;flex-direction:column;gap:3px">${[100,94,88,80].map(w=>bar(w,5)).join('')}</div>
+      <div style="display:flex;flex-direction:column;gap:3px;margin-top:4px">${[100,92,82].map(w=>bar(w,5)).join('')}</div>
+    </div>`;
+  }
+  if(s.includes('VALUE')){
+    return`<div style="display:flex;flex-direction:column;gap:6px;padding:13px 14px">
+      ${bar2(38,7)}
+      ${[0,1,2].map(()=>`<div style="display:flex;gap:8px;align-items:center">${box(18,18,4)}<div style="flex:1;display:flex;flex-direction:column;gap:3px">${bar(80,5)}${bar(65,4)}</div></div>`).join('')}
+    </div>`;
+  }
+  if(s.includes('FAQ')){
+    return`<div style="display:flex;flex-direction:column;padding:13px 14px">
+      ${[0,1,2,3].map(i=>`<div style="display:flex;align-items:center;gap:8px;padding:8px 0;${i>0?'border-top:1px solid '+g1:''}">
+        ${bar(68,6)}<div style="margin-left:auto;width:14px;height:14px;background:${g1};border-radius:50%;flex:none"></div>
+      </div>`).join('')}
+    </div>`;
+  }
+  if(s.includes('INTEGRAT')){
+    return`<div style="display:flex;flex-direction:column;gap:7px;padding:13px 14px">
+      ${bar2(38,7)}
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px">
+        ${Array(8).fill(0).map(()=>`<div style="height:34px;background:${g1};border-radius:6px;display:flex;align-items:center;justify-content:center">${box(16,16,4)}</div>`).join('')}
+      </div>
+    </div>`;
+  }
+  if(s.includes('PAGINATE')||s.includes('PAGINATION')){
+    return`<div style="display:flex;align-items:center;justify-content:center;gap:5px;padding:12px 14px">
+      ${pillOut(60,26)}${[1,2,3,4,5].map(i=>`<div style="width:26px;height:26px;border-radius:6px;background:${i===2?g2:g1}"></div>`).join('')}${pillOut(60,26)}
+    </div>`;
+  }
+  if(s.includes('OFFICE')){
+    return`<div style="display:flex;gap:10px;padding:13px 14px">
+      <div style="flex:1;display:flex;flex-direction:column;gap:5px">${bar2(56,7)}${[80,70,60,55].map(w=>bar(w,5)).join('')}</div>
+      <div style="flex:1;height:72px;background:${g1};border-radius:6px"></div>
+    </div>`;
+  }
+  return`<div style="display:flex;flex-direction:column;gap:5px;padding:13px 14px">
+    ${bar2(44,7)}${[100,90,85,75,60].map(w=>bar(w,5)).join('')}
+  </div>`;
+}
+
 // ── WIREFRAME MODE ────────────────────────────────────────────────────────────
 function renderWireframe(){
   const tok=T();
@@ -530,17 +679,16 @@ function renderWireframe(){
   const sectionRows=secs.map((sec,i)=>{
     const key=`${S.page}:${sec}`;
     const ssigs=(S.sectionSigs[key]||[]).map(sid=>S.signals.find(x=>x.id===sid)).filter(Boolean);
-    return`<div class="wf-section">
-      <div class="wf-section-name" contenteditable="true" spellcheck="false"
-        onblur="saveSection('${S.page}',${i},this.innerText)"
-        onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur()}">${sec}</div>
-      <div style="height:22px;flex:1;background:${tok.surface2};border-radius:4px;max-width:280px"></div>
-      <div class="wf-section-sigs">
-        ${ssigs.map(s=>`<div class="wf-section-sig" style="background:${s.color}14;color:${s.color}">
-          <div style="width:4px;height:4px;border-radius:50%;background:${s.color};flex:none"></div>
-          <span>${s.text.split('—')[0].trim().split(' ').slice(0,4).join(' ')}…</span>
-        </div>`).join('')}
+    const sigDots=ssigs.map(s=>`<div style="width:6px;height:6px;border-radius:50%;background:${s.color};flex:none" title="${s.text}"></div>`).join('');
+    return`<div style="border-bottom:1px solid var(--border)">
+      <div style="display:flex;align-items:center;gap:6px;padding:6px 14px 0;background:var(--surface2)">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:600;letter-spacing:.05em;color:var(--text3);flex:1" contenteditable="true" spellcheck="false"
+          onblur="saveSection('${S.page}',${i},this.innerText)"
+          onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur()}">${sec}</div>
+        <div style="display:flex;gap:3px;align-items:center">${sigDots}</div>
+        <button onclick="deleteSection('${S.page}',${i})" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:13px;line-height:1;padding:0 2px;opacity:.5;transition:opacity .1s" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=.5">×</button>
       </div>
+      ${wfBlock(sec)}
     </div>`;
   }).join('');
 
@@ -728,7 +876,7 @@ function renderRight(){
 const MODES=[['flow','Flow'],['sitemap','Sitemap'],['wireframe','Wireframe'],['design','Design'],['styleguide','Style Guide']];
 function renderToolbar(){
   document.getElementById('toolbar').innerHTML=`
-    <div class="tb-logo"></div>
+    <img src="/weave-icon.svg" width="26" height="25" style="flex:none;display:block" alt="Weave">
     <span style="font-family:'Playfair Display',serif;font-size:16px;font-weight:700;letter-spacing:-.3px">Weave</span>
     <div class="tb-sep"></div>
     <span style="font-size:12px;color:var(--text2)">Neura Nova</span>
@@ -750,7 +898,7 @@ function addSig(){
   const pallete=[T().teal,T().purple,T().blue,T().amber,T().red,T().green];
   const color=pallete[S.signals.length%pallete.length];
   const id='s'+(Date.now()%100000);
-  setState({signals:[...S.signals,{id,text:'New signal — click to edit',color,pages:[]}]});
+  setState({signals:[...S.signals,{id,text:'New signal — click to edit',color,pages:[],source:'Analytics',impact:'Medium'}]});
   requestAnimationFrame(()=>{
     const el=document.querySelector(`[data-sig="${id}"] [contenteditable]`);
     if(el){el.focus();document.execCommand('selectAll');}
@@ -774,6 +922,11 @@ function saveSection(pageId,idx,text){
 function addSection(pageId){
   const secs=[...(S.sections[pageId]||[])];
   secs.splice(secs.length-1,0,'NEW SECTION — click to rename');
+  setState({sections:{...S.sections,[pageId]:secs}});
+}
+function deleteSection(pageId,idx){
+  const secs=[...(S.sections[pageId]||[])];
+  secs.splice(idx,1);
   setState({sections:{...S.sections,[pageId]:secs}});
 }
 function sendChat(){
