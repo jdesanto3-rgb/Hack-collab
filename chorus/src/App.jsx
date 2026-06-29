@@ -8,6 +8,7 @@ import TheSystem from './pages/TheSystem'
 import Agents from './pages/Agents'
 import WhyWeave from './pages/WhyWeave'
 import Demo from './pages/Demo'
+import Playground from './pages/Playground'
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -28,6 +29,7 @@ function AppRoutes() {
           <Route path="/agents" element={<Agents />} />
           <Route path="/why-chorus" element={<WhyWeave />} />
           <Route path="/demo" element={<Demo />} />
+          <Route path="/playground" element={<Playground />} />
         </Routes>
       </main>
     </>

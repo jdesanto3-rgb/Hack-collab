@@ -31,6 +31,7 @@ const LINKS = [
   { to: '/the-system', label: 'The System' },
   { to: '/agents', label: 'Agents' },
   { to: '/why-chorus', label: 'Why Weave' },
+  { to: '/playground', label: 'Try It' },
 ]
 
 export default function Nav() {
