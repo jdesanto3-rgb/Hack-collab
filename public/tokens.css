@@ -1,6 +1,7 @@
 /* ============================================================
    Weave Design Tokens
-   Visual style: Editorial. Warm. Thread-connected.
+   Visual style: Glass. Editorial. Thread-connected.
+   Primary: Panasonic Blue
    ============================================================ */
 
 /* ── ANIMATED GRADIENT BORDER ── */
@@ -18,7 +19,6 @@
   position: relative;
 }
 
-/* Sharp rotating arc — the bright neon centerline */
 .glow-border::before {
   content: '';
   position: absolute;
@@ -47,199 +47,28 @@
 }
 
 
-:root {
-  /* ── NEUTRALS — warm-tinted grays ── */
-  --bg:           #F4F0EB;
-  --surface:      #FDFAF5;
-  --surface2:     #EEE9E2;
-  --border:       #DAD5CC;
-  --border2:      #C8C2BA;
-  --text:         #201D1A;
-  --text2:        #5C5850;
-  --text3:        #9A9288;
-  --bg-canvas:    #EAE5DE;
-  --surface-warm: #F5F0E8;
-
-  /* ── PRIMARY — neon orange ── */
-  --brand:       #D96000;
-  --brand-light: #FFF0E0;
-  --brand-mid:   #EE7A00;
-  --brand-glow:  rgba(217, 96, 0, 0.22);
-
-  /* ── SEMANTIC ACCENTS ── */
-  --blue:        #2E5CE8;
-  --blue-light:  #E8EFFE;
-  --green:       #1A8A5A;
-  --green-light: #E4F5ED;
-  --red:         #C4305A;
-  --red-light:   #FDEEF4;
-  --amber:       #B07A0A;
-  --amber-light: #FEF3DC;
-  --teal:        #0B8F7A;
-  --teal-light:  #E0F5F2;
-  --npt:         #1B4B6B;
-  --npt-light:   #E8F0F6;
-
-  /* ── COMPAT ALIASES (referenced by some readTokens calls) ── */
-  --purple:       #2E5CE8;
-  --purple-light: #E8EFFE;
-
-  /* ── SPACING ── */
-  --space-xs:  4px;
-  --space-sm:  8px;
-  --space-md:  12px;
-  --space-lg:  16px;
-  --space-xl:  24px;
-  --space-2xl: 32px;
-  --space-3xl: 48px;
-
-  /* ── BORDER RADIUS ── */
-  --radius-sm:   4px;
-  --radius:      6px;
-  --radius-lg:   8px;
-  --radius-pill: 20px;
-  --radius-full: 9999px;
-
-  /* ── TYPE SCALE ── */
-  --text-xs:   10px;
-  --text-sm:   11px;
-  --text-md:   12px;
-  --text-base: 13px;
-  --text-lg:   14px;
-  --text-xl:   16px;
-  --text-2xl:  20px;
-  --text-3xl:  24px;
-  --text-4xl:  30px;
-
-  /* ── FONT WEIGHT ── */
-  --weight-normal:   400;
-  --weight-medium:   500;
-  --weight-semibold: 600;
-
-  /* ── FONT FAMILIES ── */
-  --font-sans:    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-display: 'Playfair Display', Georgia, serif;
-  --font-serif:   'Playfair Display', Georgia, serif;
-  --font-mono:    'JetBrains Mono', 'Fira Mono', 'Courier New', monospace;
-
-  /* ── LETTER SPACING ── */
-  --tracking-display: -0.025em;
-  --tracking-tight:   -0.015em;
-  --tracking-snug:    -0.01em;
-  --tracking-normal:   0em;
-  --tracking-wide:     0.04em;
-  --tracking-wider:    0.08em;
-  --tracking-widest:   0.12em;
-
-  /* ── SHADOWS ── */
-  --shadow-sm: 0 2px 8px rgba(32, 28, 24, 0.06), 0 1px 2px rgba(32, 28, 24, 0.04);
-  --shadow-md: 0 4px 20px rgba(32, 28, 24, 0.08), 0 1px 4px rgba(32, 28, 24, 0.04);
-  --shadow-lg: 0 8px 40px rgba(32, 28, 24, 0.10), 0 2px 8px rgba(32, 28, 24, 0.05);
-
-  /* ── TRANSITIONS ── */
-  --transition-fast: 100ms ease;
-  --transition:      150ms ease;
-  --transition-slow: 250ms ease;
-}
-
-/* ── DARK MODE (system) ── */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg:           #0C0C0B;
-    --surface:      #1A1919;
-    --surface2:     #222120;
-    --border:       #2F2E2C;
-    --border2:      #403F3C;
-    --text:         #ECEAE8;
-    --text2:        #9A9896;
-    --text3:        #686664;
-    --bg-canvas:    #090808;
-    --surface-warm: #161514;
-
-    --brand:       #FF9200;
-    --brand-light: #221200;
-    --brand-mid:   #FF6E00;
-    --brand-glow:  rgba(255, 146, 0, 0.38);
-
-    --blue:        #5580FF;
-    --blue-light:  #10183C;
-    --green:       #00E58A;
-    --green-light: #00261E;
-    --red:         #E83E6C;
-    --red-light:   #300C26;
-    --amber:       #FF9200;
-    --amber-light: #221200;
-    --teal:        #1ECCB6;
-    --teal-light:  #062820;
-    --npt:         #4D9ED4;
-    --npt-light:   #122E42;
-
-    --purple:       #5580FF;
-    --purple-light: #10183C;
-
-    --shadow-sm: 0 2px 8px rgba(0,0,0,0.40), 0 1px 2px rgba(0,0,0,0.28);
-    --shadow-md: 0 4px 20px rgba(0,0,0,0.52), 0 1px 4px rgba(0,0,0,0.28);
-    --shadow-lg: 0 8px 40px rgba(0,0,0,0.62), 0 2px 8px rgba(0,0,0,0.34);
-  }
-}
-
-/* ── DARK MODE (explicit JS toggle) ── */
-html[data-theme="dark"] {
-  --bg:           #0C0C0B;
-  --surface:      #1A1919;
-  --surface2:     #222120;
-  --border:       #2F2E2C;
-  --border2:      #403F3C;
-  --text:         #ECEAE8;
-  --text2:        #9A9896;
-  --text3:        #686664;
-  --bg-canvas:    #090808;
-  --surface-warm: #161514;
-
-  --brand:       #FF9200;
-  --brand-light: #221200;
-  --brand-mid:   #FF6E00;
-  --brand-glow:  rgba(255, 146, 0, 0.38);
-
-  --blue:        #5580FF;
-  --blue-light:  #10183C;
-  --green:       #00E58A;
-  --green-light: #00261E;
-  --red:         #E83E6C;
-  --red-light:   #300C26;
-  --amber:       #FF9200;
-  --amber-light: #221200;
-  --teal:        #1ECCB6;
-  --teal-light:  #062820;
-  --npt:         #4D9ED4;
-  --npt-light:   #122E42;
-
-  --purple:       #5580FF;
-  --purple-light: #10183C;
-
-  --shadow-sm: 0 2px 8px rgba(0,0,0,0.40), 0 1px 2px rgba(0,0,0,0.28);
-  --shadow-md: 0 4px 20px rgba(0,0,0,0.52), 0 1px 4px rgba(0,0,0,0.28);
-  --shadow-lg: 0 8px 40px rgba(0,0,0,0.62), 0 2px 8px rgba(0,0,0,0.34);
-}
-
-/* ── LIGHT MODE (explicit JS toggle) ── */
+/* ── LIGHT MODE (default) ── */
+:root,
 html[data-theme="light"] {
-  --bg:           #F4F0EB;
-  --surface:      #FDFAF5;
-  --surface2:     #EEE9E2;
-  --border:       #DAD5CC;
-  --border2:      #C8C2BA;
-  --text:         #201D1A;
-  --text2:        #5C5850;
-  --text3:        #9A9288;
-  --bg-canvas:    #EAE5DE;
-  --surface-warm: #F5F0E8;
+  /* Surfaces — cool blue-tinted light */
+  --bg:           #EEF3FA;
+  --surface:      rgba(255,255,255,0.92);
+  --surface2:     rgba(255,255,255,0.72);
+  --border:       rgba(27,74,165,0.10);
+  --border2:      rgba(27,74,165,0.18);
+  --text:         #0D1929;
+  --text2:        #3A4F72;
+  --text3:        #7B93B8;
+  --bg-canvas:    #E5EDF8;
+  --surface-warm: rgba(255,255,255,0.88);
 
-  --brand:       #D96000;
-  --brand-light: #FFF0E0;
-  --brand-mid:   #EE7A00;
-  --brand-glow:  rgba(217, 96, 0, 0.22);
+  /* Brand — Panasonic Blue */
+  --brand:       #1B4AA5;
+  --brand-light: #E8EFF9;
+  --brand-mid:   #3B6FD4;
+  --brand-glow:  rgba(27, 74, 165, 0.18);
 
+  /* Semantic accents */
   --blue:        #2E5CE8;
   --blue-light:  #E8EFFE;
   --green:       #1A8A5A;
@@ -252,13 +81,123 @@ html[data-theme="light"] {
   --teal-light:  #E0F5F2;
   --npt:         #1B4B6B;
   --npt-light:   #E8F0F6;
+  --purple:      #6B3FA0;
+  --purple-light:#F3EEFF;
 
-  --purple:       #2E5CE8;
-  --purple-light: #E8EFFE;
+  /* Spacing */
+  --space-xs:  4px;
+  --space-sm:  8px;
+  --space-md:  12px;
+  --space-lg:  16px;
+  --space-xl:  24px;
+  --space-2xl: 32px;
+  --space-3xl: 48px;
 
-  --shadow-sm: 0 1px 3px rgba(32, 28, 24, 0.07);
-  --shadow-md: 0 2px 10px rgba(32, 28, 24, 0.09);
-  --shadow-lg: 0 4px 20px rgba(32, 28, 24, 0.12);
+  /* Radius */
+  --radius-sm:   4px;
+  --radius:      6px;
+  --radius-lg:   8px;
+  --radius-pill: 20px;
+  --radius-full: 9999px;
+
+  /* Type scale */
+  --text-xs:   10px; --text-sm: 11px; --text-md: 12px; --text-base: 13px;
+  --text-lg:   14px; --text-xl: 16px; --text-2xl: 20px; --text-3xl: 24px; --text-4xl: 30px;
+
+  /* Weights */
+  --weight-normal: 400; --weight-medium: 500; --weight-semibold: 600;
+
+  /* Fonts */
+  --font-sans:    'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-serif:   'Playfair Display', Georgia, serif;
+  --font-mono:    'JetBrains Mono', 'Fira Mono', monospace;
+
+  /* Tracking */
+  --tracking-display: -0.025em; --tracking-tight: -0.015em;
+  --tracking-snug: -0.01em;    --tracking-wide: 0.04em;
+  --tracking-wider: 0.08em;    --tracking-widest: 0.12em;
+
+  /* Shadows */
+  --shadow-sm: 0 2px 12px rgba(27,74,165,0.08), 0 1px 3px rgba(27,74,165,0.05);
+  --shadow-md: 0 4px 24px rgba(27,74,165,0.10), 0 1px 6px rgba(27,74,165,0.06);
+  --shadow-lg: 0 8px 48px rgba(27,74,165,0.12), 0 2px 10px rgba(27,74,165,0.07);
+
+  /* Transitions */
+  --transition-fast: 100ms ease; --transition: 150ms ease; --transition-slow: 250ms ease;
+}
+
+/* ── DARK MODE (JS toggle + system) ── */
+html[data-theme="dark"],
+@media (prefers-color-scheme: dark) { :root { /* overridden below */ } }
+
+html[data-theme="dark"] {
+  /* Surfaces — glass dark */
+  --bg:           #070B14;
+  --surface:      rgba(255,255,255,0.04);
+  --surface2:     rgba(255,255,255,0.07);
+  --border:       rgba(255,255,255,0.08);
+  --border2:      rgba(255,255,255,0.14);
+  --text:         rgba(255,255,255,0.95);
+  --text2:        rgba(255,255,255,0.60);
+  --text3:        rgba(255,255,255,0.35);
+  --bg-canvas:    #040810;
+  --surface-warm: rgba(255,255,255,0.05);
+
+  /* Brand — Panasonic Blue (lifted for dark bg) */
+  --brand:       #4D85E8;
+  --brand-light: rgba(59,111,212,0.15);
+  --brand-mid:   #6A9EF0;
+  --brand-glow:  rgba(59,111,212,0.42);
+
+  /* Semantic — bright for dark bg */
+  --blue:        #5580FF;
+  --blue-light:  rgba(85,128,255,0.14);
+  --green:       #34D399;
+  --green-light: rgba(52,211,153,0.14);
+  --red:         #F87171;
+  --red-light:   rgba(248,113,113,0.14);
+  --amber:       #FBBF24;
+  --amber-light: rgba(251,191,36,0.14);
+  --teal:        #2DD4BF;
+  --teal-light:  rgba(45,212,191,0.14);
+  --npt:         #4D9ED4;
+  --npt-light:   rgba(77,158,212,0.14);
+  --purple:      #A78BFA;
+  --purple-light: rgba(167,139,250,0.14);
+
+  --shadow-sm: 0 2px 12px rgba(0,0,0,0.45), 0 1px 3px rgba(0,0,0,0.30);
+  --shadow-md: 0 4px 24px rgba(0,0,0,0.55), 0 1px 6px rgba(0,0,0,0.30);
+  --shadow-lg: 0 8px 48px rgba(0,0,0,0.65), 0 2px 10px rgba(0,0,0,0.35);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg:           #070B14;
+    --surface:      rgba(255,255,255,0.04);
+    --surface2:     rgba(255,255,255,0.07);
+    --border:       rgba(255,255,255,0.08);
+    --border2:      rgba(255,255,255,0.14);
+    --text:         rgba(255,255,255,0.95);
+    --text2:        rgba(255,255,255,0.60);
+    --text3:        rgba(255,255,255,0.35);
+    --bg-canvas:    #040810;
+    --surface-warm: rgba(255,255,255,0.05);
+    --brand:        #4D85E8;
+    --brand-light:  rgba(59,111,212,0.15);
+    --brand-mid:    #6A9EF0;
+    --brand-glow:   rgba(59,111,212,0.42);
+    --blue:         #5580FF;  --blue-light:   rgba(85,128,255,0.14);
+    --green:        #34D399;  --green-light:  rgba(52,211,153,0.14);
+    --red:          #F87171;  --red-light:    rgba(248,113,113,0.14);
+    --amber:        #FBBF24;  --amber-light:  rgba(251,191,36,0.14);
+    --teal:         #2DD4BF;  --teal-light:   rgba(45,212,191,0.14);
+    --npt:          #4D9ED4;  --npt-light:    rgba(77,158,212,0.14);
+    --purple:       #A78BFA;  --purple-light: rgba(167,139,250,0.14);
+    --shadow-sm: 0 2px 12px rgba(0,0,0,0.45), 0 1px 3px rgba(0,0,0,0.30);
+    --shadow-md: 0 4px 24px rgba(0,0,0,0.55), 0 1px 6px rgba(0,0,0,0.30);
+    --shadow-lg: 0 8px 48px rgba(0,0,0,0.65), 0 2px 10px rgba(0,0,0,0.35);
+  }
 }
 
 /* ── DARK MODE HEADER EDGE ── */
@@ -271,10 +210,7 @@ html[data-theme="dark"] #toolbar {
 }
 
 /* ── GLOBAL BASE ── */
-*, *::before, *::after {
-  box-sizing: border-box;
-}
-
+*, *::before, *::after { box-sizing: border-box; }
 body {
   margin: 0;
   font-family: var(--font-sans);
